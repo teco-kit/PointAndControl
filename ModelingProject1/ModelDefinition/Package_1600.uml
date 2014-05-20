@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/LogicalClassDesigner"
+  dslVersion="1.0.0.0"
+  Id="75462b50-b5de-4db7-a2ed-254f534ee589"
+  name="Server"
+  visibility="Private" xmlns="http://schemas.microsoft.com/dsltools/ModelStore">
+  <referencesInternal>
+    <reference
+      Id="12eca822-37df-43bf-a86b-9eb9a1a6f2ec"
+      handle="viewcode://./CodeSchema_Namespace?Namespace%3DIGS.Server"
+      tag="ViewCode" />
+  </referencesInternal>
+  <packagedElements>
+    <packageHasNamedElement>
+      <packageMoniker
+        Id="22942014-38cf-46a1-a2ff-718e0826dcde"
+        LastKnownName="Kinect"
+        LastKnownLocation="Package1_1600.uml" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <packageMoniker
+        Id="8df1021d-b379-4e77-b199-2b0f00a9fe64"
+        LastKnownName="IGS"
+        LastKnownLocation="Package2_1600.uml" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <packageMoniker
+        Id="e25fd45a-f95c-487f-bd85-27ecb93b721c"
+        LastKnownName="Devices"
+        LastKnownLocation="Package3_1600.uml" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <packageMoniker
+        Id="6d8ad23d-60dc-4e67-aeff-58f7ac43a8b3"
+        LastKnownName="WebServer"
+        LastKnownLocation="Package4_1600.uml" />
+    </packageHasNamedElement>
+  </packagedElements>
+</package>

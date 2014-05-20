@@ -1,0 +1,537 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Specialized;
+using System.IO;
+using System.Net;
+using System.Net.Sockets;
+using System.Threading;
+using System.Web;
+using System.Diagnostics;
+
+// offered to the public domain for any use with no restriction
+// and also with no warranty of any kind, please enjoy. - David Jeske. 
+
+// simple HTTP explanation
+// http://www.jmarshall.com/easy/http/
+
+namespace IGS.Server.WebServer
+{
+    /// <summary>
+    ///     This class contains the Arguments of a HTTP event     /// </summary>
+    public class HttpEventArgs : EventArgs
+    {
+        /// <summary>
+        ///     Constructor for the event 
+        ///     <param name="clientip">The IP of the User, who is responsible for the triggering</param>
+        ///     <param name="dev">The ID of the Device which should be controlled</param>
+        ///     <param name="cmd">The ID of the command which should be executed.</param>
+        ///     <param name="val">The Value belonging to the command.</param>
+        ///     <param name="p">The HTTpProcessor belonging to the command.</param>
+        /// </summary>
+        public HttpEventArgs(String clientip, String dev, String cmd, String val, HttpProcessor p)
+        {
+            ClientIp = clientip;
+            Dev = dev;
+            Cmd = cmd;
+            Val = val;
+            P = p;
+        }
+
+        /// <summary>
+        ///     The IP of the client.\n
+        ///     With the "set"-method the ip can be set.\n
+        ///     With the "get"-method the ip can be returned. 
+        ///     <returns>Returns the IP of the client</returns>
+        /// </summary>
+        public String ClientIp { get; set; }
+
+        /// <summary>
+        ///     The ID of the device which will be controlled. \n
+        ///     With the "set"-method the DeviceID can be set.\n
+        ///     With the "get"-method the DeviceID can be returned. 
+        ///     <returns>Returns the DeviceID</returns>
+        /// </summary>
+        public String Dev { get; set; }
+
+        /// <summary>
+        ///     The Command ID of the command which should be executed.\n
+        ///     With the "set"-method the CommandID can be set.\n
+        ///     With the "get"-method the CommandID can be returned. 
+        ///     <returns>Returns the CommandID</returns>
+        /// </summary>
+        public String Cmd { get; set; }
+
+        /// <summary>
+        ///     The passed Value of the command, which should be executed.\n
+        ///     With the "set"-method the value can be set.\n
+        ///     With the "get"-method the value can be returned. 
+        ///     <returns>Returns the value of the command</returns>
+        /// </summary>
+        public String Val { get; set; }
+
+        /// <summary>
+        ///     The HTTPProcessor of the client.\n
+        ///     With the "set"-method the HTTPProcessor can be set.\n
+        ///     With the "get"-method the HTTPProcessor can be returned. 
+        ///     <returns>Returns the HTTPProcessor of the client.</returns>
+        /// </summary>
+        public HttpProcessor P { get; set; }
+    }
+
+
+    /// <summary>
+    ///     delegate for a HTTP  event
+    ///     <param name="sender">the sender</param>
+    ///     <param name="e">the eventArgs</param>
+    /// </summary>
+    public delegate void HttpEventHandler(object sender, HttpEventArgs e);
+
+
+    /// <summary>
+    ///     Is responsible for the management of a client.
+    ///     The class HttpProcessor runs in a seperate thread which will be created at arrival of a new client.
+    ///     The class receives the requests of the client and passes them on to the class HttpServer.
+    ///     The request will be interpreted there and the action for the corresponding request will be executed
+    ///     @author Christopher Baumgärtner(edited)
+    /// </summary>
+    public class HttpProcessor
+    {
+        /// <summary>
+        ///     The header
+        /// </summary>
+        private Hashtable _httpHeaders = new Hashtable();
+
+        /// <summary>
+        ///     constructor for the HTTPProcessor 
+        /// </summary>
+        /// <param name="s">The TCP client</param>
+        /// <param name="srv">The HTTP server</param>
+        public HttpProcessor(TcpClient s, HttpServer srv)
+        {
+            Socket = s;
+            Srv = srv;
+        }
+
+
+        /// <summary>
+        ///     The socket of the connection.
+        ///     With the "set"-method the HTTPProcessor can be set.\n
+        ///     With the "get"-method the HTTPProcessor can be returned. 
+        ///     <returns>Returns the socket of the connection</returns>
+        /// </summary>
+        public TcpClient Socket { get; set; }
+
+        /// <summary>
+        ///     The HTTP server.
+        ///     With the "set"-method the HTTP server can be set.\n
+        ///     With the "get"-method the HTTP server can be returned. 
+        ///     <returns>Returns the HTTP server</returns>
+        /// </summary>
+        public HttpServer Srv { get; set; }
+
+        /// <summary>
+        ///     The InputStream
+        ///     With the "set"-method the InputStream can be set.\n
+        ///     With the "get"-method the InputStream can be returned. 
+        ///     <returns>returns the InputStream</returns>
+        /// </summary>
+        public Stream InputStream { get; set; }
+
+        /// <summary>
+        ///     The OutputStream
+        ///     With the "set"-method the OutputStream can be set.\n
+        ///     With the "get"-method the OutputStream can be returned. 
+        ///     <returns>Returns the OutputStream</returns>
+        /// </summary>
+        public StreamWriter OutputStream { get; set; }
+
+        /// <summary>
+        ///     The HTTP-method.
+        ///     With the "set"-method the HTTP-method can be set.\n
+        ///     With the "get"-method the HTTP-method can be returned. 
+        ///     <returns>Returns the HTTP-method</returns>
+        /// </summary>
+        public String HttpMethod { get; set; }
+
+
+        /// <summary>
+        ///     The HTTP-URL.
+        ///     With the "set"-method the HTTP-URL can be set.\n
+        ///     With the "get"-method the HTTP-URL can be returned. 
+        ///     <returns>Returns the HTTP-URL</returns>
+        /// </summary>
+        public String HttpUrl { get; set; }
+
+        /// <summary>
+        ///     The versionstring of the protokol.
+        ///     With the "set"-method the versionstring of the protokolr can be set.\n
+        ///     With the "get"-method the versionstring of the protokol can be returned. 
+        ///     <returns>Gibt den Versionsstring des Protokols zurück</returns>
+        /// </summary>
+        public String HttpProtocolVersionstring { get; set; }
+
+        /// <summary>
+        ///     The HTTP-Header.
+        ///     With the "set"-method the HTTP-Header can be set.\n
+        ///     With the "get"-method the HTTP-Header can be returned. 
+        ///     <returns>Returns the HTTP-Header</returns>
+        /// </summary>
+        public Hashtable HttpHeaders
+        {
+            get { return _httpHeaders; }
+            set { _httpHeaders = value; }
+        }
+
+        private String StreamReadLine(Stream inputStream)
+        {
+            String data = "";
+            while (true)
+            {
+                int nextChar = inputStream.ReadByte();
+                if (nextChar == '\n')
+                {
+                    break;
+                }
+                if (nextChar == '\r')
+                {
+                    continue;
+                }
+                if (nextChar == -1)
+                {
+                    Thread.Sleep(1);
+                    continue;
+                }
+                data += Convert.ToChar(nextChar);
+            }
+            return data;
+        }
+
+        /// <summary>
+        ///     Receivs the request, reads the header and passes the request on to handleGETRequest() or handlePOSTRequest().
+        /// </summary>
+        public void Process()
+        {
+            // we can't use a StreamReader for input, because it buffers up extra data on us inside it's
+            // "processed" view of the world, and we want the data raw after the headers
+            InputStream = new BufferedStream(Socket.GetStream());
+
+            // we probably shouldn't be using a streamwriter for all output from handlers either
+            OutputStream = new StreamWriter(new BufferedStream(Socket.GetStream()));
+            try
+            {
+                ParseRequest();
+                ReadHeaders();
+                if (HttpMethod.Equals("GET"))
+                {
+                    HandleGetRequest();
+                }
+                OutputStream.Flush();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.StackTrace);
+                WriteFailure();
+            }
+            
+            
+          
+            InputStream = null;
+            OutputStream = null;            
+            Socket.Close();
+        }
+
+        /// <summary>
+        ///     Receivs the http request and splits it in its parts (http_method, http_url, http_protocol_versionstring).
+        /// </summary>
+        private void ParseRequest()
+        {
+            String request = StreamReadLine(InputStream);
+            String[] tokens = request.Split(' ');
+            if (tokens.Length != 3)
+            {
+                throw new Exception("invalid http request line");
+            }
+            HttpMethod = tokens[0].ToUpper();
+            HttpUrl = tokens[1].Trim('/');
+            HttpProtocolVersionstring = tokens[2];
+
+            Debug.WriteLine("starting: " + request);
+        }
+
+        /// <summary>
+        ///     Receivs and processes the Http header.
+        ///     For every header the name and the value will be read and saved in httpHeader[].
+        /// </summary>
+        private void ReadHeaders()
+        {
+            Debug.WriteLine("readHeaders()");
+            String line;
+            while ((line = StreamReadLine(InputStream)) != null)
+            {
+                if (line.Equals(""))
+                {
+                    Debug.WriteLine("got headers");
+                    return;
+                }
+
+                int separator = line.IndexOf(':');
+                if (separator == -1)
+                {
+                    throw new Exception("invalid http header line: " + line);
+                }
+                String name = line.Substring(0, separator);
+                int pos = separator + 1;
+                while ((pos < line.Length) && (line[pos] == ' '))
+                {
+                    pos++; // strip any spaces
+                }
+
+                String value = line.Substring(pos, line.Length - pos);
+                Debug.WriteLine("header: {0}:{1}", name, value);
+                HttpHeaders[name] = value;
+            }
+        }
+
+        /// <summary>
+        ///     Passes the GET-request on to the server (HttpServer.handleGetRequest). 
+        /// </summary>
+        public void HandleGetRequest()
+        {
+            Srv.HandleGetRequest(this);
+        }
+
+        /// <summary>
+        ///     Responses that the reading was successful(200).
+        /// </summary>
+        public void WriteSuccess(String content_type)
+        {
+            OutputStream.WriteLine("HTTP/1.0 200 OK");
+            OutputStream.WriteLine("Content-Type: " + content_type);
+            OutputStream.WriteLine("Connection: close");
+            OutputStream.WriteLine("");
+            OutputStream.Flush();
+        }
+
+        /// <summary>
+        ///     Responses that the reading was erroneus(404).
+        /// </summary>
+        public void WriteFailure()
+        {
+            OutputStream.WriteLine("HTTP/1.0 404 File not found");
+            OutputStream.WriteLine("Connection: close");
+            OutputStream.WriteLine("");
+        }
+    }
+
+    /// <summary>
+    ///     Part of the design pattern: subject(HttpEvent)
+    ///     the abstract class of a HttpServer.
+    ///     The classes implementing HTTPServer are called by a HttpProcessor and interpretes the passed request.
+    ///     The methood hadnleGETRequest and handlePOSTRequest are responsible for the follwing procession of the request.
+    ///     @author Christopher Baumgärtner(edited)
+    /// </summary>
+    public abstract class HttpServer
+    {
+        /// <summary>
+        ///     The local IP
+        /// </summary>
+        protected IPAddress LocalIp;
+
+        private const bool is_active = true;
+        private TcpListener _listener;
+
+        /// <summary>
+        ///     The port the server uses.
+        /// </summary>
+        protected int Port;
+
+        /// <summary>
+        ///     Constructor for the HttpServer.
+        ///     <param name="port">the port which is used by the server</param>
+        ///     <param name="localIp">the IP-adress of the server</param>
+        /// </summary>
+        protected HttpServer(int port, IPAddress localIp)
+        {
+            Port = port;
+            LocalIP = localIp;
+        }
+
+        /// <summary>
+        ///     The IP-adress of the server.
+        ///     With the "set"-method the OutputStream can be set.\n
+        ///     With the "get"-method the OutputStream can be returned. 
+        ///     <returns>Returns the Ip-adress of the server</returns>
+        /// </summary>
+        public IPAddress LocalIP { get; set; }
+
+        /// <summary>
+        ///     Part of the design pattern: observer(HttpEvent)
+        /// </summary>
+        public virtual event HttpEventHandler Request;
+
+        /// <summary>
+        ///     Waits for arriving cleants and starts a new thread with HttpProcessor and the TCP Client at arrival.
+        /// </summary>
+        public void Listen()
+        {
+            _listener = new TcpListener(LocalIP, Port);
+            _listener.Start();
+            while (is_active)
+            {
+                TcpClient s = _listener.AcceptTcpClient();
+                HttpProcessor processor = new HttpProcessor(s, this);
+                Thread thread = new Thread(new ThreadStart(processor.Process));
+                thread.Start();
+                Thread.Sleep(1);
+            }
+        }
+
+        /// <summary>
+        ///     Will be called when an event occurs
+        ///     Part of the design pattern: observerTeil des Entwurfmusters: Beobachter(HttpEvent)
+        ///     Inhabits the function of the notify method in the observer design pattern.
+        /// </summary>
+        /// <param name="e">the eventArgs</param>
+        public abstract void OnRequest(HttpEventArgs e);
+       
+
+
+        /// <summary>
+        ///     processes a GET-request.
+        ///     <param name="p">der HttpProcessor</param>
+        /// </summary>
+        public abstract void HandleGetRequest(HttpProcessor p);
+
+        /// <summary>
+        ///     Sends a response to the client.
+        /// </summary>
+        /// <param name="p">the HttpProcessor processing the connection with the client.</param>
+        /// <param name="msg">the response</param>
+        public abstract void SendResponse(HttpProcessor p, String msg);
+    }
+
+
+    /// <summary>
+    ///     Part of the design pattern: subject(HttpEvent)
+    ///     The class MyHttpServer implements a http server.
+    ///     The class MyHttpServer is called by a HttpProcesser and implements the provided request.
+    ///     The method handleGETRequest and handlePOSTRequest is responsible for the following processing of the request.
+    ///     @author Christopher Baumgärtner(edited)
+    /// </summary>
+    public class MyHttpServer : HttpServer
+    {
+        /// <summary>
+        ///     Constructor for MyHttpServer.
+        ///     <param name="port">the port belonging to the server</param>
+        ///     <param name="localIp">the ip-adress of the server</param>
+        /// </summary>
+        public MyHttpServer(int port, IPAddress localIp)
+            : base(port, localIp)
+        {
+        }
+
+        /// <summary>
+        ///     Part of the design pattern: observer(HttpEvent)
+        /// </summary>
+        public override event HttpEventHandler Request;
+
+        /// <summary>
+        ///     Is called when an event occurs
+        ///     Part of the design pattern: observer(HttpEvent)
+        ///     Takes the place of the notify-method in the observer deisgn pattern.
+        /// </summary>
+        /// <param name="e">die EventArgs</param>
+        public override void OnRequest(HttpEventArgs e)
+        {
+            if (Request != null) Request(this, e);
+        }
+
+        /// <summary>
+        ///     Processes the GET-request.
+        ///     Either the requested file will be send to the client or the provided parameters will be processed.
+        ///     <param name="p">the HttpProcessor</param>
+        /// </summary>
+        public override void HandleGetRequest(HttpProcessor p)
+        {
+            if (p.HttpUrl.EndsWith(".html")) {
+                p.WriteSuccess("text/html");
+                sendData(p);
+            } 
+            else if (p.HttpUrl.EndsWith(".css")) {
+                p.WriteSuccess("text/css");
+                sendData(p);
+            } 
+            else if (p.HttpUrl.EndsWith(".js")) {
+                p.WriteSuccess("text/javascript");
+                sendData(p);
+            } 
+            else if (p.HttpUrl.EndsWith(".jpg")) {
+                p.WriteSuccess("image/jpg");
+                sendData(p);
+            } 
+            else if (p.HttpUrl.EndsWith(".gif")) {
+                p.WriteSuccess("image/gif");
+                sendData(p);
+            } 
+            else if (p.HttpUrl.EndsWith(".png")) {
+                p.WriteSuccess("image/png");
+                sendData(p);
+            }
+            else if (p.HttpUrl.EndsWith(".ico"))
+            {
+                p.WriteSuccess("image/x-icon");
+                sendData(p);
+            } 
+            else {
+                p.WriteSuccess("text/html");
+                NameValueCollection col = HttpUtility.ParseQueryString(p.HttpUrl);
+                String device = col["dev"];
+                String temp = col["cmd"];
+                if (temp != null)
+                {
+                    String[] cmdval = temp.Split('_');
+                    String command = cmdval[0];
+                    String value = "";
+                    if (cmdval.Length > 1) value = cmdval[1].Trim();
+                    String clientIp = ((IPEndPoint)p.Socket.Client.RemoteEndPoint).Address.ToString();
+                    OnRequest(new HttpEventArgs(clientIp, device, command, value, p));
+                    
+                }
+            }
+
+        }
+
+        /// <summary>
+        ///     Sends the requested file to the client
+        ///     <param name="p">the HttpProcessor</param>
+        /// </summary>
+        private void sendData(HttpProcessor p)
+        {
+            if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\" + p.HttpUrl))
+            {
+                using (
+                    Stream fs = File.Open(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\" + p.HttpUrl,
+                                          FileMode.Open)
+                    )
+                {
+                    fs.CopyTo(p.OutputStream.BaseStream);
+                    p.OutputStream.BaseStream.Flush();
+                }
+            }
+            else
+            {
+                p.WriteFailure();
+            }
+        }
+
+        /// <summary>
+        ///     Sends a response to the client.
+        /// </summary>
+        /// <param name="p">the HttpProcessor processing the connection with the client.</param>
+        /// <param name="msg">the response</param>
+        public override void SendResponse(HttpProcessor p, String msg)
+        {
+            p.OutputStream.Write(msg);
+        }
+    }
+}

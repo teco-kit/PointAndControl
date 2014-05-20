@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/LogicalClassDesigner"
+  dslVersion="1.0.0.0"
+  Id="c26dc096-e47c-42c3-8062-4a0b10bcab02"
+  name="Sockets"
+  visibility="Private" xmlns="http://schemas.microsoft.com/dsltools/ModelStore">
+  <referencesInternal>
+    <reference
+      Id="a3d3e7dd-4d7f-4fe6-9aa0-5c8c70aa6e00"
+      handle="viewcode://./CodeSchema_Namespace?Namespace%3DSystem.Net.Sockets"
+      tag="ViewCode" />
+  </referencesInternal>
+  <packagedElements>
+    <packageHasNamedElement>
+      <class
+        Id="433d31ac-d306-44c2-870b-a2ed945b4c8e"
+        name="TcpClient"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <referencesInternal>
+          <reference
+            Id="716da8d0-1cee-42e7-af01-e514f5ec8e02"
+            handle="viewcode://./CodeSchema_Class?Assembly%3D&quot;file:%2F%2F%2FC:%2FProgram Files (x86)%2FReference Assemblies%2FMicrosoft%2FFramework%2F.NETFramework%2Fv4.5%2FSystem.dll&quot; Namespace%3DSystem.Net.Sockets Type%3DTcpClient"
+            tag="ViewCode" />
+        </referencesInternal>
+        <appliedStereotypesInternal>
+          <stereotypeInstance
+            Id="449c9e06-fe9b-445e-8c49-34cc66fa2dd1"
+            name="class"
+            profile="CSharpProfile">
+            <propertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="c77ae2eb-b842-4492-8bce-589cbc038d0f">
+                <propertyInstance
+                  Id="8309eec7-affb-4f14-ac17-5927a45d3f05"
+                  name="ClrAttributes" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="0659dd30-c5c8-46ca-85b1-ce8a85be3673">
+                <propertyInstance
+                  Id="756928d4-5732-4e95-ab12-097bbe79c36a"
+                  name="IsPartial"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="6f7c2c66-e96e-4c8b-96ce-04baf9841060">
+                <propertyInstance
+                  Id="3be1bb12-30d6-4eac-8e88-da94f25f2116"
+                  name="IsStatic"
+                  value="False" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="c222fb67-1e20-4f9c-82fb-4d581401c013">
+                <propertyInstance
+                  Id="9842c601-d765-424a-b7c4-6443864a560e"
+                  name="IsUnsafe"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="3be28aae-273c-42fd-b661-c06b3d57a72e">
+                <propertyInstance
+                  Id="d0558a90-7139-4bc1-8ab2-7a193ea52a91"
+                  name="PackageVisibility"
+                  value="internal" />
+              </stereotypeInstanceHasPropertyInstances>
+            </propertyInstances>
+          </stereotypeInstance>
+        </appliedStereotypesInternal>
+      </class>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <class
+        Id="a77706eb-e7f9-4ae9-9b52-ac657378dffb"
+        name="TcpListener"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <referencesInternal>
+          <reference
+            Id="97e11725-608b-4cb1-979f-aca2a251cfd3"
+            handle="viewcode://./CodeSchema_Class?Assembly%3D&quot;file:%2F%2F%2FC:%2FProgram Files (x86)%2FReference Assemblies%2FMicrosoft%2FFramework%2F.NETFramework%2Fv4.5%2FSystem.dll&quot; Namespace%3DSystem.Net.Sockets Type%3DTcpListener"
+            tag="ViewCode" />
+        </referencesInternal>
+        <appliedStereotypesInternal>
+          <stereotypeInstance
+            Id="94c73a07-09e3-447a-842e-d52189cb8af1"
+            name="class"
+            profile="CSharpProfile">
+            <propertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="6d3de183-a3c5-4a07-ba89-cd1495160617">
+                <propertyInstance
+                  Id="13ae5d23-1208-4ce0-9bcb-409ade569a50"
+                  name="ClrAttributes" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="2e0d31eb-1b85-4d30-aea8-09f0a6c6b102">
+                <propertyInstance
+                  Id="490e71fd-2156-460e-95fd-4c21483339de"
+                  name="IsPartial"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="91892ce2-f1e3-48d9-9af2-418c744fe02a">
+                <propertyInstance
+                  Id="68d7e4e1-7803-4a2c-950a-1228101ce065"
+                  name="IsStatic"
+                  value="False" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="7e7363c9-d8f2-4151-b401-a93860fc0fb5">
+                <propertyInstance
+                  Id="03967832-7438-4b68-9bf6-7a275e912ebf"
+                  name="IsUnsafe"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="85f273c5-d41d-4e88-89d4-1dc345752da6">
+                <propertyInstance
+                  Id="d50384d6-8478-4255-a5fe-7fb903d8ca20"
+                  name="PackageVisibility"
+                  value="internal" />
+              </stereotypeInstanceHasPropertyInstances>
+            </propertyInstances>
+          </stereotypeInstance>
+        </appliedStereotypesInternal>
+      </class>
+    </packageHasNamedElement>
+  </packagedElements>
+</package>

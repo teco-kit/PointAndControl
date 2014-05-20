@@ -1,0 +1,174 @@
+﻿<Window x:Class="MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d" Loaded="WindowLoaded"
+        Title="IGS" Height="748" Width="1232" ResizeMode="CanMinimize">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="MediumGreyBrush" Color="#ff6e6e6e" />
+        <SolidColorBrush x:Key="KinectPurpleBrush" Color="#ff52318f" />
+        <SolidColorBrush x:Key="KinectBlueBrush" Color="#ff00BCF2" />
+        <Style TargetType="{x:Type Image}">
+            <Setter Property="SnapsToDevicePixels" Value="True" />
+        </Style>
+        <Style TargetType="{x:Type CheckBox}" x:Key="SquareCheckBox">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type CheckBox}">
+                        <Grid>
+                            <StackPanel Orientation="Horizontal" Background="Transparent">
+                                <Grid x:Name="SquareCheckBoxChecked">
+                                    <Image x:Name="CheckedNormal"
+                                           Source="Images\CheckedNormal.png"
+                                           Stretch="None" HorizontalAlignment="Center" />
+                                    <Image x:Name="CheckedHover"
+                                           Source="Images\CheckedHover.png"
+                                           Stretch="None" HorizontalAlignment="Center" Visibility="Collapsed" />
+                                </Grid>
+                                <Grid x:Name="SquareCheckBoxUnchecked" Visibility="Collapsed">
+                                    <Image x:Name="UncheckedNormal"
+                                           Source="Images\UncheckedNormal.png"
+                                           Stretch="None" HorizontalAlignment="Center" />
+                                    <Image x:Name="UncheckedHover"
+                                           Source="Images\UncheckedHover.png"
+                                           Stretch="None" HorizontalAlignment="Center" Visibility="Collapsed" />
+                                </Grid>
+                                <TextBlock x:Name="SquareCheckBoxText" Text="{TemplateBinding Content}"
+                                           TextAlignment="Left" VerticalAlignment="Center"
+                                           Foreground="{StaticResource KinectPurpleBrush}" FontSize="15"
+                                           Margin="9,0,0,0" />
+                            </StackPanel>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="false">
+                                <Setter Property="Visibility" Value="Collapsed" TargetName="SquareCheckBoxChecked" />
+                                <Setter Property="Visibility" Value="Visible" TargetName="SquareCheckBoxUnchecked" />
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Visibility" Value="Collapsed" TargetName="CheckedNormal" />
+                                <Setter Property="Visibility" Value="Collapsed" TargetName="UncheckedNormal" />
+                                <Setter Property="Visibility" Value="Visible" TargetName="CheckedHover" />
+                                <Setter Property="Visibility" Value="Visible" TargetName="UncheckedHover" />
+                                <Setter Property="Foreground" Value="{StaticResource KinectBlueBrush}"
+                                        TargetName="SquareCheckBoxText" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Name="LayoutGrid" Margin="10,0,-8,0" HorizontalAlignment="Left" Width="760">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <DockPanel Grid.Row="0" Margin="0 0 0 20">
+
+
+
+
+        </DockPanel>
+        <Viewbox Grid.Row="1"  HorizontalAlignment="Center">
+            <Image Source="{Binding ImageSourceColor}" Width="640" Height="480"  />
+        </Viewbox>
+        <Viewbox Grid.Row="1"  HorizontalAlignment="Center">
+            <Image Source="{Binding ImageSourceSkeleton}"  Width="640" Height="480" Stretch="Fill" />
+        </Viewbox>
+        <Viewbox Grid.Row="1"  HorizontalAlignment="Center"/>
+        <StatusBar Grid.Row="3" HorizontalAlignment="Stretch" Name="SstatusBar" VerticalAlignment="Bottom"
+                   Background="White" Foreground="{StaticResource MediumGreyBrush}">
+            <StatusBarItem Padding="0 0 0 10"/>
+        </StatusBar>
+        <Grid HorizontalAlignment="Left" Height="100" Grid.RowSpan="2" VerticalAlignment="Top" Width="100" />
+        <Grid Margin="765,0,-275,0" Grid.RowSpan="2" RenderTransformOrigin="0.537,0.635" Width="270">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="67*" />
+                <RowDefinition Height="602*" />
+                <RowDefinition Height="0*" />
+            </Grid.RowDefinitions>
+            <Button x:Name="Shutdown_Button" Content="IGS beenden" Margin="0,0,20,10"
+                    Grid.Row="1" RenderTransformOrigin="0.325,0.519"
+                    MouseDown="WindowClosing" VerticalAlignment="Bottom" />
+            <Label x:Name="DeviceCLabel" Content="Device creation"
+                   RenderTransformOrigin="0.474,1.077" Height="36" Width="270" FontSize="14"
+                   UseLayoutRounding="False" HorizontalContentAlignment="Center" Margin="0,0,0,603" Grid.Row="1" />
+            <TextBox x:Name="DeviceType" Margin="26,65,124,544" Grid.Row="1"
+                     TextWrapping="Wrap" Height="30" />
+            <TextBox x:Name="DeviceName" Margin="26,100,124,509" Grid.Row="1"
+                     TextWrapping="Wrap" Height="30" />
+            <TextBox x:Name="DeviceAdress" Margin="26,135,124,474" Grid.Row="1"
+                     TextWrapping="Wrap" Height="30" />
+            <TextBox x:Name="DevicePort" Margin="26,170,124,439" Grid.Row="1"
+                     TextWrapping="Wrap"
+                     RenderTransformOrigin="-0.125,4.087" Height="30" />
+            <Button x:Name="CreateDeviceButton" Content="Gerät erstellen"
+                    Margin="26,205,123,403" Grid.Row="1"
+                    MouseDown="Create_Device_Button_MouseLeftButtonDown_1" />
+            <Label x:Name="IgsControl" Content="IGS Control" Margin="25,10,22,10" RenderTransformOrigin="-0.553,0.115"
+                   FontSize="18" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch" />
+            <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="639"
+                    VerticalAlignment="Top" Width="275" Margin="-5,0,0,0" Grid.Row="1" />
+            <Label x:Name="Type_Label" Content="Typ" HorizontalAlignment="Left" Margin="157,65,0,0" Grid.Row="1" VerticalAlignment="Top" Width="98" Height="28"/>
+            <Label x:Name="Name_Label" Content="Name" HorizontalAlignment="Left" Margin="157,100,0,0" Grid.Row="1" VerticalAlignment="Top" Width="98" Height="28"/>
+            <Label x:Name="Adresse_Label" Content="Adresse" HorizontalAlignment="Left" Margin="157,135,0,0" Grid.Row="1" VerticalAlignment="Top" Width="98" Height="28"/>
+            <Label x:Name="Port_Label" Content="Port" HorizontalAlignment="Left" Margin="157,170,0,0" Grid.Row="1" VerticalAlignment="Top" Width="98" Height="28"/>
+            <TextBox x:Name="Plugwise_host" Margin="26,437,123,172" Grid.Row="1"
+            	TextWrapping="Wrap"
+            	RenderTransformOrigin="-0.125,4.087" Height="30" />
+            <Button x:Name="Change_Plugwise_Adress_Button" Content="Ändern"
+            	Margin="26,542,123,66" Grid.Row="1"
+            	MouseDown="Create_Device_Button_MouseLeftButtonDown_1" Click="Change_Plugwise_Adress_Button_Click" />
+            <TextBox x:Name="Plugwise_port" Margin="26,472,123,137" Grid.Row="1"
+            	TextWrapping="Wrap"
+            	RenderTransformOrigin="-0.125,4.087" Height="30" />
+            <TextBox x:Name="Plugwise_path" Margin="25,507,124,102" Grid.Row="1"
+            	TextWrapping="Wrap"
+            	RenderTransformOrigin="-0.125,4.087" Height="30" />
+            <Label x:Name="Plugwise_host_Label" Content="Host" HorizontalAlignment="Left" Margin="157,437,0,0" Grid.Row="1" VerticalAlignment="Top" Width="98" Height="28"/>
+            <Label x:Name="Plugwise_port_Label" Content="Port" HorizontalAlignment="Left" Margin="157,472,0,0" Grid.Row="1" VerticalAlignment="Top" Width="98" Height="28"/>
+            <Label x:Name="Plugwise_path_Label" Content="Path" HorizontalAlignment="Left" Margin="157,509,0,0" Grid.Row="1" VerticalAlignment="Top" Width="98" Height="28"/>
+
+        </Grid>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="33" Margin="760,0,-275,0"
+                VerticalAlignment="Top" Width="275" Grid.Row="1" />
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="67" Margin="760,0,-275,0"
+                VerticalAlignment="Top" Width="275" />
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="33" Margin="760,370,-275,0"
+        	VerticalAlignment="Top" Width="275" Grid.Row="1" >
+            <Label x:Name="Plugwise_Adress_label" Content="Change Plugwise Adress" HorizontalAlignment="Center"/>
+        </Border>
+        <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="201" Margin="760,403,-275,0" Grid.Row="1" VerticalAlignment="Top" Width="275"/>
+        <Grid HorizontalAlignment="Left" Height="720" Margin="1035,0,-455,-1" VerticalAlignment="Top" Width="180" Grid.RowSpan="4">
+            <Button x:Name="_3DViewButton" Content="Activate 3D View" 
+                    Margin="0,73,0,0" 
+                    VerticalAlignment="Top" Click="_3DViewButton_Click"
+                    />
+            <Label x:Name="_3D_View_Label" Content="View Controls&#xD;&#xA;" RenderTransformOrigin="0.472,0.462" Height="68" Width="180" FontSize="18" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+            <TextBox x:Name="Kinect_Z" HorizontalAlignment="Left" Height="23" Margin="10,186,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+            <TextBox x:Name="Kinect_Y" HorizontalAlignment="Left" Height="23" Margin="10,158,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+            <TextBox x:Name="Kinect_X" HorizontalAlignment="Left" Height="23" Margin="10,130,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+            <Label Content="X" HorizontalAlignment="Left" Margin="135,130,0,0" VerticalAlignment="Top" Height="23"/>
+            <Label Content="Y" HorizontalAlignment="Left" Margin="135,158,0,0" VerticalAlignment="Top" Height="23" RenderTransformOrigin="0.471,-0.043"/>
+            <Label Content="Z" HorizontalAlignment="Left" Margin="135,186,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.038,-0.423" Height="23"/>
+            <Button x:Name="Kinect_Replace_Button" Content="Replace Kinect" HorizontalAlignment="Left" Margin="10,271,0,0" VerticalAlignment="Top" Width="120" Click="Kinect_Replace_Button_Click"/>
+            <TextBox x:Name="Kinect_Roomorientation" HorizontalAlignment="Left" Height="23" Margin="10,243,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+            <Label x:Name="Horizontal_Angle_label" Content="H°" HorizontalAlignment="Left" Margin="137,243,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.038,-0.423" Height="23"/>
+            <TextBox x:Name="Room_Width" HorizontalAlignment="Left" Height="23" Margin="10,333,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="92"/>
+            <TextBox x:Name="Room_Height" HorizontalAlignment="Left" Height="23" Margin="10,361,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="92"/>
+            <TextBox x:Name="Room_Depth" HorizontalAlignment="Left" Height="23" Margin="10,389,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="92"/>
+            <Label x:Name="Width" Content="Width" HorizontalAlignment="Left" Margin="117,333,0,0" VerticalAlignment="Top" Height="23" Width="53"/>
+            <Label x:Name="Height" Content="Heigth" HorizontalAlignment="Left" Margin="117,361,0,0" VerticalAlignment="Top" Height="23" Width="53"/>
+            <Label x:Name="Depth" Content="Depth" HorizontalAlignment="Left" Margin="117,389,0,0" VerticalAlignment="Top" Height="23" Width="53"/>
+            <Button x:Name="CreateRoom_Button" Content="Set Room" HorizontalAlignment="Left" Margin="10,417,0,0" VerticalAlignment="Top" Width="92" Click="CreateRoom_Button_Click"/>
+            <Button x:Name="RGB_Body_WIndow_Button" Content="Open RGB View" HorizontalAlignment="Left" Margin="10,467,0,0" VerticalAlignment="Top" Width="92" Click="RGB_Body_WIndow_Button_Click"/>
+            <TextBox x:Name="Kinect_TiltAngle_Textbox" HorizontalAlignment="Left" Height="23" Margin="10,214,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
+            <Label x:Name="TiltAngle_Label" Content="T°" HorizontalAlignment="Left" Margin="137,215,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.038,-0.423" Height="23"/>
+        </Grid>
+    </Grid>
+</Window>
