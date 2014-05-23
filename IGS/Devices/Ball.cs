@@ -3,16 +3,16 @@
 namespace IGS.Server.Devices
 {
     /// <summary>
-    ///     Die Klasse Ball stellt eine Ballform dar, welche zur Darstellung von Geräten und zur
-    ///     Berechnung der Kollosionen beim Zeigen des Benutzers verwendet wird.
+    ///     The class ball presents a ballform, used to represent devices (their coordinates and radius in the room) as spheres and for the 
+    ///     computation of collisions for the gesture control.
     ///     @author Florian Kinn
     /// </summary>
     public class Ball
     {
         /// <summary>
-        ///     Konstruktur der Klasse Ball
-        ///     <param name="centre">Ortsvektor des Mittelpunktes der Kugel</param>
-        ///     <param name="radius">Raidus der Kugel</param>
+        ///     Constructor of the ball class
+        ///     <param name="centre">Vector to the center of the sphere</param>
+        ///     <param name="radius">Raidus of the sphere</param>
         /// </summary>
         public Ball(Vector3D centre, float radius)
         {
@@ -21,18 +21,18 @@ namespace IGS.Server.Devices
         }
 
         /// <summary>
-        ///     Der Vektor zum Zentrum der Ballform.
-        ///     Mit der "set"-Methode kann der Vektor zum Zentrum der Ballform gesetzt werden.
-        ///     Mit der "get"-Methode kann der Vektor zum Zentrum der Ballform zurückgegeben werden.
-        ///     <returns>Gibt den Vektor zum Zentrum zurück</returns>
+        ///     Vector to the center of the ball
+        ///     With the "set"-method the vector to the center of the ball can be set.
+        ///     With the "get"-method the vector to the center of the ball can be returned.
+        ///     <returns>Returns the vector to the center</returns>
         /// </summary>
         public Vector3D Centre { get; set; }
 
         /// <summary>
-        ///     Der Radius der Ballform.
-        ///     Mit der "set"-Methode kann der Ballradius gesetzt werden.
-        ///     Mit der "get"-Methode kann der Ballradius zurückgegeben werden.
-        ///     <returns>Gibt den Radius des Balls zurück</returns>
+        ///     The radius of the ball.
+        ///     With the "set"-method the radius of the ball can be set.
+        ///     With the "get"-method the radius of the ball can be returned.
+        ///     <returns>Returns the radius of the the ball</returns>
         /// </summary>
         public float Radius { get; set; }
     }

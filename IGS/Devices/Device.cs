@@ -4,17 +4,17 @@ using System.Collections.Generic;
 namespace IGS.Server.Devices
 {
     /// <summary>
-    ///     Die Klasse representiert ein Gerät, das einen Namen, eine Form aus Bällen und eine noch weiter zu definierende Transmit Methode hat.
-    ///     Die Geräteklasse wird durch weiterdefiniertere Geräte definiert.
+    ///     The abstract class represents a device with a name, a shape made out of balls(spheres), 
+    ///     and a transmit method which has to be specified.
     ///     @author Florian Kinn
     /// </summary>
     public abstract class Device
     {
         /// <summary>
-        ///     Konstruktor für Device.
-        ///     <param name="name">Name des Geräts.</param>
-        ///     <param name="id">Id des Geräts.</param>
-        ///     <param name="form">Die Form des Geräts.</param>
+        ///     Constructor for a device
+        ///     <param name="name">name of a device.</param>
+        ///     <param name="id">id of a device.</param>
+        ///     <param name="form">Shape of a device.</param>
         /// </summary>
         protected Device(String name, String id, List<Ball> form)
         {
@@ -23,12 +23,10 @@ namespace IGS.Server.Devices
             Form = form;
         }
 
-        /// <summary>
-        ///     Der Name des Geräts.
-        ///     Mit der "set"-Methode kann der Name gesetzt werden.
-        ///     Mit der "get"-Methode kann der Name zurückgegeben werden.
-        ///     <returns>Gibt den Namen des Geräts zurück.</returns>
-        /// </summary>
+        ///     Name of the device.
+        ///     With the "set"-method the name can be set.
+        ///     With the "get"-method the name can be returned.
+        ///     <returns>Returns the name of the device</returns>
         public String Name { get; set; }
 
         /// <summary>
@@ -40,28 +38,27 @@ namespace IGS.Server.Devices
         /// </summary>
         public List<Ball> Form { get; set; }
 
-        /// <summary>
-        ///     Die Id des Devices.
-        ///     Mit der "set"-Methode kann die ID gesetzt werden.
-        ///     Mit der "get"-Methode kann die ID zurückgegeben werden.
-        /// </summary>
-        /// <returns>Gibt die Id des Devices zurück.</returns>
+        ///     The ID of the device.
+        ///     With the "set"-method the ID of the device can be set.
+        ///     With the "get"-method the ID of the device can be returned.
+        ///     <returns>Returns the ID of the device</returns>
         public String Id { get; set; }
 
         public String CommandString { get; set; }
 
         /// <summary>
-        ///     Die Transmit-Methode ist für das korrekte Übermitteln einer, durch die "commandId"
-        ///     implizierte, Funktion an des Geräts zuständig.
+        ///     The Transmit method is responsible for the correct invocation of a function of the device
+        ///     which is implicated by the "commandID"
         ///     <param name="cmdId">
-        ///         Durch die commandId wird der Transmitmethode mitgeteilt,
-        ///         welcher Befehl an das Gerät zum Ausführen gesendet werden soll.
+        ///         With the commandID the Transmit-method recieves which command
+        ///         should be send to the device 
         ///     </param>
         ///     <param name="value">
-        ///         Der Wert, der dem Befehl zugehörig ist.
+        ///         The value belonging to the command
         ///     </param>
-        ///     <returns>Ausführung erfolgreich.</returns>
-        /// </summary>
+        ///     <returns>
+        ///     If execution was successful
+        ///     </returns>
         public abstract String Transmit(String cmdId, String value);
     }
 }

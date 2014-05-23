@@ -12,12 +12,12 @@ namespace IGS.Server.Devices
         private readonly String _commandString;
 
         /// <summary>
-        ///     Konstruktor eines Beamer-Objektes.
-        ///     <param name="id">ID des Objektes, um es identifizieren zu können</param>
-        ///     <param name="name">Benutzerdefinierter Name des Gerätes</param>
-        ///     <param name="form">Kugelmodell des Gerätes im Raum</param>
-        ///     <param name="address">Ip-Adresse des Gerätes</param>
-        ///     <param name="port">Port des Gerätes</param>
+        ///     Constructor of a beamer object.
+        ///     <param name="id">ID of the object for identifying it</param>
+        ///     <param name="name">Userdefined name of the device</param>
+        ///     <param name="form">Shape of the device in the room</param>
+        ///     <param name="address">IP-adress of the device</param>
+        ///     <param name="port">Port of the device</param>
         /// </summary>
         public Beamer(String name, String id, List<Ball> form, String address, String port)
             : base(name, id, form)
@@ -27,10 +27,10 @@ namespace IGS.Server.Devices
         }
 
         /// <summary>
-        ///     Die Verbindung, die Zwischen einem Boxee und dem Server besteht.
-        ///     Mit der "set"-Methode kann die Verbindung gesetzt werden.
-        ///     Mit der "get"-Methode kann die Verbindung zurückgegeben werden.
-        ///     <returns>Gibt die Verbindung zurück</returns>
+        ///     The connection existing between a beamer and a server.
+        ///     With the "set"-method the connection can be set.
+        ///     With the "get"-method the connection can be returned.
+        ///     <returns>Returns the connection</returns>
         /// </summary>
         public Http Connection
         {
@@ -39,16 +39,18 @@ namespace IGS.Server.Devices
         }
 
         /// <summary>
-        ///     Die Transmit-Methode ist für das korrekte Aufrufen einer, durch die "commandId"
-        ///     implizierte, Funktion an den Boxee zuständig.
+        ///     The Transmit method is responsible for the correct invocation of a function of the beamer 
+        ///     which is implicated by the "commandID"
         ///     <param name="cmdId">
-        ///         Durch die commandId wird der Transmitmethode mitgeteilt,
-        ///         welcher Befehl an das Gerät (Boxee) gesendet werden soll.
+        ///         With the commandID the Transmit-method recieves which command
+        ///         should be send to the device (beamer)
         ///     </param>
         ///     <param name="value">
-        ///         Der Wert, der dem Befehl zugehörig ist.
+        ///         The value belonging to the command
         ///     </param>
-        ///     <returns>Ausführung erfolgreich</returns>
+        ///     <returns>
+        ///     If execution was successful
+        ///     </returns>
         /// </summary>
         public override String Transmit(String cmdId, String value)
         {

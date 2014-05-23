@@ -6,15 +6,15 @@ using System.Text;
 namespace IGS.Server.Devices
 {
     /// <summary>
-    ///     Bietet die Möglichkeit über eine TCP-Schnittstelle Befehle zu verschicken
+    ///     Provides the posibility to send commands over a TCP-interface.
     ///     @author Florian Kinn
     /// </summary>
     public class Tcp : Connection
     {
         /// <summary>
-        ///     Konstruktor eines Tcp-Objektes.
-        ///     <param name="port">Port des Gerätes</param>
-        ///     <param name="ip">Ip-Adresse des Gerätes</param>
+        ///     Constructor of the TCP object
+        ///     <param name="port">Port of the device</param>
+        ///     <param name="ip">IP-adress of the device</param>
         /// </summary>
         public Tcp(int port, String ip)
             : base(port, ip)
@@ -22,10 +22,10 @@ namespace IGS.Server.Devices
         }
 
         /// <summary>
-        ///     Sendet den Befehl über eine TCP-Schnittstelle
+        ///     Sends a command over a TCP-Interface
         /// </summary>
-        /// <param name="command">Befehl der gesendet werden soll</param>
-        /// <returns>Rückgabewert des Gerätes</returns>
+        /// <param name="command">Command which should be send</param>
+        /// <returns>Returnvalue of the device</returns>
         public override String Send(String command)
         {
             Socket socket = null;
@@ -51,11 +51,11 @@ namespace IGS.Server.Devices
         }
 
         /// <summary>
-        /// Stellt die TCP Verbindung zum Zielgerät her.
+        /// Establishes the TCP connection to the target device.
         /// </summary>
-        /// <param name="ip">Die Ip des Zielgeräts</param>
-        /// <param name="port">der Port der Zielgeräts</param>
-        /// <param name="timeoutMSec">das Timeout des Verbindungsaufbaus</param>
+        /// <param name="ip">IP of the target device</param>
+        /// <param name="port">port of the target device</param>
+        /// <param name="timeoutMSec">time out of the connection establishment</param>
         /// <returns></returns>
         private Socket Connect(IPAddress ip, int port, int timeoutMSec)
         {

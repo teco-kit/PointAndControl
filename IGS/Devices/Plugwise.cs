@@ -4,11 +4,11 @@ using System.Collections.Generic;
 namespace IGS.Server.Devices
 {
     /// <summary>
-    ///     Diese Klasse spezialisiert die "Device" Klasse zu der Klasse "Plugwise".
-    ///     Sie beinhaltet alle Information sowie die Funktionen, welche für ein Plugwise verfügbar sind.
-    ///     Es sind folgende Funktionen verfügar:
-    ///     An ("on")
-    ///     Aus ("off")
+    ///     This class specializes the device class to the class plugwise
+    ///     It contains all information as well as functions available for a plugwise.
+    ///     Follwing functions are available:
+    ///     On
+    ///     Off
     ///     @author Florian Kinn
     /// </summary>
     public class Plugwise : Device
@@ -18,13 +18,13 @@ namespace IGS.Server.Devices
         private readonly String[] adresses;
 
         /// <summary>
-        ///     Konstruktor eines Plugwise-Objektes
+        ///     Constructor of a plugwise object.
+        ///     <param name="id">ID of the object for identifying it</param>
+        ///     <param name="name">Userdefined name of the device</param>
+        ///     <param name="form">Shape of the device in the room</param>
+        ///     <param name="address">IP-adress of the device</param>
+        ///     <param name="port">Port of the device</param>
         /// </summary>
-        /// <param name="id">ID des Objektes, um es identifizieren 	zu können</param>
-        /// <param name="name">Benutzerdefinierter Name des 	Gerätes</param>
-        /// <param name="form">Kugelmodell des Gerätes im 	Raum</param>
-        /// <param name="adress">die Adresse</param>
-        /// <param name="port">der Port</param>
         public Plugwise(String name, String id, List<Ball> form, String address, String port)
             : base(name, id, form)
         {
@@ -35,17 +35,19 @@ namespace IGS.Server.Devices
         }
 
         /// <summary>
-        ///     Die Transmit-Methode ist für das korrekte Übermitteln einer, durch die "commandId"
-        ///     implizierte, Funktion an das Plugwise zuständig.
+        ///     The Transmit method is responsible for the correct invocation of a function of the plugwise 
+        ///     which is implicated by the "commandID"
+        ///     <param name="cmdId">
+        ///         With the commandID the Transmit-method recieves which command
+        ///         should be send to the device (plugwise)
+        ///     </param>
+        ///     <param name="value">
+        ///         The value belonging to the command
+        ///     </param>
+        ///     <returns>
+        ///     If execution was successful
+        ///     </returns>
         /// </summary>
-        /// <param name="cmdId">
-        ///     Durch die commandId wird der Transmitmethode mitgeteilt,
-        ///     welcher Befehl an das Gerät(Plugwise) zum Ausführen gesendet werden soll
-        /// </param>
-        /// <param name="value">
-        ///     Wert der übergeben werden möchte für z.b. Lautstärke.
-        /// </param>
-        /// <returns>Ausführung erfolgreich</returns>
         public override String Transmit(String cmdId, String value)
         {
             String response = "ungueltiger Befehl";

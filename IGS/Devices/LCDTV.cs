@@ -6,25 +6,25 @@ using System.Text;
 namespace IGS.Server.Devices
 {
     /// <summary>
-    ///     Diese Klasse spezialisiert die "Device" Klasse zu der Klasse "LCDTV".
-    ///     Sie beinhaltet alle Information sowie die Funktionen, welche für einen LCDTV verfügbar sind.
-    ///     Es sind folgende Funktionen verfügar:
-    ///     An ("on")
-    ///     Aus ("off")
-    ///     Lautstärke (erhöhen ("volup"), erniedrige n("voldown"), mute ("mute"))
-    ///     Quelle ("source")(VGA ("1"), RGB ("2"), DVI "3", HDMI "4", Video1 "5", Video2 "6", S-Video "7", DVD HD1 "12", DVD HD2 "14", HDMI (VESA STD) "17")
+    ///     This class specializes the device class to the class LCDTV
+    ///     It contains all information as well as functions available for a LCDTV.
+    ///     Follwing functions are available:
+    ///     "on"
+    ///     "off"
+    ///     Volume (raise ("volup"), lower("voldown"), mute ("mute"))
+    ///     Sources ("source")(VGA ("1"), RGB ("2"), DVI "3", HDMI "4", Video1 "5", Video2 "6", S-Video "7", DVD HD1 "12", DVD HD2 "14", HDMI (VESA STD) "17")
     ///     Audio Input ("audio")(Audio 1 PC ("1"), Audio 2 "2", Audio 3 "3", HDMI "4")
     ///     @author Christopher Baumgärtner
     /// </summary>
     public class NECLCDmonitorMultiSyncV421 : Device
     {
         /// <summary>
-        ///     Konstruktor eines LCDTV-Objektes
-        ///     <param name="id">ID des Objektes, um es identifizieren zu können.</param>
-        ///     <param name="name">Benutzerdefinierter Name des Gerätes.</param>
-        ///     <param name="form">Kugelmodell des Gerätes im Raum.</param>
-        ///     <param name="address">Ip-Adresse des Gerätes</param>
-        ///     <param name="port">Port des Gerätes</param>
+        ///     Constructor of a LCDTV object.
+        ///     <param name="id">ID of the object for identifying it</param>
+        ///     <param name="name">Userdefined name of the device</param>
+        ///     <param name="form">Shape of the device in the room</param>
+        ///     <param name="address">IP-adress of the device</param>
+        ///     <param name="port">Port of the device</param>
         /// </summary>
         public NECLCDmonitorMultiSyncV421(String name, String id, List<Ball> form, String address, String port)
             : base(name, id, form)
@@ -33,24 +33,26 @@ namespace IGS.Server.Devices
         }
 
         /// <summary>
-        ///     Die Verbindung, die Zwischen einem LCDTV und dem Server besteht.
-        ///     Mit der "set"-Methode kann die Verbindung gesetzt werden.
-        ///     Mit der "get"-Methode kann die Verbindung zurückgegeben werden.
-        ///     <returns>Gibt die Verbindung zurück</returns>
+        ///     The connection existing between a LCDTV and a server.
+        ///     With the "set"-method the connection can be set.
+        ///     With the "get"-method the connection can be returned.
+        ///     <returns>Returns the connection</returns>
         /// </summary>
         public Tcp Connection { get; set; }
 
         /// <summary>
-        ///     Die Transmit-Methode ist für das korrekte Übermitteln einer, durch die "commandId"
-        ///     implizierte, Funktion an den LCDTV zuständig.
+        ///     The Transmit method is responsible for the correct invocation of a function of the LCDTV
+        ///     which is implicated by the "commandID"
         ///     <param name="cmdId">
-        ///         Durch die commandId wird der Transmitmethode mitgeteilt,
-        ///         welcher Befehl an das Gerät(LCDTV) zum Ausführen gesendet werden soll
+        ///         With the commandID the Transmit-method recieves which command
+        ///         should be send to the device (LCDTV)
         ///     </param>
         ///     <param name="value">
-        ///         Der Wert, der dem Befehl zugehörig ist.
+        ///         The value belonging to the command
         ///     </param>
-        ///     <returns>Ausführung erfolgreich.</returns>
+        ///     <returns>
+        ///     If execution was successful
+        ///     </returns>
         /// </summary>
         public override String Transmit(String cmdId, String value)
         {

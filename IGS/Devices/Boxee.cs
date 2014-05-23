@@ -4,15 +4,15 @@ using System.Collections.Generic;
 namespace IGS.Server.Devices
 {
     /// <summary>
-    ///     Diese Klasse spezialisiert die "Device" Klasse zu der Klasse "Boxee".
-    ///     Sie beinhaltet alle Information sowie die Funktionen, welche für einen Boxee verfügbar sind.
-    ///     Es sind folgende Funktionen verfügar:
-    ///     Navigation (4 Richtungen)
-    ///     Auswählen
-    ///     Zurück
-    ///     Lautstärke (erhöhen, erniedrigen, mute)
-    ///     Play, Pause, Stop
-    ///     Texteingabe
+    ///     This class specializes the device class to the class "Boxee"
+    ///     It contrais all information and function which are available for a Boxee.
+    ///     Follwing functions are available.
+    ///     Navicagetion (4 directions)
+    ///     Select
+    ///     Return
+    ///     Audio volume (raise, lower, mute)
+    ///     Play, pause, stop
+    ///     Textentry
     /// </summary>
     public class Boxee : Device
     {
@@ -20,12 +20,12 @@ namespace IGS.Server.Devices
         private Http _connection;
 
         /// <summary>
-        ///     Konstruktor eines Boxxee-Objektes.
-        ///     <param name="id">ID des Objektes, um es identifizieren zu können</param>
-        ///     <param name="name">Benutzerdefinierter Name des Gerätes</param>
-        ///     <param name="form">Kugelmodell des Gerätes im Raum</param>
-        ///     <param name="address">Ip-Adresse des Gerätes</param>
-        ///     <param name="port">Port des Gerätes</param>
+        ///     Constructor of a boxee object.
+        ///     <param name="id">ID of the object for identifying it</param>
+        ///     <param name="name">Userdefined name of the device</param>
+        ///     <param name="form">Shape of the device in the room</param>
+        ///     <param name="address">IP-adress of the device</param>
+        ///     <param name="port">Port of the device</param>
         /// </summary>
         public Boxee(String name, String id, List<Ball> form, String address, String port)
             : base(name, id, form)
@@ -35,10 +35,10 @@ namespace IGS.Server.Devices
         }
 
         /// <summary>
-        ///     Die Verbindung, die Zwischen einem Boxee und dem Server besteht.
-        ///     Mit der "set"-Methode kann die Verbindung gesetzt werden.
-        ///     Mit der "get"-Methode kann die Verbindung zurückgegeben werden.
-        ///     <returns>Gibt die Verbindung zurück</returns>
+        ///     The connection existing between a boxee and a server.
+        ///     With the "set"-method the connection can be set.
+        ///     With the "get"-method the connection can be returned.
+        ///     <returns>Returns the connection</returns>
         /// </summary>
         public Http Connection
         {
@@ -47,16 +47,18 @@ namespace IGS.Server.Devices
         }
 
         /// <summary>
-        ///     Die Transmit-Methode ist für das korrekte Aufrufen einer, durch die "commandId"
-        ///     implizierte, Funktion an den Boxee zuständig.
+        ///     The Transmit method is responsible for the correct invocation of a function of the boxee 
+        ///     which is implicated by the "commandID"
         ///     <param name="cmdId">
-        ///         Durch die commandId wird der Transmitmethode mitgeteilt,
-        ///         welcher Befehl an das Gerät (Boxee) gesendet werden soll.
+        ///         With the commandID the Transmit-method recieves which command
+        ///         should be send to the device (boxee)
         ///     </param>
         ///     <param name="value">
-        ///         Der Wert, der dem Befehl zugehörig ist.
+        ///         The value belonging to the command
         ///     </param>
-        ///     <returns>Ausführung erfolgreich</returns>
+        ///     <returns>
+        ///     If execution was successful
+        ///     </returns>
         /// </summary>
         public override String Transmit(String cmdId, String value)
         {
@@ -127,8 +129,8 @@ namespace IGS.Server.Devices
         }
 
         /// <summary>
-        ///    Erzeugt den Boxee spezifischen ASCII code.
-        ///     <returns>Gibt den Kommando String zurück.</returns>
+        ///     Creates boxee specific ASCII code
+        ///     <returns>Returns the command string.</returns>
         /// </summary>
         private String CmdIdToAscii(String cmdId)
         {

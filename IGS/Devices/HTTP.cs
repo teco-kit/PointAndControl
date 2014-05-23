@@ -7,15 +7,16 @@ using System.Text;
 namespace IGS.Server.Devices
 {
     /// <summary>
+    ///     
     ///     Bietet die Möglichkeit über eine HTTP-Schnittstelle Befehle zu verschicken
     ///     @author Florian Kinn
     /// </summary>
     public class Http : Connection
     {
         /// <summary>
-        ///     Konstruktor eines Http-Objektes.
-        ///     <param name="port">Port des Gerätes</param>
-        ///     <param name="ip">Ip-Adresse des Gerätes</param>
+        ///     Constructor of a http object
+        ///     <param name="port">Port of the device</param>
+        ///     <param name="ip">IP adress of the device</param>
         /// </summary>
         public Http(int port, String ip)
             : base(port, ip)
@@ -23,10 +24,10 @@ namespace IGS.Server.Devices
         }
 
         /// <summary>
-        ///     Sendet den Befehl über eine HTTP-Schnittstelle
+        ///     Sends the command over a HTTP- interface
         /// </summary>
-        /// <param name="command">Befehl der gesendet werden soll</param>
-        /// <returns>Rückgabewert des Gerätes</returns>
+        /// <param name="command">The command which should be send</param>
+        /// <returns>Return value of the deivce</returns>
         public override String Send(String command)
         {
             HttpWebRequest request = null;

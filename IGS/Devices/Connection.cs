@@ -3,15 +3,15 @@
 namespace IGS.Server.Devices
 {
     /// <summary>
-    ///     Abstrakte Klasse deren Implementierungen Verbindungen zu den Geräte bereitstellen.
+    ///     Abstract class which implements the connection to the devices
     ///     @author Florian Kinn
     /// </summary>
     public abstract class Connection
     {
         /// <summary>
-        ///     Konstruktor für Connection.
-        ///     <param name="port">Portnummer.</param>
-        ///     <param name="ip">Ip des Geräts.</param>
+        ///     Constructor of the connection
+        ///     <param name="port">portnumber.</param>
+        ///     <param name="ip">IP of the device.</param>
         /// </summary>
         protected Connection(int port, String ip)
         {
@@ -20,25 +20,25 @@ namespace IGS.Server.Devices
         }
 
         /// <summary>
-        ///     Der Port der Verbindung
-        ///     Mit der "set"-Methode kann der Port gesetzt werden
-        ///     Mit der "get"-Methode kann der Port zurückgegeben werden.
+        ///     The port of the connection.
+        ///     With the "set"-method the port can be set.
+        ///     With the "get"-method the port can be returned.
+        ///     <returns>Returns the port</returns>
         /// </summary>
-        /// <returns>Gibt den Port der Verbindung zurück</returns>
         public int Port { get; set; }
 
         /// <summary>
-        ///     Die IP der Verbindung
-        ///     Mit der "set"-Methode kann die IP gesetzt werden
-        ///     Mit der "get"-Methode kann die IP zurückgegeben werden.
+        ///     The IP of the connection
+        ///     With the "set"-method the IP can be set.
+        ///     With the "get"-method the IP can be returned.
+        ///     <returns>Returns the IP</returns>
         /// </summary>
-        /// <returns>Gibt die IP der Verbindung zurück</returns>
         public String Ip { get; set; }
 
         /// <summary>
-        ///     Sendet den Befehl auf die implementierte Art und Weise.
-        ///     <param name="command">Befehl der gesendet werden soll</param>
-        ///     <returns>Rückgabewert des Gerätes</returns>
+        ///     Sends the command in the implemented manner.
+        ///     <param name="command">command which should be send</param>
+        ///     <returns>Returnvalue of the device</returns>
         /// </summary>
         public virtual String Send(String command)
         {
