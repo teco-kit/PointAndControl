@@ -84,7 +84,7 @@ namespace IGS.Server.IGS
         }
 
         /// <summary>
-        /// ???
+        /// 
         /// </summary>
         /// <param name="devices"></param>
         /// <param name="vectors"></param>

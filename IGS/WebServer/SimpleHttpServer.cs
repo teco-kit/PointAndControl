@@ -246,6 +246,7 @@ namespace IGS.Server.WebServer
         private void ParseRequest()
         {
             String request = StreamReadLine(InputStream);
+            Console.WriteLine(request);
             String[] tokens = request.Split(' ');
             if (tokens.Length != 3)
             {
@@ -402,6 +403,8 @@ namespace IGS.Server.WebServer
         /// </summary>
         public abstract void HandleGetRequest(HttpProcessor p);
 
+        public abstract void HandlePostRequest(HttpProcessor p);
+
         /// <summary>
         ///     Sends a response to the client.
         /// </summary>
@@ -498,6 +501,11 @@ namespace IGS.Server.WebServer
                     
                 }
             }
+
+        }
+
+        public override void HandlePostRequest(HttpProcessor p)
+        {
 
         }
 

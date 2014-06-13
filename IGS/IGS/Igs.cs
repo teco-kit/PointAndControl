@@ -9,6 +9,7 @@ using IGS.Server.Kinect;
 using System.Diagnostics;
 using System.IO;
 using IGS.Helperclasses;
+using System.Net;
 
 namespace IGS.Server.IGS
 {
@@ -40,11 +41,9 @@ namespace IGS.Server.IGS
             Tracker.Strategy.TrackingStateEvents += SwitchTrackingState;
             
             createIGSKinect();
-           
-                
-                this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Centre);
-                Transformer.calculateRotationMatrix(IGSKinect.tiltingDegree, IGSKinect.roomOrientation);
-                Transformer.transVector = IGSKinect.ball.Centre;
+
+
+            this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Centre);
         }
 
 
@@ -72,11 +71,6 @@ namespace IGS.Server.IGS
         /// </summary>
         public devKinect IGSKinect { get; set; }
 
-
-        /// <summary>
-        /// The path where the logfile is placed
-        /// </summary>
-        private String logPath = AppDomain.CurrentDomain.BaseDirectory + "\\log.txt";
         /// <summary>
         /// Marks if the devices are initialized or not.
         /// With the "set"-method the devInit can be set.
@@ -127,7 +121,7 @@ namespace IGS.Server.IGS
             User user = Data.GetUserBySkeleton(args.SkeletonId);
             if (user != null)
             {
-                user.AddError("Sie haben den Raum verlassen!");
+                user.AddError("You left the room!");
             }
             Data.DelTrackedSkeleton(args.SkeletonId);
         }
@@ -165,9 +159,9 @@ namespace IGS.Server.IGS
         }
 
         /// <summary>
-        ///     Leitet den Befehl mit der übergebenen ID an das Gerät weiter.
-        ///     <param name="sender">Das Object, das das Event ausgelöst hat.</param>
-        ///     <param name="args">Parameter die für die interpretation nötig sind.</param>
+        ///     Passes the command with the provided ID on to the device.
+        ///     <param name="sender">The object which triggered the event.</param>
+        ///     <param name="args">Parameter needed for the interpretation.</param>
         /// </summary>
         public String InterpretCommand(object sender, HttpEventArgs args)
         {
@@ -186,7 +180,7 @@ namespace IGS.Server.IGS
                     case "addUser":
 
                         retStr = AddUser(wlanAdr).ToString();
-
+                        Console.WriteLine(retStr);
                         return retStr;
 
                     case "close":
@@ -356,7 +350,8 @@ namespace IGS.Server.IGS
                                                            parameter[2], parameter[3]);
                 Data.Devices.Add((Device)instance);
                 retStr = "Device added to deviceConfiguration.xml and devices list";
-               
+
+                Console.WriteLine(retStr);
                 return retStr;
             }
 

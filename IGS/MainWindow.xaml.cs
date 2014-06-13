@@ -245,11 +245,13 @@ public partial class MainWindow
         
         _3dviewIsAktive = false;
         _ifSkeletonisBuild = false;
-        
+
+
         if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml"))
         {
             Initializer.createXMLFile();
         }
+     
         _igs = Initializer.InitializeIgs();
         fillFieldsGUI();
        
@@ -265,10 +267,6 @@ public partial class MainWindow
             this.multiFrameReader.MultiSourceFrameArrived += this.Reader_MultiSourceFrameArrived;
 
         }
-       
-
-      
-        String[] roomText = XMLComponentHandler.readRoomComponents();
         
         FrameDescription ColorframeDescription = _igs.Tracker.Sensor.ColorFrameSource.FrameDescription;
 

@@ -91,7 +91,7 @@ namespace IGS.Helperclasses
             device.SetAttribute("type", parameter[0]);
             rootNode.AppendChild(device);
 
-            XmlNodeList deviceNodes = docConfig.SelectNodes("Config/deviceConfiguration/device");
+            XmlNodeList deviceNodes = docConfig.SelectNodes("config/deviceConfiguration/device");
 
             XmlElement name = docConfig.CreateElement("name");
             name.InnerText = parameter[1];
@@ -154,7 +154,7 @@ namespace IGS.Helperclasses
                     }
                 }
             }
-            docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\deviceConfiguration.xml");
+            docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");
 
 
             return ret;
