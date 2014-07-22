@@ -116,7 +116,7 @@ public partial class MainWindow
     ///     Drawing group for skeleton rendering output
     /// </summary>
     private DrawingGroup _drawingGroup;
-   
+
     /// <summary>
     ///     Drawing image that we will display
     /// </summary>
@@ -147,7 +147,7 @@ public partial class MainWindow
     /// the coordinateMapper to map the coordinates get by the camera to different view spaces
     /// </summary>
     private CoordinateMapper coordinateMapper = null;
-    
+
     /// <summary>
     /// indicator if the 3D view of the room is active.
     /// </summary>
@@ -237,29 +237,27 @@ public partial class MainWindow
     {
         // Create the drawing group we'll use for drawing
         _drawingGroup = new DrawingGroup();
-        
+
         // Create an image source that we can use in our image control
         _imageSource = new DrawingImage(_drawingGroup);
         DataContext = this;
         // Display the drawing using our image control
-        
+
         _3dviewIsAktive = false;
         _ifSkeletonisBuild = false;
-
 
         if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml"))
         {
             Initializer.createXMLFile();
         }
-     
         _igs = Initializer.InitializeIgs();
         fillFieldsGUI();
-       
+
         this.coordinateMapper = _igs.Tracker.Sensor.CoordinateMapper;
         _igs.devInit = true;
-          
 
-   
+
+
         _sensor = _igs.Tracker.Sensor;
         if (_sensor != null)
         {
@@ -267,10 +265,14 @@ public partial class MainWindow
             this.multiFrameReader.MultiSourceFrameArrived += this.Reader_MultiSourceFrameArrived;
 
         }
-        
+
+
+
+        String[] roomText = XMLComponentHandler.readRoomComponents();
+
         FrameDescription ColorframeDescription = _igs.Tracker.Sensor.ColorFrameSource.FrameDescription;
 
-        
+
 
 
         // allocate space to put the pixels being received
@@ -355,7 +357,7 @@ public partial class MainWindow
         {
             using (bodyFrame)
             {
-                bodies = new Body[bodyFrame.BodyFrameSource.BodyCount];
+                bodies = new Body[bodyFrame.BodyCount];
 
                 using (DrawingContext dc = this._drawingGroup.Open())
                 {
@@ -376,47 +378,47 @@ public partial class MainWindow
 
                             foreach (TrackedSkeleton ts in _igs.Tracker.Bodies)
                             {
-                              if ((int)body.TrackingId == ts.Id)
-                              {
-                            RenderClippedEdges(body, dc);
-
-                            if (body.IsTracked)
-                            {
-                                //this.DrawClippedEdges(body, dc);
-
-                                IReadOnlyDictionary<JointType, Joint> joints = body.Joints;
-
-                                // convert the joint points to depth (display) space
-                                Dictionary<JointType, Point> jointPoints = new Dictionary<JointType, Point>();
-                                foreach (JointType jointType in joints.Keys)
+                                if ((int)body.TrackingId == ts.Id)
                                 {
-                                    //ColorSpacePoint colorSpacePoint = this.coordinateMapper.MapCameraPointToColorSpace(joints[jointType].Position);
-                                    //jointPoints[jointType] = new Point(colorSpacePoint.X, colorSpacePoint.Y);
+                                    RenderClippedEdges(body, dc);
 
-                                    DepthSpacePoint depthSpacePoint = this.coordinateMapper.MapCameraPointToDepthSpace(joints[jointType].Position);
-                                    jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
+                                    if (body.IsTracked)
+                                    {
+                                        //this.DrawClippedEdges(body, dc);
 
-                                    //jointPoints[jointType] = new Point(joints[jointType].Position.X, joints[jointType].Position.Y);
+                                        IReadOnlyDictionary<JointType, Joint> joints = body.Joints;
+
+                                        // convert the joint points to depth (display) space
+                                        Dictionary<JointType, Point> jointPoints = new Dictionary<JointType, Point>();
+                                        foreach (JointType jointType in joints.Keys)
+                                        {
+                                            //ColorSpacePoint colorSpacePoint = this.coordinateMapper.MapCameraPointToColorSpace(joints[jointType].Position);
+                                            //jointPoints[jointType] = new Point(colorSpacePoint.X, colorSpacePoint.Y);
+
+                                            DepthSpacePoint depthSpacePoint = this.coordinateMapper.MapCameraPointToDepthSpace(joints[jointType].Position);
+                                            jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
+
+                                            //jointPoints[jointType] = new Point(joints[jointType].Position.X, joints[jointType].Position.Y);
+                                        }
+
+                                        this.DrawBody(joints, jointPoints, dc);
+
+                                        this.DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
+                                        this.DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
+                                        if (_RGBView != null)
+                                        {
+                                            _RGBView.BodyImage.Source = imageSourceSkeleton;
+                                        }
+                                        if (_3Dview != null)
+                                        {
+                                            _3Dview.createBody(body);
+                                            skelIDs.Add(body.TrackingId);
+                                        }
+                                    }
+                                    this._drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, this.displayWidth, this.displayHeight));
                                 }
 
-                                this.DrawBody(joints, jointPoints, dc);
-
-                                this.DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
-                                this.DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
-                                if (_RGBView != null)
-                                {
-                                    _RGBView.BodyImage.Source = imageSourceSkeleton;
-                                }
-                                if (_3Dview != null)
-                                {
-                                    _3Dview.createBody(body);
-                                    skelIDs.Add(body.TrackingId);
-                                }
                             }
-                            this._drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, this.displayWidth, this.displayHeight));
-                        }
-
-                          }
                         }
 
                     }
@@ -432,7 +434,7 @@ public partial class MainWindow
                             }
                         }
                     }
-                    
+
                     // prevent drawing outside of our render area
                     _drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
 
@@ -789,7 +791,7 @@ public partial class MainWindow
     {
         String adress = buildPlugwiseString(components);
         XMLComponentHandler.writePlugwiseAdresstoXML(components);
-      
+
         _igs.Data.Change_PlugWise_Adress(adress);
     }
     /// <summary>

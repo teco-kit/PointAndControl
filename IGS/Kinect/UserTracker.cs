@@ -90,8 +90,8 @@ namespace IGS.Server.Kinect
             //    reader = Sensor.BodyFrameSource.OpenReader();
             //    break;
             //}
-            Sensor = KinectSensor.Default;
-            _bodiesLastFrame = new Body[Sensor.BodyFrameSource.BodyCount];
+            Sensor = KinectSensor.GetDefault();
+            _bodiesLastFrame = new Body[6];
             this.reader = Sensor.BodyFrameSource.OpenReader();
 
             if (Sensor == null) return;
@@ -144,7 +144,6 @@ namespace IGS.Server.Kinect
             if (Sensor != null)
             {
                 Sensor.Close();
-                Sensor.Dispose();
             }
         }
 
@@ -274,7 +273,7 @@ namespace IGS.Server.Kinect
             using (BodyFrame bodyFrame = frameReference.AcquireFrame())
                 if (bodyFrame != null)
                 {
-                    bodies = new Body[bodyFrame.BodyFrameSource.BodyCount];
+                    bodies = new Body[bodyFrame.BodyCount];
                     bodyFrame.GetAndRefreshBodyData(bodies);
                 }
 

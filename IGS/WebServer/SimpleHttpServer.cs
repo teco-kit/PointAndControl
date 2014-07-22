@@ -371,7 +371,7 @@ namespace IGS.Server.WebServer
         public virtual event HttpEventHandler Request;
 
         /// <summary>
-        ///     Waits for arriving cleants and starts a new thread with HttpProcessor and the TCP Client at arrival.
+        ///     Waits for arriving clients and starts a new thread with HttpProcessor and the TCP Client at arrival.
         /// </summary>
         public void Listen()
         {
