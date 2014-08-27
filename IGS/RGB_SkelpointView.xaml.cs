@@ -27,7 +27,6 @@ namespace IGS
         /// </summary>
         public RGB_SkelpointView()
         {
-
             InitializeComponent();
         }
 

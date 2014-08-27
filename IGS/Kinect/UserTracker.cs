@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Media.Media3D;
 using Microsoft.Kinect;
+using System;
 
 namespace IGS.Server.Kinect
 {
@@ -156,6 +157,7 @@ namespace IGS.Server.Kinect
         /// </summary>
         public int GetSkeletonId(int igsSkelId)
         {
+          
             if (Bodies.Any(s => s.Id == igsSkelId))
             {
                 return igsSkelId;
@@ -177,8 +179,10 @@ namespace IGS.Server.Kinect
             //herausfinden, welcher User hinzugekommen ist
             foreach (TrackedSkeleton s in Bodies.Where(s => !idsSeen.Contains(s.Id)))
             {
+                
                 return s.Id;
             }
+           
             return -1;
         }
 
@@ -276,6 +280,7 @@ namespace IGS.Server.Kinect
                     bodies = new Body[bodyFrame.BodyCount];
                     bodyFrame.GetAndRefreshBodyData(bodies);
                 }
+                else { return;  }
 
 
 
@@ -292,11 +297,12 @@ namespace IGS.Server.Kinect
 
             bool bodiesLastFrameNotNull = false;
 
-            foreach (Body s in bodies)
+            foreach (Body s in _bodiesLastFrame)
             {
                 if (s == null && bodiesLastFrameNotNull == true)
                 {
                     bodiesLastFrameNotNull = false;
+                    break;
                 }
                 if (s != null && bodiesLastFrameNotNull == false)
                 {
@@ -307,7 +313,7 @@ namespace IGS.Server.Kinect
             if (bodiesLastFrameNotNull)
             {
                 //checks if a skeleton doesnt exist anymore.
-                foreach (Body s in _bodiesLastFrame.Where(s => !idsSeen.Contains((int)s.TrackingId) && s.TrackingId != 0))
+                foreach (Body s in _bodiesLastFrame.Where(s => s != null && !idsSeen.Contains((int)s.TrackingId) && s.TrackingId != 0))
                 {
                     OnUserLeft(this, new KinectUserEventArgs((int)s.TrackingId));
                     for (int i = 0; i < Bodies.Count; i++)

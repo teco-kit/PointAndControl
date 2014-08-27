@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace IGS.Server.Kinect
 {
@@ -25,7 +26,8 @@ namespace IGS.Server.Kinect
         /// </summary>
         public override List<TrackedSkeleton> Replace(List<TrackedSkeleton> skeletons)
         {
-            if (skeletons.Count == 2)
+            
+            if (skeletons.Count == 6)
             {
 
                 int minActions = int.MaxValue;
@@ -44,6 +46,7 @@ namespace IGS.Server.Kinect
                 SwitchTrackingState(new TrackingStateEventArgs(skeletons[replacePosition].Id));
                 skeletons.Remove(skeletons[replacePosition]);
             }
+            
             return skeletons;
         }
 

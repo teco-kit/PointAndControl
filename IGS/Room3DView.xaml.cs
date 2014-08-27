@@ -51,7 +51,7 @@ namespace IGS
         /// </summary>
         public List<ulong> IDList { get; set; }
     
-        private List<bool> IDListNullSpaces { get; set; }
+        public List<bool> IDListNullSpaces { get; set; }
         /// <summary>
         /// the complete body for each user
         /// </summary>
@@ -332,7 +332,7 @@ namespace IGS
 
         public void createBody(Body body)
         {
-            
+            int IDPlace = 0;
             bool IDfound = false;
             for (int i = 0; i < IDList.Count; i++)
             {
@@ -340,6 +340,7 @@ namespace IGS
                 {
                     IDfound = true;
                     aktualizations[i]++;
+                    IDPlace = i;
                     break;
                 }
             }
@@ -353,6 +354,7 @@ namespace IGS
                         IDList[i] = body.TrackingId;
                         aktualizations[i] = 1;
                         IDfound = true;
+                        IDPlace = i;
                         break;
                     }
                 }
@@ -363,9 +365,10 @@ namespace IGS
                 int minActualizations = aktualizations.Min();
                 int minActInd = aktualizations.ToList().IndexOf(minActualizations);
 
-                aktualizations[minActualizations] = 1;
-                IDList[minActualizations] = body.TrackingId;
+                aktualizations[minActInd] = 1;
+                IDList[minActInd] = body.TrackingId;
                 IDfound = true;
+                IDPlace = minActInd;
             }
 
 
@@ -426,21 +429,15 @@ namespace IGS
 
 
 
-            for (int i = 0; i < 6; i++)
+            removeModels(skelList[IDPlace]);
+            
+            if( boneListInitList[IDPlace] == false)
             {
-                if (body.TrackingId == IDList[i])
-                {
-                    removeModels(skelList[i]);
-                    if (boneListInitList[i] == false)
-                    {
-                        initBodyBones(0, pList, midSec);
-                    }
-                    replaceBodyBones(0, pList, midSec);
-                    makeBodyRay(i, right_elbow, right_wrist);
-                    break;
-                }
+                initBodyBones(IDPlace, pList, midSec);
             }
-             
+            transformBallList(IDPlace, pList, midSec);
+            makeBodyRay(IDPlace, right_elbow, right_wrist);
+            replaceBodyBones(IDPlace, pList, midSec);
         }
 
         /// <summary>
@@ -452,7 +449,7 @@ namespace IGS
             List<HelixToolkit.Wpf.SphereVisual3D> sphereList = new List<SphereVisual3D>();
             double pointsizes = 0.05;
 
-            for (int i = 0; i < 22; i++)
+            for (int i = 0; i < 24; i++)
             {
                 SphereVisual3D sphere = new SphereVisual3D();
                 Point3D point = new Point3D(-1, -1, -1);
@@ -524,10 +521,17 @@ namespace IGS
 
                     ballListsList[bodyNr][i].Transform = tmp;
 
-                    skelList[bodyNr].Children.Remove(ballListsList[bodyNr][i]);
-                    skelList[bodyNr].Children.Add(ballListsList[bodyNr][i]);
-
+                    //skelList[bodyNr].Children.Remove(ballListsList[bodyNr][i]);
+                    //skelList[bodyNr].Children.Add(ballListsList[bodyNr][i]);
               }
+            for (int i = 0; i < midsec.Count; i++)
+            {
+                tmp.OffsetX = midsec[i].X - ballListsList[bodyNr][pList.Count + i].Center.X;
+                tmp.OffsetX = midsec[i].Y - ballListsList[bodyNr][pList.Count + i].Center.Y;
+                tmp.OffsetX = midsec[i].Z - ballListsList[bodyNr][pList.Count + i].Center.Z;
+
+                ballListsList[bodyNr][pList.Count + i].Transform = tmp;
+            }
         }
 
         /// <summary>

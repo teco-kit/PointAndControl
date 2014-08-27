@@ -91,6 +91,7 @@ namespace IGS.Server.IGS
         /// </summary>
         public bool SetTrackedSkeleton(String wlanAdr, int bodyID)
         {
+           
             bool success = false;
 
             for (int i = 0; i < _users.Count && success == false; i++)
@@ -101,7 +102,7 @@ namespace IGS.Server.IGS
                     success = true;
                 }
             }
-
+          
             return success;
         }
 

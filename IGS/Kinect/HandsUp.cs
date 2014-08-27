@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.Kinect;
 using System.Diagnostics;
+using System;
 
 namespace IGS.Server.Kinect
 {
@@ -22,6 +23,8 @@ namespace IGS.Server.Kinect
         /// </summary>
         public override List<TrackedSkeleton> Filter(Body[] bodies, List<TrackedSkeleton> trackedSkeletons, int id, BodyFrameReader reader)
         {
+            int i = 0;
+           
             List<Body> handsUpSkeletons = new List<Body>();
 
             foreach (Body t in bodies.Where(t => (int)t.TrackingId == id))
@@ -36,14 +39,23 @@ namespace IGS.Server.Kinect
                 bool quit = false;
                 while (!quit)
                 {
-                    reader.AcquireLatestFrame().GetAndRefreshBodyData(tempSkeletons);
-
-                    foreach (Body tracked in tempSkeletons.Where(tracked => tracked.TrackingId == s.TrackingId &&
-                                                                                tracked.IsTracked))
+                    
+                    BodyFrame f = reader.AcquireLatestFrame();
+                  
+                    i++;
+                    if (f != null)
                     {
-                        quit = true;
+                    
+                        f.GetAndRefreshBodyData(tempSkeletons);
+                        foreach (Body tracked in tempSkeletons.Where(tracked => tracked.TrackingId == s.TrackingId &&
+                                                                                    tracked.IsTracked))
+                        {
+                            quit = true;
+                            f.Dispose();
+                        }
                     }
                 }
+               
                 //checks if an arm is raised
                 handsUpSkeletons.AddRange(from tempS in tempSkeletons
                                           where tempS.TrackingId == s.TrackingId && tempS.IsTracked
@@ -56,12 +68,16 @@ namespace IGS.Server.Kinect
                                           let shoulderR = tempS.Joints[JointType.ShoulderRight]
                                           where (head.Position.Y < wristL.Position.Y && shoulderL.Position.Y < elbowL.Position.Y) || (head.Position.Y < wristR.Position.Y && shoulderR.Position.Y < elbowR.Position.Y)
                                           select s);
+               
             }
             if (trackedSkeletons != null && handsUpSkeletons.Count == 1)
             {
                 trackedSkeletons.Add(new TrackedSkeleton((int)handsUpSkeletons[0].TrackingId));
             }
+           
+            
             return trackedSkeletons;
+            
         }
     }
 }

@@ -114,6 +114,7 @@ namespace IGS.Server.IGS
         /// <returns></returns>
         public Vector3D[] transformJointCoords(Vector3D[] joints)
         {
+            if (joints == null) return null;
             Vector3D[] result = new Vector3D[joints.Length];
 
             for (int i = 0; i < joints.Length; i++)

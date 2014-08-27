@@ -143,6 +143,8 @@ public partial class MainWindow
     /// A MultiSourceFrameReader for reading the RGB and body data of the kinect
     /// </summary>
     private MultiSourceFrameReader multiFrameReader = null;
+
+    
     /// <summary>
     /// the coordinateMapper to map the coordinates get by the camera to different view spaces
     /// </summary>
@@ -263,7 +265,6 @@ public partial class MainWindow
         {
             this.multiFrameReader = _igs.Tracker.Sensor.OpenMultiSourceFrameReader(FrameSourceTypes.Color | FrameSourceTypes.Body);
             this.multiFrameReader.MultiSourceFrameArrived += this.Reader_MultiSourceFrameArrived;
-
         }
 
 
@@ -299,6 +300,9 @@ public partial class MainWindow
         _igs.Tracker.ShutDown();
         Environment.Exit(1);
     }
+
+
+ 
     /// <summary>
     /// This reads an arriving MultiSourceFrameArrived event and uses the data to draw the 
     /// color and the skeleton image and also calls the Room3DView to visualize the skeletons in 3D
@@ -392,11 +396,12 @@ public partial class MainWindow
                                         Dictionary<JointType, Point> jointPoints = new Dictionary<JointType, Point>();
                                         foreach (JointType jointType in joints.Keys)
                                         {
-                                            //ColorSpacePoint colorSpacePoint = this.coordinateMapper.MapCameraPointToColorSpace(joints[jointType].Position);
-                                            //jointPoints[jointType] = new Point(colorSpacePoint.X, colorSpacePoint.Y);
+                                            ColorSpacePoint colorSpacePoint = this.coordinateMapper.MapCameraPointToColorSpace(joints[jointType].Position);
+                                            jointPoints[jointType] = new Point(colorSpacePoint.X, colorSpacePoint.Y);
 
-                                            DepthSpacePoint depthSpacePoint = this.coordinateMapper.MapCameraPointToDepthSpace(joints[jointType].Position);
-                                            jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
+                                            
+                                            //DepthSpacePoint depthSpacePoint = this.coordinateMapper.MapCameraPointToDepthSpace(joints[jointType].Position);
+                                            //jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
 
                                             //jointPoints[jointType] = new Point(joints[jointType].Position.X, joints[jointType].Position.Y);
                                         }
@@ -425,14 +430,34 @@ public partial class MainWindow
 
                     if (_3Dview != null)
                     {
-                        if (skelIDs.Count == 0)
-                        {
-                            for (int i = 0; i < _3Dview.skelList.Count; i++)
+                        // check if trackedskeletons of counter == shown skeletons in 3D
+                        int[] notFound = new int[6];
+                        bool foundID = false;
+
+                        
+                            for (int j = 0; j < _3Dview.IDList.Count; j++)
                             {
-                                _3Dview.mainViewport.Children.Remove(_3Dview.skelList[i]);
-                                _3Dview.mainViewport.Children.Remove(_3Dview.skelRayList[i]);
+
+                                for (int i = 0; i < _igs.Tracker.Bodies.Count; i++)
+                                {
+                                    if( _3Dview.IDList[j] == (ulong)_igs.Tracker.Bodies[i].Id)
+                                    {
+                                        foundID = true;
+                                        break;
+                                    }
+                                }
+                                
+                                if(foundID == false)
+                                {
+                                    _3Dview.mainViewport.Children.Remove(_3Dview.skelList[j]);
+                                    _3Dview.mainViewport.Children.Remove(_3Dview.skelRayList[j]);
+                                    _3Dview.IDList = null;
+                                    _3Dview.IDListNullSpaces[j] = true;
+                                }
+                                foundID = false;
                             }
-                        }
+                    }
+                    
                     }
 
                     // prevent drawing outside of our render area
@@ -443,7 +468,9 @@ public partial class MainWindow
                 }
             }
         }
-    }
+
+    
+    
 
     /// <summary>
     ///     Draws a skeleton's bones and joints

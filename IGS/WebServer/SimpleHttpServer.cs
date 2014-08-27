@@ -100,7 +100,7 @@ namespace IGS.Server.WebServer
         ///     The header
         /// </summary>
         private Hashtable _httpHeaders = new Hashtable();
-
+        private static int MAX_POST_SIZE = 10 * 1024 * 1024; // 10MB
         /// <summary>
         ///     constructor for the HTTPProcessor 
         /// </summary>
@@ -225,6 +225,9 @@ namespace IGS.Server.WebServer
                 {
                     HandleGetRequest();
                 }
+                else if (HttpMethod.Equals("POST")) {
+                    HandlePostRequest();
+                }
                 OutputStream.Flush();
             }
             catch (Exception e)
@@ -301,6 +304,55 @@ namespace IGS.Server.WebServer
             Srv.HandleGetRequest(this);
         }
 
+        private const int BUF_SIZE = 4096;
+        public void HandlePostRequest()
+        {
+            // this post data processing just reads everything into a memory stream.
+            // this is fine for smallish things, but for large stuff we should really
+            // hand an input stream to the request processor. However, the input stream 
+            // we hand him needs to let him see the "end of the stream" at this content 
+            // length, because otherwise he won't know when he's seen it all! 
+
+            Console.WriteLine("get post data start");
+            int content_len = 0;
+            MemoryStream ms = new MemoryStream();
+            if (HttpHeaders.ContainsKey("Content-Length"))
+            {
+                content_len = Convert.ToInt32(this.HttpHeaders["Content-Length"]);
+                if (content_len > MAX_POST_SIZE)
+                {
+                    throw new Exception(
+                        String.Format("POST Content-Length({0}) too big for this simple server",
+                          content_len));
+                }
+                byte[] buf = new byte[BUF_SIZE];
+                int to_read = content_len;
+                while (to_read > 0)
+                {
+                    Console.WriteLine("starting Read, to_read={0}", to_read);
+
+                    int numread = this.InputStream.Read(buf, 0, Math.Min(BUF_SIZE, to_read));
+                    Console.WriteLine("read finished, numread={0}", numread);
+                    if (numread == 0)
+                    {
+                        if (to_read == 0)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            throw new Exception("client disconnected during post");
+                        }
+                    }
+                    to_read -= numread;
+                    ms.Write(buf, 0, numread);
+                }
+                ms.Seek(0, SeekOrigin.Begin);
+            }
+            Console.WriteLine("get post data end");
+            Srv.HandlePostRequest(this, new StreamReader(ms));
+        }
+
         /// <summary>
         ///     Responses that the reading was successful(200).
         /// </summary>
@@ -370,6 +422,8 @@ namespace IGS.Server.WebServer
         /// </summary>
         public virtual event HttpEventHandler Request;
 
+
+
         /// <summary>
         ///     Waits for arriving clients and starts a new thread with HttpProcessor and the TCP Client at arrival.
         /// </summary>
@@ -403,7 +457,7 @@ namespace IGS.Server.WebServer
         /// </summary>
         public abstract void HandleGetRequest(HttpProcessor p);
 
-        public abstract void HandlePostRequest(HttpProcessor p);
+        public abstract void HandlePostRequest(HttpProcessor p, StreamReader inputdata);
 
         /// <summary>
         ///     Sends a response to the client.
@@ -504,11 +558,17 @@ namespace IGS.Server.WebServer
 
         }
 
-        public override void HandlePostRequest(HttpProcessor p)
+        public override void HandlePostRequest(HttpProcessor p, StreamReader inputData)
         {
+            Console.WriteLine("POST request: {0}", p.HttpUrl);
+            string data = inputData.ReadToEnd();
 
+            p.WriteSuccess("text/html");
+            p.OutputStream.WriteLine("<html><body><h1>test server</h1>");
+            p.OutputStream.WriteLine("<a href=/test>return</a><p>");
+            p.OutputStream.WriteLine("postbody: <pre>{0}</pre>", data);
         }
-
+      
         /// <summary>
         ///     Sends the requested file to the client
         ///     <param name="p">the HttpProcessor</param>

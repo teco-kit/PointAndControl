@@ -105,7 +105,9 @@ namespace IGS.Server.IGS
         {
             Debug.WriteLine("server_Request");
             String str = InterpretCommand(sender, e);
+          
             Server.SendResponse(e.P, str);
+            
         }
 
         /// <summary>
@@ -145,16 +147,19 @@ namespace IGS.Server.IGS
         /// </summary>
         public bool SkeletonIdToUser(String wlanAdr)
         {
+           
             User tempUser = Data.GetUserByIp(wlanAdr);
             int id = -1;
             if (tempUser != null)
             {
                 int sklId = tempUser.SkeletonId;
+                
                 id = Tracker.GetSkeletonId(sklId);
+            
                 if (id != -1)
                     tempUser.TrackingState = true;
             }
-
+            
             return id >= 0 && Data.SetTrackedSkeleton(wlanAdr, id);
         }
 
@@ -189,12 +194,13 @@ namespace IGS.Server.IGS
                         return retStr;
 
                     case "activateGestureCtrl":
-
+                       
                         if (Data.GetUserByIp(wlanAdr) != null)
                         {
                             retStr = SkeletonIdToUser(wlanAdr).ToString();
-                           
+                          
                             return retStr;
+                            
                         }
 
                         retStr = "Aktivierung nicht möglich.\nBitte starten Sie die App neu.";
