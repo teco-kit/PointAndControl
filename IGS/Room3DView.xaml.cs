@@ -99,7 +99,7 @@ namespace IGS
             boneListsList = new List<List<PipeVisual3D>>();
             aktualizations = new int[6];
             IDListNullSpaces = new List<bool>();
-
+            skelRayList = new List<PipeVisual3D>();
             for (int i = 0; i < 6; i++)
             {
                 skelList.Add(new ModelVisual3D());

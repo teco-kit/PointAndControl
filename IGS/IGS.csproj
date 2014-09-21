@@ -85,6 +85,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Communication\Communicator.cs" />
+    <Compile Include="Communication\DataRepoCommunication.cs" />
     <Compile Include="Devices\Ball.cs" />
     <Compile Include="Devices\Beamer.cs" />
     <Compile Include="Devices\Boxee.cs" />
@@ -100,6 +102,8 @@
     <Compile Include="Helperclasses\CoordTransform.cs" />
     <Compile Include="Helperclasses\Initializer.cs" />
     <Compile Include="Helperclasses\XMLComponentHandler.cs" />
+    <Compile Include="IGS\Room.cs" />
+    <Compile Include="IGS\RoomMesures.cs" />
     <Compile Include="Kinect\TrackingStateEventArgs.cs" />
     <Compile Include="RGB_SkelpointView.xaml.cs">
       <DependentUpon>RGB_SkelpointView.xaml</DependentUpon>

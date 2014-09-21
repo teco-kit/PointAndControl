@@ -37,6 +37,13 @@ namespace IGS.Server.WebServer
             P = p;
         }
 
+        public HttpEventArgs(String clientip, String PostString, HttpProcessor p)
+        {
+            POSTString = PostString;
+            P = p;
+        }
+
+        public String POSTString { get; set; }
         /// <summary>
         ///     The IP of the client.\n
         ///     With the "set"-method the ip can be set.\n
@@ -225,7 +232,8 @@ namespace IGS.Server.WebServer
                 {
                     HandleGetRequest();
                 }
-                else if (HttpMethod.Equals("POST")) {
+                else if (HttpMethod.Equals("POST"))
+                {
                     HandlePostRequest();
                 }
                 OutputStream.Flush();
@@ -235,11 +243,11 @@ namespace IGS.Server.WebServer
                 Console.WriteLine(e.StackTrace);
                 WriteFailure();
             }
-            
-            
-          
+
+
+
             InputStream = null;
-            OutputStream = null;            
+            OutputStream = null;
             Socket.Close();
         }
 
@@ -422,7 +430,7 @@ namespace IGS.Server.WebServer
         /// </summary>
         public virtual event HttpEventHandler Request;
 
-
+        public virtual event HttpEventHandler postRequest;
 
         /// <summary>
         ///     Waits for arriving clients and starts a new thread with HttpProcessor and the TCP Client at arrival.
@@ -448,8 +456,8 @@ namespace IGS.Server.WebServer
         /// </summary>
         /// <param name="e">the eventArgs</param>
         public abstract void OnRequest(HttpEventArgs e);
-       
 
+        public abstract void OnPOSTRequest(HttpEventArgs e);
 
         /// <summary>
         ///     processes a GET-request.
@@ -492,6 +500,8 @@ namespace IGS.Server.WebServer
         /// </summary>
         public override event HttpEventHandler Request;
 
+        public override event HttpEventHandler postRequest;
+
         /// <summary>
         ///     Is called when an event occurs
         ///     Part of the design pattern: observer(HttpEvent)
@@ -503,6 +513,12 @@ namespace IGS.Server.WebServer
             if (Request != null) Request(this, e);
         }
 
+        public override void OnPOSTRequest(HttpEventArgs e)
+        {
+            if (postRequest != null) postRequest(this, e);
+
+        }
+
         /// <summary>
         ///     Processes the GET-request.
         ///     Either the requested file will be send to the client or the provided parameters will be processed.
@@ -510,27 +526,33 @@ namespace IGS.Server.WebServer
         /// </summary>
         public override void HandleGetRequest(HttpProcessor p)
         {
-            if (p.HttpUrl.EndsWith(".html")) {
+            if (p.HttpUrl.EndsWith(".html"))
+            {
                 p.WriteSuccess("text/html");
                 sendData(p);
-            } 
-            else if (p.HttpUrl.EndsWith(".css")) {
+            }
+            else if (p.HttpUrl.EndsWith(".css"))
+            {
                 p.WriteSuccess("text/css");
                 sendData(p);
-            } 
-            else if (p.HttpUrl.EndsWith(".js")) {
+            }
+            else if (p.HttpUrl.EndsWith(".js"))
+            {
                 p.WriteSuccess("text/javascript");
                 sendData(p);
-            } 
-            else if (p.HttpUrl.EndsWith(".jpg")) {
+            }
+            else if (p.HttpUrl.EndsWith(".jpg"))
+            {
                 p.WriteSuccess("image/jpg");
                 sendData(p);
-            } 
-            else if (p.HttpUrl.EndsWith(".gif")) {
+            }
+            else if (p.HttpUrl.EndsWith(".gif"))
+            {
                 p.WriteSuccess("image/gif");
                 sendData(p);
-            } 
-            else if (p.HttpUrl.EndsWith(".png")) {
+            }
+            else if (p.HttpUrl.EndsWith(".png"))
+            {
                 p.WriteSuccess("image/png");
                 sendData(p);
             }
@@ -538,8 +560,9 @@ namespace IGS.Server.WebServer
             {
                 p.WriteSuccess("image/x-icon");
                 sendData(p);
-            } 
-            else {
+            }
+            else
+            {
                 p.WriteSuccess("text/html");
                 NameValueCollection col = HttpUtility.ParseQueryString(p.HttpUrl);
                 String device = col["dev"];
@@ -552,7 +575,7 @@ namespace IGS.Server.WebServer
                     if (cmdval.Length > 1) value = cmdval[1].Trim();
                     String clientIp = ((IPEndPoint)p.Socket.Client.RemoteEndPoint).Address.ToString();
                     OnRequest(new HttpEventArgs(clientIp, device, command, value, p));
-                    
+
                 }
             }
 
@@ -567,8 +590,13 @@ namespace IGS.Server.WebServer
             p.OutputStream.WriteLine("<html><body><h1>test server</h1>");
             p.OutputStream.WriteLine("<a href=/test>return</a><p>");
             p.OutputStream.WriteLine("postbody: <pre>{0}</pre>", data);
+            String clientIp = ((IPEndPoint)p.Socket.Client.RemoteEndPoint).Address.ToString();
+
+
+
+            OnPOSTRequest(new HttpEventArgs(clientIp, data, p));
         }
-      
+
         /// <summary>
         ///     Sends the requested file to the client
         ///     <param name="p">the HttpProcessor</param>
