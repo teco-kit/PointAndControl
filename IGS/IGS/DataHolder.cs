@@ -3,7 +3,7 @@ using System.Net;
 using IGS.Server.Devices;
 using System;
 using System.Xml;
-using DataRepo.Storage;
+
 
 namespace IGS.Server.IGS
 {
@@ -23,7 +23,7 @@ namespace IGS.Server.IGS
         /// </summary>
         private List<User> _users;
 
-        public List<Room> _rooms;
+
 
         /// <summary>
         ///     Constructor for the DataHolder
