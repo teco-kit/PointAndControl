@@ -49,7 +49,7 @@ namespace IGS
         /// <summary>
         /// List of IDs of the bodys for each user with active gesture control
         /// </summary>
-        public List<ulong> IDList { get; set; }
+        public List<int> IDList { get; set; }
     
         public List<bool> IDListNullSpaces { get; set; }
         /// <summary>
@@ -94,7 +94,7 @@ namespace IGS
 
             skelList = new List<ModelVisual3D>();
             boneListInitList = new List<Boolean>();
-            IDList = new List<ulong>();
+            IDList = new List<int>();
             ballListsList = new List<List<SphereVisual3D>>();
             boneListsList = new List<List<PipeVisual3D>>();
             aktualizations = new int[6];
@@ -103,11 +103,12 @@ namespace IGS
             for (int i = 0; i < 6; i++)
             {
                 skelList.Add(new ModelVisual3D());
-                IDList.Add(0);
+                IDList.Add(-1);
                 IDListNullSpaces.Add(true);
                 boneListInitList.Add(false);
                 ballListsList.Add(initBalls());
                 aktualizations[i] = 0;
+                skelRayList.Add(new PipeVisual3D());
             }
             lastSkeletonAktualized = 0;
 
@@ -332,11 +333,11 @@ namespace IGS
 
         public void createBody(Body body)
         {
-            int IDPlace = 0;
+            int IDPlace = -1;
             bool IDfound = false;
             for (int i = 0; i < IDList.Count; i++)
             {
-                if (IDList[i] == body.TrackingId)
+                if (IDList[i] == (int)body.TrackingId)
                 {
                     IDfound = true;
                     aktualizations[i]++;
@@ -351,7 +352,7 @@ namespace IGS
                     if (IDListNullSpaces[i] == true)
                     {
                         IDListNullSpaces[i] = false;
-                        IDList[i] = body.TrackingId;
+                        IDList[i] = (int)body.TrackingId;
                         aktualizations[i] = 1;
                         IDfound = true;
                         IDPlace = i;
@@ -366,7 +367,7 @@ namespace IGS
                 int minActInd = aktualizations.ToList().IndexOf(minActualizations);
 
                 aktualizations[minActInd] = 1;
-                IDList[minActInd] = body.TrackingId;
+                IDList[minActInd] = (int)body.TrackingId;
                 IDfound = true;
                 IDPlace = minActInd;
             }

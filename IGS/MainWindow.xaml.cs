@@ -396,12 +396,12 @@ public partial class MainWindow
                                         Dictionary<JointType, Point> jointPoints = new Dictionary<JointType, Point>();
                                         foreach (JointType jointType in joints.Keys)
                                         {
-                                            ColorSpacePoint colorSpacePoint = this.coordinateMapper.MapCameraPointToColorSpace(joints[jointType].Position);
-                                            jointPoints[jointType] = new Point(colorSpacePoint.X, colorSpacePoint.Y);
+                                            //ColorSpacePoint colorSpacePoint = this.coordinateMapper.MapCameraPointToColorSpace(joints[jointType].Position);
+                                            //jointPoints[jointType] = new Point(colorSpacePoint.X, colorSpacePoint.Y);
 
-                                            
-                                            //DepthSpacePoint depthSpacePoint = this.coordinateMapper.MapCameraPointToDepthSpace(joints[jointType].Position);
-                                            //jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
+
+                                            DepthSpacePoint depthSpacePoint = this.coordinateMapper.MapCameraPointToDepthSpace(joints[jointType].Position);
+                                            jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
 
                                             //jointPoints[jointType] = new Point(joints[jointType].Position.X, joints[jointType].Position.Y);
                                         }
@@ -428,35 +428,35 @@ public partial class MainWindow
 
                     }
 
-                    if (_3Dview != null)
-                    {
-                        // check if trackedskeletons of counter == shown skeletons in 3D
-                        int[] notFound = new int[6];
-                        bool foundID = false;
+                    //if (_3Dview != null)
+                    //{
+                    //    // check if trackedskeletons of counter == shown skeletons in 3D
+                    //    int[] notFound = new int[6];
+                    //    bool foundID = false;
 
                         
-                            for (int j = 0; j < _3Dview.IDList.Count; j++)
-                            {
+                    //        for (int j = 0; j < _3Dview.IDList.Count; j++)
+                    //        {
 
-                                for (int i = 0; i < _igs.Tracker.Bodies.Count; i++)
-                                {
-                                    if( _3Dview.IDList[j] == (ulong)_igs.Tracker.Bodies[i].Id)
-                                    {
-                                        foundID = true;
-                                        break;
-                                    }
-                                }
+                    //            for (int i = 0; i < _igs.Tracker.Bodies.Count; i++)
+                    //            {
+                    //                if( _3Dview.IDList[j] == _igs.Tracker.Bodies[i].Id)
+                    //                {
+                    //                    foundID = true;
+                    //                    break;
+                    //                }
+                    //            }
                                 
-                                if(foundID == false)
-                                {
-                                    _3Dview.mainViewport.Children.Remove(_3Dview.skelList[j]);
-                                    _3Dview.mainViewport.Children.Remove(_3Dview.skelRayList[j]);
-                                    _3Dview.IDList = null;
-                                    _3Dview.IDListNullSpaces[j] = true;
-                                }
-                                foundID = false;
-                            }
-                    }
+                    //            if(foundID == false)
+                    //            {
+                    //                _3Dview.mainViewport.Children.Remove(_3Dview.skelList[j]);
+                    //                _3Dview.mainViewport.Children.Remove(_3Dview.skelRayList[j]);
+                    //                _3Dview.IDList[j] = 0;
+                    //                _3Dview.IDListNullSpaces[j] = true;
+                    //            }
+                    //            foundID = false;
+                    //        }
+                    //}
                     
                     }
 
