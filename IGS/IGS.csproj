@@ -52,11 +52,16 @@
   <PropertyGroup>
     <StartupObject />
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="HelixToolkit.Wpf">
       <HintPath>..\packages\HelixToolkit.2014.1.204.1\lib\NET45\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Kinect, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.Kinect, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -166,6 +171,9 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\Thumbs.db" />
+    <None Include="Resources\HttpRoot\Plugwise\img\Thumbs.db" />
+    <None Include="Resources\HttpRoot\XBMCv11\img\Thumbs.db" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -199,7 +207,102 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\HttpRoot\Boxee\css\screen.css" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\back.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\bg.jpg" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\down.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\left.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\mute.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\pause.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\play.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\right.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\select.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\stop.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\up.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\voldown.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\volup.gif" />
+    <Content Include="Resources\HttpRoot\Boxee\index.html" />
+    <Resource Include="Resources\HttpRoot\favicon.ico" />
+    <Content Include="Resources\HttpRoot\jquery-1.8.3.min.js" />
+    <Content Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\audio.html" />
+    <Content Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\css\screen.css" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\audio.gif" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\back.gif" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\bg.jpg" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\down.gif" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\left.gif" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\mute.gif" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\off.gif" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\on.gif" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\pause.gif" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\play.gif" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\right.gif" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\select.gif" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\src.gif" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\stop.gif" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\up.gif" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\voldown.gif" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\volup.gif" />
+    <Content Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\index.html" />
+    <Content Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\src.html" />
+    <Content Include="Resources\HttpRoot\Plugwise\css\screen.css" />
+    <Resource Include="Resources\HttpRoot\Plugwise\img\back.gif" />
+    <Resource Include="Resources\HttpRoot\Plugwise\img\bg.jpg" />
+    <Resource Include="Resources\HttpRoot\Plugwise\img\down.gif" />
+    <Resource Include="Resources\HttpRoot\Plugwise\img\left.gif" />
+    <Resource Include="Resources\HttpRoot\Plugwise\img\mute.gif" />
+    <Resource Include="Resources\HttpRoot\Plugwise\img\pause.gif" />
+    <Resource Include="Resources\HttpRoot\Plugwise\img\play.gif" />
+    <Resource Include="Resources\HttpRoot\Plugwise\img\right.gif" />
+    <Resource Include="Resources\HttpRoot\Plugwise\img\select.gif" />
+    <Resource Include="Resources\HttpRoot\Plugwise\img\stop.gif" />
+    <Resource Include="Resources\HttpRoot\Plugwise\img\up.gif" />
+    <Resource Include="Resources\HttpRoot\Plugwise\img\voldown.gif" />
+    <Resource Include="Resources\HttpRoot\Plugwise\img\volup.gif" />
+    <Content Include="Resources\HttpRoot\Plugwise\index.html" />
+    <Content Include="Resources\HttpRoot\Presenter\css\screen.css" />
+    <Resource Include="Resources\HttpRoot\Presenter\img\back.gif" />
+    <Resource Include="Resources\HttpRoot\Presenter\img\bg.jpg" />
+    <Resource Include="Resources\HttpRoot\Presenter\img\down.gif" />
+    <Resource Include="Resources\HttpRoot\Presenter\img\left.gif" />
+    <Resource Include="Resources\HttpRoot\Presenter\img\mute.gif" />
+    <Resource Include="Resources\HttpRoot\Presenter\img\pause.gif" />
+    <Resource Include="Resources\HttpRoot\Presenter\img\play.gif" />
+    <Resource Include="Resources\HttpRoot\Presenter\img\right.gif" />
+    <Resource Include="Resources\HttpRoot\Presenter\img\select.gif" />
+    <Resource Include="Resources\HttpRoot\Presenter\img\stop.gif" />
+    <Resource Include="Resources\HttpRoot\Presenter\img\up.gif" />
+    <Resource Include="Resources\HttpRoot\Presenter\img\voldown.gif" />
+    <Resource Include="Resources\HttpRoot\Presenter\img\volup.gif" />
+    <Content Include="Resources\HttpRoot\Presenter\index.html" />
+    <Resource Include="Resources\HttpRoot\test.png" />
+    <Content Include="Resources\HttpRoot\XBMCv11\css\screen.css" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\back.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\bg.jpg" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\down.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\left.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\mute.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\pause.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\play.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\right.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\select.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\stop.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\up.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\voldown.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\volup.gif" />
+    <Content Include="Resources\HttpRoot\XBMCv11\index.html" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>XCOPY "$(ProjectDir)Resources\HttpRoot" "$(TargetDir)\HttpRoot\" /S /Y
+COPY "$(ProjectDir)Resources\configuration.xml" "$(TargetDir)\" /Y
+COPY "$(ProjectDir)Resources\IGS.apk" "$(TargetDir)\" /Y</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

@@ -134,21 +134,21 @@ namespace IGS.Helperclasses
 
             XElement rootElement = new XElement("config",
                 new XElement("deviceConfiguration"),
-                new XElement("environment"),
+                new XElement("environment",
                     new XElement("Roomsize",
-                        new XElement("width", "0,0"),
-                        new XElement("height", "0,0"),
-                        new XElement("depth", "0,0")),
+                        new XElement("width", "0.0"),
+                        new XElement("height", "0.0"),
+                        new XElement("depth", "0.0")),
                     new XElement("KinectConfiguration",
-                        new XElement("X", "0,0"),
-                        new XElement("Y", "0,0"),
-                        new XElement("Z", "0,0"),
-                        new XElement("tiltingAngle", "0,0"),
-                        new XElement("HorizontalOrientationAngle", "0,0")),
+                        new XElement("X", "0.0"),
+                        new XElement("Y", "0.0"),
+                        new XElement("Z", "0.0"),
+                        new XElement("tiltingAngle", "0.0"),
+                        new XElement("HorizontalOrientationAngle", "0.0")),
                     new XElement("PlugwiseAdress",
                         new XElement("host"),
                         new XElement("port"),
-                        new XElement("path"))
+                        new XElement("path")))
                         );
 
             rootElement.Save(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");

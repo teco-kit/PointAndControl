@@ -1,0 +1,123 @@
+<html>
+	<head>
+		<title>NecLcdMonitorMultiSyncV421</title>
+		<link rel="stylesheet" type="text/css" href="css/screen.css">		
+		<script type="text/javascript" src="../jquery-1.8.3.min.js"></script>
+		<script type="text/javascript">
+			function sendcmd(cmd) {
+					Android.click(cmd);
+				}
+			$(document).ready(function() {
+				$("#tfinput").keypress(function(event) {
+					sendcmd(String.fromCharCode(event.which));
+					return false;
+				});
+				$("#tfinput").keydown(function(event) {
+					var br = "<br />";
+					if (event.which == 8) {
+						sendcmd("backspace");
+						var tmp = $("#textfield").html();
+						$("#textfield").html(tmp.substring(0, tmp.length - 1));
+					} else if (event.which == 13) {
+						sendcmd("select");
+					}
+				});
+				$("#buInputtxt").click(function() {
+					$("#tfinput").focus();
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div id="container">
+			<div id="header">
+
+			</div>
+			<div class="content">
+				<div class="row">
+					<div class="element">
+					<button onclick="sendcmd('source_1')">
+						VGA
+					</button>
+					</div>
+					<div class="element">
+					<button onclick="sendcmd('source_2')" >
+						RGB
+					</button>
+					</div>
+					<div class="element">
+					<button onclick="sendcmd('source_3')">
+						DVI
+					</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="element">
+					<button onclick="sendcmd('source_4')">
+						HDMI1
+					</div>
+					<div class="element">
+					<button onclick="sendcmd('source_5')">
+						Video1
+					</button>
+					</div>
+					<div class="element">
+					<button onclick="sendcmd('source_6')">
+						Video2
+					</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="element">
+					<button onclick="sendcmd('source_7')" >
+						S-Video
+					</button>
+					</div>
+					<div class="element">
+					<button onclick="sendcmd('source_12')" >
+						DVD HD1
+					</button>
+					</div>
+					<div class="element">
+					<button onclick="sendcmd('source_14')" >
+						DVD HD2
+					</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="element">
+					<button onclick="sendcmd('source_17')" >
+						HMDI1
+					</button>
+					</div>
+					<div class="element">
+					
+					</div>
+					<div class="element">
+
+					</div>
+				</div>
+				<div class="row">
+					<div class="element">
+					
+					</div>
+					<div class="element">
+
+					</div>
+					<div class="element">
+					
+					</div>
+				</div>
+			</div>
+			<div id="footer">
+			<form name="formular">
+				Radius:
+				<input type="text" maxlength="8" size="8" name="radius" >
+				<button onclick="sendcmd('addDeviceCoord_' + document.formular.radius.value)">
+				Koordinaten hinzufügen
+				</button>
+			</form>
+			</div>
+		</div>
+	</body>
+</html>

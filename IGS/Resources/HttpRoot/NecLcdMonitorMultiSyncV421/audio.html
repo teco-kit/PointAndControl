@@ -1,0 +1,111 @@
+<html>
+	<head>
+		<title>NecLcdMonitorMultiSyncV421</title>
+		<link rel="stylesheet" type="text/css" href="css/screen.css">		
+		<script type="text/javascript" src="../jquery-1.8.3.min.js"></script>
+		<script type="text/javascript">
+			function sendcmd(cmd) {
+					Android.click(cmd);
+				}
+			$(document).ready(function() {
+				$("#tfinput").keypress(function(event) {
+					sendcmd(String.fromCharCode(event.which));
+					return false;
+				});
+				$("#tfinput").keydown(function(event) {
+					var br = "<br />";
+					if (event.which == 8) {
+						sendcmd("backspace");
+						var tmp = $("#textfield").html();
+						$("#textfield").html(tmp.substring(0, tmp.length - 1));
+					} else if (event.which == 13) {
+						sendcmd("select");
+					}
+				});
+				$("#buInputtxt").click(function() {
+					$("#tfinput").focus();
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div id="container">
+			<div id="header">
+
+			</div>
+			<div class="content">
+				<div class="row">
+					<div class="element">
+					<button onclick="sendcmd('audio_1')">
+						PC
+					</button>
+					</div>
+					<div class="element">
+					<button onclick="sendcmd('audio_2')" >
+						2
+					</button>
+					</div>
+					<div class="element">
+					<button onclick="sendcmd('audio_3')">
+						3
+					</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="element">
+					<button onclick="sendcmd('audio_4')">
+						HDMI
+					</div>
+					<div class="element">
+					
+					</div>
+					<div class="element">
+					
+					</div>
+				</div>
+				<div class="row">
+					<div class="element">
+					
+					</div>
+					<div class="element">
+					
+					</div>
+					<div class="element">
+					
+					</div>
+				</div>
+				<div class="row">
+					<div class="element">
+					
+					</div>
+					<div class="element">
+					
+					</div>
+					<div class="element">
+
+					</div>
+				</div>
+				<div class="row">
+					<div class="element">
+					
+					</div>
+					<div class="element">
+
+					</div>
+					<div class="element">
+					
+					</div>
+				</div>
+			</div>
+			<div id="footer">
+			<form name="formular">
+				Radius:
+				<input type="text" maxlength="8" size="8" name="radius" >
+				<button onclick="sendcmd('addDeviceCoord_' + document.formular.radius.value)">
+				Koordinaten hinzufügen
+				</button>
+			</form>
+			</div>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,61 @@
+<html>
+	<head>
+		<title>Plugwise</title>
+		<link rel="stylesheet" type="text/css" href="css/screen.css">
+		<script type="text/javascript" src="../jquery-1.8.3.min.js"></script>
+		<script type="text/javascript">
+			function sendcmd(cmd) {
+					Android.click(cmd);
+				}
+			$(document).ready(function() {
+				$("#tfinput").keypress(function(event) {
+					sendcmd(String.fromCharCode(event.which));
+					return false;
+				});
+				$("#tfinput").keydown(function(event) {
+					var br = "<br />";
+					if (event.which == 8) {
+						sendcmd("backspace");
+						var tmp = $("#textfield").html();
+						$("#textfield").html(tmp.substring(0, tmp.length - 1));
+					} else if (event.which == 13) {
+						sendcmd("select");
+					}
+				});
+				$("#buInputtxt").click(function() {
+					$("#tfinput").focus();
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div id="container">
+			<div id="header">
+
+			</div>
+			<div class="content">
+				<div class="row">
+					<div class="element">
+					<button onclick="sendcmd('on')">
+						ON
+					</button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="element">
+					<button onclick="sendcmd('off')">
+						OFF
+					</button>
+					</div>
+				</div>
+			</div>
+			<div id="footer">
+				Radius:
+				<input type="text" maxlength="8" size="8" id="tfRadius" >
+				<button onclick="sendcmd('addDeviceCoord_' + $('#tfRadius').val())">
+				Koordinaten hinzufügen
+				</button>
+			</div>
+		</div>
+	</body>
+</html>

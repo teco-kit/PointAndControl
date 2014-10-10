@@ -1,0 +1,101 @@
+@charset "ISO-8859-1";
+
+html, body {
+  height: 100%;
+  margin: 0;
+  font-family: Arial;
+}
+ 
+#container {
+  background-image: url(../img/bg.jpg);	
+}
+ 
+#header {
+  width: 100%;
+  height: 10%;
+}
+
+#header button {
+  background-color: #999999;
+  height: 80%;
+  width: 100%;
+  vertical-align: top;
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+  color: #fff;
+  font-weight: bold;
+}
+
+#header button:hover {
+	background-color: #00ff00;
+}
+
+#header button:active {
+	background-color: #00bb00;
+}
+ 
+div.content {
+  display: table;
+  width: 100%;
+  height: 80%;
+}
+
+
+
+div.row {
+  display: table-row;
+}
+
+div.element {
+  display: table-cell;
+  text-align: center;
+  width: 25%;
+}
+
+div.element button {
+  background-color: #999999;
+  height: 75%;
+  width: 75%;
+  vertical-align: top;
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+  color: #fff;
+  font-weight: bold;
+}
+
+div.element button:hover {
+  background-color: #00dd00;
+}
+
+div.element button:active {
+  background-color: #00bb00;
+}
+
+#footer {
+  background-color: #999999;
+  width: 100%;
+  height: 10%;
+  color: #fff;
+  text-align: center;
+  font-weight: bold;
+}
+
+#footer button {
+  background-color: #999999;
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+  color: #fff;
+  font-weight: bold;
+}
+
+#footer button:hover {
+  background-color: #00ff00;
+}
+
+#footer button:active {
+  background-color: #00bb00;
+}
+

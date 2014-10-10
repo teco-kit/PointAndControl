@@ -253,11 +253,11 @@ namespace IGS.Helperclasses
         {
             XmlDocument docConfig = new XmlDocument();
             docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");
-            XmlNode node = docConfig.SelectSingleNode("/Config/environment/PlugwiseAdress/host");
+            XmlNode node = docConfig.SelectSingleNode("/config/environment/PlugwiseAdress/host");
             node.InnerText = adressComponents[0];
-            node = docConfig.SelectSingleNode("/Config/environment/PlugwiseAdress/port");
+            node = docConfig.SelectSingleNode("/config/environment/PlugwiseAdress/port");
             node.InnerText = adressComponents[1];
-            node = docConfig.SelectSingleNode("/Config/environment/PlugwiseAdress/path");
+            node = docConfig.SelectSingleNode("/config/environment/PlugwiseAdress/path");
             node.InnerText = adressComponents[2];
 
             docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");
@@ -272,15 +272,15 @@ namespace IGS.Helperclasses
         {
             XmlDocument docConfig = new XmlDocument();
             docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");
-            XmlNode node = docConfig.SelectSingleNode("/config/KinectConfiguration/X");
+            XmlNode node = docConfig.SelectSingleNode("/config/environment/KinectConfiguration/X");
             node.InnerText = newPosition[0];
-            node = docConfig.SelectSingleNode("/config/KinectConfiguration/Y");
+            node = docConfig.SelectSingleNode("/config/environment/KinectConfiguration/Y");
             node.InnerText = newPosition[1];
-            node = docConfig.SelectSingleNode("/config/KinectConfiguration/Z");
+            node = docConfig.SelectSingleNode("/config/environment/KinectConfiguration/Z");
             node.InnerText = newPosition[2];
-            node = docConfig.SelectSingleNode("/config/KinectConfiguration/tiltingAngle");
+            node = docConfig.SelectSingleNode("/config/environment/KinectConfiguration/tiltingAngle");
             node.InnerText = newPosition[3];
-            node = docConfig.SelectSingleNode("/config/KinectConfiguration/HorizontalOrientationAngle");
+            node = docConfig.SelectSingleNode("/config/environment/KinectConfiguration/HorizontalOrientationAngle");
             node.InnerText = newPosition[4];
             docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");
         }
@@ -293,11 +293,11 @@ namespace IGS.Helperclasses
         {
             XmlDocument docConfig = new XmlDocument();
             docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");
-            XmlNode node = docConfig.SelectSingleNode("/config/Roomsize/length");
+            XmlNode node = docConfig.SelectSingleNode("/config/environment/Roomsize/width");
             node.InnerText = roomData[0];
-            node = docConfig.SelectSingleNode("/config/KinectConfiguration/breadth");
+            node = docConfig.SelectSingleNode("/config/environment/Roomsize/height");
             node.InnerText = roomData[1];
-            node = docConfig.SelectSingleNode("/config/KinectConfiguration/height");
+            node = docConfig.SelectSingleNode("/config/environment/Roomsize/depth");
             node.InnerText = roomData[2];
             docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");
         }

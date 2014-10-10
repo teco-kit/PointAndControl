@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<config>
+  <deviceConfiguration>
+    <device type="Boxee">
+      <name>ExampleBoxee</name>
+      <id>Boxee_1</id>
+      <form count="0" />
+      <address>192.168.0.2</address>
+      <port>5050</port>
+    </device>
+    <device type="Plugwise">
+      <name>ExamplePlugwise</name>
+      <id>Plugwise_1</id>
+      <form count="0" />
+      <address>192.168.0.3</address>
+      <port>5050</port>
+    </device>
+  </deviceConfiguration>
+  <environment>
+    <Roomsize>
+      <width>4.0</width>
+      <height>4.0</height>
+      <depth>4.0</depth>
+    </Roomsize>
+    <KinectConfiguration>
+      <X>0.0</X>
+      <Y>0.0</Y>
+      <Z>0.0</Z>
+      <tiltingAngle>0.0</tiltingAngle>
+      <HorizontalOrientationAngle>0.0</HorizontalOrientationAngle>
+    </KinectConfiguration>
+    <PlugwiseAdress>
+      <host>this.is.an.example</host>
+      <port>8080</port>
+      <path>plugwise</path>
+    </PlugwiseAdress>
+  </environment>
+</config>
