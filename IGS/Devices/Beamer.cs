@@ -23,7 +23,7 @@ namespace IGS.Server.Devices
             : base(name, id, form)
         {
             _connection = new Http(Convert.ToInt32(port), address);
-           
+
         }
 
         /// <summary>
@@ -62,7 +62,6 @@ namespace IGS.Server.Devices
                     break;
 
             }
-
             return response;
         }
 

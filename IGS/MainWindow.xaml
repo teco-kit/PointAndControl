@@ -92,7 +92,7 @@
                 <RowDefinition Height="602*" />
                 <RowDefinition Height="0*" />
             </Grid.RowDefinitions>
-            <Button x:Name="Shutdown_Button" Content="IGS beenden" Margin="0,0,20,10"
+            <Button x:Name="Shutdown_Button" Content="Quit IGS" Margin="0,0,20,10"
                     Grid.Row="1" RenderTransformOrigin="0.325,0.519"
                     MouseDown="WindowClosing" VerticalAlignment="Bottom" />
             <Label x:Name="DeviceCLabel" Content="Device creation"
@@ -107,9 +107,9 @@
             <TextBox x:Name="DevicePort" Margin="26,170,124,439" Grid.Row="1"
                      TextWrapping="Wrap"
                      RenderTransformOrigin="-0.125,4.087" Height="30" />
-            <Button x:Name="CreateDeviceButton" Content="Gerät erstellen"
+            <Button x:Name="CreateDeviceButton" Content="Create Device"
                     Margin="26,205,123,403" Grid.Row="1"
-                    MouseDown="Create_Device_Button_MouseLeftButtonDown_1" />
+                    Click="CreateDeviceButton_Click"/>
             <Label x:Name="IgsControl" Content="IGS Control" Margin="25,10,22,10" RenderTransformOrigin="-0.553,0.115"
                    FontSize="18" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch" />
             <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="639"
@@ -121,9 +121,9 @@
             <TextBox x:Name="Plugwise_host" Margin="26,437,123,172" Grid.Row="1"
             	TextWrapping="Wrap"
             	RenderTransformOrigin="-0.125,4.087" Height="30" />
-            <Button x:Name="Change_Plugwise_Adress_Button" Content="Ändern"
+            <Button x:Name="Change_Plugwise_Adress_Button" Content="Change PW Adress"
             	Margin="26,542,123,66" Grid.Row="1"
-            	MouseDown="Create_Device_Button_MouseLeftButtonDown_1" Click="Change_Plugwise_Adress_Button_Click" />
+                Click="Change_Plugwise_Adress_Button_Click" />
             <TextBox x:Name="Plugwise_port" Margin="26,472,123,137" Grid.Row="1"
             	TextWrapping="Wrap"
             	RenderTransformOrigin="-0.125,4.087" Height="30" />

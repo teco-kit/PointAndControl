@@ -68,7 +68,9 @@ namespace IGS.Server.Kinect
         ///     <returns>Returns the kinect sensor of the usertracker</returns>
         /// </summary>
         public KinectSensor Sensor { get; private set; }
-
+        /// <summary>
+        ///     The Reader for the Bodyframes;
+        /// </summary>
         private BodyFrameReader reader = null;
 
 
@@ -96,11 +98,6 @@ namespace IGS.Server.Kinect
             this.reader = Sensor.BodyFrameSource.OpenReader();
 
             if (Sensor == null) return;
-            // Anschalten des Skelettstreams, zum empfangen der Skelette
-            /*
-            Sensor.ColorStream.Enable(ColorImageFormat.RgbResolution640x480Fps30);
-            Sensor.DepthStream.Enable(DepthImageFormat.Resolution640x480Fps30);
-            */
 
             // Start den Sensor!
             try
@@ -174,12 +171,9 @@ namespace IGS.Server.Kinect
 
             Bodies = Filter.Filter(_bodiesLastFrame, Bodies, igsSkelId, reader);
 
-            ChooseSkeletons(_bodiesLastFrame);
-
-            //herausfinden, welcher User hinzugekommen ist
+            //see which user was added
             foreach (TrackedSkeleton s in Bodies.Where(s => !idsSeen.Contains(s.Id)))
             {
-                
                 return s.Id;
             }
            
@@ -187,40 +181,8 @@ namespace IGS.Server.Kinect
         }
 
 
-        /// <summary>
-        ///     Tells the kinect which skeletons should be marked as tracked.
-        /// </summary>
-        private void ChooseSkeletons(IEnumerable<Body> skeletons)
-        {
-            if (Bodies.Count <= 0) return;
-            int? id1 = null;
-            int? id2 = null;
-
-            foreach (TrackedSkeleton sTracked in Bodies)
-            {
-                if (!id1.HasValue)
-                {
-                    id1 = sTracked.Id;
-                    continue;
-                }
-                id2 = sTracked.Id;
-                break;
-            }
-            // Wähle die passende Anzahl für den Befehl ChooseSkeletons
-
-            //if (!id1.HasValue)
-            //{
-            //    Sensor.SkeletonStream.ChooseSkeletons();
-            //    return;
-            //}
-            //if (!id2.HasValue)
-            //{
-            //    Sensor.SkeletonStream.ChooseSkeletons(id1.Value);
-            //    return;
-            //}
-            //Sensor.SkeletonStream.ChooseSkeletons(id1.Value, id2.Value);
-
-        }
+        
+        
 
         /// <summary>
         ///     Interface to the IGS where the koordinates of ellbow/wrist of both arms regarding the kinect coordinate system of the kinect will be requested.
@@ -275,56 +237,56 @@ namespace IGS.Server.Kinect
             BodyFrameReference frameReference = e.FrameReference;
 
             using (BodyFrame bodyFrame = frameReference.AcquireFrame())
+            {
                 if (bodyFrame != null)
                 {
                     bodies = new Body[bodyFrame.BodyCount];
                     bodyFrame.GetAndRefreshBodyData(bodies);
                 }
-                else { return;  }
-
-
-
-
-            HashSet<int> idsSeen = new HashSet<int>();
-
-
-
-            foreach (Body s in bodies)
-            {
-                if (s.TrackingId != 0) idsSeen.Add((int)s.TrackingId);
-            }
-
-
-            bool bodiesLastFrameNotNull = false;
-
-            foreach (Body s in _bodiesLastFrame)
-            {
-                if (s == null && bodiesLastFrameNotNull == true)
+                else
                 {
-                    bodiesLastFrameNotNull = false;
-                    break;
+                    return;
                 }
-                if (s != null && bodiesLastFrameNotNull == false)
-                {
-                    bodiesLastFrameNotNull = true;
-                }
-            }
 
-            if (bodiesLastFrameNotNull)
-            {
-                //checks if a skeleton doesnt exist anymore.
-                foreach (Body s in _bodiesLastFrame.Where(s => s != null && !idsSeen.Contains((int)s.TrackingId) && s.TrackingId != 0))
+                HashSet<int> idsSeen = new HashSet<int>();
+
+
+                foreach (Body s in bodies)
                 {
-                    OnUserLeft(this, new KinectUserEventArgs((int)s.TrackingId));
-                    for (int i = 0; i < Bodies.Count; i++)
+                    if (s.TrackingId != 0) idsSeen.Add((int)s.TrackingId);
+                }
+
+
+                bool bodiesLastFrameNotNull = false;
+
+                foreach (Body s in _bodiesLastFrame)
+                {
+                    if (s == null && bodiesLastFrameNotNull == true)
                     {
-                        if (Bodies[i].Id == (int)s.TrackingId)
-                            Bodies.Remove(Bodies[i]);
+                        bodiesLastFrameNotNull = false;
+                        break;
+                    }
+                    if (s != null && bodiesLastFrameNotNull == false)
+                    {
+                        bodiesLastFrameNotNull = true;
                     }
                 }
-            }
-            _bodiesLastFrame = bodies;
 
+                if (bodiesLastFrameNotNull)
+                {
+                    //checks if a skeleton doesnt exist anymore.
+                    foreach (Body s in _bodiesLastFrame.Where(s => s != null && !idsSeen.Contains((int)s.TrackingId) && s.TrackingId != 0))
+                    {
+                        OnUserLeft(this, new KinectUserEventArgs((int)s.TrackingId));
+                        for (int i = 0; i < Bodies.Count; i++)
+                        {
+                            if (Bodies[i].Id == (int)s.TrackingId)
+                                Bodies.Remove(Bodies[i]);
+                        }
+                    }
+                }
+                _bodiesLastFrame = bodies;
+            }
 
         }
     }

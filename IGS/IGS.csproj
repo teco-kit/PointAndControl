@@ -93,7 +93,7 @@
     <Compile Include="Devices\Device.cs" />
     <Compile Include="Devices\devKinect.cs" />
     <Compile Include="Devices\HTTP.cs" />
-    <Compile Include="Devices\LCDTV.cs" />
+    <Compile Include="Devices\NECLCDmonitorMultiSyncV421.cs" />
     <Compile Include="Devices\Plugwise.cs" />
     <Compile Include="Devices\Presenter.cs" />
     <Compile Include="Devices\TCP.cs" />
@@ -170,6 +170,7 @@
     <None Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\Thumbs.db" />
     <None Include="Resources\HttpRoot\Plugwise\img\Thumbs.db" />
     <None Include="Resources\HttpRoot\XBMCv11\img\Thumbs.db" />
+    <None Include="Resources\IGS.apk" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -204,6 +205,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\configuration.xml" />
     <Content Include="Resources\HttpRoot\Boxee\css\screen.css" />
     <Resource Include="Resources\HttpRoot\Boxee\img\back.gif" />
     <Resource Include="Resources\HttpRoot\Boxee\img\bg.jpg" />

@@ -54,7 +54,5 @@ namespace IGS.Server.Devices
         ///     With the "get"-method the tilting degree can be returned.
         ///     <returns>Returns the tilting degree</returns>
         public double tiltingDegree { get; set; }
-
-
     }
 }

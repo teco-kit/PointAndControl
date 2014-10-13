@@ -24,9 +24,6 @@ namespace IGS.Server.Devices
                 this._commandString = "http://" + _connection.Ip + ":" + _connection.Port + "/xbmcCmds/xbmcHttp?command=";
             }
 
-
-
-
             /// <summary>
             ///     The Transmit method is responsible for the correct invocation of a function of the XBMC
             ///     which is implicated by the "commandID"
@@ -112,6 +109,5 @@ namespace IGS.Server.Devices
                 return cmdIdAscii.ToString();
             }
         }
-
     }
 

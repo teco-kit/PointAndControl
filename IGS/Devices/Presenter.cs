@@ -72,8 +72,6 @@ namespace IGS.Server.Devices
             if (response.StartsWith("<html><body><h1>")) return "True";
             return response;
         }
-
-        
     }
  }
 

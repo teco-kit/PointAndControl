@@ -20,8 +20,6 @@ namespace IGS
     /// </summary>
     public partial class RGB_SkelpointView : Window
     {
-
-
         /// <summary>
         /// Initializes the components of the window.
         /// </summary>
@@ -29,8 +27,5 @@ namespace IGS
         {
             InitializeComponent();
         }
-
-
-
     }
 }

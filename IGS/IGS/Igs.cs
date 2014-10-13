@@ -37,12 +37,11 @@ namespace IGS.Server.IGS
             Data = data;
             Tracker = tracker;
             Server = server;
-
             Server.postRequest += server_Post_Request;
             Server.Request += server_Request;
             Tracker.KinectEvents += UserLeft;
             Tracker.Strategy.TrackingStateEvents += SwitchTrackingState;
-            
+
             createIGSKinect();
 
 
@@ -85,7 +84,7 @@ namespace IGS.Server.IGS
         /// With the "get"-method the CoordTransform can be returned.
         /// </summary>
         public CoordTransform Transformer { get; set; }
-     
+
         /// <summary>
         /// 
         /// </summary>
@@ -104,14 +103,11 @@ namespace IGS.Server.IGS
         ///     Part of the design pattern: observer(HttpEvent).
         ///     Takes place for the update-method in the observer design pattern.
         /// </summary>
-        
+
 
         private void server_Post_Request(object sender, HttpEventArgs e)
         {
             String str = "";
-           
-
-
             Server.SendResponse(e.P, str);
         }
         private void server_Request(object sender, HttpEventArgs e)
@@ -146,9 +142,7 @@ namespace IGS.Server.IGS
         public bool AddUser(String wlanAdr)
         {
             return Data.AddUser(wlanAdr);
-
         }
-
 
         /// <summary>
         ///     This method fetches the id of the skeleton from the user currently perfoming the gesture to choose a device.
@@ -158,19 +152,18 @@ namespace IGS.Server.IGS
         /// </summary>
         public bool SkeletonIdToUser(String wlanAdr)
         {
-           
             User tempUser = Data.GetUserByIp(wlanAdr);
             int id = -1;
             if (tempUser != null)
             {
                 int sklId = tempUser.SkeletonId;
-                
+
                 id = Tracker.GetSkeletonId(sklId);
-            
+
                 if (id != -1)
                     tempUser.TrackingState = true;
             }
-            
+
             return id >= 0 && Data.SetTrackedSkeleton(wlanAdr, id);
         }
 
@@ -205,13 +198,13 @@ namespace IGS.Server.IGS
                         return retStr;
 
                     case "activateGestureCtrl":
-                       
+
                         if (Data.GetUserByIp(wlanAdr) != null)
                         {
                             retStr = SkeletonIdToUser(wlanAdr).ToString();
                             Console.WriteLine(retStr);
                             return retStr;
-                            
+
                         }
 
                         retStr = "Aktivierung nicht möglich.\nBitte starten Sie die App neu.";
@@ -239,7 +232,7 @@ namespace IGS.Server.IGS
                             AddDevice(parameter);
 
                             retStr = "Gerät hinzugefügt.";
-                           
+
                             return retStr;
                         }
 
@@ -320,7 +313,7 @@ namespace IGS.Server.IGS
         private String AddDeviceCoord(String devId, String wlanAdr, String radius)
         {
             String ret = "keine Koordinaten hinzugefügt";
-         
+
             double isDouble;
             if (!double.TryParse(radius, out isDouble) || String.IsNullOrEmpty(radius)) return ret += ",\nRadius fehlt oder hat falsches Format";
 
@@ -373,11 +366,11 @@ namespace IGS.Server.IGS
             }
 
             retStr = "Device added to deviceConfiguration but not to devices list";
- 
+
             return retStr;
         }
 
-      
+
         /// <summary>
         /// this method intiializes the representation of the kinect camera used for positioning and 
         /// visualization by reading the information out of the config.xml
@@ -391,11 +384,11 @@ namespace IGS.Server.IGS
             Ball kinectBall = new Ball(kinectCenter, ballRad);
             double roomOrientation = double.Parse(kinParamets[4]);
             double tiltingDegree = double.Parse(kinParamets[3]);
-       
+
 
             IGSKinect = new devKinect("devKinect", kinectBall, tiltingDegree, roomOrientation);
         }
 
-       
+
     }
 }

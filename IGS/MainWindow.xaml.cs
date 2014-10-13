@@ -69,8 +69,11 @@ public partial class MainWindow
     /// </summary>
     private readonly Brush _inferredJointBrush = Brushes.Yellow;
 
-    private readonly Pen inferredBonePen = new Pen(Brushes.Gray, 1);
 
+    private readonly Pen inferredBonePen = new Pen(Brushes.Gray, 1);
+    /// <summary>
+    ///     preperations for drawing the image and hands
+    /// </summary>
     private byte[] pixels = null;
     private readonly int bytesPerPixel = (PixelFormats.Bgr32.BitsPerPixel + 7) / 8;
     private const double HandSize = 30;
@@ -144,7 +147,6 @@ public partial class MainWindow
     /// </summary>
     private MultiSourceFrameReader multiFrameReader = null;
 
-    
     /// <summary>
     /// the coordinateMapper to map the coordinates get by the camera to different view spaces
     /// </summary>
@@ -258,8 +260,6 @@ public partial class MainWindow
         this.coordinateMapper = _igs.Tracker.Sensor.CoordinateMapper;
         _igs.devInit = true;
 
-
-
         _sensor = _igs.Tracker.Sensor;
         if (_sensor != null)
         {
@@ -267,14 +267,9 @@ public partial class MainWindow
             this.multiFrameReader.MultiSourceFrameArrived += this.Reader_MultiSourceFrameArrived;
         }
 
-
-
         String[] roomText = XMLComponentHandler.readRoomComponents();
 
         FrameDescription ColorframeDescription = _igs.Tracker.Sensor.ColorFrameSource.FrameDescription;
-
-
-
 
         // allocate space to put the pixels being received
         this.pixels = new byte[ColorframeDescription.Width * ColorframeDescription.Height * this.bytesPerPixel];
@@ -287,7 +282,6 @@ public partial class MainWindow
 
         this.imageSourceSkeleton = new DrawingImage(this._drawingGroup);
 
-        //Image.Source = bitmap;
     }
 
     /// <summary>
@@ -300,9 +294,6 @@ public partial class MainWindow
         _igs.Tracker.ShutDown();
         Environment.Exit(1);
     }
-
-
- 
     /// <summary>
     /// This reads an arriving MultiSourceFrameArrived event and uses the data to draw the 
     /// color and the skeleton image and also calls the Room3DView to visualize the skeletons in 3D
@@ -342,18 +333,15 @@ public partial class MainWindow
                         frameColor.CopyConvertedFrameDataToArray(this.pixels, ColorImageFormat.Bgra);
                     }
 
+                    this.bitmap.WritePixels(
+                    new Int32Rect(0, 0, frameDescriptionColor.Width, frameDescriptionColor.Height),
+                    this.pixels,
+                    frameDescriptionColor.Width * this.bytesPerPixel, 0);
+                    if (_RGBView != null)
+                    {
+                        _RGBView.ColorImage.Source = this.bitmap;
+                    }
 
-                   
-                        this.bitmap.WritePixels(
-                       new Int32Rect(0, 0, frameDescriptionColor.Width, frameDescriptionColor.Height),
-                       this.pixels,
-                       frameDescriptionColor.Width * this.bytesPerPixel,
-                       0);
-                        if (_RGBView != null)
-                        {
-                            _RGBView.ColorImage.Source = this.bitmap;
-                        }
-                      
                 }
             }
         }
@@ -377,8 +365,6 @@ public partial class MainWindow
                     bodyFrame.GetAndRefreshBodyData(bodies);
                     if (bodies.Length != 0)
                     {
-
-
                         foreach (Body body in bodies)
                         {
 
@@ -398,14 +384,8 @@ public partial class MainWindow
                                         Dictionary<JointType, Point> jointPoints = new Dictionary<JointType, Point>();
                                         foreach (JointType jointType in joints.Keys)
                                         {
-                                            //ColorSpacePoint colorSpacePoint = this.coordinateMapper.MapCameraPointToColorSpace(joints[jointType].Position);
-                                            //jointPoints[jointType] = new Point(colorSpacePoint.X, colorSpacePoint.Y);
-
-
                                             DepthSpacePoint depthSpacePoint = this.coordinateMapper.MapCameraPointToDepthSpace(joints[jointType].Position);
                                             jointPoints[jointType] = new Point(depthSpacePoint.X, depthSpacePoint.Y);
-
-                                            //jointPoints[jointType] = new Point(joints[jointType].Position.X, joints[jointType].Position.Y);
                                         }
 
                                         this.DrawBody(joints, jointPoints, dc);
@@ -436,7 +416,6 @@ public partial class MainWindow
                         int[] notFound = new int[6];
                         bool foundID = false;
 
-
                         for (int j = 0; j < _3Dview.IDList.Count; j++)
                         {
 
@@ -459,20 +438,16 @@ public partial class MainWindow
                             foundID = false;
                         }
                     }
-                    
-                    }
-
-                    // prevent drawing outside of our render area
-                    _drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
-
-
 
                 }
+                // prevent drawing outside of our render area
+                _drawingGroup.ClipGeometry = new RectangleGeometry(new Rect(0.0, 0.0, RenderWidth, RenderHeight));
             }
         }
+    }
 
-    
-    
+
+
 
     /// <summary>
     ///     Draws a skeleton's bones and joints
@@ -483,9 +458,6 @@ public partial class MainWindow
     private void DrawBody(IReadOnlyDictionary<JointType, Joint> joints, IDictionary<JointType, Point> jointPoints, DrawingContext drawingContext)
     {
         // Draw the bones
-
-
-
 
         // Torso
         this.DrawBone(joints, jointPoints, JointType.Head, JointType.Neck, drawingContext);
@@ -601,25 +573,8 @@ public partial class MainWindow
 
         drawingContext.DrawLine(drawPen, jointPoints[jointType0], jointPoints[jointType1]);
     }
-    /// <summary>
-    /// The method triggered by a click on the create device button on the MainWindow.
-    /// The information of the textboxes device type, device name, device adress and device port will be 
-    /// read, written into the parameters array in the order read and the device will then be add by the belonging 
-    /// method of the IGS.
-    /// </summary>
-    /// <param name="sender">The object triggered the event</param>
-    /// <param name="e">The MouseButtonEventArgs</param>
-    private void Create_Device_Button_MouseLeftButtonDown_1(object sender, MouseButtonEventArgs e)
-    {
-        String[] parameter = new String[4];
 
-        parameter[0] = DeviceType.Text;
-        parameter[1] = DeviceName.Text;
-        parameter[2] = DeviceAdress.Text;
-        parameter[3] = DevicePort.Text;
 
-        _igs.AddDevice(parameter);
-    }
 
     /// <summary>
     /// The method triggered by a click on the change plugwise adress button.
@@ -791,7 +746,6 @@ public partial class MainWindow
     /// <param name="e">The RoutedEventArgs</param>
     private void RGB_Body_WIndow_Button_Click(object sender, RoutedEventArgs e)
     {
-
         // create the bitmap to display
 
         _RGBView = new RGB_SkelpointView();
@@ -845,5 +799,25 @@ public partial class MainWindow
         Room_Width.Text = RoomComps[0];
         Room_Height.Text = RoomComps[1];
         Room_Depth.Text = RoomComps[2];
+    }
+
+    /// <summary>
+    /// The method triggered by a click on the create device button on the MainWindow.
+    /// The information of the textboxes device type, device name, device adress and device port will be 
+    /// read, written into the parameters array in the order read and the device will then be add by the belonging 
+    /// method of the IGS.
+    /// </summary>
+    /// <param name="sender">The object triggered the event</param>
+    /// <param name="e">The MouseButtonEventArgs</param>
+    private void CreateDeviceButton_Click(object sender, RoutedEventArgs e)
+    {
+        String[] parameter = new String[4];
+
+        parameter[0] = DeviceType.Text;
+        parameter[1] = DeviceName.Text;
+        parameter[2] = DeviceAdress.Text;
+        parameter[3] = DevicePort.Text;
+
+        _igs.AddDevice(parameter);
     }
 }

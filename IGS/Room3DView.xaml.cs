@@ -31,7 +31,7 @@ namespace IGS
         /// the transformator used for calculating the positions of the 3D models
         /// </summary>
         public CoordTransform transformator { get; set; }
-        
+
         /// <summary>
         /// the list of all devices
         /// </summary>
@@ -50,7 +50,9 @@ namespace IGS
         /// List of IDs of the bodys for each user with active gesture control
         /// </summary>
         public List<long> IDList { get; set; }
-    
+        /// <summary>
+        /// 
+        /// </summary>
         public List<bool> IDListNullSpaces { get; set; }
         /// <summary>
         /// the complete body for each user
@@ -87,8 +89,6 @@ namespace IGS
         /// <param name="transformator">The transformator used for transforming the coordinates from camera to world coordinates</param>
         public Room3DView(List<Device> list, CoordTransform transformator)
         {
-
-
             this.deviceList = list;
             this.transformator = transformator;
 
@@ -143,7 +143,7 @@ namespace IGS
 
             normal = calcNormal(p0, p1, p2);
 
-            
+
             triangleMesh.Normals.Add(-normal);
             triangleMesh.Normals.Add(-normal);
             triangleMesh.Normals.Add(-normal);
@@ -335,6 +335,7 @@ namespace IGS
 
         public void createBody(Body body)
         {
+            //Decide if one skeleton have to be replaced, created, or is already existing
             int IDPlace = -1;
             bool IDfound = false;
             for (int i = 0; i < IDList.Count; i++)
@@ -428,13 +429,9 @@ namespace IGS
             pList.Add(left_ankle);
             pList.Add(left_foot);
 
-
-
-
-
             //removeModels(skelList[IDPlace]);
-            
-            if( boneListInitList[IDPlace] == false)
+
+            if (boneListInitList[IDPlace] == false)
             {
                 initBodyBones(IDPlace, pList, midSec);
             }
@@ -516,17 +513,16 @@ namespace IGS
             TranslateTransform3D tmp = new TranslateTransform3D();
 
             for (int i = 0; i < pList.Count; i++)
-             {
-                    
-                    tmp.OffsetX = pList[i].X - ballListsList[bodyNr][i].Center.X;
-                    tmp.OffsetX = pList[i].Y - ballListsList[bodyNr][i].Center.Y;
-                    tmp.OffsetX = pList[i].Z - ballListsList[bodyNr][i].Center.Z;
+            {
+                tmp.OffsetX = pList[i].X - ballListsList[bodyNr][i].Center.X;
+                tmp.OffsetX = pList[i].Y - ballListsList[bodyNr][i].Center.Y;
+                tmp.OffsetX = pList[i].Z - ballListsList[bodyNr][i].Center.Z;
 
-                    ballListsList[bodyNr][i].Transform = tmp;
+                ballListsList[bodyNr][i].Transform = tmp;
 
-                    //skelList[bodyNr].Children.Remove(ballListsList[bodyNr][i]);
-                    //skelList[bodyNr].Children.Add(ballListsList[bodyNr][i]);
-              }
+                skelList[bodyNr].Children.Remove(ballListsList[bodyNr][i]);
+                skelList[bodyNr].Children.Add(ballListsList[bodyNr][i]);
+            }
             for (int i = 0; i < midsec.Count; i++)
             {
                 tmp.OffsetX = midsec[i].X - ballListsList[bodyNr][pList.Count + i].Center.X;
@@ -546,14 +542,14 @@ namespace IGS
         /// <param name="midSection">the list of midsection joints</param>
         private void initBodyBones(int bodyNr, List<Point3D> pList, List<Point3D> midSection)
         {
-            
+
 
             //from right to center;
             for (int i = 0; i < 4; i++)
             {
                 boneListsList[bodyNr].Add(createBones(pList[i], pList[i + 1]));
                 skelList[bodyNr].Children.Add(boneListsList[bodyNr][i]);
-               
+
             }
             for (int i = 4; i < 8; i++)
             {
@@ -581,8 +577,6 @@ namespace IGS
                 skelList[bodyNr].Children.Add(boneListsList[bodyNr][i]);
             }
 
-            
-
             skelRayList[bodyNr] = new PipeVisual3D();
             skelRayList[bodyNr].Diameter = 0.07f;
             skelRayList[bodyNr].InnerDiameter = 0.00f;
@@ -604,8 +598,6 @@ namespace IGS
             {
                 boneListsList[bodyNr][i].Point1 = pList[i];
                 boneListsList[bodyNr][i].Point2 = pList[i + 1];
-                
-
             }
             for (int i = 4; i < 8; i++)
             {
@@ -628,7 +620,6 @@ namespace IGS
             {
                 boneListsList[bodyNr][i].Point1 = pList[i];
                 boneListsList[bodyNr][i].Point2 = pList[i + 1];
-
             }
             //from left foot to center
             for (int i = 15; i < 19; i++)
@@ -655,8 +646,5 @@ namespace IGS
             mainViewport.Children.Remove(skelRayList[bodyNr]);
             mainViewport.Children.Add(skelRayList[bodyNr]);
         }
-
-
-
     }
 }

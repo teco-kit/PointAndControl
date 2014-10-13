@@ -68,7 +68,6 @@ namespace IGS.Server.IGS
         /// <summary>
         ///     Creates the user, who will be identified by his wlan adress 
         ///     and adds the user to the user-list.
-        ///     
         ///     <param name="wlanAdr"> Used to identify and to add a user</param>
         /// </summary>
         public bool AddUser(String wlanAdr)
@@ -94,7 +93,6 @@ namespace IGS.Server.IGS
         /// </summary>
         public bool SetTrackedSkeleton(String wlanAdr, int bodyID)
         {
-           
             bool success = false;
 
             for (int i = 0; i < _users.Count && success == false; i++)
@@ -105,7 +103,6 @@ namespace IGS.Server.IGS
                     success = true;
                 }
             }
-          
             return success;
         }
 
@@ -247,7 +244,7 @@ namespace IGS.Server.IGS
         }
 
         /// <summary>
-        /// Propagates the given adress to all plugwise devices
+        /// Publishes the given adress to all plugwise devices
         /// </summary>
         /// <param name="input">the new adress for all plugwises</param>
         public void Change_PlugWise_Adress(String input)
@@ -259,17 +256,12 @@ namespace IGS.Server.IGS
             {
                 if (_devices[i].Id.Contains("Plugwise"))
                 {
-
-                 
-
                     splitted = _devices[i].CommandString.Split('/',
                         ':');
 
                     String newCommandString = input + splitted[6];
 
                     _devices[i].CommandString = newCommandString;
-
-                    
                 }
             }
         }
