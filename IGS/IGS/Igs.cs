@@ -10,8 +10,6 @@ using System.Diagnostics;
 using System.IO;
 using IGS.Helperclasses;
 using System.Net;
-
-using Newtonsoft.Json;
 using System.Text;
 
 namespace IGS.Server.IGS
@@ -41,6 +39,7 @@ namespace IGS.Server.IGS
             Server = server;
 
             Server.postRequest += server_Post_Request;
+            Server.Request += server_Request;
             Tracker.KinectEvents += UserLeft;
             Tracker.Strategy.TrackingStateEvents += SwitchTrackingState;
             
@@ -113,6 +112,12 @@ namespace IGS.Server.IGS
            
 
 
+            Server.SendResponse(e.P, str);
+        }
+        private void server_Request(object sender, HttpEventArgs e)
+        {
+            Debug.WriteLine("server_Request");
+            String str = InterpretCommand(sender, e);
             Server.SendResponse(e.P, str);
         }
 

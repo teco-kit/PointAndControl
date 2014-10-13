@@ -343,15 +343,17 @@ public partial class MainWindow
                     }
 
 
-                    if (_RGBView != null)
-                    {
+                   
                         this.bitmap.WritePixels(
                        new Int32Rect(0, 0, frameDescriptionColor.Width, frameDescriptionColor.Height),
                        this.pixels,
                        frameDescriptionColor.Width * this.bytesPerPixel,
                        0);
-                        _RGBView.ColorImage.Source = this.bitmap;
-                    }
+                        if (_RGBView != null)
+                        {
+                            _RGBView.ColorImage.Source = this.bitmap;
+                        }
+                      
                 }
             }
         }
@@ -428,35 +430,35 @@ public partial class MainWindow
 
                     }
 
-                    //if (_3Dview != null)
-                    //{
-                    //    // check if trackedskeletons of counter == shown skeletons in 3D
-                    //    int[] notFound = new int[6];
-                    //    bool foundID = false;
+                    if (_3Dview != null)
+                    {
+                        // check if trackedskeletons of counter == shown skeletons in 3D
+                        int[] notFound = new int[6];
+                        bool foundID = false;
 
-                        
-                    //        for (int j = 0; j < _3Dview.IDList.Count; j++)
-                    //        {
 
-                    //            for (int i = 0; i < _igs.Tracker.Bodies.Count; i++)
-                    //            {
-                    //                if( _3Dview.IDList[j] == _igs.Tracker.Bodies[i].Id)
-                    //                {
-                    //                    foundID = true;
-                    //                    break;
-                    //                }
-                    //            }
-                                
-                    //            if(foundID == false)
-                    //            {
-                    //                _3Dview.mainViewport.Children.Remove(_3Dview.skelList[j]);
-                    //                _3Dview.mainViewport.Children.Remove(_3Dview.skelRayList[j]);
-                    //                _3Dview.IDList[j] = 0;
-                    //                _3Dview.IDListNullSpaces[j] = true;
-                    //            }
-                    //            foundID = false;
-                    //        }
-                    //}
+                        for (int j = 0; j < _3Dview.IDList.Count; j++)
+                        {
+
+                            for (int i = 0; i < _igs.Tracker.Bodies.Count; i++)
+                            {
+                                if (_3Dview.IDList[j] == _igs.Tracker.Bodies[i].Id)
+                                {
+                                    foundID = true;
+                                    break;
+                                }
+                            }
+
+                            if (foundID == false)
+                            {
+                                _3Dview.mainViewport.Children.Remove(_3Dview.skelList[j]);
+                                _3Dview.mainViewport.Children.Remove(_3Dview.skelRayList[j]);
+                                _3Dview.IDList[j] = -1;
+                                _3Dview.IDListNullSpaces[j] = true;
+                            }
+                            foundID = false;
+                        }
+                    }
                     
                     }
 

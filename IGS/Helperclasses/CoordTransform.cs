@@ -46,8 +46,8 @@ namespace IGS.Server.IGS
         public Matrix3D Rotate_X(double elevationAngle)
         {
 
-            double cos = Math.Round(Math.Cos((360 - elevationAngle) * (Math.PI / 180)), 5);
-            double sin = Math.Round(Math.Sin((360 - elevationAngle) * (Math.PI / 180)), 5);
+            double cos = Math.Round(Math.Cos((360 - elevationAngle) * (Math.PI / 180.0f)), 5);
+            double sin = Math.Round(Math.Sin((360 - elevationAngle) * (Math.PI / 180.0f)), 5);
 
             Matrix3D tmp = new Matrix3D(1, 0, 0, 0,
                                         0, cos, -sin, 0,
@@ -65,13 +65,13 @@ namespace IGS.Server.IGS
         public Matrix3D Rotate_Y(double roomOrientation)
         {
 
-            double cos = Math.Round(Math.Cos((360 - roomOrientation) * (Math.PI / 180)), 5);
-            double sin = Math.Round(Math.Sin((360 - roomOrientation) * (Math.PI / 180)), 5);
+            double cos = Math.Round(Math.Cos((360.0f - roomOrientation) * (Math.PI / 180.0f)), 5);
+            double sin = Math.Round(Math.Sin((360.0f - roomOrientation) * (Math.PI / 180.0f)), 5);
 
             Matrix3D tmp = new Matrix3D(cos, 0, sin, 0,
-                                        0, 1, 0, 0,
+                                        0,   1, 0,   0,
                                         -sin, 0, cos, 0,
-                                        0, 0, 0, 1);
+                                        0,    0, 0,   1);
             return tmp;
         }
 
@@ -82,8 +82,8 @@ namespace IGS.Server.IGS
         /// <returns>a rotation matrix around the x-axis with the given angle</returns>
         public Matrix3D Rotate_Z(double z)
         {
-            double cos = Math.Round(Math.Cos((360 - z) * (Math.PI / 180)), 5);
-            double sin = Math.Round(Math.Sin((360 - z) * (Math.PI / 180)), 5);
+            double cos = Math.Round(Math.Cos((360.0f - z) * (Math.PI / 180.0f)), 5);
+            double sin = Math.Round(Math.Sin((360.0f - z) * (Math.PI / 180.0f)), 5);
 
             Matrix3D tmp = new Matrix3D(cos, -sin, 0, 0,
                                         sin, cos, 0, 0,
@@ -173,6 +173,7 @@ namespace IGS.Server.IGS
             Point3D newPoint3D = new Point3D();
             point = Point3D.Multiply(point, rotationMatrix);
             point = point + transVector;
+            
 
             newPoint3D.X = point.X;
             newPoint3D.Y = point.Y;

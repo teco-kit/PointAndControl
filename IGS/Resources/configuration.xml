@@ -18,14 +18,14 @@
   </deviceConfiguration>
   <environment>
     <Roomsize>
-      <width>4.0</width>
-      <height>4.0</height>
-      <depth>4.0</depth>
+      <width>4,0</width>
+      <height>4,0</height>
+      <depth>4,0</depth>
     </Roomsize>
     <KinectConfiguration>
-      <X>0.0</X>
-      <Y>0.0</Y>
-      <Z>0.0</Z>
+      <X>1,0</X>
+      <Y>1,0</Y>
+      <Z>0,0</Z>
       <tiltingAngle>0.0</tiltingAngle>
       <HorizontalOrientationAngle>0.0</HorizontalOrientationAngle>
     </KinectConfiguration>

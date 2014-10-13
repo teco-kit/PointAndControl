@@ -49,7 +49,7 @@ namespace IGS
         /// <summary>
         /// List of IDs of the bodys for each user with active gesture control
         /// </summary>
-        public List<int> IDList { get; set; }
+        public List<long> IDList { get; set; }
     
         public List<bool> IDListNullSpaces { get; set; }
         /// <summary>
@@ -94,7 +94,7 @@ namespace IGS
 
             skelList = new List<ModelVisual3D>();
             boneListInitList = new List<Boolean>();
-            IDList = new List<int>();
+            IDList = new List<long>();
             ballListsList = new List<List<SphereVisual3D>>();
             boneListsList = new List<List<PipeVisual3D>>();
             aktualizations = new int[6];
@@ -109,6 +109,7 @@ namespace IGS
                 ballListsList.Add(initBalls());
                 aktualizations[i] = 0;
                 skelRayList.Add(new PipeVisual3D());
+                boneListsList.Add(new List<PipeVisual3D>());
             }
             lastSkeletonAktualized = 0;
 
@@ -194,6 +195,7 @@ namespace IGS
             room.Children.Add(creatTriangleModelRoom(p2, p3, p0));
             room.Children.Add(creatTriangleModelRoom(p2, p0, p1));
 
+            this.mainViewport.Children.Remove(room);
             this.mainViewport.Children.Add(room);
 
         }
@@ -314,16 +316,16 @@ namespace IGS
         ///// <summary>
         ///// clears the viewport of all children
         ///// </summary>
-        //private void ClearViewport()
-        //{
-        //    ModelVisual3D m;
-        //    for (int i = mainViewport.Children.Count - 1; i >= 0; i--)
-        //    {
-        //        m = (ModelVisual3D)mainViewport.Children[i];
-        //        if (m.Content is DirectionalLight == false)
-        //            mainViewport.Children.Remove(m);
-        //    }
-        //}
+        private void ClearViewport()
+        {
+            ModelVisual3D m;
+            for (int i = mainViewport.Children.Count - 1; i >= 0; i--)
+            {
+                m = (ModelVisual3D)mainViewport.Children[i];
+                if (m.Content is DirectionalLight == false)
+                    mainViewport.Children.Remove(m);
+            }
+        }
 
         /// <summary>
         /// this method decides which (if any) body model will be replaced and then actulizes 
@@ -430,7 +432,7 @@ namespace IGS
 
 
 
-            removeModels(skelList[IDPlace]);
+            //removeModels(skelList[IDPlace]);
             
             if( boneListInitList[IDPlace] == false)
             {
@@ -544,40 +546,49 @@ namespace IGS
         /// <param name="midSection">the list of midsection joints</param>
         private void initBodyBones(int bodyNr, List<Point3D> pList, List<Point3D> midSection)
         {
-            boneListsList[bodyNr] = new List<PipeVisual3D>();
+            
 
             //from right to center;
             for (int i = 0; i < 4; i++)
             {
                 boneListsList[bodyNr].Add(createBones(pList[i], pList[i + 1]));
+                skelList[bodyNr].Children.Add(boneListsList[bodyNr][i]);
+               
             }
             for (int i = 4; i < 8; i++)
             {
                 boneListsList[bodyNr].Add(createBones(pList[i], pList[i + 1]));
+                skelList[bodyNr].Children.Add(boneListsList[bodyNr][i]);
             }
 
             //head to center hip
 
-            for (int i = 0; i < midSection.Count - 1; i++)
+            for (int i = 8; i < 11; i++)
             {
-                boneListsList[bodyNr].Add(createBones(midSection[i], midSection[i + 1]));
+                boneListsList[bodyNr].Add(createBones(midSection[i - 8], midSection[i - 8 + 1]));
+                skelList[bodyNr].Children.Add(boneListsList[bodyNr][i]);
             }
             //from right foot to center
             for (int i = 11; i < 15; i++)
             {
                 boneListsList[bodyNr].Add(createBones(pList[i], pList[i + 1]));
+                skelList[bodyNr].Children.Add(boneListsList[bodyNr][i]);
             }
             //from left foot to center
             for (int i = 15; i < 19; i++)
             {
                 boneListsList[bodyNr].Add(createBones(pList[i], pList[i + 1]));
+                skelList[bodyNr].Children.Add(boneListsList[bodyNr][i]);
             }
+
+            
 
             skelRayList[bodyNr] = new PipeVisual3D();
             skelRayList[bodyNr].Diameter = 0.07f;
             skelRayList[bodyNr].InnerDiameter = 0.00f;
             skelRayList[bodyNr].ThetaDiv = 3;
             boneListInitList[bodyNr] = true;
+            mainViewport.Children.Add(skelList[bodyNr]);
         }
 
         /// <summary>
@@ -593,13 +604,13 @@ namespace IGS
             {
                 boneListsList[bodyNr][i].Point1 = pList[i];
                 boneListsList[bodyNr][i].Point2 = pList[i + 1];
+                
 
             }
             for (int i = 4; i < 8; i++)
             {
                 boneListsList[bodyNr][i].Point1 = pList[i];
                 boneListsList[bodyNr][i].Point2 = pList[i + 1];
-
             }
 
             int counter = 8;
@@ -624,7 +635,6 @@ namespace IGS
             {
                 boneListsList[bodyNr][i].Point1 = pList[i];
                 boneListsList[bodyNr][i].Point2 = pList[i + 1];
-
             }
             mainViewport.Children.Remove(skelList[bodyNr]);
             mainViewport.Children.Add(skelList[bodyNr]);
