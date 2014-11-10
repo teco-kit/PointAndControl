@@ -1,5 +1,5 @@
 ## PointAndControl
-===============
+
 
 1. ## Introduction
   The Point-and-Control Application makes use of the Microsoft Kinect to enable Point&Click
@@ -22,7 +22,7 @@
   - Click on the wrench icon
   - Enter hostname/IP
   - The app is now connected and the console will display an output
-  - The system is now ready to use
+  - The system is now ready to use 
 
 4. ### Using the IGS
 	1. #### General UI hint:
@@ -36,7 +36,7 @@
 			4. **Change the plugwise address for every plugwise device in the room:** insert host, port and path strings in the belonging fields and push the “Change PW address” button.
 			5. **Set the coordinates of your Kinect sensor in the room(placing/replacing):** configure the Kinect sensor position in the room by inserting the x, y, z coordinates in the room and the and its tilting (T°) and horizontal facing (H°) in degree. H° defines the direction the Kinect sensor is facing. Attention (!!): the Kinect representation must be set correctly because the coordinates will be transformed from camera relative coordinates to room relative coordinates. If it it’s not placed correctly, after a repositioning of the Kinect sensor, the saved coordinates are wrong.
 		2. ######  App 
-			1. **Add a device through the App:** Go to the device list *(see Using the device list in section Point and control below*)  and push the “New Dev” field in the upper right corner. Insert the device specifics as in 4.2.1.2 and submit.
+			1. **Add a device through the App:** Go to the device list *(see Using the device list in section Point and control below*)  and push the “New Dev” field in the upper right corner. Insert the device specifics as in *Add a Device through the server GUI* above and submit.
 			2. **Add coordinates to a specific device:** Active the gesture control *(see below Register your phone [4.3])* and retrieve the control for the device you want to add coordinates to via device list. On a small field on the bottom of the app you can type in the radius of the device. If it is inserted hold your right hand where the device is and push “Koordinaten hinzufügen”. On the smartphone screen a message with: “Koordinaten hizugefügt” will appear. Now those coordinates for the device are added and it can be selected by the pointing and click control. More than one coordinate for a device can be add for make a more precise form.
 	3. #### Register your phone 
 		1. **Activating gesture control:** Stand visible in front of the Kinect sensor, raise your right arm with your smartphone in hand and click the button “Bitte Arm heben und hier klicken”. If the procedure was successful, a short vibration will appear and the picture on the screen changed. Now you are logged in and can choose a device by pointing on it if it’s placed in the room.
@@ -57,12 +57,12 @@
    - An empty configuration.xml will be created in the folder of the igs.exe if there isn’t already one. Only there it will be used correctly.
    - The folder “Resources” contains stuff like an example configuration.xml, the igs.apk and the HttpRoot.
    - In the building process, the example configuration.xml, the Android package IGS.apk and the HttpRoot folder, containing the device control pages in the resource folder, will be copied to the target folder. 
-    *Hint:* If the replacement of the configuration.xml in the build process bothers you. Go to: IGS Properties -> Build Events and remove in the post-build event commandline: „COPY "$(ProjectDir)Resources\configuration.xml" "$(TargetDir)\" /Y“
+<br/> Hint: If the replacement of the configuration.xml in the build process bothers you. Go to: IGS Properties -> Build Events and remove in the post-build event commandline:<br/> „COPY "$(ProjectDir)Resources\configuration.xml" "$(TargetDir)\" /Y“
 6. ### Licenses 
 	- **Helix Toolkit:** MIT license: [https://github.com/helix-toolkit/helix-toolkit/blob/master/LICENSE](https://github.com/helix-toolkit/helix-toolkit/blob/master/LICENSE "MIT License")
 	- **Webserver in the IGS server:** Code Project open license  (CPOL) : [http://www.codeproject.com/info/cpol10.aspx](http://www.codeproject.com/info/cpol10.aspx "Code Project Open License (CPOL)")
 	- **IGS:**
-		- The MIT License (MIT)
+		- The MIT License (MIT) <br/>
 Copyright (c) 2014 Technology for Pervasive Computing, Karlsruhe Institute of
 Technology
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
