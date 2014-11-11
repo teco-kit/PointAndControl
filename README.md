@@ -48,7 +48,7 @@
 			1. **Using the 3Dview:** Press the “Activate 3D view” button in the Server GUI to open the 3D view. The view displays the room walls, as well as grey balls representing the positions of the devices. The blue box is the Kinect representation. When gesture control is activated for a user, a green skeleton and a blue ray will appear. The ray is the direction the person is pointing.
 	
 5. ### Working with the Code
-   - Programming language
+	- Programming language
 	   - C#
    - Used Framework/ToolKits/SDKs:
 	   - Microsoft Kinect for Windows v.2 SDK public preview version 1409
@@ -57,7 +57,8 @@
    - An empty configuration.xml will be created in the folder of the igs.exe if there isn’t already one. Only there it will be used correctly.
    - The folder “Resources” contains stuff like an example configuration.xml, the igs.apk and the HttpRoot.
    - In the building process, the example configuration.xml, the Android package IGS.apk and the HttpRoot folder, containing the device control pages in the resource folder, will be copied to the target folder. 
-	<br/> Hint: If the replacement of the configuration.xml in the build process bothers you. Go to: IGS Properties -> Build Events and remove in the post-build event commandline:<br/> „COPY "$(ProjectDir)Resources\configuration.xml" "$(TargetDir)\" /Y“
+	<br/> Hint: If the replacement of the configuration.xml in the build process bothers you. Go to: IGS Properties -> Build Events and remove in the post-build event commandline:<br/> 
+	„COPY "$(ProjectDir)Resources\configuration.xml" "$(TargetDir)\" /Y“
 6. ### Licenses 
 	- **Helix Toolkit:** MIT license: [https://github.com/helix-toolkit/helix-toolkit/blob/master/LICENSE](https://github.com/helix-toolkit/helix-toolkit/blob/master/LICENSE "MIT License")
 	- **Webserver in the IGS server:** Code Project open license  (CPOL) : [http://www.codeproject.com/info/cpol10.aspx](http://www.codeproject.com/info/cpol10.aspx "Code Project Open License (CPOL)")
@@ -81,3 +82,6 @@ CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+   
+
+6. 
