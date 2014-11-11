@@ -35,7 +35,7 @@
 			3. **Change the room measurements:** insert the width, height, and depth of the room in the fields above the “set room” button and push the button.
 			4. **Change the plugwise address for every plugwise device in the room:** insert host, port and path strings in the belonging fields and push the “Change PW address” button.
 			5. **Set the coordinates of your Kinect sensor in the room(placing/replacing):** configure the Kinect sensor position in the room by inserting the x, y, z coordinates in the room and the and its tilting (T°) and horizontal facing (H°) in degree. H° defines the direction the Kinect sensor is facing. Attention (!!): the Kinect representation must be set correctly because the coordinates will be transformed from camera relative coordinates to room relative coordinates. If it it’s not placed correctly, after a repositioning of the Kinect sensor, the saved coordinates are wrong.
-		2. ######  App 
+		2. #####  App 
 			1. **Add a device through the App:** Go to the device list *(see Using the device list in section Point and control below*)  and push the “New Dev” field in the upper right corner. Insert the device specifics as in "*Add a Device through the server GUI*(4.ii.a.b)" above and submit.
 			2. **Add coordinates to a specific device:** Active the gesture control *(see below Register your phone [4.iii])* and retrieve the control for the device you want to add coordinates to via device list. On a small field on the bottom of the app you can type in the radius of the device. If it is inserted hold your right hand where the device is and push “Koordinaten hinzufügen”. On the smartphone screen a message with: “Koordinaten hizugefügt” will appear. Now those coordinates for the device are added and it can be selected by the pointing and click control. More than one coordinate for a device can be add for make a more precise form.
 	3. #### Register your phone 
@@ -60,24 +60,29 @@
 	<br/> Hint: If the replacement of the configuration.xml in the build process bothers you. Go to: IGS Properties -> Build Events and remove in the post-build event commandline:<br/> 
 	„COPY "$(ProjectDir)Resources\configuration.xml" "$(TargetDir)\" /Y“
 6. ### Licenses 
-	- **Helix Toolkit:** MIT license: [https://github.com/helix-toolkit/helix-toolkit/blob/master/LICENSE](https://github.com/helix-toolkit/helix-toolkit/blob/master/LICENSE "MIT License")
-	- **Webserver in the IGS server:** Code Project open license  (CPOL) : [http://www.codeproject.com/info/cpol10.aspx](http://www.codeproject.com/info/cpol10.aspx "Code Project Open License (CPOL)")
+	- **Helix Toolkit:** Helix toolkit [MIT License](https://github.com/helix-toolkit/helix-toolkit/blob/master/LICENSE "MIT License")
+	- **Webserver in the IGS server:** [The Code Project Open License (CPOL)](http://www.codeproject.com/info/cpol10.aspx)
 	- **IGS:**
 		- The MIT License (MIT) <br/>
-Copyright (c) 2014 Technology for Pervasive Computing, Karlsruhe Institute of
-Technology
+<br/>Copyright (c) 2014 Technology for Pervasive Computing, Karlsruhe Institute of
+Technology<br/>
+<br/>
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the "Software"), to deal in the
 Software without restriction, including without limitation the rights to use, copy,
 modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
 to permit persons to whom the Software is furnished to do so, subject to the
 following conditions:
+<br/>
+<br/>
 The above copyright notice and this permission notice shall be included in all copies
-or substantial portions of the Software.
+or substantial portions of the Software
+<br/>
+<br/>
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
 OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
 IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</br>
