@@ -4,7 +4,9 @@
     <device type="Boxee">
       <name>ExampleBoxee</name>
       <id>Boxee_1</id>
-      <form count="0" />
+      <form count="1">
+        <ball radius="0,4" centerX="2,0" centerY="2,0" centerZ="0,0" />
+      </form>
       <address>192.168.0.2</address>
       <port>5050</port>
     </device>
@@ -23,8 +25,8 @@
       <depth>4,0</depth>
     </Roomsize>
     <KinectConfiguration>
-      <X>1,0</X>
-      <Y>1,0</Y>
+      <X>2,0</X>
+      <Y>2,0</Y>
       <Z>0,0</Z>
       <tiltingAngle>0.0</tiltingAngle>
       <HorizontalOrientationAngle>0.0</HorizontalOrientationAngle>

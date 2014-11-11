@@ -57,7 +57,7 @@
    - An empty configuration.xml will be created in the folder of the igs.exe if there isn’t already one. Only there it will be used correctly.
    - The folder “Resources” contains stuff like an example configuration.xml, the igs.apk and the HttpRoot.
    - In the building process, the example configuration.xml, the Android package IGS.apk and the HttpRoot folder, containing the device control pages in the resource folder, will be copied to the target folder. 
-<br/> Hint: If the replacement of the configuration.xml in the build process bothers you. Go to: IGS Properties -> Build Events and remove in the post-build event commandline:<br/> „COPY "$(ProjectDir)Resources\configuration.xml" "$(TargetDir)\" /Y“
+	<br/> Hint: If the replacement of the configuration.xml in the build process bothers you. Go to: IGS Properties -> Build Events and remove in the post-build event commandline:<br/> „COPY "$(ProjectDir)Resources\configuration.xml" "$(TargetDir)\" /Y“
 6. ### Licenses 
 	- **Helix Toolkit:** MIT license: [https://github.com/helix-toolkit/helix-toolkit/blob/master/LICENSE](https://github.com/helix-toolkit/helix-toolkit/blob/master/LICENSE "MIT License")
 	- **Webserver in the IGS server:** Code Project open license  (CPOL) : [http://www.codeproject.com/info/cpol10.aspx](http://www.codeproject.com/info/cpol10.aspx "Code Project Open License (CPOL)")
