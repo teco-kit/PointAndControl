@@ -1,84 +1,72 @@
-## PointAndControl
+# Point and Control
 
+## Introduction
+The Point-and-Control application makes use of the Microsoft Kinect to enable Point&Click interaction for the control of appliances in smart environments. A backend server determines through collision detection which device the user is pointing at and sends the respective control interface to the user’s smartphone. Any commands the user issues are then sent back to the server which in turn controls the appliance.
 
-1. ## Introduction
-  The Point-and-Control Application makes use of the Microsoft Kinect to enable Point&Click
-  interaction for the control of appliances in smart environments. A backend server
-  determines through collision detection which device the user is pointing at and sends the
-  respective control interface to the user’s smartphone. Any commands the user issues are
-  then sent back to the server which in turn controls the appliance.
+## Requirements for use
+- Windows 8/8.1 or higher
+- Kinect 4 Windows v2,  SDK/Runtime Environment. SDK Version >= Public Preview Version 1409
+- .Net Framework 4.5
+- Smartphone with Android OS >= 2.3
 
-2. ### Requirements for use
-  - Windows 8/8.1 or higher
-  - Kinect 4 Windows v.2,  SDK/Runtime Environment. SDK Version >= Public Preview Version 1409
-  - .Net Framework 4.5
-  - Smartphone with Android OS >= 2.3
+## Running the IGS
+1. Make sure Requirements are met and everything is installed.
+1. Install the IGS Android app via the IGS.apk in the IGS directory.
+1. Start IGS server
+1. Start android App
+1. Click on the wrench icon
+1. Enter hostname/IP
+1. The app will connect and the console should display an output
+1. The system is now ready to use 
 
-3. ### Running the IGS
-  - Make sure Requirements are met and everything is installed.
-  - Install the IGS Android app via the IGS.apk in the IGS directory.
-  - Start IGS server
-  - Start android App
-  - Click on the wrench icon
-  - Enter hostname/IP
-  - The app is now connected and the console will display an output
-  - The system is now ready to use 
+## Using the IGS
+1. **Register:** Stand visibly in front of the Kinect sensor, raise your right arm holding your smartphone and click the main button as instructed on the screen. If the procedure was successful, the phone will vibrate shortly and continue to the next screen. Now you are logged in and the gesture control is activated. You have to repeat this process when you leave the Kinects field of view.
+1. **Point:** Point on the registered device you want to control. If one device was hit, its controls will appear immediately. If more devices were hit, a list with the devices you can choose from will appear.
+1. **Control:** You can now use the interface to control the device.
 
-4. ### Using the IGS
-	1. #### General UI hint:
-		- On the IGS server as well as on the app, numbers will be taken
-		as decimal. The format must be x,y (example: 1,0). Do not use x.y
-	2. #### Customize/Configure/Setup
-		1. ##### Server
-			1. **Roomrepresentation:** the room is in a coordinatesystem and its origin is (0, 0, 0) [x,y,z]. Corresponding: (width, height, depth) = (x,y,z). The facing of the Kinect sensor representation is in on default (0° Horizontal facing degree along the z-Axis)
-			2. **Add a Device through the server GUI:** insert the type (only included types), the name which will be displayed on the app, IP and port of the device in the belonging fields and click add device. (At success in the console should appear „device added to device configuration and device list“).
-			3. **Change the room measurements:** insert the width, height, and depth of the room in the fields above the “set room” button and push the button.
-			4. **Change the plugwise address for every plugwise device in the room:** insert host, port and path strings in the belonging fields and push the “Change PW address” button.
-			5. **Set the coordinates of your Kinect sensor in the room(placing/replacing):** configure the Kinect sensor position in the room by inserting the x, y, z coordinates in the room and the and its tilting (T°) and horizontal facing (H°) in degree. H° defines the direction the Kinect sensor is facing. Attention (!!): the Kinect representation must be set correctly because the coordinates will be transformed from camera relative coordinates to room relative coordinates. If it it’s not placed correctly, after a repositioning of the Kinect sensor, the saved coordinates are wrong.
-		2. #####  App 
-			1. **Add a device through the App:** Go to the device list *(see Using the device list in section Point and control below*)  and push the “New Dev” field in the upper right corner. Insert the device specifics as in "*Add a Device through the server GUI*(4.ii.a.b)" above and submit.
-			2. **Add coordinates to a specific device:** Active the gesture control *(see below Register your phone [4.iii])* and retrieve the control for the device you want to add coordinates to via device list. On a small field on the bottom of the app you can type in the radius of the device. If it is inserted hold your right hand where the device is and push “Koordinaten hinzufügen”. On the smartphone screen a message with: “Koordinaten hizugefügt” will appear. Now those coordinates for the device are added and it can be selected by the pointing and click control. More than one coordinate for a device can be add for make a more precise form.
-	3. #### Register your phone 
-		1. **Activating gesture control:** Stand visible in front of the Kinect sensor, raise your right arm with your smartphone in hand and click the button “Bitte Arm heben und hier klicken”. If the procedure was successful, a short vibration will appear and the picture on the screen changed. Now you are logged in and can choose a device by pointing on it if it’s placed in the room.
-	4. #### Point and Control 
-		1. ##### App
-			1. **Using the device list:** Push on the “Überspringen” button in the bottom of the Android-Apps initial screen. A list with all the created devices will be shown. Push on one device to get to its control screen.
-			2. **Using the gesture control:** Register your phone like shown in the section “Register your phone”. When the procedure was successful, point on the device which coordinates were added before. If one device was hit, its control will appear immediately. If more devices were hit, a list with the devices you can choose from will appear.
-		2. ##### Server
-			1. **Using the 3Dview:** Press the “Activate 3D view” button in the Server GUI to open the 3D view. The view displays the room walls, as well as grey balls representing the positions of the devices. The blue box is the Kinect representation. When gesture control is activated for a user, a green skeleton and a blue ray will appear. The ray is the direction the person is pointing.
+## Customize the Environment
+*General note:*	Currently the software only supports `,` as decimal separator.
+#### Server:
+- **Room Representation:** The coordinate system of the room [x,y,z] is based on the default system of the Kinect. This means, when looking at the front of the sensor, x is aligned from the left to the right, y from the floor to the ceiling and z in the direction of the camera. Corresponding: (width, height, depth) = (x,y,z). 
+- **Change the room measurements:** Enter the width, height, and depth of the room in the fields above the “set room” button and confirm.
+- **Add a Device through the server GUI:** Enter the type (only included types), the name which will be displayed on the app, IP and port of the device in the respective fields and click add device. The console should confirm „device added to device configuration and device list“.
+- **Change the plugwise address for every plugwise device in the room:** Enter host, port and path strings in the respective fields and push the “Change PW address” button.
+- **Set the coordinates of the Kinect sensor in the room:** By default the Kinect sensor is aligned with the room coordinate system (T° = H° = 0). Configure the Kinect sensor position in the room by inserting the x, y, z coordinates in the room and the and its tilt (T°) and horizontal angle (H°) in degrees. H° defines the direction the Kinect sensor is facing with respect to the z-axis. Attention (!!): the Kinect representation must be set correctly to transform the coordinates from the camera to the room coordinate system. Please check the graphical output after repositioning the Kinect sensor.
+- **Using the 3Dview:** Press the “Activate 3D view” button in the Server GUI to open the 3D view. The view displays the room walls, as well as grey balls representing the device positions. The blue box is the Kinect representation. When gesture control is activated for a user, a green skeleton and a blue ray will appear. The ray is the direction the person is pointing.
+
+#### App:
+- **Using the device list:** Push on the “Überspringen” button at the bottom initial screen. A list with all available devices will be shown. Touch one device to get to its control screen.
+- **Add a device through the App:** Go to the device list and push the “New Dev” field in the upper right corner. Insert the device specifics as described above and submit.
+- **Add coordinates to a specific device:** Activate the gesture control and select the device, for which you want to add coordinates, via the device list. At the bottom of the app you can type in the trigger radius of the device. After entring a value, hold your right hand where the device is and touch “Koordinaten hinzufügen”. The action will be confirmed by a popup message: “Koordinaten hizugefügt”. Now those coordinates for the device are added and it can be selected by pointing. More than one coordinate for a device can be added to create a more fine grained representation.
 	
-5. ### Working with the Code
-	- Programming language
-	   - C#
-   - Used Framework/ToolKits/SDKs:
-	   - Microsoft Kinect for Windows v.2 SDK public preview version 1409
-	   - .Net Framework 4.5
-	   - Helix toolkit (NuGet or [https://github.com/helix-toolkit/helix-toolkit](https://github.com/helix-toolkit/helix-toolkit "on GitHub"))
-   - An empty configuration.xml will be created in the folder of the igs.exe if there isn’t already one. Only there it will be used correctly.
-   - The folder “Resources” contains stuff like an example configuration.xml, the igs.apk and the HttpRoot.
-   - In the building process, the example configuration.xml, the Android package IGS.apk and the HttpRoot folder, containing the device control pages in the resource folder, will be copied to the target folder. 
-	<br/> Hint: If the replacement of the configuration.xml in the build process bothers you. Go to: IGS Properties -> Build Events and remove in the post-build event commandline:<br/> 
-	„COPY "$(ProjectDir)Resources\configuration.xml" "$(TargetDir)\" /Y“
-6. ### Licenses 
-	- **Helix Toolkit:** Helix toolkit [MIT License](https://github.com/helix-toolkit/helix-toolkit/blob/master/LICENSE "MIT License")
-	- **Webserver in the IGS server:** [The Code Project Open License (CPOL)](http://www.codeproject.com/info/cpol10.aspx)
-	- **IGS:**
-		- The MIT License (MIT) <br/>
-<br/>Copyright (c) 2014 Technology for Pervasive Computing, Karlsruhe Institute of
-Technology<br/>
-<br/>
+## Working with the Code
+- Programming language is C#
+- Used Framework/ToolKits/SDKs:
+  - Microsoft Kinect for Windows v.2 SDK public preview version 1409
+  - .Net Framework 4.5
+  - Helix toolkit (NuGet or [GitHub](https://github.com/helix-toolkit/helix-toolkit))
+- An empty `configuration.xml` will be created in the output folder if not present.
+- The folder `Resources` contains stuff like an example `configuration.xml`, the `igs.apk` and the `HttpRoot`. It is copied to the output folder during the build process.	To disable this functionality, go to: IGS Properties -> Build Events and edit the post-build event commandline.
+
+## Licenses 
+- **3D Framework:** [Helix Toolkit](https://github.com/helix-toolkit/helix-toolkit/) [MIT License] 
+- **Webserver:** [The Code Project Open License (CPOL)](http://www.codeproject.com/info/cpol10.aspx)
+- **IGS** [MIT License]
+
+The MIT Licencense (MIT)
+
+Copyright (c) 2014 Technology for Pervasive Computing, Karlsruhe Institute of Technology
+
 Permission is hereby granted, free of charge, to any person obtaining a copy of this
 software and associated documentation files (the "Software"), to deal in the
 Software without restriction, including without limitation the rights to use, copy,
 modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and
 to permit persons to whom the Software is furnished to do so, subject to the
 following conditions:
-<br/>
-<br/>
+
 The above copyright notice and this permission notice shall be included in all copies
 or substantial portions of the Software
-<br/>
-<br/>
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
 OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
