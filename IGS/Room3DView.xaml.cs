@@ -164,7 +164,7 @@ namespace IGS
         /// <param name="width">the width of the room</param>
         /// <param name="height">the height of the room</param>
         /// <param name="depth">the depth of the room</param>
-        public void createRoom(float width, float height, float depth)
+        public void createRoom(float width, float depth, float height)
         {
 
             Point3D p0 = new Point3D(0, 0, 0);
@@ -374,7 +374,8 @@ namespace IGS
                 IDfound = true;
                 IDPlace = minActInd;
             }
-
+            
+            
 
             Point3D head = transformator.TransformPoint3D(new Point3D(body.Joints[JointType.Head].Position.X, body.Joints[JointType.Head].Position.Y, body.Joints[JointType.Head].Position.Z));
             Point3D right_hand = transformator.TransformPoint3D(new Point3D(body.Joints[JointType.HandRight].Position.X, body.Joints[JointType.HandRight].Position.Y, body.Joints[JointType.HandRight].Position.Z));

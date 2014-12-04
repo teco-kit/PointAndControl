@@ -309,7 +309,6 @@ public partial class MainWindow
         ColorFrame frameColor = e.FrameReference.AcquireFrame().ColorFrameReference.AcquireFrame();
         BodyFrame bodyFrame = e.FrameReference.AcquireFrame().BodyFrameReference.AcquireFrame();
 
-
         if (frameColor != null)
         {
             // ColorFrame is IDisposable
