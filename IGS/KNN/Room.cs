@@ -23,8 +23,8 @@ namespace IGS.KNN
         Plane3D backWall { get; set; }
         List<Plane3D> wallList { get; set; }
         
-
-        private void createRoomWalls ()
+        
+        public void createRoomWalls ()
         {
             floor = new Plane3D(new Point3D(0, 0, 0), new Vector3D(0, 0, 1));
             backWall = new Plane3D(new Point3D(0, 0, 0), new Vector3D(0, 1, 0));
@@ -32,6 +32,8 @@ namespace IGS.KNN
             leftWall = new Plane3D(new Point3D(width, 0, 0), new Vector3D(-1, 0, 0));
             frontWall = new Plane3D(new Point3D(0, depth, 0), new Vector3D(0, -1, 0));
             ceiling = new Plane3D(new Point3D(0, 0, height), new Vector3D(0, 0, -1));
+            wallList = new List<Plane3D>();
+            putWallsInList();
         }
 
         private void putWallsInList()

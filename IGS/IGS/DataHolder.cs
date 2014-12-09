@@ -265,6 +265,26 @@ namespace IGS.Server.IGS
                 }
             }
         }
+        /// <summary>
+        ///     Returns a device with its id.
+        ///     <param name="id">Is used to identify a device.</param>
+        ///     <returns>Returns the deviceobject. If no device with the id exists NULL will be returned<returns>
+        /// </summary>
+        public Device GetDeviceByName(String name)
+        {
+            Device tempDevice = null;
+            bool found = false;
+
+            for (int i = 0; i < _devices.Count && found == false; i++)
+            {
+                if (_devices[i].Name == name)
+                {
+                    tempDevice = _devices[i];
+                    found = true;
+                }
+            }
+            return tempDevice;
+        }
 
     }
 

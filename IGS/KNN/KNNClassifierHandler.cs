@@ -10,7 +10,7 @@ using numl.Model;
 
 namespace IGS.KNN
 {
-    class KNNClassifierHandler
+    public class KNNClassifierHandler
     {
         public KNNSample[] samples { get; set; }
         KNNGenerator generator { get; set; }
@@ -29,6 +29,7 @@ namespace IGS.KNN
         public void addSample(KNNSample sample)
         {
             KNNSample[] tmp = new KNNSample[samples.Length + 1];
+        
             for (int i = 0; i < samples.Length; i++)
             {
                 tmp[i] = samples[i];

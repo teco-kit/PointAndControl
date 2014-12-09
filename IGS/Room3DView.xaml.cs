@@ -114,9 +114,9 @@ namespace IGS
                 boneListsList.Add(new List<PipeVisual3D>());
             }
             lastSkeletonAktualized = 0;
-            floor = new RectangleVisual3D();
+         
             kinect = new ModelVisual3D();
-            this.mainViewport.Children.Add(floor);
+           
             InitializeComponent();
             FillRoom();
         }

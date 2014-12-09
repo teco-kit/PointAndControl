@@ -418,11 +418,11 @@ namespace IGS.Server.IGS
             IGSKinect = new devKinect("devKinect", kinectBall, tiltingDegree, roomOrientation);
         }
 
-        public String collectSample(String wlan, String devID)
+        public String collectSample(String wlan, String devName)
         {
             User tmpUser = Data.GetUserByIp(wlan);
 
-            Device dev = Data.GetDevice(devID);
+            Device dev = Data.GetDeviceByName(devName);
             if (dev != null)
             {
                 Vector3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(tmpUser.SkeletonId));
