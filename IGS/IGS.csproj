@@ -62,6 +62,9 @@
     <Reference Include="Microsoft.Kinect, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
     </Reference>
+    <Reference Include="numl">
+      <HintPath>..\packages\numl.0.7.15\lib\net40\numl.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
@@ -102,6 +105,10 @@
     <Compile Include="Helperclasses\Initializer.cs" />
     <Compile Include="Helperclasses\XMLComponentHandler.cs" />
     <Compile Include="Kinect\TrackingStateEventArgs.cs" />
+    <Compile Include="KNN\KNNClassifierHandler.cs" />
+    <Compile Include="KNN\Room.cs" />
+    <Compile Include="KNN\KNNSample.cs" />
+    <Compile Include="KNN\SampleCollector.cs" />
     <Compile Include="RGB_SkelpointView.xaml.cs">
       <DependentUpon>RGB_SkelpointView.xaml</DependentUpon>
     </Compile>

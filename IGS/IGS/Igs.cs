@@ -11,6 +11,7 @@ using System.IO;
 using IGS.Helperclasses;
 using System.Net;
 using System.Text;
+using IGS.KNN;
 
 namespace IGS.Server.IGS
 {
@@ -42,10 +43,14 @@ namespace IGS.Server.IGS
             Tracker.KinectEvents += UserLeft;
             Tracker.Strategy.TrackingStateEvents += SwitchTrackingState;
 
+ 
+
             createIGSKinect();
 
 
             this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Centre);
+            collector = new SampleCollector();
+            knnClassifier = new KNNClassifierHandler();
         }
 
 
@@ -84,6 +89,10 @@ namespace IGS.Server.IGS
         /// With the "get"-method the CoordTransform can be returned.
         /// </summary>
         public CoordTransform Transformer { get; set; }
+
+        public SampleCollector collector { get; set; }
+
+        public KNNClassifierHandler knnClassifier { get; set; }
 
         /// <summary>
         /// 
@@ -239,6 +248,10 @@ namespace IGS.Server.IGS
                         retStr = "Kein Gerät hinzugefügt. Paramter Anzahl nicht Korrekt";
 
                         return retStr;
+                    case "collectDeviceSample":
+                        Console.WriteLine("collect kam an!" + "Value:" + value);
+                        return collectSample(wlanAdr, value);
+
                     case "popup":
                         String msg = "";
                         if (Data.GetUserByIp(wlanAdr) != null)
@@ -246,7 +259,7 @@ namespace IGS.Server.IGS
                             msg = Data.GetUserByIp(wlanAdr).Errors;
                             Data.GetUserByIp(wlanAdr).ClearErrors();
                         }
-
+                    
                         retStr = msg;
                         return retStr;
                 }
@@ -299,7 +312,23 @@ namespace IGS.Server.IGS
         public List<Device> ChooseDevice(String wlanAdr)
         {
             User tempUser = Data.GetUserByIp(wlanAdr);
-            return tempUser != null ? CollisionDetection.Calculate(Data.Devices, Transformer.transformJointCoords(Tracker.GetCoordinates(tempUser.SkeletonId))) : null;
+            Vector3D[] vecs = Transformer.transformJointCoords(Tracker.GetCoordinates(tempUser.SkeletonId));
+            if (tempUser != null)
+            {
+                KNNSample sample = collector.calculateSample(vecs,"");
+                sample = knnClassifier.classify(sample);
+                List<Device> dev = new List<Device>();
+
+                foreach(Device d in Data.Devices)
+                {
+                    if (d.Id == sample.sampleDeviceID)
+                    {
+                        dev.Add(d);
+                        return dev;
+                    }
+                }
+            }
+            return null;
         }
 
         /// <summary>
@@ -389,6 +418,28 @@ namespace IGS.Server.IGS
             IGSKinect = new devKinect("devKinect", kinectBall, tiltingDegree, roomOrientation);
         }
 
+        public String collectSample(String wlan, String devID)
+        {
+            User tmpUser = Data.GetUserByIp(wlan);
+
+            Device dev = Data.GetDevice(devID);
+            if (dev != null)
+            {
+                Vector3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(tmpUser.SkeletonId));
+                KNNSample sample = collector.calculateSample(vectors, dev.Id);
+                if(!sample.sampleDeviceID.Equals("nullSample"))
+                {
+                    knnClassifier.addSample(sample);
+                    return "sample added";
+                }
+                else
+                {
+                    return "direction didn't hit a wall";
+                }
+            }
+            return "Sample not added, deviceID not found";
+
+        }
 
     }
 }

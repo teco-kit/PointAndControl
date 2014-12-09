@@ -80,6 +80,8 @@ namespace IGS
         /// </summary>
         ModelVisual3D room = new ModelVisual3D();
 
+        RectangleVisual3D floor { get; set; }
+
 
         /// <summary>
         /// constructor for the 3D view of the room. 
@@ -112,9 +114,9 @@ namespace IGS
                 boneListsList.Add(new List<PipeVisual3D>());
             }
             lastSkeletonAktualized = 0;
-
+            floor = new RectangleVisual3D();
             kinect = new ModelVisual3D();
-
+            this.mainViewport.Children.Add(floor);
             InitializeComponent();
             FillRoom();
         }
@@ -647,5 +649,32 @@ namespace IGS
             mainViewport.Children.Remove(skelRayList[bodyNr]);
             mainViewport.Children.Add(skelRayList[bodyNr]);
         }
+
+        public void actualizeFloor(Vector3D normal, Point3D origin, float width, float depth)
+        {
+             mainViewport.Children.Remove(floor);
+             Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.Green));
+             floor.Material = mat;
+             floor.Visible = true;
+             floor.Normal = normal;
+             floor.Origin = origin;
+             floor.Width = width;
+             floor.Length = depth;
+             mainViewport.Children.Add(floor);
+        }
+
+        public void addSampleView(Point3D center) 
+        {
+            Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.Black));
+            SphereVisual3D sample = new SphereVisual3D();
+            sample.Center = center;
+            sample.BackMaterial = mat;
+            sample.Material = mat;
+            sample.PhiDiv = 5;
+            sample.Radius = 0.10;
+            sample.ThetaDiv = 5;
+            this.mainViewport.Children.Add(sample);
+        }
+
     }
 }

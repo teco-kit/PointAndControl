@@ -20,6 +20,7 @@ using System.Windows.Media.Media3D;
 using System.Xml;
 using System.ComponentModel;
 using System.Xml.Linq;
+using IGS.KNN;
 
 
 
@@ -160,6 +161,10 @@ public partial class MainWindow
     /// indicator if a skeleton is build or not
     /// </summary>
     private bool _ifSkeletonisBuild { get; set; }
+
+    private float roomWidth { get; set; }
+    private float roomDepth { get; set; }
+    private float roomHeight { get; set; }
     /// <summary>
     /// the ImageSource for the colorimage 
     /// </summary>
@@ -268,9 +273,12 @@ public partial class MainWindow
         }
 
         String[] roomText = XMLComponentHandler.readRoomComponents();
-
+        roomWidth = float.Parse(roomText[0]);
+        roomDepth = float.Parse(roomText[2]);
+       
+        
         FrameDescription ColorframeDescription = _igs.Tracker.Sensor.ColorFrameSource.FrameDescription;
-
+        _igs.collector.calcRoomModel.setRoomMeasures(float.Parse(roomText[0]), float.Parse(roomText[2]), float.Parse(roomText[1]));
         // allocate space to put the pixels being received
         this.pixels = new byte[ColorframeDescription.Width * ColorframeDescription.Height * this.bytesPerPixel];
 
@@ -702,11 +710,17 @@ public partial class MainWindow
         width = float.Parse(Room_Width.Text);
         depth = float.Parse(Room_Depth.Text);
         height = float.Parse(Room_Height.Text);
+        roomWidth = width;
+        roomDepth = depth;
         XMLComponentHandler.saveRoomPosition(roomData);
-
+        _igs.collector.calcRoomModel.setRoomMeasures(width, depth, height);
         if (_3Dview != null)
         {
             _3Dview.createRoom(width, height, depth);
+            foreach(KNNSample s in _igs.knnClassifier.samples)
+            {
+                _3Dview.addSampleView(new Point3D(s.x, s.y, s.z));
+            }
         }
 
     }
