@@ -15,7 +15,6 @@ namespace IGS.KNN
         
         public SampleCollector()
         {
-            sampleList = new List<KNNSample>();
             calcRoomModel = new Room();
         }
 
@@ -39,11 +38,6 @@ namespace IGS.KNN
                 return sample;
             }
             return sample;
-        }
-
-        public void writeSamplesToXML()
-        {
-
         }
     }
 }

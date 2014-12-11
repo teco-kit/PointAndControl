@@ -1,4 +1,5 @@
-﻿using IGS.Server.Devices;
+﻿using IGS.KNN;
+using IGS.Server.Devices;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 using System.Xml;
+using System.Xml.Linq;
 
 
 namespace IGS.Helperclasses
@@ -300,6 +302,65 @@ namespace IGS.Helperclasses
             node = docConfig.SelectSingleNode("/config/environment/Roomsize/depth");
             node.InnerText = roomData[2];
             docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");
+        }
+
+        public static void writeKNNSampleToXML(KNNSample sample)
+        {
+            XmlDocument docConfig = new XmlDocument();
+            docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\KNNSamples.xml");
+            XmlNode node = docConfig.SelectSingleNode("/samples");
+
+            XmlElement xmlSample = docConfig.CreateElement("sample");
+            XmlElement xmlDeviceName = docConfig.CreateElement("deviceName");
+            xmlDeviceName.InnerText = sample.sampleDeviceID;
+            XmlElement xmlPosition = docConfig.CreateElement("position");
+            XmlElement posX = docConfig.CreateElement("X");
+            posX.InnerText = sample.x.ToString();
+            xmlPosition.AppendChild(posX);
+            XmlElement posY = docConfig.CreateElement("Y");
+            posY.InnerText = sample.y.ToString();
+            xmlPosition.AppendChild(posY);
+            XmlElement posZ = docConfig.CreateElement("Z");
+            posZ.InnerText = sample.z.ToString();
+            xmlPosition.AppendChild(posZ);
+            //xmlPosition.SetAttribute("X:", sample.x.ToString());
+            //xmlPosition.SetAttribute("Y:", sample.y.ToString());
+            //xmlPosition.SetAttribute("Z:", sample.z.ToString());
+
+            xmlSample.AppendChild(xmlDeviceName);
+            xmlSample.AppendChild(xmlPosition);
+            node.AppendChild(xmlSample);
+        }
+
+        public static List<KNNSample> readKNNSamplesFromXML()
+        {
+            List<KNNSample> sampleList = new List<KNNSample>();
+
+            XmlDocument docConfig = new XmlDocument();
+            docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\KNNSamples.xml");
+           
+            XmlNodeList samples = docConfig.SelectSingleNode("/samples").ChildNodes;
+
+            foreach (XmlNode sample in samples)
+            {
+                KNNSample knnSample = new KNNSample();
+                foreach (XmlNode prop in sample)
+                {
+                    if (prop.Name.Equals("deviceName"))
+                    {
+                        knnSample.sampleDeviceID = prop.InnerText;
+                    }
+                    else if (prop.Name.Equals("position"))
+                    {
+                        knnSample.x = double.Parse(prop.ChildNodes[0].InnerText);
+                        knnSample.y = double.Parse(prop.ChildNodes[1].InnerText);
+                        knnSample.z = double.Parse(prop.ChildNodes[2].InnerText);
+                    }
+                }
+                sampleList.Add(knnSample);
+            }
+
+            return sampleList;
         }
     }
 }

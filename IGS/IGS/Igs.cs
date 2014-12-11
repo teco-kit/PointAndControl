@@ -429,7 +429,8 @@ namespace IGS.Server.IGS
                 KNNSample sample = collector.calculateSample(vectors, dev.Id);
                 if(!sample.sampleDeviceID.Equals("nullSample"))
                 {
-                    knnClassifier.addSample(sample);
+                    knnClassifier.samples.Add(sample);
+                    XMLComponentHandler.writeKNNSampleToXML(sample);
                     return "sample added";
                 }
                 else
@@ -438,7 +439,6 @@ namespace IGS.Server.IGS
                 }
             }
             return "Sample not added, deviceID not found";
-
         }
 
     }

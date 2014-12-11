@@ -28,6 +28,8 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -56,14 +58,14 @@
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="HelixToolkit">
+      <HintPath>..\packages\HelixToolkit.2014.2.446\lib\portable-net4+sl4+wp71+win8\HelixToolkit.dll</HintPath>
+    </Reference>
     <Reference Include="HelixToolkit.Wpf">
-      <HintPath>..\packages\HelixToolkit.2014.1.204.1\lib\NET45\HelixToolkit.Wpf.dll</HintPath>
+      <HintPath>..\packages\HelixToolkit.Wpf.2014.2.446\lib\net45\HelixToolkit.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Kinect, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
-    </Reference>
-    <Reference Include="numl">
-      <HintPath>..\packages\numl.0.7.15\lib\net40\numl.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -106,6 +108,7 @@
     <Compile Include="Helperclasses\XMLComponentHandler.cs" />
     <Compile Include="Kinect\TrackingStateEventArgs.cs" />
     <Compile Include="KNN\KNNClassifierHandler.cs" />
+    <Compile Include="KNN\Ray3D.cs" />
     <Compile Include="KNN\Room.cs" />
     <Compile Include="KNN\KNNSample.cs" />
     <Compile Include="KNN\SampleCollector.cs" />
@@ -308,6 +311,7 @@ COPY "$(ProjectDir)Resources\IGS.apk" "$(TargetDir)\" /Y</PostBuildEvent>
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

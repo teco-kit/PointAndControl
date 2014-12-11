@@ -26,6 +26,13 @@ namespace IGS.KNN
             this.z = position.Z;
         }
 
+        public KNNSample()
+        {
+            this.x = 0;
+            this.y = 0;
+            this.z = 0;
+        }
+
         public KNNSample(Point3D position, string devID)
         {
             this.x = position.X;

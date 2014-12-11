@@ -26,12 +26,12 @@ namespace IGS.KNN
         
         public void createRoomWalls ()
         {
-            floor = new Plane3D(new Point3D(0, 0, 0), new Vector3D(0, 0, 1));
-            backWall = new Plane3D(new Point3D(0, 0, 0), new Vector3D(0, 1, 0));
+            floor = new Plane3D(new Point3D(0, 0, 0), new Vector3D(0, 1, 0));
+            backWall = new Plane3D(new Point3D(0, 0, 0), new Vector3D(0, 0, 1));
             rightWall = new Plane3D(new Point3D(0, 0, 0), new Vector3D(1, 0, 0));
             leftWall = new Plane3D(new Point3D(width, 0, 0), new Vector3D(-1, 0, 0));
-            frontWall = new Plane3D(new Point3D(0, depth, 0), new Vector3D(0, -1, 0));
-            ceiling = new Plane3D(new Point3D(0, 0, height), new Vector3D(0, 0, -1));
+            frontWall = new Plane3D(new Point3D(0, depth, 0), new Vector3D(0, 0, -1));
+            ceiling = new Plane3D(new Point3D(0, 0, height), new Vector3D(0, -1, 0));
             wallList = new List<Plane3D>();
             putWallsInList();
         }
