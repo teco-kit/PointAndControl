@@ -12,6 +12,7 @@ using IGS.Helperclasses;
 using System.Net;
 using System.Text;
 using IGS.KNN;
+using Microsoft.Kinect;
 
 namespace IGS.Server.IGS
 {
@@ -272,9 +273,9 @@ namespace IGS.Server.IGS
 
                     return retStr;
                 }
-                if (devId != null && cmdId != null && Data.GetDevice(devId) != null)
+                if (devId != null && cmdId != null && Data.getDeviceByID(devId) != null)
                 {
-                    retStr = Data.GetDevice(devId).Transmit(cmdId, value);
+                    retStr = Data.getDeviceByID(devId).Transmit(cmdId, value);
 
                     return retStr;
                 }
@@ -351,7 +352,7 @@ namespace IGS.Server.IGS
             {
                 Vector3D rightWrist = Transformer.transformJointCoords(Tracker.GetCoordinates(Data.GetUserByIp(wlanAdr).SkeletonId))[3];
                 Ball coord = new Ball(rightWrist, float.Parse(radius));
-                Data.GetDevice(devId).Form.Add(coord);
+                Data.getDeviceByID(devId).Form.Add(coord);
                 ret = XMLComponentHandler.addDeviceCoordToXML(devId, radius, coord);
             }
 
@@ -418,11 +419,11 @@ namespace IGS.Server.IGS
             IGSKinect = new devKinect("devKinect", kinectBall, tiltingDegree, roomOrientation);
         }
 
-        public String collectSample(String wlan, String devName)
+        public String collectSample(String wlan, String devID)
         {
             User tmpUser = Data.GetUserByIp(wlan);
 
-            Device dev = Data.GetDeviceByName(devName);
+            Device dev = Data.getDeviceByID(devID);
             if (dev != null)
             {
                 Vector3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(tmpUser.SkeletonId));
@@ -430,6 +431,7 @@ namespace IGS.Server.IGS
                 if(!sample.sampleDeviceID.Equals("nullSample"))
                 {
                     knnClassifier.samples.Add(sample);
+                    writeUserJointsToXmlFile(tmpUser, dev);
                     XMLComponentHandler.writeKNNSampleToXML(sample);
                     return "sample added";
                 }
@@ -441,5 +443,73 @@ namespace IGS.Server.IGS
             return "Sample not added, deviceID not found";
         }
 
+        /// <summary>
+        ///     Creates or updates Log file with current user raw skeleton data.\n
+        ///     <param name="user">current user</param>
+        ///     <param name="device">current device</param>
+        /// </summary>
+        private void writeUserJointsToXmlFile(User user, Device device)
+        {
+            String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_UserLogFile_User9.xml";
+
+            //add device to configuration XML
+            XmlDocument docConfig = new XmlDocument();
+
+            if (File.Exists(path))
+            {
+                docConfig.Load(path);
+            }
+            else
+            {
+                docConfig.LoadXml("<data>" +
+                                    "</data>");
+            }
+
+
+            XmlNode rootNode = docConfig.SelectSingleNode("/data");
+
+            //try to find existing device
+            XmlNode deviceNode = docConfig.SelectSingleNode("/data/device[@id='" + device.Id + "']");
+
+            if (deviceNode == null)
+            {
+                //Create Device node
+                XmlElement xmlDevice = docConfig.CreateElement("device");
+                xmlDevice.SetAttribute("id", device.Id);
+                xmlDevice.SetAttribute("name", device.Name);
+                rootNode.AppendChild(xmlDevice);
+
+                deviceNode = xmlDevice;
+            }
+
+            Body body = Tracker.GetBodyById(user.SkeletonId);
+            if (body == null)
+            {
+                Console.Out.WriteLine("No Body found, cannot write to xml");
+                return;
+            }
+
+
+            XmlElement xmlSkeleton = docConfig.CreateElement("skeleton");
+            xmlSkeleton.SetAttribute("time", DateTime.Now.ToString("HH:mm:ss"));
+            xmlSkeleton.SetAttribute("date", DateTime.Now.ToShortDateString());
+
+            foreach (JointType jointType in Enum.GetValues(typeof(JointType)))
+            {
+                XmlElement xmlJoint = docConfig.CreateElement("joint");
+                xmlJoint.SetAttribute("type", jointType.ToString());
+
+                xmlJoint.SetAttribute("X", body.Joints[jointType].Position.X.ToString());
+                xmlJoint.SetAttribute("Y", body.Joints[jointType].Position.Y.ToString());
+                xmlJoint.SetAttribute("Z", body.Joints[jointType].Position.Z.ToString());
+                xmlSkeleton.AppendChild(xmlJoint);
+
+            }
+
+            deviceNode.AppendChild(xmlSkeleton);
+
+
+            docConfig.Save(path);
+        }
     }
 }

@@ -20,8 +20,8 @@ namespace IGS.KNN
 
         public KNNSample calculateSample(Vector3D[] vectors, String devID)
         {   
-            Vector3D direction = Vector3D.Subtract(vectors[1], vectors[0]);
-            Ray3D ray = new Ray3D(vectors[0].ToPoint3D(), direction);
+            Vector3D direction = Vector3D.Subtract(vectors[3], vectors[2]);
+            Ray3D ray = new Ray3D(vectors[2].ToPoint3D(), direction);
             Point3D samplePoint = calcRoomModel.intersectAndTestAllWalls(ray);
             KNNSample sample = new KNNSample(new Point3D(), "nullSample");
 

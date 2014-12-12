@@ -202,19 +202,35 @@ namespace IGS.Server.Kinect
                 {
                     if ((int)s.TrackingId != id) continue;
                     Vector3D[] result = new Vector3D[4];
-                    result[0] = new Vector3D(s.Joints[JointType.ElbowLeft].Position.X,
-                                             s.Joints[JointType.ElbowLeft].Position.Y,
-                                             s.Joints[JointType.ElbowLeft].Position.Z);
+                    result[0] = new Vector3D(s.Joints[JointType.ShoulderLeft].Position.X,
+                                             s.Joints[JointType.ShoulderLeft].Position.Y,
+                                             s.Joints[JointType.ShoulderLeft].Position.Z);
                     result[1] = new Vector3D(s.Joints[JointType.WristLeft].Position.X,
                                              s.Joints[JointType.WristLeft].Position.Y,
                                              s.Joints[JointType.WristLeft].Position.Z);
-                    result[2] = new Vector3D(s.Joints[JointType.ElbowRight].Position.X,
-                                             s.Joints[JointType.ElbowRight].Position.Y,
-                                             s.Joints[JointType.ElbowRight].Position.Z);
+                    result[2] = new Vector3D(s.Joints[JointType.ShoulderRight].Position.X,
+                                             s.Joints[JointType.ShoulderRight].Position.Y,
+                                             s.Joints[JointType.ShoulderRight].Position.Z);
                     result[3] = new Vector3D(s.Joints[JointType.WristRight].Position.X,
                                              s.Joints[JointType.WristRight].Position.Y,
                                              s.Joints[JointType.WristRight].Position.Z);
                     return result;
+                }
+            }
+            return null;
+        }
+
+
+        //returns complete Body by ID
+        public Body GetBodyById(int id)
+        {
+            foreach (TrackedSkeleton sTracked in Bodies.Where(sTracked => sTracked.Id == id))
+            {
+                sTracked.Actions = sTracked.Actions + 1;
+                foreach (Body s in _bodiesLastFrame)
+                {
+                    if ((int)s.TrackingId != id) continue;
+                    return s;
                 }
             }
             return null;
