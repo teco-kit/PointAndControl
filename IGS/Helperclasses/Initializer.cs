@@ -157,7 +157,7 @@ namespace IGS.Helperclasses
         public static void createKNNSampleXMLFile()
         {
             XElement root = new XElement("samples");
-            root.Save(AppDomain.CurrentDomain.BaseDirectory + "\\KNNSamples");
+            root.Save(AppDomain.CurrentDomain.BaseDirectory + "\\KNNSamples.xml");
         }
 
        

@@ -426,6 +426,11 @@ namespace IGS.Server.IGS
             Device dev = Data.getDeviceByID(devID);
             if (dev != null)
             {
+                if (Tracker.Bodies.Count == 0)
+                {
+                    return "No bodys found by kinect";
+                   
+                }
                 Vector3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(tmpUser.SkeletonId));
                 KNNSample sample = collector.calculateSample(vectors, dev.Id);
                 if(!sample.sampleDeviceID.Equals("nullSample"))
@@ -450,7 +455,7 @@ namespace IGS.Server.IGS
         /// </summary>
         private void writeUserJointsToXmlFile(User user, Device device)
         {
-            String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_UserLogFile_User9.xml";
+            String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_UserLogFile_User1.xml";
 
             //add device to configuration XML
             XmlDocument docConfig = new XmlDocument();

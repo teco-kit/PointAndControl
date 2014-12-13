@@ -118,7 +118,7 @@ namespace IGS
             kinect = new ModelVisual3D();
            
             InitializeComponent();
-            FillRoom();
+            //FillRoom();
         }
 
         /// <summary>
