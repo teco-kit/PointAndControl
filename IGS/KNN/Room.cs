@@ -30,8 +30,8 @@ namespace IGS.KNN
             backWall = new Plane3D(new Point3D(0, 0, 0), new Vector3D(0, 0, 1));
             rightWall = new Plane3D(new Point3D(0, 0, 0), new Vector3D(1, 0, 0));
             leftWall = new Plane3D(new Point3D(width, 0, 0), new Vector3D(-1, 0, 0));
-            frontWall = new Plane3D(new Point3D(0, depth, 0), new Vector3D(0, 0, -1));
-            ceiling = new Plane3D(new Point3D(0, 0, height), new Vector3D(0, -1, 0));
+            frontWall = new Plane3D(new Point3D(0, depth, 0), new Vector3D(0, -1, 0));
+            ceiling = new Plane3D(new Point3D(0, 0, height), new Vector3D(0, 0, -1));
             wallList = new List<Plane3D>();
             putWallsInList();
         }
@@ -54,11 +54,11 @@ namespace IGS.KNN
                 if ((ray.PlaneIntersection(wall.Position, wall.Normal)) != null)
                 {
                     wallPoint = (Point3D)ray.PlaneIntersection(wall.Position, wall.Normal);
-                    if ((width > wallPoint.X && width >= 0
+                    if ((width >= wallPoint.X && width >= 0
                         &&
-                        depth > wallPoint.Y && wallPoint.Y >= 0
+                        depth >= wallPoint.Y && wallPoint.Y >= 0
                         &&
-                        height > wallPoint.Z && wallPoint.Z >= 0) == true)
+                        height >= wallPoint.Z && wallPoint.Z >= 0) == true)
                     {
                         return wallPoint;
                     }

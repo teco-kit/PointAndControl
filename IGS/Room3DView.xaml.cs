@@ -17,6 +17,7 @@ using IGS.Server.Devices;
 using System.Windows.Media.Animation;
 using Microsoft.Kinect;
 using IGS.Server.IGS;
+using IGS.KNN;
 
 namespace IGS
 {
@@ -89,11 +90,9 @@ namespace IGS
         /// </summary>
         /// <param name="list">The locally stored device list</param>
         /// <param name="transformator">The transformator used for transforming the coordinates from camera to world coordinates</param>
-        public Room3DView(List<Device> list, CoordTransform transformator)
+        public Room3DView(List<KNNSample> list, CoordTransform transformator)
         {
-            this.deviceList = list;
             this.transformator = transformator;
-
             skelList = new List<ModelVisual3D>();
             boneListInitList = new List<Boolean>();
             IDList = new List<long>();
@@ -118,6 +117,7 @@ namespace IGS
             kinect = new ModelVisual3D();
            
             InitializeComponent();
+            fillRoomWithSamples(list);
             //FillRoom();
         }
 
@@ -444,7 +444,7 @@ namespace IGS
         }
 
         /// <summary>
-        /// initializes for a body its joints
+        /// initializes for the joint models for a body
         /// </summary>
         /// <returns>returns a list with initialized joint spheres</returns>
         private List<SphereVisual3D> initBalls()
@@ -468,6 +468,23 @@ namespace IGS
             }
 
             return sphereList;
+        }
+
+        private void fillRoomWithSamples(List<KNNSample> samples)
+        {
+            foreach (KNNSample sample in samples)
+            {
+                SphereVisual3D sphere = new SphereVisual3D();
+                Point3D point = new Point3D(sample.x, sample.y, sample.z);
+                Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.Black));
+
+                sphere.PhiDiv = 5;
+                sphere.ThetaDiv = 5;
+                sphere.Center = point;
+                sphere.Material = mat;
+                this.mainViewport.Children.Add(sphere);
+              
+            }
         }
         /// <summary>
         /// Creates a pipe (bone) between two joints
