@@ -438,6 +438,7 @@ namespace IGS.Server.IGS
                     knnClassifier.samples.Add(sample);
                     writeUserJointsToXmlFile(tmpUser, dev);
                     XMLComponentHandler.writeKNNSampleToXML(sample);
+                    XMLComponentHandler.writeSampleToXML(vectors, sample.sampleDeviceName);
                     return "sample added";
                 }
                 else

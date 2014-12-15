@@ -264,6 +264,11 @@ public partial class MainWindow
         {
             Initializer.createKNNSampleXMLFile();
         }
+         if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\samples.xml"))
+        {
+            Initializer.createSampleXMLFIle();
+        }
+
         _igs = Initializer.InitializeIgs();
         fillFieldsGUI();
 
