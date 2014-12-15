@@ -474,15 +474,7 @@ namespace IGS
         {
             foreach (KNNSample sample in samples)
             {
-                SphereVisual3D sphere = new SphereVisual3D();
-                Point3D point = new Point3D(sample.x, sample.y, sample.z);
-                Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.Black));
-
-                sphere.PhiDiv = 5;
-                sphere.ThetaDiv = 5;
-                sphere.Center = point;
-                sphere.Material = mat;
-                this.mainViewport.Children.Add(sphere);
+                addSampleView(new Point3D(sample.x, sample.y, sample.z));
               
             }
         }
@@ -682,14 +674,14 @@ namespace IGS
 
         public void addSampleView(Point3D center) 
         {
-            Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.Black));
+            Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.Yellow));
             SphereVisual3D sample = new SphereVisual3D();
             sample.Center = center;
             sample.BackMaterial = mat;
             sample.Material = mat;
-            sample.PhiDiv = 5;
-            sample.Radius = 0.10;
-            sample.ThetaDiv = 5;
+            sample.PhiDiv = 10;
+            sample.Radius = 0.05;
+            sample.ThetaDiv = 10;
             this.mainViewport.Children.Add(sample);
         }
 

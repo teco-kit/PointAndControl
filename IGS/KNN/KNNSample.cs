@@ -18,7 +18,7 @@ namespace IGS.KNN
         [Feature]
         public double z { get; set; }
         [Label]
-        public String sampleDeviceID { get; set; }
+        public String sampleDeviceName { get; set; }
 
         public KNNSample(Point3D position)
         {
@@ -34,12 +34,12 @@ namespace IGS.KNN
             this.z = 0;
         }
 
-        public KNNSample(Point3D position, string devID)
+        public KNNSample(Point3D position, string deviceName)
         {
             this.x = position.X;
             this.y = position.Y;
             this.z = position.Z;
-            sampleDeviceID = devID;
+            sampleDeviceName = deviceName;
         }
 
         public void labelSample(string label)

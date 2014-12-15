@@ -54,7 +54,7 @@ namespace IGS.KNN
                 if ((ray.PlaneIntersection(wall.Position, wall.Normal)) != null)
                 {
                     wallPoint = (Point3D)ray.PlaneIntersection(wall.Position, wall.Normal);
-                    if ((width >= wallPoint.X && width >= 0
+                    if ((width >= wallPoint.X && wallPoint.X >= 0
                         &&
                         depth >= wallPoint.Y && wallPoint.Y >= 0
                         &&

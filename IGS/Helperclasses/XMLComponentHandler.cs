@@ -312,7 +312,7 @@ namespace IGS.Helperclasses
 
             XmlElement xmlSample = docConfig.CreateElement("sample");
             XmlElement xmlDeviceName = docConfig.CreateElement("deviceName");
-            xmlDeviceName.InnerText = sample.sampleDeviceID;
+            xmlDeviceName.InnerText = sample.sampleDeviceName;
             XmlElement xmlPosition = docConfig.CreateElement("position");
             XmlElement posX = docConfig.CreateElement("X");
             posX.InnerText = sample.x.ToString();
@@ -330,6 +330,7 @@ namespace IGS.Helperclasses
             xmlSample.AppendChild(xmlDeviceName);
             xmlSample.AppendChild(xmlPosition);
             node.AppendChild(xmlSample);
+            docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\KNNSamples.xml");
         }
 
         public static List<KNNSample> readKNNSamplesFromXML()
@@ -348,7 +349,7 @@ namespace IGS.Helperclasses
                 {
                     if (prop.Name.Equals("deviceName"))
                     {
-                        knnSample.sampleDeviceID = prop.InnerText;
+                        knnSample.sampleDeviceName = prop.InnerText;
                     }
                     else if (prop.Name.Equals("position"))
                     {

@@ -18,7 +18,7 @@ namespace IGS.KNN
             calcRoomModel = new Room();
         }
 
-        public KNNSample calculateSample(Vector3D[] vectors, String devID)
+        public KNNSample calculateSample(Vector3D[] vectors, String devName)
         {   
             Vector3D direction = Vector3D.Subtract(vectors[3], vectors[2]);
             Ray3D ray = new Ray3D(vectors[2].ToPoint3D(), direction);
@@ -27,13 +27,13 @@ namespace IGS.KNN
 
             if ((samplePoint.X.Equals(float.NaN) == false))
             {
-                if (devID.Equals(""))
+                if (devName.Equals(""))
                 {
                     sample = new KNNSample(samplePoint);   
                 }
                 else
                 {
-                    sample = new KNNSample(samplePoint, devID);
+                    sample = new KNNSample(samplePoint, devName);
                 }
                 return sample;
             }

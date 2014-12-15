@@ -322,7 +322,7 @@ namespace IGS.Server.IGS
 
                 foreach(Device d in Data.Devices)
                 {
-                    if (d.Id == sample.sampleDeviceID)
+                    if (d.Name.ToLower() == sample.sampleDeviceName.ToLower())
                     {
                         dev.Add(d);
                         return dev;
@@ -423,7 +423,7 @@ namespace IGS.Server.IGS
         {
             User tmpUser = Data.GetUserByIp(wlan);
 
-            Device dev = Data.getDeviceByID(devID);
+            Device dev = Data.GetDeviceByName(devID);
             if (dev != null)
             {
                 if (Tracker.Bodies.Count == 0)
@@ -432,8 +432,8 @@ namespace IGS.Server.IGS
                    
                 }
                 Vector3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(tmpUser.SkeletonId));
-                KNNSample sample = collector.calculateSample(vectors, dev.Id);
-                if(!sample.sampleDeviceID.Equals("nullSample"))
+                KNNSample sample = collector.calculateSample(vectors, dev.Name);
+                if(!sample.sampleDeviceName.Equals("nullSample"))
                 {
                     knnClassifier.samples.Add(sample);
                     writeUserJointsToXmlFile(tmpUser, dev);
