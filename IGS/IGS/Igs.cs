@@ -318,6 +318,7 @@ namespace IGS.Server.IGS
             {
                 KNNSample sample = collector.calculateSample(vecs,"");
                 sample = knnClassifier.classify(sample);
+                Console.WriteLine("Klassifiziert:" + sample.sampleDeviceName);
                 List<Device> dev = new List<Device>();
 
                 foreach(Device d in Data.Devices)
@@ -456,7 +457,7 @@ namespace IGS.Server.IGS
         /// </summary>
         private void writeUserJointsToXmlFile(User user, Device device)
         {
-            String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_UserLogFile_User1.xml";
+            String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_UserLogFile_Flo.xml";
 
             //add device to configuration XML
             XmlDocument docConfig = new XmlDocument();

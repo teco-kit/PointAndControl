@@ -22,15 +22,16 @@ namespace IGS.KNN
             var descriptor = Descriptor.Create<KNNSample>();
             generator = new KNNGenerator();
             samples = XMLComponentHandler.readKNNSamplesFromXML();
-           
+
             generator.Descriptor = descriptor;
+           
         }
 
 
         //public void addSample(KNNSample sample)
         //{
         //    KNNSample[] tmp = new KNNSample[samples.Length + 1];
-        
+
         //    for (int i = 0; i < samples.Length; i++)
         //    {
         //        tmp[i] = samples[i];
@@ -51,6 +52,10 @@ namespace IGS.KNN
             return learned.Model.Predict(sample);
         }
 
-
+        public void addSample(KNNSample s)
+        {
+            samples.Add(s);
+            trainClassifier();
+        }
     }
 }
