@@ -45,7 +45,7 @@ namespace IGS.Helperclasses
         /// </summary>
         private static UserTracker InitializeUserTracker(GestureStrategy filter, ReplacementStrategy replace)
         {
-            UserTracker userTracker = new UserTracker(filter, replace);
+            UserTracker userTracker = new UserTracker(filter, replace, false);
             userTracker.InitializeSensor();
             return userTracker;
         }

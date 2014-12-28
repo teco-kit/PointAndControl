@@ -29,6 +29,7 @@ namespace IGS.Server.Kinect
         private List<Body[]> lastBodies { get; set; }
         public bool collectAfterClick { get; set; }
 
+        public bool movingWindowCollect { get; set; }
 
 
         /// <summary>
@@ -40,7 +41,7 @@ namespace IGS.Server.Kinect
         ///         The strategy which specifies which skeleton should be replaced if to many users want to use gesture control
         ///     </param>
         /// </summary>
-        public UserTracker(GestureStrategy filter, ReplacementStrategy replace)
+        public UserTracker(GestureStrategy filter, ReplacementStrategy replace, bool movingWindow)
         {
             Filter = filter;
             Strategy = replace;
@@ -232,6 +233,7 @@ namespace IGS.Server.Kinect
         {
             List<Vector3D[]> returnList = new List<Vector3D[]>();
 
+            if(!movingWindowCollect){
             if (collectAfterClick == false)
             {
                 collectAfterClick = true;
@@ -242,8 +244,7 @@ namespace IGS.Server.Kinect
                 collectAfterClick = false;
             }
             else return null;
-
-            
+            }
             
                 foreach (TrackedSkeleton sTracked in Bodies.Where(sTracked => sTracked.Id == id))
                 {
@@ -271,7 +272,10 @@ namespace IGS.Server.Kinect
                     }
                 }
             }
-            lastBodies.Clear();
+                if (movingWindowCollect == false)
+                {
+                    lastBodies.Clear();
+                }
             if (returnList.Count == 0) return null;
             else return returnList;
         }
@@ -357,13 +361,7 @@ namespace IGS.Server.Kinect
                 {
                     //checks if a skeleton doesnt exist anymore.
                     foreach (Body s in _bodiesLastFrame.Where(s => s != null && !idsSeen.Contains((int)s.TrackingId) && s.TrackingId != 0))
-                    {
-                        //new Thread(delegate() 
-                        //{ 
-                        //    this.OnUserLeft(this, new KinectUserEventArgs((int)s.TrackingId));
-                        //}).Start();
-
-                        
+                    {  
                         this.OnUserLeft(this, new KinectUserEventArgs((int)s.TrackingId));
                         for (int i = 0; i < Bodies.Count; i++)
                         {
@@ -373,12 +371,17 @@ namespace IGS.Server.Kinect
                     }
                 }
                 _bodiesLastFrame = bodies;
-                if (collectAfterClick )
+                if (collectAfterClick || movingWindowCollect )
                 {
                     Body[] bodiesToSave = new Body[bodies.Length];
                     for (int i = 0; i < bodies.Length; i++)
                     {
                         bodiesToSave[i] = bodies[i];
+                    }
+
+                    if (movingWindowCollect == true && lastBodies.Count == 30)
+                    {
+                        lastBodies.RemoveAt(0);
                     }
                     lastBodies.Add(bodiesToSave);
                 }
