@@ -4,6 +4,9 @@ using System.Linq;
 using System.Windows.Media.Media3D;
 using Microsoft.Kinect;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
+using IGS.Kinect;
 
 namespace IGS.Server.Kinect
 {
@@ -23,6 +26,9 @@ namespace IGS.Server.Kinect
 
         private Body[] _bodiesLastFrame = new Body[0];
 
+        private List<Body[]> lastBodies { get; set; }
+        public bool collectAfterClick { get; set; }
+
 
 
         /// <summary>
@@ -39,6 +45,8 @@ namespace IGS.Server.Kinect
             Filter = filter;
             Strategy = replace;
             Bodies = new List<TrackedSkeleton>();
+            collectAfterClick = false;
+            lastBodies = new List<Body[]>();
         }
 
         /// <summary>
@@ -220,6 +228,63 @@ namespace IGS.Server.Kinect
             return null;
         }
 
+        public List<Vector3D[]> Get30Coordinates(int id)
+        {
+            List<Vector3D[]> returnList = new List<Vector3D[]>();
+
+            if (collectAfterClick == false)
+            {
+                collectAfterClick = true;
+                while (lastBodies.Count != 30)
+                {
+
+                }
+                collectAfterClick = false;
+            }
+            else return null;
+
+            
+            
+                foreach (TrackedSkeleton sTracked in Bodies.Where(sTracked => sTracked.Id == id))
+                {
+                    sTracked.Actions = sTracked.Actions + 1;
+                    foreach (Body[] bodies in lastBodies)
+                    {
+                    foreach (Body s in bodies)
+                    {
+                        if ((int)s.TrackingId != id) continue;
+                        Vector3D[] result = new Vector3D[4];
+                        result[0] = new Vector3D(s.Joints[JointType.ShoulderLeft].Position.X,
+                                                 s.Joints[JointType.ShoulderLeft].Position.Y,
+                                                 s.Joints[JointType.ShoulderLeft].Position.Z);
+                        result[1] = new Vector3D(s.Joints[JointType.WristLeft].Position.X,
+                                                 s.Joints[JointType.WristLeft].Position.Y,
+                                                 s.Joints[JointType.WristLeft].Position.Z);
+                        result[2] = new Vector3D(s.Joints[JointType.ShoulderRight].Position.X,
+                                                 s.Joints[JointType.ShoulderRight].Position.Y,
+                                                 s.Joints[JointType.ShoulderRight].Position.Z);
+                        result[3] = new Vector3D(s.Joints[JointType.WristRight].Position.X,
+                                                 s.Joints[JointType.WristRight].Position.Y,
+                                                 s.Joints[JointType.WristRight].Position.Z);
+                        returnList.Add(result);
+                        
+                    }
+                }
+            }
+            lastBodies.Clear();
+            if (returnList.Count == 0) return null;
+            else return returnList;
+        }
+
+
+        public Vector3D[] getMedianSmoothedCoordinates(int id)
+        {
+            SkeletonJointFilter medianfilter = new MedianJointFilter();
+            List<Vector3D[]> coords = this.Get30Coordinates(id);
+            Vector3D[] smoothed = medianfilter.jointFilter(coords);
+
+            return smoothed;
+        }
 
         //returns complete Body by ID
         public Body GetBodyById(int id)
@@ -293,7 +358,13 @@ namespace IGS.Server.Kinect
                     //checks if a skeleton doesnt exist anymore.
                     foreach (Body s in _bodiesLastFrame.Where(s => s != null && !idsSeen.Contains((int)s.TrackingId) && s.TrackingId != 0))
                     {
-                        OnUserLeft(this, new KinectUserEventArgs((int)s.TrackingId));
+                        //new Thread(delegate() 
+                        //{ 
+                        //    this.OnUserLeft(this, new KinectUserEventArgs((int)s.TrackingId));
+                        //}).Start();
+
+                        
+                        this.OnUserLeft(this, new KinectUserEventArgs((int)s.TrackingId));
                         for (int i = 0; i < Bodies.Count; i++)
                         {
                             if (Bodies[i].Id == (int)s.TrackingId)
@@ -302,6 +373,15 @@ namespace IGS.Server.Kinect
                     }
                 }
                 _bodiesLastFrame = bodies;
+                if (collectAfterClick )
+                {
+                    Body[] bodiesToSave = new Body[bodies.Length];
+                    for (int i = 0; i < bodies.Length; i++)
+                    {
+                        bodiesToSave[i] = bodies[i];
+                    }
+                    lastBodies.Add(bodiesToSave);
+                }
             }
 
         }

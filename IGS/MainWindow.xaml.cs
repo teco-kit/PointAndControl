@@ -21,6 +21,7 @@ using System.Xml;
 using System.ComponentModel;
 using System.Xml.Linq;
 using IGS.KNN;
+using IGS.Kinect;
 
 
 
