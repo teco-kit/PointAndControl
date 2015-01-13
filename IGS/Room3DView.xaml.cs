@@ -117,7 +117,7 @@ namespace IGS
             kinect = new ModelVisual3D();
            
             InitializeComponent();
-            fillRoomWithSamples(list);
+            fillRoomWithSamplesColorFixedDevices(list);
             //FillRoom();
         }
 
@@ -168,7 +168,7 @@ namespace IGS
         /// <param name="depth">the depth of the room</param>
         public void createRoom(float width, float depth, float height)
         {
-
+            
             Point3D p0 = new Point3D(0, 0, 0);
             Point3D p1 = new Point3D(width, 0, 0);
             Point3D p2 = new Point3D(width, 0, depth);
@@ -470,12 +470,36 @@ namespace IGS
             return sphereList;
         }
 
+        private void fillRoomWithSamplesColorFixedDevices(List<KNNSample> samples)
+        {
+            foreach (KNNSample sample in samples)
+            {
+                if(sample.sampleDeviceName.Equals("ExampleBoxee"))
+                    addSampleView(new Point3D(sample.x, sample.y, sample.z), new DiffuseMaterial(Brushes.Yellow));
+                else if (sample.sampleDeviceName.Equals("ExamplePlugwise"))
+                    addSampleView(new Point3D(sample.x, sample.y, sample.z), new DiffuseMaterial(new SolidColorBrush(Colors.Violet)));
+                else if (sample.sampleDeviceName.Equals("TV"))
+                    addSampleView(new Point3D(sample.x, sample.y, sample.z), new DiffuseMaterial(new SolidColorBrush(Colors.Purple)));
+                else if (sample.sampleDeviceName.Equals("XBoxee"))
+                    addSampleView(new Point3D(sample.x, sample.y, sample.z), new DiffuseMaterial(new SolidColorBrush(Colors.Green)));
+                else if (sample.sampleDeviceName.Equals("Energiemarkt"))
+                    addSampleView(new Point3D(sample.x, sample.y, sample.z), new DiffuseMaterial(new SolidColorBrush(Colors.Gray)));
+                else if (sample.sampleDeviceName.Equals("Drucker"))
+                    addSampleView(new Point3D(sample.x, sample.y, sample.z), new DiffuseMaterial(new SolidColorBrush(Colors.Khaki)));
+                else if (sample.sampleDeviceName.Equals("LampeMarkt"))
+                    addSampleView(new Point3D(sample.x, sample.y, sample.z), new DiffuseMaterial(new SolidColorBrush(Colors.Maroon)));
+                else if (sample.sampleDeviceName.Equals("LEDLampe"))
+                    addSampleView(new Point3D(sample.x, sample.y, sample.z), new DiffuseMaterial(new SolidColorBrush(Colors.Black)));
+            }
+        }
+
         private void fillRoomWithSamples(List<KNNSample> samples)
         {
             foreach (KNNSample sample in samples)
             {
-                addSampleView(new Point3D(sample.x, sample.y, sample.z));
-              
+                
+                    addSampleView(new Point3D(sample.x, sample.y, sample.z));
+                
             }
         }
         /// <summary>
@@ -675,6 +699,19 @@ namespace IGS
         public void addSampleView(Point3D center) 
         {
             Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.Yellow));
+            SphereVisual3D sample = new SphereVisual3D();
+            sample.Center = center;
+            sample.BackMaterial = mat;
+            sample.Material = mat;
+            sample.PhiDiv = 10;
+            sample.Radius = 0.05;
+            sample.ThetaDiv = 10;
+            this.mainViewport.Children.Add(sample);
+        }
+
+        public void addSampleView(Point3D center, Material mat)
+        {
+            
             SphereVisual3D sample = new SphereVisual3D();
             sample.Center = center;
             sample.BackMaterial = mat;

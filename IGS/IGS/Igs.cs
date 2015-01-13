@@ -50,8 +50,11 @@ namespace IGS.Server.IGS
 
 
             this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Centre);
-            collector = new SampleCollector();
             knnClassifier = new KNNClassifierHandler();
+            collector = new SampleCollector(knnClassifier);
+            
+           
+            
         }
 
 
@@ -312,14 +315,30 @@ namespace IGS.Server.IGS
         /// </summary>
         public List<Device> ChooseDevice(String wlanAdr)
         {
+            List<Device> dev = new List<Device>();
             User tempUser = Data.GetUserByIp(wlanAdr);
             Vector3D[] vecs = Transformer.transformJointCoords(Tracker.GetCoordinates(tempUser.SkeletonId));
             if (tempUser != null)
             {
                 KNNSample sample = collector.calculateSample(vecs,"");
+                //String label = collector.calcRoomModel.hitSquareCheck(new Point3D(sample.x, sample.y, sample.z));
+                //if (label != null)
+                //{
+                //    sample.sampleDeviceName = label;
+                   
+
+                //    foreach (Device d in Data.Devices)
+                //    {
+                //        if (d.Name.ToLower() == sample.sampleDeviceName.ToLower())
+                //        {
+                //            dev.Add(d);
+                //            return dev;
+                //        }
+                //    }
+                //}
                 sample = knnClassifier.classify(sample);
                 Console.WriteLine("Klassifiziert:" + sample.sampleDeviceName);
-                List<Device> dev = new List<Device>();
+                
 
                 foreach(Device d in Data.Devices)
                 {

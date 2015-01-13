@@ -398,6 +398,7 @@ namespace IGS.Helperclasses
 
             return sampleList;
         }
+
         public static void writeSampleToXML(Vector3D[] positions, String deviceName)
         {
             XmlDocument docConfig = new XmlDocument();

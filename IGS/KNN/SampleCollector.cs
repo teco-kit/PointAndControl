@@ -1,4 +1,5 @@
 ﻿using HelixToolkit.Wpf;
+using IGS.Helperclasses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,9 +14,12 @@ namespace IGS.KNN
         public List<KNNSample> sampleList {get; set;}
         public Room calcRoomModel { get; set; }
         
-        public SampleCollector()
+        public SampleCollector(KNNClassifierHandler handler)
         {
-            calcRoomModel = new Room();
+            String[] roomComps = XMLComponentHandler.readRoomComponents();
+            calcRoomModel = new Room(float.Parse(roomComps[0]), float.Parse(roomComps[2]), float.Parse(roomComps[1]));
+            calcRoomModel.calculateDeviceAreas(handler);
+            
         }
 
         public KNNSample calculateSample(Vector3D[] vectors, String devName)

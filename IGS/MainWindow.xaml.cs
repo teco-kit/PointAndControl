@@ -289,8 +289,8 @@ public partial class MainWindow
        
         
         FrameDescription ColorframeDescription = _igs.Tracker.Sensor.ColorFrameSource.FrameDescription;
-        _igs.collector.calcRoomModel.setRoomMeasures(float.Parse(roomText[0]), float.Parse(roomText[2]), float.Parse(roomText[1]));
-        _igs.collector.calcRoomModel.createRoomWalls();
+        
+
 
     
         // allocate space to put the pixels being received

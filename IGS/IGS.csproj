@@ -72,6 +72,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -113,9 +114,11 @@
     <Compile Include="Kinect\SkeletonJointFilter.cs" />
     <Compile Include="Kinect\TrackingStateEventArgs.cs" />
     <Compile Include="KNN\KNNClassifierHandler.cs" />
+    <Compile Include="KNN\kNNLabelHitSquare.cs" />
     <Compile Include="KNN\Ray3D.cs" />
     <Compile Include="KNN\Room.cs" />
     <Compile Include="KNN\KNNSample.cs" />
+    <Compile Include="KNN\RoomPlane.cs" />
     <Compile Include="KNN\SampleCollector.cs" />
     <Compile Include="RGB_SkelpointView.xaml.cs">
       <DependentUpon>RGB_SkelpointView.xaml</DependentUpon>
