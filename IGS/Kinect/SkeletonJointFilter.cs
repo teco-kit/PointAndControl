@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Kinect;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,5 +11,7 @@ namespace IGS.Kinect
     public abstract class SkeletonJointFilter
     {
         public abstract Vector3D[] jointFilter(List<Vector3D[]> jointLists);
+
+        
     }
 }

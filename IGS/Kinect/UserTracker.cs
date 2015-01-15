@@ -31,6 +31,8 @@ namespace IGS.Server.Kinect
 
         public bool movingWindowCollect { get; set; }
 
+        public SkeletonJointFilter skeletonJointFilter { get; set; }
+
 
         /// <summary>
         ///     Constructor of a Usertracker.
@@ -48,6 +50,8 @@ namespace IGS.Server.Kinect
             Bodies = new List<TrackedSkeleton>();
             collectAfterClick = false;
             lastBodies = new List<Body[]>();
+
+            this.skeletonJointFilter = new MedianJointFilter();
         }
 
         /// <summary>
@@ -154,6 +158,25 @@ namespace IGS.Server.Kinect
             }
         }
 
+
+        public bool checkIfAllBodysAreSame()
+        {
+            bool same = true;
+
+            for(int i = 0; i < lastBodies[0].Length; i++)
+            {
+                ulong bodyID = lastBodies[0][i].TrackingId;
+                foreach (Body[] bodies in lastBodies)
+                {
+                    if (bodyID != bodies[i].TrackingId)
+                    {
+                        return false;
+                    }
+                }
+            }
+            return same;
+
+        }
         /// <summary>
         ///     This method provides the skeletonID of the skeleton perfoming the definded gesture or which should be reaktivated.
         ///     
@@ -241,6 +264,11 @@ namespace IGS.Server.Kinect
                 {
 
                 }
+
+                if (checkIfAllBodysAreSame() == false) { 
+                    
+                    return Get30Coordinates(id); 
+                }
                 collectAfterClick = false;
             }
             else return null;
@@ -276,6 +304,8 @@ namespace IGS.Server.Kinect
                 {
                     lastBodies.Clear();
                 }
+
+              
             if (returnList.Count == 0) return null;
             else return returnList;
         }
@@ -283,9 +313,8 @@ namespace IGS.Server.Kinect
 
         public Vector3D[] getMedianSmoothedCoordinates(int id)
         {
-            SkeletonJointFilter medianfilter = new MedianJointFilter();
             List<Vector3D[]> coords = this.Get30Coordinates(id);
-            Vector3D[] smoothed = medianfilter.jointFilter(coords);
+            Vector3D[] smoothed = skeletonJointFilter.jointFilter(coords);
 
             return smoothed;
         }
