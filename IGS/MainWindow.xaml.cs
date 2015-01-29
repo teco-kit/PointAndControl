@@ -263,7 +263,7 @@ public partial class MainWindow
 
         if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\KNNSamples.xml"))
         {
-            Initializer.createKNNSampleXMLFile();
+            Initializer.createWallProjectionSampleXMLFile();
         }
          if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\samples.xml"))
         {
@@ -303,7 +303,6 @@ public partial class MainWindow
         this.displayHeight = depthFrameDescription.Width;
 
         this.imageSourceSkeleton = new DrawingImage(this._drawingGroup);
-
     }
 
     /// <summary>
@@ -626,7 +625,7 @@ public partial class MainWindow
     private void _3DViewButton_Click(object sender, RoutedEventArgs e)
     {
 
-        _3Dview = new Room3DView(_igs.knnClassifier.samples, _igs.Transformer);
+        _3Dview = new Room3DView(_igs.classification.knnClassifier.samples, _igs.Transformer);
         _3Dview.SetKinectCamera(_igs.IGSKinect);
         _3Dview.ClipToBounds = false;
         _3Dview.mainViewport.Effect = null;
@@ -719,19 +718,19 @@ public partial class MainWindow
         String[] roomData = new String[3];
 
         roomData[0] = Room_Width.Text;
-        roomData[1] = Room_Depth.Text;
-        roomData[2] = Room_Height.Text;
+        roomData[2] = Room_Depth.Text;
+        roomData[1] = Room_Height.Text;
         width = float.Parse(Room_Width.Text);
         depth = float.Parse(Room_Depth.Text);
         height = float.Parse(Room_Height.Text);
         roomWidth = width;
         roomDepth = depth;
         XMLComponentHandler.saveRoomPosition(roomData);
-        _igs.collector.calcRoomModel.setRoomMeasures(width, depth, height);
+        _igs.classification.collector.calcRoomModel.setRoomMeasures(width, depth, height);
         if (_3Dview != null)
         {
-            _3Dview.createRoom(width, height, depth);
-            foreach(KNNSample s in _igs.knnClassifier.samples)
+            _3Dview.createRoom(width, depth, height);
+            foreach(WallProjectionSample s in _igs.classification.knnClassifier.samples)
             {
                 _3Dview.addSampleView(new Point3D(s.x, s.y, s.z));
             }

@@ -102,21 +102,25 @@
     <Compile Include="Devices\Device.cs" />
     <Compile Include="Devices\devKinect.cs" />
     <Compile Include="Devices\HTTP.cs" />
-    <Compile Include="Devices\NECLCDmonitorMultiSyncV421.cs" />
+    <Compile Include="Devices\NecLcdMonitorMultiSyncV421.cs" />
     <Compile Include="Devices\Plugwise.cs" />
     <Compile Include="Devices\Presenter.cs" />
     <Compile Include="Devices\TCP.cs" />
     <Compile Include="Devices\XBMCv11.cs" />
     <Compile Include="Helperclasses\CoordTransform.cs" />
     <Compile Include="Helperclasses\Initializer.cs" />
+    <Compile Include="Helperclasses\SampleExtractor.cs" />
+    <Compile Include="Helperclasses\SampleSplitter.cs" />
     <Compile Include="Helperclasses\XMLComponentHandler.cs" />
     <Compile Include="Kinect\MedianJointFilter.cs" />
     <Compile Include="Kinect\SkeletonJointFilter.cs" />
     <Compile Include="Kinect\TrackingStateEventArgs.cs" />
-    <Compile Include="KNN\KNNClassifierHandler.cs" />
+    <Compile Include="KNN\KNNClassifier.cs" />
     <Compile Include="KNN\Ray3D.cs" />
     <Compile Include="KNN\Room.cs" />
-    <Compile Include="KNN\KNNSample.cs" />
+    <Compile Include="KNN\ClassificationHandler.cs" />
+    <Compile Include="KNN\WallProjectionAndPositionSample.cs" />
+    <Compile Include="KNN\WallProjectionSample.cs" />
     <Compile Include="KNN\RoomPlane.cs" />
     <Compile Include="KNN\SampleCollector.cs" />
     <Compile Include="RGB_SkelpointView.xaml.cs">
@@ -172,11 +176,15 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="AppIGSCommunication.sequencediagram.layout">
+      <DependentUpon>AppIGSCommunication.sequencediagram</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="AppIGSCommunication.sequencediagram" />
     <None Include="Images\Thumbs.db" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

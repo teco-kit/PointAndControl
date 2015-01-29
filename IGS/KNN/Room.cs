@@ -32,7 +32,7 @@ namespace IGS.KNN
         List<RoomPlane> wallList { get; set; }
 
        
-        public Room(float width, float depth, float height)
+        public Room(float width,  float height, float depth)
         {
             this.width = width;
             this.depth = depth;
@@ -48,16 +48,16 @@ namespace IGS.KNN
         }
         public void createRoomWalls ()
         {
-
+            
              floor = new RoomPlane("floor", new Vector3D(0, 1, 0), width, 0, depth);
-                
-             backWall = new RoomPlane("backWall", new Vector3D(0, 0, -1), width, height, 0);
-        
-             rightWall = new RoomPlane("rightWall", new Vector3D(1, 0, 0), 0, height, depth); 
-                
+
+             rightWall = new RoomPlane("rightWall", new Vector3D(1, 0, 0), 0, height, depth);
+
+             backWall = new RoomPlane("backWall", new Vector3D(0, 0, 1), width, height, 0);
+
+             frontWall = new RoomPlane("frontWall", new Vector3D(0, 0, -1), width, height, depth);
+             
              leftWall = new RoomPlane("leftWall", new Vector3D(-1, 0, 0), width, height, depth);
-                
-             frontWall = new RoomPlane("frontWall", new Vector3D(0, 0, 1), width, height, depth);
                 
              ceiling = new RoomPlane("ceiling", new Vector3D(0, -1, 0), width, height, depth);
                 
@@ -66,13 +66,15 @@ namespace IGS.KNN
         }
 
         private void putWallsInList()
+
         {
+            wallList.Add(ceiling);
             wallList.Add(floor);
             wallList.Add(backWall);
-            wallList.Add(rightWall);
             wallList.Add(frontWall);
+            wallList.Add(rightWall);
             wallList.Add(leftWall);
-            wallList.Add(ceiling);
+            
         }
 
         public Point3D intersectAndTestAllWalls(Ray3D ray)
@@ -107,12 +109,13 @@ namespace IGS.KNN
             this.height = height;
         }
 
-        public void calculateDeviceAreas(KNNClassifierHandler knn)
+        public void calculateDeviceAreas(KNNClassifier knn)
         {
+            
             //a List of Lists containing vectors for devices to retrieve the classificationboxes for 
             //every device
             List<labelEntry> wallSamples = new List<labelEntry>();
-            float step = 0.3f;
+            float step = 0.05f;
             int virtualWidthReducer = 1;
             int virtualHeightReducer = 1;
 
@@ -132,39 +135,49 @@ namespace IGS.KNN
 
             foreach (RoomPlane wall in wallList)
             {
+                
+                    Console.WriteLine(wall.name);
+                    Console.WriteLine("w:" + wall.width + " h:" + wall.heigth + " d:" + wall.depth);
+                    Point3D point = new Point3D(wall.width, wall.heigth, wall.depth);
+                    virtualWidthReducer = 1;
+                    virtualHeightReducer = 1;
+                    wallIndikator = -1;
+                    normalWallPoint = 0;
+                    maxStepVirtualWidth = 0;
+                    maxStepVirtualHeight = 0;
+                    Bitmap bitmap = null;
 
-                Point3D point = new Point3D(wall.width, wall.heigth, wall.depth);
-                Bitmap bitmap = null;
-
-                if (wall.name == "frontWall")
-                {
-                    Console.WriteLine("Frontwall found");
                     if (wall.plane.Normal.X != 0)
                     {
-                        maxStepVirtualWidth = (int) Math.Ceiling(depth / step);
-                        maxStepVirtualHeight = (int) Math.Ceiling(height / step);
+                        maxStepVirtualWidth = (int)Math.Ceiling(depth / step);
+                        maxStepVirtualHeight = (int)Math.Ceiling(height / step);
+
                         bitmap = new Bitmap(maxStepVirtualWidth, maxStepVirtualHeight);
-                        Console.WriteLine("SideWall");
                         wallIndikator = 0;
-                        if (!(wall.plane.Normal.X > 0))
+                        if (wall.plane.Normal.X < 0)
                         {
                             normalWallPoint = width;
                         }
+
+                        Console.WriteLine("StepsWidth:" + maxStepVirtualWidth);
+                        Console.WriteLine("StepsHight:" + maxStepVirtualHeight);
 
                         //virtualWidthResetter = wall.depth;
                         //isSidewall = true;
                     }
                     else if (wall.plane.Normal.Y != 0)
                     {
-                        maxStepVirtualWidth = (int) Math.Ceiling(width / step);
+                        maxStepVirtualWidth = (int)Math.Ceiling(width / step);
                         maxStepVirtualHeight = (int)Math.Ceiling(depth / step);
                         bitmap = new Bitmap(maxStepVirtualWidth, maxStepVirtualHeight);
-                        Console.WriteLine("Floor/Bottom");
                         wallIndikator = 1;
-                        if (!(wall.plane.Normal.X > 0))
+                        if (wall.plane.Normal.Y < 0)
                         {
                             normalWallPoint = height;
                         }
+
+                        Console.WriteLine("StepsWidth:" + maxStepVirtualWidth);
+                        Console.WriteLine("StepsHight:" + maxStepVirtualHeight);
 
                         //virtualWidthResetter = wall.width;
                     }
@@ -173,9 +186,8 @@ namespace IGS.KNN
                         maxStepVirtualWidth = (int)Math.Ceiling(width / step);
                         maxStepVirtualHeight = (int)Math.Ceiling(height / step);
                         bitmap = new Bitmap(maxStepVirtualWidth, maxStepVirtualHeight);
-                        Console.WriteLine("Front/Backwall");
                         wallIndikator = 2;
-                        if (!(wall.plane.Normal.Z > 0))
+                        if (wall.plane.Normal.Z < 0)
                         {
                             normalWallPoint = depth;
                         }
@@ -186,11 +198,10 @@ namespace IGS.KNN
                         //virtualWidthResetter = wall.width;
                     }
 
-
-
+                    
                     for (int stepCounterVirtualHeight = 0; stepCounterVirtualHeight < maxStepVirtualHeight; stepCounterVirtualHeight++)
                     {
-                        float virtualHightReduce = (virtualHeightReducer*step);
+                        float virtualHightReduce = (virtualHeightReducer * step);
 
                         Point3D newPoint = new Point3D(wall.width, wall.heigth, wall.depth);
 
@@ -200,52 +211,58 @@ namespace IGS.KNN
                             if (wallIndikator == 0)
                             {
                                 newPoint.X = normalWallPoint;
-                                newPoint.Y = Math.Round(wall.heigth - virtualHightReduce,4);
+                                newPoint.Y = Math.Round(wall.heigth - virtualHightReduce, 4);
                                 if (newPoint.Y < 0) newPoint.Y = 0;
-                                newPoint.Z = Math.Round(wall.depth - (virtualWidthReducer * step),4);
-                                if (newPoint.Z < 0) newPoint.Z = 0; 
+                                newPoint.Z = Math.Round(wall.depth - (virtualWidthReducer * step), 4);
+                                if (newPoint.Z < 0) newPoint.Z = 0;
+
+
                             }
                             else if (wallIndikator == 1)
                             {
 
-                                newPoint.X = Math.Round(wall.width - (virtualWidthReducer * step),4);
+                                newPoint.X = Math.Round(wall.width - (virtualWidthReducer * step), 4);
                                 if (newPoint.X < 0) newPoint.X = 0;
                                 newPoint.Y = normalWallPoint;
-                                newPoint.Z = Math.Round(wall.depth - virtualHightReduce,4);
-                                if (newPoint.Z < 0) newPoint.Z = 0; 
+                                newPoint.Z = Math.Round(wall.depth - virtualHightReduce, 4);
+                                if (newPoint.Z < 0) newPoint.Z = 0;
 
                             }
                             else if (wallIndikator == 2)
                             {
-                                newPoint.X = Math.Round((wall.width - (virtualWidthReducer * step)),4);
+                                newPoint.X = Math.Round((wall.width - (virtualWidthReducer * step)), 4);
                                 if (newPoint.X < 0) newPoint.X = 0;
-                                newPoint.Y = Math.Round((wall.heigth - virtualHightReduce),4);
+                                newPoint.Y = Math.Round((wall.heigth - virtualHightReduce), 4);
                                 if (newPoint.Y < 0) newPoint.Y = 0;
                                 newPoint.Z = normalWallPoint;
-
-                                Console.WriteLine(newPoint);
                             }
                             else
                             {
 
                             }
                             virtualWidthReducer++;
-                            KNNSample sample = new KNNSample(newPoint);
+                            //Console.WriteLine(newPoint);
+                            WallProjectionSample sample = new WallProjectionSample(newPoint);
                             sample = knn.classify(sample);
+                            //Console.WriteLine(sample.sampleDeviceName);
                             Color c = knn.deviceColorLookup(sample.sampleDeviceName);
+                            //Console.WriteLine("X:" + stepCounterVirtualWidth + " Y: " + stepCounterVirtualHeight + " Color:" + c.ToString());
                             bitmap.SetPixel(stepCounterVirtualWidth, stepCounterVirtualHeight, c);
                             Console.Write(".");
                         }
                         virtualWidthReducer = 1;
                         virtualHeightReducer++;
-                       
+
                     }
 
                     wall.deviceAreas = bitmap;
                     bitmap.RotateFlip(RotateFlipType.RotateNoneFlipX);
                     bitmap.Save(AppDomain.CurrentDomain.BaseDirectory + wall.name + ".bmp");
-                }
+                    Console.WriteLine("");
+
+                
             }
+            
         }
                 //if (wall.plane.Normal.X != 0)
                 //{

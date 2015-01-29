@@ -93,25 +93,35 @@ namespace IGS.Kinect
             Vector3D[] filtered = new Vector3D[4];
             List<double> distanceList = new List<double>();
 
-            for (int jlIterator = 0; jlIterator < jointLists.Count; jlIterator++)
+            List<Vector3D> joints = new List<Vector3D>();
+            for (int jointMarker = 0; jointMarker < jointLists[1].Length; jointMarker++)
             {
-                for (int i = 0; i < jointLists[jlIterator].Length; i++)
+                for (int jlIterator = 0; jlIterator < jointLists.Count; jlIterator++)
+                {
+                    joints.Add(jointLists[jlIterator][jointMarker]);
+                }
+
+
+                for (int i = 0; i < joints.Count; i++)
                 {
                     double tmpTotalDist = 0;
-                    for (int j = 0; j < jointLists[jlIterator].Length; j++)
+                    for (int j = 0; j <  joints.Count; j++)
                     {
                         if (i != j)
                         {
-                            tmpTotalDist += l2Norm(jointLists[jlIterator][i], jointLists[jlIterator][i]);
+                            tmpTotalDist += l2Norm(joints[i], joints[j]);
                         }
                     }
 
-                    distanceList.Add(tmpTotalDist);   
+                    distanceList.Add(tmpTotalDist);
 
                 }
 
-                filtered[jlIterator] = jointLists[jlIterator][distanceList.IndexOf(distanceList.Min())];
+                filtered[jointMarker] = joints[distanceList.IndexOf(distanceList.Min())];
+                distanceList.Clear();
+                joints.Clear();
             }
+
 
             return filtered;
         }
@@ -131,7 +141,7 @@ namespace IGS.Kinect
 
             
 
-            if (p == 2)
+            if (p == 2.0)
             {
                 result = Math.Sqrt(Math.Pow(diffX, p) + Math.Pow(diffY, p) + Math.Pow(diffZ, p));
             }

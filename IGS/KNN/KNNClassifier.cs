@@ -12,13 +12,16 @@ using System.Drawing;
 
 namespace IGS.KNN
 {
-    public class KNNClassifierHandler
+    public class KNNClassifier
     {
-        public List<KNNSample> samples { get; set; }
+        public List<WallProjectionSample> samples { get; set; }
         public List<String> labels { get; set; }
         KNNGenerator generator { get; set; }
         LearningModel learned { get; set; }
         public List<deviceColor> deviceSampleColors { get; set; }
+
+        public bool initialized { get; set; }
+
         public struct deviceColor
         {
             public String deviceName;
@@ -26,14 +29,14 @@ namespace IGS.KNN
         }
 
 
-        public KNNClassifierHandler()
+        public KNNClassifier()
         {
-            var descriptor = Descriptor.Create<KNNSample>();
+            var descriptor = Descriptor.Create<WallProjectionSample>();
             generator = new KNNGenerator();
-            samples = XMLComponentHandler.readKNNSamplesFromXML();
+            List<WallProjectionSample> tmpSamples = XMLComponentHandler.readWallProjectionSamplesFromXML();
             labels = new List<string>();
-
-            foreach (KNNSample sample in samples)
+            initialized = false;
+            foreach (WallProjectionSample sample in tmpSamples)
             {
                 if(labels.Contains(sample.sampleDeviceName) == false)
                 {
@@ -53,6 +56,7 @@ namespace IGS.KNN
             
 
             generator.Descriptor = descriptor;
+            initialized = true;
         }
 
         private void filldeviceSampleCOlorsFixed()
@@ -119,13 +123,31 @@ namespace IGS.KNN
             learned = Learner.Learn(samples, 0.80, 1000, generator);
         }
 
-        public KNNSample classify(KNNSample sample)
+        public WallProjectionSample classify(WallProjectionSample sample)
         {
-            trainClassifier();
+       
             return learned.Model.Predict(sample);
         }
 
-        public void addSample(KNNSample s)
+        public void learnBatch(List<WallProjectionSample> trainingSamples)
+        {
+            if (initialized == true)
+            {
+                foreach (WallProjectionSample s in trainingSamples)
+                {
+                    samples.Add(s);
+                    XMLComponentHandler.writeWallProjectionSampleToXML(s);
+                }
+            }
+            else
+            {
+                samples = trainingSamples;
+            }
+
+            trainClassifier();
+        }
+
+        public void learnOnline(WallProjectionSample s)
         {
             samples.Add(s);
             trainClassifier();

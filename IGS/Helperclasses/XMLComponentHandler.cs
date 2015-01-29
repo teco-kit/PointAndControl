@@ -3,6 +3,7 @@ using IGS.Server.Devices;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -304,10 +305,193 @@ namespace IGS.Helperclasses
             docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");
         }
 
-        public static void writeKNNSampleToXML(KNNSample sample)
+
+        public static void writeWallProjectionAndPositionSampleToXML(WallProjectionAndPositionSample sample)
         {
             XmlDocument docConfig = new XmlDocument();
-            docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\KNNSamples.xml");
+            docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionAndPositionSamples.xml");
+            XmlNode node = docConfig.SelectSingleNode("/devices");
+
+            foreach (XmlNode deviceNode in node.ChildNodes)
+            {
+
+                if (deviceNode.FirstChild.InnerText == sample.sampleDeviceName && deviceNode.FirstChild.Name == "deviceName")
+                {
+                    if (deviceNode.ChildNodes[1].Name == "samples")
+                    {
+                        
+                        XmlElement xmlSample = docConfig.CreateElement("sample");
+                        XmlElement samplePos = docConfig.CreateElement("wallPosition");
+                        XmlElement posX = docConfig.CreateElement("X");
+                        posX.InnerText = sample.wallPositionX.ToString();
+                        samplePos.AppendChild(posX);
+                        XmlElement posY = docConfig.CreateElement("Y");
+                        posY.InnerText = sample.wallPositionY.ToString();
+                        samplePos.AppendChild(posY);
+                        XmlElement posZ = docConfig.CreateElement("Z");
+                        posZ.InnerText = sample.wallPositionZ.ToString();
+                        samplePos.AppendChild(posZ);
+                        xmlSample.AppendChild(samplePos);
+
+                        XmlElement writepersonPosition = docConfig.CreateElement("personPosition");
+                        XmlElement writeppX = docConfig.CreateElement("X");
+                        writeppX.InnerText = sample.personPositionX.ToString();
+                        writepersonPosition.AppendChild(writeppX);
+                        XmlElement writeppY = docConfig.CreateElement("Y");
+                        writeppY.InnerText = sample.personPositionY.ToString();
+                        writepersonPosition.AppendChild(writeppY);
+                        XmlElement writeppZ = docConfig.CreateElement("Z");
+                        writeppZ.InnerText = sample.personPositionZ.ToString();
+                        writepersonPosition.AppendChild(writeppZ);
+                        xmlSample.AppendChild(writepersonPosition);
+                        //xmlPosition.SetAttribute("X:", sample.x.ToString());
+                        //xmlPosition.SetAttribute("Y:", sample.y.ToString());
+                        //xmlPosition.SetAttribute("Z:", sample.z.ToString());
+                        deviceNode.ChildNodes[1].AppendChild(xmlSample);
+                        
+                        docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionAndPositionSamples.xml");
+                        return;
+                    }
+                    
+                }
+            }
+
+            XmlElement newDev = docConfig.CreateElement("device");
+            XmlElement deviceName = docConfig.CreateElement("deviceName");
+            deviceName.InnerText = sample.sampleDeviceName;
+            XmlElement samplePositions = docConfig.CreateElement("samples");
+            XmlElement newSample = docConfig.CreateElement("sample");
+            XmlElement samplePosition = docConfig.CreateElement("wallPosition");
+            XmlElement X = docConfig.CreateElement("X");
+            X.InnerText = sample.wallPositionX.ToString();
+            samplePosition.AppendChild(X);
+            XmlElement Y = docConfig.CreateElement("Y");
+            Y.InnerText = sample.wallPositionY.ToString();
+            samplePosition.AppendChild(Y);
+            XmlElement Z = docConfig.CreateElement("Z");
+            Z.InnerText = sample.wallPositionZ.ToString();
+            samplePosition.AppendChild(Z);
+            XmlElement personPosition = docConfig.CreateElement("personPosition");
+            XmlElement ppX = docConfig.CreateElement("X");
+            ppX.InnerText = sample.personPositionX.ToString();
+            personPosition.AppendChild(ppX);
+            XmlElement ppY = docConfig.CreateElement("Y");
+            ppY.InnerText = sample.personPositionY.ToString();
+            personPosition.AppendChild(ppY);
+            XmlElement ppZ = docConfig.CreateElement("Z");
+            ppZ.InnerText = sample.personPositionZ.ToString();
+            personPosition.AppendChild(ppZ);
+
+
+            newSample.AppendChild(samplePosition);
+            newSample.AppendChild(personPosition);
+            samplePositions.AppendChild(newSample);
+            newDev.AppendChild(deviceName);
+            newDev.AppendChild(samplePositions);
+
+            node.AppendChild(newDev);
+            docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\KNNSamples.xml");
+            return;
+        }
+
+
+        public static void writeWallProjectionAndPositionSampleToXML(WallProjectionAndPositionSample sample, String fileName)
+        {
+
+
+            String p = AppDomain.CurrentDomain.BaseDirectory + "\\" + fileName + ".xml";
+
+
+            XmlDocument docConfig = new XmlDocument();
+            docConfig.Load(p);
+            XmlNode node = docConfig.SelectSingleNode("/devices");
+
+            foreach (XmlNode deviceNode in node.ChildNodes)
+            {
+
+                if (deviceNode.FirstChild.InnerText == sample.sampleDeviceName && deviceNode.FirstChild.Name == "deviceName")
+                {
+                    if (deviceNode.ChildNodes[1].Name == "samples")
+                    {
+
+                        XmlElement xmlSample = docConfig.CreateElement("sample");
+                        XmlElement samplePos = docConfig.CreateElement("wallPosition");
+                        XmlElement posX = docConfig.CreateElement("X");
+                        posX.InnerText = sample.wallPositionX.ToString();
+                        samplePos.AppendChild(posX);
+                        XmlElement posY = docConfig.CreateElement("Y");
+                        posY.InnerText = sample.wallPositionY.ToString();
+                        samplePos.AppendChild(posY);
+                        XmlElement posZ = docConfig.CreateElement("Z");
+                        posZ.InnerText = sample.wallPositionZ.ToString();
+                        samplePos.AppendChild(posZ);
+                        xmlSample.AppendChild(samplePos);
+
+                        XmlElement writepersonPosition = docConfig.CreateElement("personPosition");
+                        XmlElement writeppX = docConfig.CreateElement("X");
+                        writeppX.InnerText = sample.personPositionX.ToString();
+                        writepersonPosition.AppendChild(writeppX);
+                        XmlElement writeppY = docConfig.CreateElement("Y");
+                        writeppY.InnerText = sample.personPositionY.ToString();
+                        writepersonPosition.AppendChild(writeppY);
+                        XmlElement writeppZ = docConfig.CreateElement("Z");
+                        writeppZ.InnerText = sample.personPositionZ.ToString();
+                        writepersonPosition.AppendChild(writeppZ);
+                        xmlSample.AppendChild(writepersonPosition);
+                        deviceNode.ChildNodes[1].AppendChild(xmlSample);
+
+                        docConfig.Save(p);
+                        return;
+                    }
+
+                }
+            }
+
+            XmlElement newDev = docConfig.CreateElement("device");
+            XmlElement deviceName = docConfig.CreateElement("deviceName");
+            deviceName.InnerText = sample.sampleDeviceName;
+            XmlElement samplePositions = docConfig.CreateElement("samples");
+            XmlElement newSample = docConfig.CreateElement("sample");
+            XmlElement samplePosition = docConfig.CreateElement("wallPosition");
+            XmlElement X = docConfig.CreateElement("X");
+            X.InnerText = sample.wallPositionX.ToString();
+            samplePosition.AppendChild(X);
+            XmlElement Y = docConfig.CreateElement("Y");
+            Y.InnerText = sample.wallPositionY.ToString();
+            samplePosition.AppendChild(Y);
+            XmlElement Z = docConfig.CreateElement("Z");
+            Z.InnerText = sample.wallPositionZ.ToString();
+            samplePosition.AppendChild(Z);
+            XmlElement personPosition = docConfig.CreateElement("personPosition");
+            XmlElement ppX = docConfig.CreateElement("X");
+            ppX.InnerText = sample.personPositionX.ToString();
+            personPosition.AppendChild(ppX);
+            XmlElement ppY = docConfig.CreateElement("Y");
+            ppY.InnerText = sample.personPositionY.ToString();
+            personPosition.AppendChild(ppY);
+            XmlElement ppZ = docConfig.CreateElement("Z");
+            ppZ.InnerText = sample.personPositionZ.ToString();
+            personPosition.AppendChild(ppZ);
+
+
+
+            newSample.AppendChild(samplePosition);
+            newSample.AppendChild(personPosition);
+            samplePositions.AppendChild(newSample);
+            newDev.AppendChild(deviceName);
+            newDev.AppendChild(samplePositions);
+
+            node.AppendChild(newDev);
+            docConfig.Save(p);
+            return;
+        }
+
+
+
+        public static void writeWallProjectionSampleToXML(WallProjectionSample sample)
+        {
+            XmlDocument docConfig = new XmlDocument();
+            docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionSamples.xml");
             XmlNode node = docConfig.SelectSingleNode("/devices");
 
             foreach (XmlNode deviceNode in node.ChildNodes)
@@ -360,11 +544,112 @@ namespace IGS.Helperclasses
             docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\KNNSamples.xml");
             return;
         }
-
-
-        public static List<KNNSample> readKNNSamplesFromXML()
+        public static void writeWallProjectionSampleToXML(WallProjectionSample sample, String fileName)
         {
-            List<KNNSample> sampleList = new List<KNNSample>();
+            String p = AppDomain.CurrentDomain.BaseDirectory + "\\" + fileName + ".xml";
+
+          
+            XmlDocument docConfig = new XmlDocument();
+            docConfig.Load(p);
+            XmlNode node = docConfig.SelectSingleNode("/devices");
+
+            foreach (XmlNode deviceNode in node.ChildNodes)
+            {
+
+                if (deviceNode.FirstChild.InnerText == sample.sampleDeviceName && deviceNode.FirstChild.Name == "deviceName")
+                {
+                    if (deviceNode.ChildNodes[1].Name == "samplePositions")
+                    {
+                        XmlElement xmlPosition = docConfig.CreateElement("position");
+                        XmlElement posX = docConfig.CreateElement("X");
+                        posX.InnerText = sample.x.ToString();
+                        xmlPosition.AppendChild(posX);
+                        XmlElement posY = docConfig.CreateElement("Y");
+                        posY.InnerText = sample.y.ToString();
+                        xmlPosition.AppendChild(posY);
+                        XmlElement posZ = docConfig.CreateElement("Z");
+                        posZ.InnerText = sample.z.ToString();
+                        xmlPosition.AppendChild(posZ);
+                        //xmlPosition.SetAttribute("X:", sample.x.ToString());
+                        //xmlPosition.SetAttribute("Y:", sample.y.ToString());
+                        //xmlPosition.SetAttribute("Z:", sample.z.ToString());
+                        deviceNode.ChildNodes[1].AppendChild(xmlPosition);
+                        docConfig.Save(p);
+                        return;
+                    }
+                }
+            }
+
+            XmlElement newDev = docConfig.CreateElement("device");
+            XmlElement deviceName = docConfig.CreateElement("deviceName");
+            deviceName.InnerText = sample.sampleDeviceName;
+            XmlElement samplePositions = docConfig.CreateElement("samplePositions");
+            XmlElement position = docConfig.CreateElement("position");
+            XmlElement X = docConfig.CreateElement("X");
+            X.InnerText = sample.x.ToString();
+            position.AppendChild(X);
+            XmlElement Y = docConfig.CreateElement("Y");
+            Y.InnerText = sample.y.ToString();
+            position.AppendChild(Y);
+            XmlElement Z = docConfig.CreateElement("Z");
+            Z.InnerText = sample.z.ToString();
+            position.AppendChild(Z);
+
+            samplePositions.AppendChild(position);
+            newDev.AppendChild(deviceName);
+            newDev.AppendChild(samplePositions);
+
+            node.AppendChild(newDev);
+            docConfig.Save(p);
+            return;
+        }
+
+        public static List<WallProjectionSample> readWallProjectionAndPositionSamplesFromXML()
+        {
+            List<WallProjectionSample> sampleList = new List<WallProjectionSample>();
+
+            XmlDocument docConfig = new XmlDocument();
+            docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\KNNSamples.xml");
+
+            XmlNodeList devices = docConfig.SelectSingleNode("/devices").ChildNodes;
+
+            foreach (XmlNode device in devices)
+            {
+                String knnDeviceName = "";
+                foreach (XmlNode prop in device)
+                {
+                    if (prop.Name.Equals("deviceName"))
+                    {
+                        knnDeviceName = prop.InnerText;
+                    }
+                    else if (prop.Name.Equals("samples"))
+                    {
+                        foreach (XmlNode sample in prop.ChildNodes)
+                        {
+                            WallProjectionSample s = new WallProjectionSample(new Point3D(
+                                double.Parse(sample.FirstChild.ChildNodes[0].InnerText),
+                                double.Parse(sample.FirstChild.ChildNodes[1].InnerText),
+                                double.Parse(sample.FirstChild.ChildNodes[2].InnerText)), knnDeviceName);
+
+                            Vector3D position = new Vector3D(
+                                double.Parse(sample.ChildNodes[1].ChildNodes[0].InnerText),
+                                double.Parse(sample.ChildNodes[1].ChildNodes[1].InnerText),
+                                double.Parse(sample.ChildNodes[1].ChildNodes[2].InnerText)
+                            );
+
+                            sampleList.Add(s);
+                        }
+                    }
+                }
+
+            }
+
+            return sampleList;
+        }
+
+        public static List<WallProjectionSample> readWallProjectionSamplesFromXML()
+        {
+            List<WallProjectionSample> sampleList = new List<WallProjectionSample>();
 
             XmlDocument docConfig = new XmlDocument();
             docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\KNNSamples.xml");
@@ -384,7 +669,7 @@ namespace IGS.Helperclasses
                     {
                         foreach (XmlNode position in prop.ChildNodes)
                         {
-                            KNNSample s = new KNNSample(new Point3D(
+                            WallProjectionSample s = new WallProjectionSample(new Point3D(
                                 double.Parse(position.ChildNodes[0].InnerText),
                                 double.Parse(position.ChildNodes[1].InnerText),
                                 double.Parse(position.ChildNodes[2].InnerText)), knnDeviceName);
@@ -493,6 +778,18 @@ namespace IGS.Helperclasses
             node.AppendChild(newDev);
             docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\samples.xml");
             return;
+        }
+
+        public static void testAndCreateSampleXML(String fileName)
+        {
+            String p = AppDomain.CurrentDomain.BaseDirectory + "\\" + fileName + ".xml";
+
+
+            if (!File.Exists(p))
+            {
+                XElement root = new XElement("devices");
+                root.Save(p);
+            }
         }
     }
 }

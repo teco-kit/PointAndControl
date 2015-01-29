@@ -90,7 +90,7 @@ namespace IGS
         /// </summary>
         /// <param name="list">The locally stored device list</param>
         /// <param name="transformator">The transformator used for transforming the coordinates from camera to world coordinates</param>
-        public Room3DView(List<KNNSample> list, CoordTransform transformator)
+        public Room3DView(List<WallProjectionSample> list, CoordTransform transformator)
         {
             this.transformator = transformator;
             skelList = new List<ModelVisual3D>();
@@ -166,7 +166,7 @@ namespace IGS
         /// <param name="width">the width of the room</param>
         /// <param name="height">the height of the room</param>
         /// <param name="depth">the depth of the room</param>
-        public void createRoom(float width, float depth, float height)
+        public void createRoom(float width, float height, float depth)
         {
             
             Point3D p0 = new Point3D(0, 0, 0);
@@ -470,9 +470,9 @@ namespace IGS
             return sphereList;
         }
 
-        private void fillRoomWithSamplesColorFixedDevices(List<KNNSample> samples)
+        private void fillRoomWithSamplesColorFixedDevices(List<WallProjectionSample> samples)
         {
-            foreach (KNNSample sample in samples)
+            foreach (WallProjectionSample sample in samples)
             {
                 if(sample.sampleDeviceName.Equals("ExampleBoxee"))
                     addSampleView(new Point3D(sample.x, sample.y, sample.z), new DiffuseMaterial(Brushes.Yellow));
@@ -493,9 +493,9 @@ namespace IGS
             }
         }
 
-        private void fillRoomWithSamples(List<KNNSample> samples)
+        private void fillRoomWithSamples(List<WallProjectionSample> samples)
         {
-            foreach (KNNSample sample in samples)
+            foreach (WallProjectionSample sample in samples)
             {
                 
                     addSampleView(new Point3D(sample.x, sample.y, sample.z));

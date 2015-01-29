@@ -305,13 +305,12 @@ namespace IGS.Server.Kinect
                     lastBodies.Clear();
                 }
 
-              
-            if (returnList.Count == 0) return null;
-            else return returnList;
+
+               return returnList;
         }
 
 
-        public Vector3D[] getMedianSmoothedCoordinates(int id)
+        public Vector3D[] getMedianFilteredCoordinates(int id)
         {
             List<Vector3D[]> coords = this.Get30Coordinates(id);
             Vector3D[] smoothed = skeletonJointFilter.jointFilter(coords);

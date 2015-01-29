@@ -473,6 +473,8 @@ namespace IGS.Server.WebServer
         /// <param name="p">the HttpProcessor processing the connection with the client.</param>
         /// <param name="msg">the response</param>
         public abstract void SendResponse(HttpProcessor p, String msg);
+
+        //public abstract void SendDataDirect(HttpProcessor p, String msg);
     }
 
 
@@ -603,10 +605,11 @@ namespace IGS.Server.WebServer
         /// </summary>
         private void sendData(HttpProcessor p)
         {
-            if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\" + p.HttpUrl))
+            Console.WriteLine("Processor URL Direct:" + p.HttpUrl);
+            if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\"  + p.HttpUrl))
             {
                 using (
-                    Stream fs = File.Open(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\" + p.HttpUrl,
+                    Stream fs = File.Open(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\"  +  p.HttpUrl,
                                           FileMode.Open)
                     )
                 {
@@ -619,6 +622,27 @@ namespace IGS.Server.WebServer
                 p.WriteFailure();
             }
         }
+
+        //public override void SendDataDirect(HttpProcessor p, String site)
+        //{
+            
+        //    Console.WriteLine("Processor URL Direct:" + p.HttpUrl + "\n");
+        //    if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\" + site))
+        //    {
+        //        using (
+        //            Stream fs = File.Open(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\" + site,
+        //                                  FileMode.Open)
+        //            )
+        //        {
+        //            fs.CopyTo(p.OutputStream.BaseStream);
+        //            p.OutputStream.BaseStream.Flush();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        p.WriteFailure();
+        //    }
+        //}
 
         /// <summary>
         ///     Sends a response to the client.

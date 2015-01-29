@@ -154,10 +154,16 @@ namespace IGS.Helperclasses
             rootElement.Save(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");
         }
 
-        public static void createKNNSampleXMLFile()
+        public static void createWallProjectionSampleXMLFile()
         {
             XElement root = new XElement("devices");
-            root.Save(AppDomain.CurrentDomain.BaseDirectory + "\\KNNSamples.xml");
+            root.Save(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionSamples.xml");
+        }
+
+        public static void createWallProjectionAndPositionSampleXMLFile()
+        {
+            XElement root = new XElement("devices");
+            root.Save(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionAndPositionSamples.xml");
         }
 
         public static void createSampleXMLFIle()

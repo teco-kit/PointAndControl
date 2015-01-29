@@ -9,7 +9,7 @@ using System.Windows.Media.Media3D;
 
 namespace IGS.KNN
 {
-    public class KNNSample
+    public class WallProjectionSample
     {
         [Feature]
         public double x { get; set; }
@@ -20,21 +20,21 @@ namespace IGS.KNN
         [Label]
         public String sampleDeviceName { get; set; }
 
-        public KNNSample(Point3D position)
+        public WallProjectionSample(Point3D position)
         {
             this.x = position.X;
             this.y = position.Y;
             this.z = position.Z;
         }
 
-        public KNNSample()
+        public WallProjectionSample()
         {
             this.x = 0;
             this.y = 0;
             this.z = 0;
         }
 
-        public KNNSample(Point3D position, string deviceName)
+        public WallProjectionSample(Point3D position, string deviceName)
         {
             this.x = position.X;
             this.y = position.Y;
@@ -42,9 +42,5 @@ namespace IGS.KNN
             sampleDeviceName = deviceName;
         }
 
-        public void labelSample(string label)
-        {
-
-        }
     }
 }

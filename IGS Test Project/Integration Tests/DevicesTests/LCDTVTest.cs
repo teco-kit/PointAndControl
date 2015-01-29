@@ -10,7 +10,7 @@ namespace IGS_Integration_Test_Project.DevicesTests
     [TestFixture]
     public class LCDTVTest {
 
-        NECLCDmonitorMultiSyncV421 tv;
+        NecLcdMonitorMultiSyncV421 tv;
         private String ip = "";
         private String port = "";
 
@@ -26,7 +26,7 @@ namespace IGS_Integration_Test_Project.DevicesTests
             ip = "192.168.2.106";
 
             Ball ball1 = new Ball(new Vector3D(1, 1, 1), 1);
-            tv = new NECLCDmonitorMultiSyncV421("tv", "tv1", new List<Ball> { ball1 }, ip, port);
+            tv = new NecLcdMonitorMultiSyncV421("tv", "tv1", new List<Ball> { ball1 }, ip, port);
         }
 
         /// <summary>
