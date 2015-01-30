@@ -652,7 +652,7 @@ namespace IGS.Helperclasses
             List<WallProjectionSample> sampleList = new List<WallProjectionSample>();
 
             XmlDocument docConfig = new XmlDocument();
-            docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\KNNSamples.xml");
+            docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionSamples.xml");
            
             XmlNodeList devices = docConfig.SelectSingleNode("/devices").ChildNodes;
 

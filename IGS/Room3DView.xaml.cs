@@ -117,7 +117,7 @@ namespace IGS
             kinect = new ModelVisual3D();
            
             InitializeComponent();
-            fillRoomWithSamplesColorFixedDevices(list);
+            //fillRoomWithSamplesColorFixedDevices(list);
             //FillRoom();
         }
 
