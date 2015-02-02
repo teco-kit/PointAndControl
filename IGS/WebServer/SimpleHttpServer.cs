@@ -651,6 +651,7 @@ namespace IGS.Server.WebServer
         /// <param name="msg">the response</param>
         public override void SendResponse(HttpProcessor p, String msg)
         {
+            Console.WriteLine("Response: " + msg);
             p.OutputStream.Write(msg);
         }
     }

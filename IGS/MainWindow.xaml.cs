@@ -261,7 +261,7 @@ public partial class MainWindow
             Initializer.createXMLFile();
         }
 
-        if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\KNNSamples.xml"))
+        if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionSamples.xml"))
         {
             Initializer.createWallProjectionSampleXMLFile();
         }
@@ -303,6 +303,73 @@ public partial class MainWindow
         this.displayHeight = depthFrameDescription.Width;
 
         this.imageSourceSkeleton = new DrawingImage(this._drawingGroup);
+
+
+        //List<Vector3D[]> allVecs = new List<Vector3D[]>();
+
+        //Vector3D[] vecs1 = new Vector3D[4];
+        //Random r = new Random();
+
+        //Vector3D vec01 = new Vector3D(r.Next(10), r.Next(10), r.Next(10));
+        //Vector3D vec02 = new Vector3D(r.Next(10), r.Next(10), r.Next(10));
+        //Vector3D vec03 = new Vector3D(r.Next(10), r.Next(10), r.Next(10));
+        //Vector3D vec04 = new Vector3D(r.Next(10), r.Next(10), r.Next(10));
+
+        //vecs1[0] = vec01;
+        //vecs1[1] = vec02;
+        //vecs1[2] = vec03;
+        //vecs1[3] = vec04;
+
+
+        //allVecs.Add(vecs1);
+
+
+        //Vector3D[] vecs2 = new Vector3D[4];
+
+        //Vector3D vec11 = new Vector3D(r.Next(10), r.Next(10), r.Next(10));
+        //Vector3D vec12 = new Vector3D(r.Next(10), r.Next(10), r.Next(10));
+        //Vector3D vec13 = new Vector3D(r.Next(10), r.Next(10), r.Next(10));
+        //Vector3D vec14 = new Vector3D(r.Next(10), r.Next(10), r.Next(10));
+
+        //vecs2[0] = vec11;
+        //vecs2[1] = vec12;
+        //vecs2[2] = vec13;
+        //vecs2[3] = vec14;
+
+
+        //allVecs.Add(vecs2);
+
+        //Vector3D[] vecs3 = new Vector3D[4];
+
+        //Vector3D vec21 = new Vector3D(r.Next(10), r.Next(10), r.Next(10));
+        //Vector3D vec22 = new Vector3D(r.Next(10), r.Next(10), r.Next(10));
+        //Vector3D vec23 = new Vector3D(r.Next(10), r.Next(10), r.Next(10));
+        //Vector3D vec24 = new Vector3D(r.Next(10), r.Next(10), r.Next(10));
+
+        //vecs3[0] = vec21;
+        //vecs3[1] = vec22;
+        //vecs3[2] = vec23;
+        //vecs3[3] = vec24;
+
+
+        //allVecs.Add(vecs3);
+
+        //Vector3D[] vecs4 = new Vector3D[4];
+
+        //Vector3D vec31 = new Vector3D(r.Next(10), r.Next(10), r.Next(10));
+        //Vector3D vec32 = new Vector3D(r.Next(10), r.Next(10), r.Next(10));
+        //Vector3D vec33 = new Vector3D(r.Next(10), r.Next(10), r.Next(10));
+        //Vector3D vec34 = new Vector3D(r.Next(10), r.Next(10), r.Next(10));
+
+        //vecs4[0] = vec31;
+        //vecs4[1] = vec32;
+        //vecs4[2] = vec33;
+        //vecs4[3] = vec34;
+
+
+        //allVecs.Add(vecs4);
+
+        //_igs.Tracker.skeletonJointFilter.jointFilter(allVecs);
     }
 
     /// <summary>
@@ -625,7 +692,7 @@ public partial class MainWindow
     private void _3DViewButton_Click(object sender, RoutedEventArgs e)
     {
 
-        _3Dview = new Room3DView(_igs.classification.knnClassifier.samples, _igs.Transformer);
+        _3Dview = new Room3DView(_igs.classification.knnClassifier.samples, _igs.classification.knnClassifier.deviceSampleColors, _igs.Transformer);
         _3Dview.SetKinectCamera(_igs.IGSKinect);
         _3Dview.ClipToBounds = false;
         _3Dview.mainViewport.Effect = null;

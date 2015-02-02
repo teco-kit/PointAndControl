@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using IGS.Helperclasses;
 using System.Windows.Media.Media3D;
 using IGS.Server.IGS;
 
@@ -24,12 +23,12 @@ namespace IGS.KNN
 
         public ClassificationHandler()
         {
-            knnClassifier = new KNNClassifier();
-            collector = new SampleCollector(knnClassifier);
+            knnClassifier = new KNNClassifier(XMLComponentHandler.readWallProjectionSamplesFromXML());
+            
             extractor = new SampleExtractor("BA_REICHE_LogFile");
             splitter = new SampleSplitter();
             deviceClassificationCount = 0;
-
+            collector = new SampleCollector(knnClassifier);
         }
 
 

@@ -90,7 +90,7 @@ namespace IGS
         /// </summary>
         /// <param name="list">The locally stored device list</param>
         /// <param name="transformator">The transformator used for transforming the coordinates from camera to world coordinates</param>
-        public Room3DView(List<WallProjectionSample> list, CoordTransform transformator)
+        public Room3DView(List<WallProjectionSample> list, List<KNN.KNNClassifier.deviceColor> devColors, CoordTransform transformator)
         {
             this.transformator = transformator;
             skelList = new List<ModelVisual3D>();
@@ -117,7 +117,7 @@ namespace IGS
             kinect = new ModelVisual3D();
            
             InitializeComponent();
-            //fillRoomWithSamplesColorFixedDevices(list);
+            fillRoomWithColoredSamples(list, devColors);
             //FillRoom();
         }
 
@@ -469,37 +469,21 @@ namespace IGS
 
             return sphereList;
         }
-
-        private void fillRoomWithSamplesColorFixedDevices(List<WallProjectionSample> samples)
+        
+        private void fillRoomWithColoredSamples(List<WallProjectionSample> samples, List<KNNClassifier.deviceColor> devColors)
         {
             foreach (WallProjectionSample sample in samples)
             {
-                if(sample.sampleDeviceName.Equals("ExampleBoxee"))
-                    addSampleView(new Point3D(sample.x, sample.y, sample.z), new DiffuseMaterial(Brushes.Yellow));
-                else if (sample.sampleDeviceName.Equals("ExamplePlugwise"))
-                    addSampleView(new Point3D(sample.x, sample.y, sample.z), new DiffuseMaterial(new SolidColorBrush(Colors.Violet)));
-                else if (sample.sampleDeviceName.Equals("TV"))
-                    addSampleView(new Point3D(sample.x, sample.y, sample.z), new DiffuseMaterial(new SolidColorBrush(Colors.Purple)));
-                else if (sample.sampleDeviceName.Equals("XBoxee"))
-                    addSampleView(new Point3D(sample.x, sample.y, sample.z), new DiffuseMaterial(new SolidColorBrush(Colors.Green)));
-                else if (sample.sampleDeviceName.Equals("Energiemarkt"))
-                    addSampleView(new Point3D(sample.x, sample.y, sample.z), new DiffuseMaterial(new SolidColorBrush(Colors.Gray)));
-                else if (sample.sampleDeviceName.Equals("Drucker"))
-                    addSampleView(new Point3D(sample.x, sample.y, sample.z), new DiffuseMaterial(new SolidColorBrush(Colors.Khaki)));
-                else if (sample.sampleDeviceName.Equals("LampeMarkt"))
-                    addSampleView(new Point3D(sample.x, sample.y, sample.z), new DiffuseMaterial(new SolidColorBrush(Colors.Maroon)));
-                else if (sample.sampleDeviceName.Equals("LEDLampe"))
-                    addSampleView(new Point3D(sample.x, sample.y, sample.z), new DiffuseMaterial(new SolidColorBrush(Colors.Black)));
-            }
-        }
-
-        private void fillRoomWithSamples(List<WallProjectionSample> samples)
-        {
-            foreach (WallProjectionSample sample in samples)
-            {
-                
-                    addSampleView(new Point3D(sample.x, sample.y, sample.z));
-                
+                foreach (KNNClassifier.deviceColor devColor in devColors)
+                {
+                    if (sample.sampleDeviceName == devColor.deviceName)
+                    {
+                        Color c = Color.FromArgb(devColor.color.A, devColor.color.R, devColor.color.G, devColor.color.B);
+                        Material mat = new DiffuseMaterial(new SolidColorBrush(c));
+                        addSampleView(new Point3D(sample.x, sample.y, sample.z), mat);
+                        break;
+                    }
+                }
             }
         }
         /// <summary>
@@ -683,18 +667,18 @@ namespace IGS
             mainViewport.Children.Add(skelRayList[bodyNr]);
         }
 
-        public void actualizeFloor(Vector3D normal, Point3D origin, float width, float depth)
-        {
-             mainViewport.Children.Remove(floor);
-             Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.Green));
-             floor.Material = mat;
-             floor.Visible = true;
-             floor.Normal = normal;
-             floor.Origin = origin;
-             floor.Width = width;
-             floor.Length = depth;
-             mainViewport.Children.Add(floor);
-        }
+        //public void actualizeFloor(Vector3D normal, Point3D origin, float width, float depth)
+        //{
+        //     mainViewport.Children.Remove(floor);
+        //     Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.Green));
+        //     floor.Material = mat;
+        //     floor.Visible = true;
+        //     floor.Normal = normal;
+        //     floor.Origin = origin;
+        //     floor.Width = width;
+        //     floor.Length = depth;
+        //     mainViewport.Children.Add(floor);
+        //}
 
         public void addSampleView(Point3D center) 
         {

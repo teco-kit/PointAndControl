@@ -88,16 +88,12 @@ namespace IGS.Server.IGS
         /// </summary>
         public bool devInit { get; set; }
 
-        public bool sendHTML { get; set; }
+
         /// <summary>
         /// With the "set"-method the CoordTransform can be set.
         /// With the "get"-method the CoordTransform can be returned.
         /// </summary>
         public CoordTransform Transformer { get; set; }
-
-        public SampleCollector collector { get; set; }
-
-   
 
         public ClassificationHandler classification { get; set; }
 
@@ -202,6 +198,7 @@ namespace IGS.Server.IGS
             String value = args.Val;
             String wlanAdr = args.ClientIp;
             String retStr = "";
+            
 
             if (devId == "server")
             {
@@ -223,7 +220,6 @@ namespace IGS.Server.IGS
                         if (Data.GetUserByIp(wlanAdr) != null)
                         {
                             retStr = SkeletonIdToUser(wlanAdr).ToString();
-                            Console.WriteLine(retStr);
                             return retStr;
 
                         }
@@ -236,7 +232,7 @@ namespace IGS.Server.IGS
                         {
                             
                             retStr = MakeDeviceString(ChooseDevice(wlanAdr));
-                            Console.WriteLine("ListRetStr:" + retStr);
+
                             return retStr;
                         }
                         Server.SendResponse(args.P, "ungueltiger Befehl");
@@ -286,16 +282,16 @@ namespace IGS.Server.IGS
                     return retStr;
 
                 }
-                else if (devId != null && cmdId == "getDeviceControlAdress" && Data.getDeviceByID(devId) != null)
+                else if (devId != null && cmdId == "getControlPath" && Data.getDeviceByID(devId) != null)
                 {
 
-                    retStr = getControlPagePath(devId);
+                    retStr = getControlPagePathHttp(devId);
 
                     return retStr;
                 }
                 else if (devId != null && cmdId != null && Data.getDeviceByID(devId) != null)
                 {
-                    //executeOnlineLearning(devId, wlanAdr);
+                    executeOnlineLearning(devId, wlanAdr);
                     retStr = Data.getDeviceByID(devId).Transmit(cmdId, value);
 
                     return retStr;
@@ -365,15 +361,15 @@ namespace IGS.Server.IGS
                 //}
                 sample = classification.classify(sample);
                 Console.WriteLine("Classified:" + sample.sampleDeviceName);
-                //classification.deviceClassificationCount++;
+                classification.deviceClassificationCount++;
                 foreach(Device d in Data.Devices)
                 {
                     if (d.Name.ToLower() == sample.sampleDeviceName.ToLower())
                     {
                         dev.Add(d);
-                        //tempUser.lastChosenDeviceID = d.Id;
-                        //tempUser.lastClassDevSample = sample;
-                        //tempUser.deviceIDChecked = false;
+                        tempUser.lastChosenDeviceID = d.Id;
+                        tempUser.lastClassDevSample = sample;
+                        tempUser.deviceIDChecked = false;
                         return dev;
                     }
                 }
@@ -575,20 +571,6 @@ namespace IGS.Server.IGS
 
             controlPath = "Http://" + Server.LocalIP + ":8080" + "/"+ t.Name + "/" +"index.html";
             Console.WriteLine(controlPath);
-
-            return controlPath;
-        }
-
-        public String getControlPagePath(String id)
-        {
-            String controlPath = "";
-
-            Type t = Data.getDeviceByID(id).GetType();
-
-            controlPath = "/"  + t.Name + "/" + "index.html";
-            Console.WriteLine("ControlPath" + controlPath);
-
-            sendHTML = true;
 
             return controlPath;
         }

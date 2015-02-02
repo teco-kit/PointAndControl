@@ -29,93 +29,82 @@ namespace IGS.KNN
         }
 
 
-        public KNNClassifier()
+        public KNNClassifier(List<WallProjectionSample> list)
         {
+       
+
             var descriptor = Descriptor.Create<WallProjectionSample>();
             generator = new KNNGenerator();
-            List<WallProjectionSample> tmpSamples = XMLComponentHandler.readWallProjectionSamplesFromXML();
-            labels = new List<string>();
+            generator.Descriptor = descriptor;
+            
             initialized = false;
-            foreach (WallProjectionSample sample in tmpSamples)
+
+            learnBatch(list);
+            trainClassifier();
+
+            labels = new List<string>();
+
+            deviceSampleColors = new List<deviceColor>();
+            
+            foreach (WallProjectionSample sample in samples)
             {
                 if(labels.Contains(sample.sampleDeviceName) == false)
                 {
                     labels.Add(sample.sampleDeviceName);
+                    checkAndWriteColorForDevice(sample.sampleDeviceName);
                 }
             }
-
-            deviceSampleColors = new List<deviceColor>();
-            filldeviceSampleCOlorsFixed();
-            //foreach (String label in labels)
-            //{
-            //    deviceColor tmp = new deviceColor();
-            //    tmp.deviceName = label;
-            //    // insert Random color here
-            //}
-
             
-
-            generator.Descriptor = descriptor;
+            
+           
+           
+           
             initialized = true;
         }
 
-        private void filldeviceSampleCOlorsFixed()
+
+        public Color pickRandomColor()
         {
+            bool uniqueFound = true;
+            
+            Random random = new Random();
+            KnownColor[] names = (KnownColor[])Enum.GetValues(typeof(KnownColor));
+            KnownColor randomColorName = names[random.Next(names.Length)];
+            Color randomColor = Color.FromKnownColor(randomColorName);
 
-            deviceColor exBox = new deviceColor();
-            exBox.deviceName = "ExampleBoxee";
-            exBox.color = Color.Yellow;
-
-            deviceColor exPlug = new deviceColor();
-            exPlug.deviceName = "ExamplePlugwise";
-            exPlug.color = Color.Violet;
-
-            deviceColor TV = new deviceColor();
-            TV.deviceName = "TV";
-            TV.color = Color.Purple;
-
-            deviceColor XBox = new deviceColor();
-            XBox.deviceName = "XBoxee";
-            XBox.color = Color.Green;
-
-            deviceColor eMarkt = new deviceColor();
-            eMarkt.deviceName = "Energiemarkt";
-            eMarkt.color = Color.Gray;
-
-            deviceColor drucker = new deviceColor();
-            drucker.deviceName = "Drucker";
-            drucker.color = Color.Khaki;
-
-            deviceColor lMarkt = new deviceColor();
-            lMarkt.deviceName = "LampeMarkt";
-            lMarkt.color = Color.Maroon;
-
-            deviceColor lampe = new deviceColor();
-            lampe.deviceName = "LEDLampe";
-            lampe.color = Color.Black;
-
-            deviceSampleColors.Add(exBox);
-            deviceSampleColors.Add(exPlug);
-            deviceSampleColors.Add(TV);
-            deviceSampleColors.Add(XBox);
-            deviceSampleColors.Add(eMarkt);
-            deviceSampleColors.Add(drucker);
-            deviceSampleColors.Add(lMarkt);
-            deviceSampleColors.Add(lampe);
-
+            foreach (deviceColor dColor in deviceSampleColors)
+            {
+                if(dColor.color.Equals(randomColor))
+                {
+                    uniqueFound = false;
+                }
+            }
+            if (uniqueFound == false)
+            {
+                randomColor = pickRandomColor();
+            }
+            
+            return randomColor;
         }
 
-        //public void addSample(KNNSample sample)
-        //{
-        //    KNNSample[] tmp = new KNNSample[samples.Length + 1];
+        public void checkAndWriteColorForDevice(String deviceName)
+        {
+            foreach (deviceColor c in deviceSampleColors)
+            {
+                if (c.deviceName.Equals(deviceName))
+                {
+                    return;
+                }
+            }
 
-        //    for (int i = 0; i < samples.Length; i++)
-        //    {
-        //        tmp[i] = samples[i];
-        //    }
-        //    tmp[samples.Length + 1] = sample;
-        //    samples = tmp;
-        //}
+            deviceColor newColor = new deviceColor();
+            newColor.deviceName = deviceName;
+            newColor.color = pickRandomColor();
+            Console.WriteLine("DeviceName: " + newColor.deviceName + " Color: " + newColor.color.Name);
+            Console.WriteLine("");
+            deviceSampleColors.Add(newColor);
+
+        }
 
         public void trainClassifier()
         {
@@ -138,18 +127,19 @@ namespace IGS.KNN
                     samples.Add(s);
                     XMLComponentHandler.writeWallProjectionSampleToXML(s);
                 }
+
+                trainClassifier();
             }
             else
             {
                 samples = trainingSamples;
             }
-
-            trainClassifier();
         }
 
         public void learnOnline(WallProjectionSample s)
         {
             samples.Add(s);
+            checkAndWriteColorForDevice(s.sampleDeviceName);
             trainClassifier();
         }
 

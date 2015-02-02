@@ -115,7 +115,7 @@ namespace IGS.KNN
             //a List of Lists containing vectors for devices to retrieve the classificationboxes for 
             //every device
             List<labelEntry> wallSamples = new List<labelEntry>();
-            float step = 0.05f;
+            float step = 0.01f;
             int virtualWidthReducer = 1;
             int virtualHeightReducer = 1;
 
