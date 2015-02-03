@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Point&amp;Control</title>
+  <link rel="shortcut icon" href="favicon.ico">
+	<link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
+	<link rel="stylesheet" href="css/site.css">
+	<script src="js/jquery.min.js"></script>
+	<script src="js/jquery.mobile-1.4.5.min.js"></script>
+</head>
+<body>
+  <script>
+    getAllDevices = function( event ) {
+      event.preventDefault();
+
+      $.getJSON('all.json', function(data) {
+        var items = [];
+        
+        if (data.size() == 1) {
+            // move to item
+            alterContent( key + '/index.html' );
+        } else {
+          $.each(data, function(key, val) {
+            items.push('<li href="' + key + '/index.html">' + val + '</li>');
+          });
+
+          $( '#devicelist' ).html = items.join('');
+          
+          // move to list
+          location.hash = 'listdevices';
+        }
+      });
+    }
+    
+    getSpecificDevices = function( event ) {
+      $.getJSON('single.json', function(data) {
+        var items = [];
+
+        $.each(data, function(key, val) {
+          items.push('<li href="' + key + '/index.html">' + val + '</li>');
+        });
+
+        $( '#devicelist' ).html = items.join('');
+        
+        // move to list
+        location.hash = 'listdevices';
+      });
+    }
+  
+    $( function(event) {
+      // Bind to the click
+      $( '.btn-skip' ).click(getAllDevices);
+    });
+  </script>
+
+  <div data-role="page" id="register">
+    <div data-role="header" data-position="fixed" data-tap-toggle="false">
+      <h1>Please Register</h1>
+    </div><!-- /header -->
+
+    <div role="main" class="ui-content fullscreen">
+      <a href="#point" style="text-decoration:none">
+        <div id="activate">Raise your arm and touch the screen</div>
+      </a>
+    </div><!-- /content -->
+      
+    <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+      <div data-role="navbar" data-iconpos="right">
+        <ul>
+          <li><a href="#listdevices" class="btn-skip ui-title" data-icon="carat-r">Skip to list</a></li>
+        </ul>
+      </div>
+    </div><!-- /footer -->  
+  </div>
+
+  <div data-role="page" id="point">
+    <div data-role="header" data-position="fixed" data-tap-toggle="false">
+      <h1>Select Device</h1>
+      <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Back</a>
+    </div><!-- /header -->
+
+    <div role="main" class="ui-content fullscreen">
+      <a href="#listdevices" style="text-decoration:none">
+        <div id="pointdevice">Point and touch the screen</div>
+      </a>
+    </div><!-- /content -->
+      
+    <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+      <div data-role="navbar" data-iconpos="right">
+        <ul>
+          <li><a href="#listdevices" class="btn-skip" data-icon="carat-r">Skip to list</a></li>
+        </ul>
+      </div>
+    </div><!-- /footer -->  
+  </div>
+  
+  <div data-role="page" id="listdevices">
+    <div data-role="header" data-position="fixed" data-tap-toggle="false">
+      <h1>Select Device</h1>
+      <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Back</a>
+    </div><!-- /header -->
+
+    <div role="main" class="ui-content">
+      <ul id="devicelist" data-role="listview">
+        <li><a href="./NecLcdMonitorMultiSyncV421/index.html" data-ajax="false">TV</a></li>
+        <li><a href="./XBMCv11/index.html" data-ajax="false">Media Center</a></li>
+        <li><a href="./Plugwise/index.html" data-ajax="false">Lamp</a></li>
+      </ul>
+    </div><!-- /content -->
+      
+  </div>
+  
+</body>

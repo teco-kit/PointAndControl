@@ -1,0 +1,27 @@
+body {
+  overflow:hidden;
+}
+
+.ui-content.fullscreen{
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
+}
+
+div#activate {
+  width:100%; 
+  font-size:5em; 
+  color: #000;
+  text-align:center; 
+  background: #ffffff url('../img/activate.gif') no-repeat center center;
+  padding: 1em 0.1em;
+}
+
+div#pointdevice {
+  width:100%;
+  font-size:5em; 
+  color: #000; 
+  text-align:center; 
+  background: #ffffff url('../img/selectdevice.gif') no-repeat center center;
+  padding: 2em 0.1em;
+}
