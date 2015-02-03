@@ -90,7 +90,7 @@ namespace IGS
         /// </summary>
         /// <param name="list">The locally stored device list</param>
         /// <param name="transformator">The transformator used for transforming the coordinates from camera to world coordinates</param>
-        public Room3DView(List<WallProjectionSample> list, List<KNN.KNNClassifier.deviceColor> devColors, CoordTransform transformator)
+        public Room3DView(List<WallProjectionSample> list, List<KNN.KNNClassifier.deviceRep> devColors, CoordTransform transformator)
         {
             this.transformator = transformator;
             skelList = new List<ModelVisual3D>();
@@ -470,11 +470,11 @@ namespace IGS
             return sphereList;
         }
         
-        private void fillRoomWithColoredSamples(List<WallProjectionSample> samples, List<KNNClassifier.deviceColor> devColors)
+        private void fillRoomWithColoredSamples(List<WallProjectionSample> samples, List<KNNClassifier.deviceRep> devColors)
         {
             foreach (WallProjectionSample sample in samples)
             {
-                foreach (KNNClassifier.deviceColor devColor in devColors)
+                foreach (KNNClassifier.deviceRep devColor in devColors)
                 {
                     if (sample.sampleDeviceName == devColor.deviceName)
                     {

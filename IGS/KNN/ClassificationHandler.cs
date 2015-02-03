@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 using IGS.Server.IGS;
+using System.Threading;
 
 namespace IGS.KNN
 {
@@ -35,7 +36,11 @@ namespace IGS.KNN
 
         public void onlineLearn(User u)
         {
-            knnClassifier.learnOnline(u.lastClassDevSample);
+            new Thread(delegate()
+            {
+                knnClassifier.learnOnline(u.lastClassDevSample);
+            }).Start(); 
+            
             u.deviceIDChecked = true;
             u.lastClassDevSample = null;
         }
@@ -47,6 +52,11 @@ namespace IGS.KNN
             deviceClassificationCount++;
 
             return predictedSample;
+        }
+
+        public void retrainClassifier(List<WallProjectionSample> samples)
+        {
+            knnClassifier.learnBatch(samples);
         }
     }
 }

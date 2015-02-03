@@ -515,7 +515,7 @@ namespace IGS.Helperclasses
                         //xmlPosition.SetAttribute("Y:", sample.y.ToString());
                         //xmlPosition.SetAttribute("Z:", sample.z.ToString());
                         deviceNode.ChildNodes[1].AppendChild(xmlPosition);
-                        docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\KNNSamples.xml");
+                        docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionSamples.xml");
                         return;
                     }
                 }
@@ -541,7 +541,7 @@ namespace IGS.Helperclasses
             newDev.AppendChild(samplePositions);
 
             node.AppendChild(newDev);
-            docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\KNNSamples.xml");
+            docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionSamples.xml");
             return;
         }
         public static void writeWallProjectionSampleToXML(WallProjectionSample sample, String fileName)
@@ -609,7 +609,7 @@ namespace IGS.Helperclasses
             List<WallProjectionSample> sampleList = new List<WallProjectionSample>();
 
             XmlDocument docConfig = new XmlDocument();
-            docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\KNNSamples.xml");
+            docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionAndPositionSamples.xml");
 
             XmlNodeList devices = docConfig.SelectSingleNode("/devices").ChildNodes;
 
@@ -791,5 +791,102 @@ namespace IGS.Helperclasses
                 root.Save(p);
             }
         }
+
+        public static void deleteLastUserSkeletonFromLogXML(Device dev)
+        {
+            String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFile.xml";
+
+            //add device to configuration XML
+            XmlDocument docConfig = new XmlDocument();
+
+            if (File.Exists(path))
+            {
+                docConfig.Load(path);
+            }
+
+            XmlNode rootNode = docConfig.SelectSingleNode("/data");
+
+            foreach (XmlNode device in rootNode.ChildNodes)
+            {
+                if (device.Attributes[0].Value == dev.Id)
+                {
+                    device.RemoveChild(device.LastChild);
+                    docConfig.Save(path);
+                    return;
+                }
+            }
+
+        }
+
+        public static void deleteLastSampleFromSampleLogs(Device dev)
+        {
+            String path = AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionSamples.xml";
+            XmlNode rootNode;
+            XmlDocument docConfig = new XmlDocument();
+
+            if (File.Exists(path))
+            {
+                docConfig.Load(path);
+
+                rootNode = docConfig.SelectSingleNode("/devices");
+
+                foreach (XmlNode device in rootNode.ChildNodes)
+                {
+                    if (device.FirstChild.InnerText == dev.Name)
+                    {
+                        XmlNode samplePositions = device.ChildNodes[1];
+                        samplePositions.RemoveChild(samplePositions.LastChild);
+                        break;
+                    }
+                }
+            }
+
+            
+
+
+            path = AppDomain.CurrentDomain.BaseDirectory + "\\samples.xml";
+
+            if (File.Exists(path))
+            {
+                docConfig.Load(path);
+
+                rootNode = docConfig.SelectSingleNode("/devices");
+
+                foreach (XmlNode device in rootNode.ChildNodes)
+                {
+                    if (device.FirstChild.InnerText == dev.Name)
+                    {
+                        XmlNode samples = device.ChildNodes[1];
+                        samples.RemoveChild(samples.LastChild);
+                        break;
+                    }
+                }
+            }
+            
+         
+
+            path = AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionAndPositionSamples.xml.xml";
+
+            if (File.Exists(path))
+            {
+                docConfig.Load(path);
+
+                rootNode = docConfig.SelectSingleNode("/devices");
+
+                foreach (XmlNode device in rootNode.ChildNodes)
+                {
+                    if (device.FirstChild.InnerText == dev.Name)
+                    {
+                        XmlNode samplePositions = device.ChildNodes[1];
+                        samplePositions.RemoveChild(samplePositions.LastChild);
+                        break;
+                    }
+                }
+            }
+
+           
+        }
+
+
     }
 }

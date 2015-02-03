@@ -13,6 +13,7 @@ using System.Net;
 using System.Text;
 using IGS.KNN;
 using Microsoft.Kinect;
+using System.Threading;
 
 namespace IGS.Server.IGS
 {
@@ -51,9 +52,7 @@ namespace IGS.Server.IGS
 
             this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Centre);
             this.classification = new ClassificationHandler();
-            
-           
-            
+
         }
 
 
@@ -231,7 +230,7 @@ namespace IGS.Server.IGS
                         if (Data.GetUserByIp(wlanAdr).TrackingState)
                         {
                             
-                            retStr = MakeDeviceString(ChooseDevice(wlanAdr));
+                            retStr = MakeDeviceStringSelectDev(ChooseDevice(wlanAdr));
 
                             return retStr;
                         }
@@ -239,7 +238,7 @@ namespace IGS.Server.IGS
                         break;
                     case "list":
 
-                        retStr = MakeDeviceString(Data.Devices);
+                        retStr = MakeDeviceStringList(Data.Devices);
 
                         return retStr;
                     case "addDevice":
@@ -303,7 +302,7 @@ namespace IGS.Server.IGS
         }
 
 
-        private String MakeDeviceString(IEnumerable<Device> devices)
+        private String MakeDeviceStringList(IEnumerable<Device> devices)
         {
             String result = "";
             //if (devices != null && devices.Count() == 1)
@@ -314,6 +313,28 @@ namespace IGS.Server.IGS
             //    }
                 
             //}
+            if (devices != null)
+            {
+                result = devices.Aggregate(result, (current, dev) => current + (dev.Id + "\t" + dev.Name + "\n"));
+            }
+            return result;
+        }
+
+        private String MakeDeviceStringSelectDev(IEnumerable<Device> devices)
+        {
+            String result = "";
+            if (devices.Count() == 0)
+            {
+                return "Error: Classifier not trained, please add samples and retrain";
+            }
+            if (devices != null && devices.Count() == 1)
+            {
+                foreach (Device d in devices)
+                {
+                    return getControlPagePathHttp(d.Id);
+                }
+
+            }
             if (devices != null)
             {
                 result = devices.Aggregate(result, (current, dev) => current + (dev.Id + "\t" + dev.Name + "\n"));
@@ -343,12 +364,12 @@ namespace IGS.Server.IGS
             Vector3D[] vecs = Transformer.transformJointCoords(Tracker.getMedianFilteredCoordinates(tempUser.SkeletonId));
             if (tempUser != null)
             {
-                WallProjectionSample sample = classification.collector.calculateSample(vecs,"");
+                WallProjectionSample sample = classification.collector.calculateSample(vecs, "");
                 //String label = collector.calcRoomModel.hitSquareCheck(new Point3D(sample.x, sample.y, sample.z));
                 //if (label != null)
                 //{
                 //    sample.sampleDeviceName = label;
-                   
+
 
                 //    foreach (Device d in Data.Devices)
                 //    {
@@ -361,20 +382,29 @@ namespace IGS.Server.IGS
                 //}
                 sample = classification.classify(sample);
                 Console.WriteLine("Classified:" + sample.sampleDeviceName);
+                writeUserJointsToXmlFile(tempUser, Data.GetDeviceByName(sample.sampleDeviceName));
                 classification.deviceClassificationCount++;
-                foreach(Device d in Data.Devices)
+
+                XMLComponentHandler.writeWallProjectionSampleToXML(sample);
+                Point3D p = new Point3D(vecs[2].X, vecs[2].Y, vecs[2].Z);
+                XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
+                XMLComponentHandler.writeSampleToXML(vecs, sample.sampleDeviceName);
+                if (sample != null)
                 {
-                    if (d.Name.ToLower() == sample.sampleDeviceName.ToLower())
+                    foreach (Device d in Data.Devices)
                     {
-                        dev.Add(d);
-                        tempUser.lastChosenDeviceID = d.Id;
-                        tempUser.lastClassDevSample = sample;
-                        tempUser.deviceIDChecked = false;
-                        return dev;
+                        if (d.Name.ToLower() == sample.sampleDeviceName.ToLower())
+                        {
+                            dev.Add(d);
+                            tempUser.lastChosenDeviceID = d.Id;
+                            tempUser.lastClassDevSample = sample;
+                            tempUser.deviceIDChecked = false;
+                            return dev;
+                        }
                     }
                 }
             }
-            return null;
+            return dev;
         }
 
         /// <summary>
@@ -425,7 +455,7 @@ namespace IGS.Server.IGS
             }
             string idparams = parameter[0] + "_" + count;
 
-
+            
             XMLComponentHandler.addDeviceToXML(parameter, count);
 
             Type typeObject = Type.GetType("IGS.Server.Devices." + parameter[0]);
@@ -480,9 +510,11 @@ namespace IGS.Server.IGS
                 WallProjectionSample sample = classification.collector.calculateSample(vectors, dev.Name);
                 if(!sample.sampleDeviceName.Equals("nullSample"))
                 {
-                    classification.knnClassifier.samples.Add(sample);
+                    classification.knnClassifier.pendingSamples.Add(sample);
                     writeUserJointsToXmlFile(tmpUser, dev);
                     XMLComponentHandler.writeWallProjectionSampleToXML(sample);
+                    Point3D p = new Point3D(vectors[2].X, vectors[2].Y, vectors[2].Z);
+                    XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
                     XMLComponentHandler.writeSampleToXML(vectors, sample.sampleDeviceName);
                     return "sample added";
                 }
@@ -589,8 +621,16 @@ namespace IGS.Server.IGS
             else
             {
                 classification.deviceClassificationErrorCount++;
+                tmpUser.deviceIDChecked = true;
+                tmpUser.lastClassDevSample = null;
+                Device dev = Data.getDeviceByID(devId);
+                XMLComponentHandler.deleteLastUserSkeletonFromLogXML(dev);
+                XMLComponentHandler.deleteLastSampleFromSampleLogs(dev);
+                Console.WriteLine("Wrong Device!");
             }
         }
+
+     
 
     }
 }

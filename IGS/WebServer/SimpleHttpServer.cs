@@ -623,27 +623,6 @@ namespace IGS.Server.WebServer
             }
         }
 
-        //public override void SendDataDirect(HttpProcessor p, String site)
-        //{
-            
-        //    Console.WriteLine("Processor URL Direct:" + p.HttpUrl + "\n");
-        //    if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\" + site))
-        //    {
-        //        using (
-        //            Stream fs = File.Open(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\" + site,
-        //                                  FileMode.Open)
-        //            )
-        //        {
-        //            fs.CopyTo(p.OutputStream.BaseStream);
-        //            p.OutputStream.BaseStream.Flush();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        p.WriteFailure();
-        //    }
-        //}
-
         /// <summary>
         ///     Sends a response to the client.
         /// </summary>

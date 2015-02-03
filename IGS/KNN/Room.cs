@@ -114,7 +114,7 @@ namespace IGS.KNN
             
             //a List of Lists containing vectors for devices to retrieve the classificationboxes for 
             //every device
-            List<labelEntry> wallSamples = new List<labelEntry>();
+
             float step = 0.01f;
             int virtualWidthReducer = 1;
             int virtualHeightReducer = 1;
@@ -124,13 +124,7 @@ namespace IGS.KNN
        
             int maxStepVirtualWidth = 0;
             int maxStepVirtualHeight = 0;
-            foreach (String label in knn.labels)
-            {
-                labelEntry newEntry = new labelEntry();
-                newEntry.label = label;
-                newEntry.pointList = new List<Point3D>();
-                wallSamples.Add(newEntry);
-            }
+        
 
 
             foreach (RoomPlane wall in wallList)
@@ -162,8 +156,6 @@ namespace IGS.KNN
                         Console.WriteLine("StepsWidth:" + maxStepVirtualWidth);
                         Console.WriteLine("StepsHight:" + maxStepVirtualHeight);
 
-                        //virtualWidthResetter = wall.depth;
-                        //isSidewall = true;
                     }
                     else if (wall.plane.Normal.Y != 0)
                     {
@@ -179,7 +171,6 @@ namespace IGS.KNN
                         Console.WriteLine("StepsWidth:" + maxStepVirtualWidth);
                         Console.WriteLine("StepsHight:" + maxStepVirtualHeight);
 
-                        //virtualWidthResetter = wall.width;
                     }
                     else if (wall.plane.Normal.Z != 0)
                     {
@@ -245,7 +236,7 @@ namespace IGS.KNN
                             WallProjectionSample sample = new WallProjectionSample(newPoint);
                             sample = knn.classify(sample);
                             //Console.WriteLine(sample.sampleDeviceName);
-                            Color c = knn.deviceColorLookup(sample.sampleDeviceName);
+                            Color c = knn.deviceColorLookupByName(sample.sampleDeviceName);
                             //Console.WriteLine("X:" + stepCounterVirtualWidth + " Y: " + stepCounterVirtualHeight + " Color:" + c.ToString());
                             bitmap.SetPixel(stepCounterVirtualWidth, stepCounterVirtualHeight, c);
                             Console.Write(".");
@@ -264,108 +255,7 @@ namespace IGS.KNN
             }
             
         }
-                //if (wall.plane.Normal.X != 0)
-                //{
-                //    maxStepVirtualWidth = depth / step;
-                //    maxStepVirtualHeight = height / step;
-                //    Bitmap bitmap = new Bitmap((int)Math.Ceiling(depth / step), (int)Math.Ceiling(height / step));
-
-                //    for (int stepCounterVirtualHeight = 0; stepCounterVirtualHeight < maxStepVirtualHeight; stepCounterVirtualHeight++)
-                //    {
-                //        Console.WriteLine("in Y");
-                //        float virtualHeightReduce = (step * virtualHeightReducer)/2;
-                //        point.Z = wall.depth;
-                //        for (int stepCounterVirtualWidth = 0; stepCounterVirtualWidth < maxStepVirtualWidth; stepCounterVirtualWidth++)
-                //        {
-                //            Console.WriteLine("in Z");
-                //            point = new Point3D(wall.width, wall.heigth - virtualHeightReduce, wall.depth - reducerZ * step);
-                //            reducerZ++;
-
-                //            KNNSample sample = new KNNSample(point);
-                //            sample = knn.classify(sample);
-
-                //            foreach (labelEntry entry in wallSamples)
-                //            {
-                //                if (entry.label.ToLower().Equals(sample.sampleDeviceName.ToLower()))
-                //                {
-                //                    entry.pointList.Add(point);
-                //                }
-                //            }
-                //        }
-                //        reducerZ = 1;
-                //        virtualHeightReducer++;
-                //    }
-                    
-                //}
-                //if (wall.plane.Normal.Y != 0)
-                //{
-                //    maxStepOuter = width / step;
-                //    maxStepInner = depth / step;
-                //    Bitmap bitmap = new Bitmap((int)Math.Ceiling(width / step), (int)Math.Ceiling(depth / step));
-                //    Console.WriteLine("Y");
-                //    Point3D point = new Point3D(wall.width, wall.heigth, wall.depth);
-                //    while (0 <= point.X && point.X <= wall.width)
-                //    for (int stepCounterOuter = 0; stepCounterOuter < maxStepOuter; stepCounterOuter++)
-                //    {
-                //        Console.WriteLine("in X");
-                //        float Xreduce = step * reducerX;
-                //        point.Z = wall.depth;
-                //        while (0 <= point.Z && point.Z <= wall.depth)
-                //        for (int stepCounterInner = 0; stepCounterInner < maxStepInner; stepCounterInner++)
-                //        {
-                //            Console.WriteLine("in Z");
-                //            point = new Point3D(wall.width - Xreduce, wall.heigth, wall.depth - reducerZ * step);
-                //            reducerZ++;
-
-                //            KNNSample sample = new KNNSample(point);
-                //            sample = knn.classify(sample);
-
-                //            foreach (labelEntry entry in wallSamples)
-                //            {
-                //                if (entry.label.ToLower().Equals(sample.sampleDeviceName.ToLower()))
-                //                {
-                //                    entry.pointList.Add(point);
-                //                }
-                //            }
-                //        }
-                        
-                //        reducerZ = 1;
-                //        reducerX++;
-                //    }
-                //}
-                //if (wall.plane.Normal.Z != 0)
-                //{
-                //    maxStepOuter = width / step;
-                //    maxStepInner = height / step;
-                //    Bitmap bitmap = new Bitmap((int)Math.Ceiling(width/step), (int)Math.Ceiling(height/step));
-                //    Console.WriteLine("z");
-                //    Point3D point = new Point3D(wall.width, wall.heigth, wall.depth);
-                //    for (int stepCounterOuter = 0; stepCounterOuter < maxStepOuter; stepCounterOuter++)
-                //    {
-                //        Console.WriteLine("in Y");
-                //        float Yreduce = step * reducerY;
-                //        point.X = wall.width;
-                //        for (int stepCounterInner = 0; stepCounterInner < maxStepInner; stepCounterInner++)
-                //        {
-                //            Console.WriteLine("in X");
-                //            point = new Point3D(wall.width - reducerX * step, wall.heigth - Yreduce, wall.depth);
-                //            reducerZ++;
-
-                //            KNNSample sample = new KNNSample(point);
-                //            sample = knn.classify(sample);
-
-                //            foreach (labelEntry entry in wallSamples)
-                //            {
-                //                if (entry.label.ToLower().Equals(sample.sampleDeviceName.ToLower()))
-                //                {
-                //                    entry.pointList.Add(point);
-                //                }
-                //            }
-                //        }
-                //        reducerX = 1;
-                //        reducerY++;
-                //    }
-                //}
+              
     
 
         

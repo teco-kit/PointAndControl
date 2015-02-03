@@ -277,7 +277,7 @@ namespace IGS.Server.IGS
 
             for (int i = 0; i < _devices.Count && found == false; i++)
             {
-                if (_devices[i].Name == name)
+                if (_devices[i].Name.ToLower() == name.ToLower())
                 {
                     tempDevice = _devices[i];
                     found = true;

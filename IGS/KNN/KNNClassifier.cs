@@ -15,14 +15,14 @@ namespace IGS.KNN
     public class KNNClassifier
     {
         public List<WallProjectionSample> samples { get; set; }
-        public List<String> labels { get; set; }
+        public List<WallProjectionSample> pendingSamples { get; set; }
         KNNGenerator generator { get; set; }
         LearningModel learned { get; set; }
-        public List<deviceColor> deviceSampleColors { get; set; }
+        public List<deviceRep> devicesRepresentation { get; set; }
 
         public bool initialized { get; set; }
 
-        public struct deviceColor
+        public struct deviceRep
         {
             public String deviceName;
             public Color color;
@@ -42,23 +42,15 @@ namespace IGS.KNN
             learnBatch(list);
             trainClassifier();
 
-            labels = new List<string>();
+            pendingSamples = new List<WallProjectionSample>();
 
-            deviceSampleColors = new List<deviceColor>();
+            devicesRepresentation = new List<deviceRep>();
             
             foreach (WallProjectionSample sample in samples)
             {
-                if(labels.Contains(sample.sampleDeviceName) == false)
-                {
-                    labels.Add(sample.sampleDeviceName);
-                    checkAndWriteColorForDevice(sample.sampleDeviceName);
-                }
+                checkAndWriteColorForDevice(sample.sampleDeviceName);
             }
             
-            
-           
-           
-           
             initialized = true;
         }
 
@@ -72,7 +64,7 @@ namespace IGS.KNN
             KnownColor randomColorName = names[random.Next(names.Length)];
             Color randomColor = Color.FromKnownColor(randomColorName);
 
-            foreach (deviceColor dColor in deviceSampleColors)
+            foreach (deviceRep dColor in devicesRepresentation)
             {
                 if(dColor.color.Equals(randomColor))
                 {
@@ -89,7 +81,7 @@ namespace IGS.KNN
 
         public void checkAndWriteColorForDevice(String deviceName)
         {
-            foreach (deviceColor c in deviceSampleColors)
+            foreach (deviceRep c in devicesRepresentation)
             {
                 if (c.deviceName.Equals(deviceName))
                 {
@@ -97,34 +89,44 @@ namespace IGS.KNN
                 }
             }
 
-            deviceColor newColor = new deviceColor();
+            deviceRep newColor = new deviceRep();
             newColor.deviceName = deviceName;
             newColor.color = pickRandomColor();
             Console.WriteLine("DeviceName: " + newColor.deviceName + " Color: " + newColor.color.Name);
             Console.WriteLine("");
-            deviceSampleColors.Add(newColor);
+            devicesRepresentation.Add(newColor);
 
         }
 
         public void trainClassifier()
         {
-            generator.K = (int)Math.Sqrt(samples.Count);
-            learned = Learner.Learn(samples, 0.80, 1000, generator);
+            if (samples.Count > 0)
+            {
+                generator.K = (int)Math.Sqrt(samples.Count);
+                learned = Learner.Learn(samples, 0.80, 1000, generator);
+            }
+            else Console.WriteLine("Please create samples first!");
         }
 
         public WallProjectionSample classify(WallProjectionSample sample)
         {
-       
-            return learned.Model.Predict(sample);
+            if (learned != null)
+            {
+                return learned.Model.Predict(sample);
+            }
+            else return null;
         }
 
         public void learnBatch(List<WallProjectionSample> trainingSamples)
         {
+            if (trainingSamples == null) return;
+            
             if (initialized == true)
             {
                 foreach (WallProjectionSample s in trainingSamples)
                 {
                     samples.Add(s);
+                    checkAndWriteColorForDevice(s.sampleDeviceName);
                     XMLComponentHandler.writeWallProjectionSampleToXML(s);
                 }
 
@@ -143,10 +145,10 @@ namespace IGS.KNN
             trainClassifier();
         }
 
-        public Color deviceColorLookup(String name)
+        public Color deviceColorLookupByName(String name)
         {
             String nameLower = name.ToLower();
-            foreach (deviceColor device in deviceSampleColors)
+            foreach (deviceRep device in devicesRepresentation)
             {
                 if (nameLower.Equals(device.deviceName.ToLower()))
                 {
@@ -156,6 +158,21 @@ namespace IGS.KNN
             return Color.White;
         }
 
+        private bool checkIfNewLabel(WallProjectionSample sample)
+        {
+            bool newLabel = false;
+
+            foreach (deviceRep rep in devicesRepresentation)
+            {
+                if (rep.deviceName == sample.sampleDeviceName)
+                {
+                    newLabel = true;
+                    return newLabel;
+                }
+            }
+
+            return newLabel;
+        }
         
     }
 }

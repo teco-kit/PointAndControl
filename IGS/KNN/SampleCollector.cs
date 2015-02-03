@@ -20,15 +20,14 @@ namespace IGS.KNN
         {
             String[] roomComps = XMLComponentHandler.readRoomComponents();
             calcRoomModel = new Room(float.Parse(roomComps[0]),  float.Parse(roomComps[1]) , float.Parse(roomComps[2]));
-            var watch = Stopwatch.StartNew();
-            new Thread(delegate()
+
+            if (handler.samples.Count != 0)
             {
-                calcRoomModel.calculateDeviceAreas(handler);
-            }).Start(); ;
-            watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
-            Console.WriteLine("Elapsed:" + elapsedMs);
-            
+                new Thread(delegate()
+                {
+                    calcRoomModel.calculateDeviceAreas(handler);
+                }).Start();
+            }
         }
 
         public WallProjectionSample calculateSample(Vector3D[] vectors, String devName)
