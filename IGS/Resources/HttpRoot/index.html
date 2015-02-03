@@ -100,6 +100,7 @@
     <div data-role="header" data-position="fixed" data-tap-toggle="false">
       <h1>Select Device</h1>
       <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Back</a>
+      <a href="#adddevice" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all ui-btn-icon-right ui-icon-plus">New</a>
     </div><!-- /header -->
 
     <div role="main" class="ui-content">
@@ -108,6 +109,35 @@
         <li><a href="./XBMCv11/index.html" data-ajax="false">Media Center</a></li>
         <li><a href="./Plugwise/index.html" data-ajax="false">Lamp</a></li>
       </ul>
+    </div><!-- /content -->
+      
+  </div>
+  
+  <div data-role="page" data-dialog="true" id="adddevice">
+    <div data-role="header">
+      <h1>Add New Device</h1>
+    </div><!-- /header -->
+
+    <div role="main" class="ui-content">
+      <form>
+        <div class="ui-field-contain">
+          <label for="text-name">Device name:</label>
+          <input type="text" name="text-name" id="text-name" value="">
+        </div>
+        <div class="ui-field-contain">
+          <label for="text-type">Type:</label>
+          <input type="text" name="text-type" id="text-type" value="">
+        </div>
+        <div class="ui-field-contain">
+          <label for="text-id">ID:</label>
+          <input type="text" name="text-id" id="text-id" value="">
+        </div>
+        <div class="ui-field-contain">
+          <label for="text-port">Port:</label>
+          <input type="text" name="text-port" id="text-port" value="">
+        </div>
+        <input type="button" href="#" value="Add Device">
+      </form>
     </div><!-- /content -->
       
   </div>
