@@ -1,12 +1,10 @@
 <html>
 	<head>
-		<title>Plugwise</title>
+		<title>Presenter</title>
 		<link rel="stylesheet" type="text/css" href="css/screen.css">
-		<script type="text/javascript" src="../jquery-1.8.3.min.js"></script>
+		<script type="text/javascript" src="../js/jquery.min.js"></script>
+		<script type="text/javascript" src="../js/remote.js"></script>
 		<script type="text/javascript">
-			function sendcmd(cmd) {
-					Android.click(cmd);
-				}
 			$(document).ready(function() {
 				$("#tfinput").keypress(function(event) {
 					sendcmd(String.fromCharCode(event.which));
