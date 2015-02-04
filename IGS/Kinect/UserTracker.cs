@@ -7,6 +7,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using IGS.Kinect;
+using IGS.Helperclasses;
+using System.Diagnostics;
 
 namespace IGS.Server.Kinect
 {
@@ -29,10 +31,15 @@ namespace IGS.Server.Kinect
         private List<Body[]> lastBodies { get; set; }
         public bool collectAfterClick { get; set; }
 
+
         public bool movingWindowCollect { get; set; }
 
         public SkeletonJointFilter skeletonJointFilter { get; set; }
 
+        public bool workingOnWindow { get; set; }
+
+
+        public List<Body[]> lastBodiesPuffer { get; set; }
 
         /// <summary>
         ///     Constructor of a Usertracker.
@@ -50,8 +57,9 @@ namespace IGS.Server.Kinect
             Bodies = new List<TrackedSkeleton>();
             collectAfterClick = false;
             lastBodies = new List<Body[]>();
-
+            movingWindowCollect = movingWindow;
             this.skeletonJointFilter = new MedianJointFilter();
+            lastBodiesPuffer = new List<Body[]>();
         }
 
         /// <summary>
@@ -255,30 +263,32 @@ namespace IGS.Server.Kinect
         public List<Vector3D[]> Get30Coordinates(int id)
         {
             List<Vector3D[]> returnList = new List<Vector3D[]>();
-
-            if(!movingWindowCollect){
+            workingOnWindow = true;
+            if(movingWindowCollect == false){
             if (collectAfterClick == false)
             {
                 collectAfterClick = true;
-                while (lastBodies.Count != 30)
+                while (lastBodies.Count != 15)
                 {
 
                 }
-
+                
                 if (checkIfAllBodysAreSame() == false) { 
                     
+                   Console.WriteLine("In collect are same == false"); 
                     return Get30Coordinates(id); 
                 }
                 collectAfterClick = false;
             }
             else return null;
             }
-            
+
+
                 foreach (TrackedSkeleton sTracked in Bodies.Where(sTracked => sTracked.Id == id))
                 {
                     sTracked.Actions = sTracked.Actions + 1;
                     foreach (Body[] bodies in lastBodies)
-                    {
+                    { 
                     foreach (Body s in bodies)
                     {
                         if ((int)s.TrackingId != id) continue;
@@ -300,20 +310,41 @@ namespace IGS.Server.Kinect
                     }
                 }
             }
+                
+
+                  
+                        XMLComponentHandler.writeUserjointsPerSelectSmoothed(id, lastBodies);
+                    
+                
+                
+
+              
+                
                 if (movingWindowCollect == false)
                 {
                     lastBodies.Clear();
                 }
-
-
+                this.copyFromBodiesPufferToBodyArray();
+                workingOnWindow = false;
                return returnList;
         }
 
 
         public Vector3D[] getMedianFilteredCoordinates(int id)
         {
+            
+            
+            //var watch = Stopwatch.StartNew();
             List<Vector3D[]> coords = this.Get30Coordinates(id);
+            //watch.Stop();
+            //var elapsedMs = watch.ElapsedMilliseconds;
+            //Console.WriteLine("collect of vectors:" + elapsedMs);
+
+             var watch = Stopwatch.StartNew();
             Vector3D[] smoothed = skeletonJointFilter.jointFilter(coords);
+            watch.Stop();
+            var elapsedMs = watch.ElapsedMilliseconds;
+            Console.WriteLine("smoothing time:" + elapsedMs);
 
             return smoothed;
         }
@@ -399,22 +430,50 @@ namespace IGS.Server.Kinect
                     }
                 }
                 _bodiesLastFrame = bodies;
-                if (collectAfterClick || movingWindowCollect )
+                
+                if (collectAfterClick == true || movingWindowCollect == true)
                 {
                     Body[] bodiesToSave = new Body[bodies.Length];
                     for (int i = 0; i < bodies.Length; i++)
                     {
                         bodiesToSave[i] = bodies[i];
                     }
-
-                    if (movingWindowCollect == true && lastBodies.Count == 30)
+                    if (workingOnWindow == false)
                     {
-                        lastBodies.RemoveAt(0);
+                        if (movingWindowCollect == true && lastBodies.Count == 15)
+                        {
+                            lastBodies.RemoveAt(0);
+                        }
+                        lastBodies.Add(bodiesToSave);
                     }
-                    lastBodies.Add(bodiesToSave);
+                    else
+                    {
+                        if (movingWindowCollect == true && lastBodiesPuffer.Count == 15)
+                        {
+                            lastBodiesPuffer.RemoveAt(0);
+                        }
+                        lastBodiesPuffer.Add(bodiesToSave);
+                    }
                 }
             }
 
+        }
+
+        private void copyFromBodiesPufferToBodyArray()
+        {
+            if (lastBodiesPuffer.Count == 0) return;
+            else if (lastBodiesPuffer.Count == 15)
+            {
+                lastBodies = lastBodiesPuffer;
+                lastBodiesPuffer.Clear();
+                return;
+            }
+            else
+            {
+                lastBodies.RemoveRange(0, lastBodiesPuffer.Count);
+                lastBodiesPuffer.Concat(lastBodies);
+                return;
+            }
         }
     }
 }

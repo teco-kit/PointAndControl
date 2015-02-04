@@ -240,6 +240,7 @@ namespace IGS.Server.WebServer
             }
             catch (Exception e)
             {
+                
                 Console.WriteLine(e.StackTrace);
                 WriteFailure();
             }
@@ -257,7 +258,7 @@ namespace IGS.Server.WebServer
         private void ParseRequest()
         {
             String request = StreamReadLine(InputStream);
-            Console.WriteLine(request);
+            
             String[] tokens = request.Split(' ');
             if (tokens.Length != 3)
             {
@@ -605,7 +606,7 @@ namespace IGS.Server.WebServer
         /// </summary>
         private void sendData(HttpProcessor p)
         {
-            Console.WriteLine("Processor URL Direct:" + p.HttpUrl);
+            
             if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\"  + p.HttpUrl))
             {
                 using (
@@ -630,7 +631,7 @@ namespace IGS.Server.WebServer
         /// <param name="msg">the response</param>
         public override void SendResponse(HttpProcessor p, String msg)
         {
-            Console.WriteLine("Response: " + msg);
+            
             p.OutputStream.Write(msg);
         }
     }

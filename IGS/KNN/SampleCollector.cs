@@ -21,13 +21,13 @@ namespace IGS.KNN
             String[] roomComps = XMLComponentHandler.readRoomComponents();
             calcRoomModel = new Room(float.Parse(roomComps[0]),  float.Parse(roomComps[1]) , float.Parse(roomComps[2]));
 
-            if (handler.samples.Count != 0)
-            {
-                new Thread(delegate()
-                {
-                    calcRoomModel.calculateDeviceAreas(handler);
-                }).Start();
-            }
+            //if (handler.samples.Count != 0)
+            //{
+            //    new Thread(delegate()
+            //    {
+            //        calcRoomModel.calculateDeviceAreas(handler);
+            //    }).Start();
+            //}
         }
 
         public WallProjectionSample calculateSample(Vector3D[] vectors, String devName)

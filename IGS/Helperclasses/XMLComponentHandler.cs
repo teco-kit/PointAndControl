@@ -1,5 +1,6 @@
 ﻿using IGS.KNN;
 using IGS.Server.Devices;
+using Microsoft.Kinect;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -390,7 +391,7 @@ namespace IGS.Helperclasses
             newDev.AppendChild(samplePositions);
 
             node.AppendChild(newDev);
-            docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\KNNSamples.xml");
+            docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionAndPositionSamples.xml");
             return;
         }
 
@@ -487,7 +488,53 @@ namespace IGS.Helperclasses
         }
 
 
+        public static void writeUserJointsPerSelectClick(Body b)
+        {
+            if (b == null)
+            {
+                Console.Out.WriteLine("No Body found, cannot write to xml");
+                return;
+            }
+            String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelect.xml";
 
+            //add device to configuration XML
+            XmlDocument docConfig = new XmlDocument();
+
+
+            docConfig.Load(path);
+
+
+
+            XmlNode rootNode = docConfig.SelectSingleNode("/data");
+
+            int select = int.Parse(rootNode.Attributes[0].InnerText);
+
+
+
+            XmlElement xmlSelect = docConfig.CreateElement("select");
+            XmlElement xmlSkeleton = docConfig.CreateElement("skeleton");
+            xmlSelect.SetAttribute("time", DateTime.Now.ToString("HH:mm:ss"));
+            xmlSelect.SetAttribute("date", DateTime.Now.ToShortDateString());
+            xmlSkeleton.SetAttribute("skelID", b.TrackingId.ToString());
+
+            foreach (JointType jointType in Enum.GetValues(typeof(JointType)))
+            {
+                XmlElement xmlJoint = docConfig.CreateElement("joint");
+                xmlJoint.SetAttribute("type", jointType.ToString());
+
+                xmlJoint.SetAttribute("X", b.Joints[jointType].Position.X.ToString());
+                xmlJoint.SetAttribute("Y", b.Joints[jointType].Position.Y.ToString());
+                xmlJoint.SetAttribute("Z", b.Joints[jointType].Position.Z.ToString());
+                xmlSkeleton.AppendChild(xmlJoint);
+
+            }
+            xmlSelect.AppendChild(xmlSkeleton);
+            rootNode.AppendChild(xmlSelect);
+            rootNode.Attributes[0].InnerText = (select++).ToString();
+
+            docConfig.Save(path);
+
+        }
         public static void writeWallProjectionSampleToXML(WallProjectionSample sample)
         {
             XmlDocument docConfig = new XmlDocument();
@@ -887,6 +934,115 @@ namespace IGS.Helperclasses
            
         }
 
+        public static void writeLogEntry(String entry)
+        {
+            String path = AppDomain.CurrentDomain.BaseDirectory + "\\program_log.xml";
+            XmlDocument docCOnfig = new XmlDocument();
+            docCOnfig.Load(path);
+
+            XmlNode logNode = docCOnfig.SelectSingleNode("/log");
+
+            XmlElement xmlLogEntry = docCOnfig.CreateElement("entry");
+            xmlLogEntry.SetAttribute("time", DateTime.Now.ToString("HH:mm:ss"));
+            xmlLogEntry.SetAttribute("date", DateTime.Now.ToShortDateString());
+            XmlElement xmlEntryString = docCOnfig.CreateElement("msg");
+            xmlEntryString.InnerText = entry;
+
+            xmlLogEntry.AppendChild(xmlEntryString);
+            logNode.AppendChild(xmlLogEntry);
+            docCOnfig.Save(path);
+
+        }
+
+        public static bool writeUserjointsPerSelectSmoothed(int id, List<Body[]> bodiesList)
+        {
+            String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelectSmoothed.xml";
+
+            //add device to configuration XML
+            XmlDocument docConfig = new XmlDocument();
+
+
+            docConfig.Load(path);
+
+
+
+            XmlNode rootNode = docConfig.SelectSingleNode("/data");
+
+            int select = int.Parse(rootNode.Attributes[0].InnerText);
+
+            XmlElement xmlSelect = docConfig.CreateElement("select");
+            int skeletonCounter = 0;
+            xmlSelect.SetAttribute("time", DateTime.Now.ToString("HH:mm:ss"));
+            xmlSelect.SetAttribute("date", DateTime.Now.ToShortDateString());
+            xmlSelect.SetAttribute("skelID", id.ToString());
+
+            foreach (Body[] bodies in bodiesList)
+            {
+                foreach (Body body in bodies)
+                {
+                    if ((int)body.TrackingId == id)
+                    {
+                        XmlElement xmlSkeleton = docConfig.CreateElement("skeleton");
+                        foreach (JointType jointType in Enum.GetValues(typeof(JointType)))
+                        {
+                            XmlElement xmlJoint = docConfig.CreateElement("joint");
+                            xmlJoint.SetAttribute("type", jointType.ToString());
+
+                            xmlJoint.SetAttribute("X", body.Joints[jointType].Position.X.ToString());
+                            xmlJoint.SetAttribute("Y", body.Joints[jointType].Position.Y.ToString());
+                            xmlJoint.SetAttribute("Z", body.Joints[jointType].Position.Z.ToString());
+                            xmlSkeleton.AppendChild(xmlJoint);
+                        }
+                        xmlSelect.AppendChild(xmlSkeleton);
+                        skeletonCounter++;
+                        break;
+                    }
+                }
+            }
+
+            xmlSelect.SetAttribute("skelCount", skeletonCounter.ToString());
+            rootNode.AppendChild(xmlSelect);
+            rootNode.Attributes[0].InnerText = (select++).ToString();
+            docConfig.Save(path);
+
+            return true;
+        }
+
+
+        public static void deleteLastUserSkeletonSelected()
+        {
+            String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelectSmoothed.xml";
+
+            //add device to configuration XML
+            XmlDocument docConfig = new XmlDocument();
+
+            if (File.Exists(path))
+            {
+                docConfig.Load(path);
+            }
+
+            XmlNode rootNode = docConfig.SelectSingleNode("/data");
+
+            rootNode.RemoveChild(rootNode.LastChild);
+            docConfig.Save(path);
+
+            path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelect.xml";
+
+            //add device to configuration XML
+            docConfig = new XmlDocument();
+
+            if (File.Exists(path))
+            {
+                docConfig.Load(path);
+            }
+
+            rootNode = docConfig.SelectSingleNode("/data");
+
+            rootNode.RemoveChild(rootNode.LastChild);
+            docConfig.Save(path);
+
+        }
+       
 
     }
 }

@@ -256,24 +256,7 @@ public partial class MainWindow
         _3dviewIsAktive = false;
         _ifSkeletonisBuild = false;
 
-        if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml"))
-        {
-            Initializer.createXMLFile();
-        }
-
-        if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionSamples.xml"))
-        {
-            Initializer.createWallProjectionSampleXMLFile();
-        }
-         if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\samples.xml"))
-        {
-            Initializer.createSampleXMLFIle();
-        }
-
-         if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionAndPositionSamples.xml"))
-         {
-             Initializer.createWallProjectionAndPositionSampleXMLFile();
-         }
+        xmlFilesControl();
 
         _igs = Initializer.InitializeIgs();
         fillFieldsGUI();
@@ -309,8 +292,8 @@ public partial class MainWindow
 
         this.imageSourceSkeleton = new DrawingImage(this._drawingGroup);
 
-        
 
+       
     }
 
     /// <summary>
@@ -857,7 +840,8 @@ public partial class MainWindow
 
     private void trainBatch_Button_Click(object sender, RoutedEventArgs e)
     {
-        _igs.classification.knnClassifier.learnBatch(_igs.classification.knnClassifier.pendingSamples);
+        _igs.classification.retrainClassifier(_igs.classification.knnClassifier.pendingSamples);
+        XMLComponentHandler.writeLogEntry("Batch training executed manually");
     }
 
 
@@ -866,7 +850,60 @@ public partial class MainWindow
         if (_igs.classification.knnClassifier.samples.Count != 0)
         {
             _igs.classification.collector.calcRoomModel.calculateDeviceAreas(_igs.classification.knnClassifier);
+            XMLComponentHandler.writeLogEntry("Devices BMP calculated manually");
         }
+    }
+
+    private void xmlFilesControl()
+    {
+        if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml"))
+        {
+            Initializer.createXMLFile();
+        }
+
+        if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionSamples.xml"))
+        {
+            Initializer.createWallProjectionSampleXMLFile();
+        }
+        if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\samples.xml"))
+        {
+            Initializer.createSampleXMLFIle();
+        }
+
+        if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionAndPositionSamples.xml"))
+        {
+            Initializer.createWallProjectionAndPositionSampleXMLFile();
+        }
+        if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelect.xml"))
+        {
+            Initializer.createLogFilePerSelect();
+        }
+        if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelectSmoothed.xml"))
+        {
+            Initializer.createLogFilePerSelectSmoothed();
+        }
+
+        if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\program_log.xml"))
+        {
+            Initializer.createGeneralLogFile();
+        }
+    }
+
+    public List<Vector3D[]> createRandomList()
+    {
+        List<Vector3D[]> l = new List<Vector3D[]>();
+        Random r = new Random();
+        for (int i = 0; i < 3; i++)
+        {
+            Vector3D[] vecs = new Vector3D[4];
+            for (int j = 0; j < 4; j++)
+            {
+                vecs[j] = new Vector3D(r.Next(10), r.Next(10), r.Next(10));
+            }
+            l.Add(vecs);
+        }
+
+        return l;
     }
 
    

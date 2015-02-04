@@ -2,38 +2,71 @@
 <config>
   <deviceConfiguration>
     <device type="Boxee">
-      <name>ExampleBoxee</name>
+      <name>SensorTable</name>
       <id>Boxee_1</id>
-      <form count="1">
-        <ball radius="0,4" centerX="2,0" centerY="2,0" centerZ="0,0" />
-      </form>
-      <address>192.168.0.2</address>
+      <form count="0" />
+      <address>129.13.169.169</address>
       <port>5050</port>
     </device>
     <device type="Plugwise">
-      <name>ExamplePlugwise</name>
+      <name>Steckdose</name>
       <id>Plugwise_1</id>
       <form count="0" />
-      <address>192.168.0.3</address>
+      <address>129.13.169.169</address>
+      <port>5050</port>
+    </device>
+    <device type="Plugwise">
+      <name>Leselampe</name>
+      <id>Plugwise_2</id>
+      <form count="0" />
+      <address>129.13.169.169</address>
+      <port>5050</port>
+    </device>
+    <device type="NecLcdMonitorMultiSyncV421">
+      <name>TV</name>
+      <id>NecLcdMonitorMultiSyncV421_1</id>
+      <form count="0" />
+      <address>129.13.169.178</address>
+      <port>7142</port>
+    </device>
+    <device type="Boxee">
+      <name>XBox</name>
+      <id>Boxee_2</id>
+      <form count="0" />
+      <address>129.13.169.169</address>
+      <port>5050</port>
+    </device>
+    <device type="Boxee">
+      <name>Hifi</name>
+      <id>Boxee_3</id>
+      <form count="0" />
+      <address>129.13.169.169</address>
+      <port>5050</port>
+    </device>
+    <device type="Plugwise">
+      <name>Raumbeleuchtung</name>
+      <id>Plugwise_3</id>
+      <form count="0" />
+      <address>129.13.169.169</address>
       <port>5050</port>
     </device>
   </deviceConfiguration>
   <environment>
     <Roomsize>
-      <width>4,0</width>
-      <height>4,0</height>
-      <depth>4,0</depth>
+      <width>6,35</width>
+      <height>2,70</height>
+      <depth>5,58</depth>
     </Roomsize>
     <KinectConfiguration>
-      <X>2,0</X>
-      <Y>2,0</Y>
-      <Z>0,0</Z>
+      <X>2,40</X>
+      <Y>1,80</Y>
+      <Z>0,30</Z>
       <tiltingAngle>0.0</tiltingAngle>
       <HorizontalOrientationAngle>0.0</HorizontalOrientationAngle>
     </KinectConfiguration>
     <PlugwiseAdress>
-      <host>this.is.an.example</host>
-      <port>8080</port>
+      <host>cloud.teco.edu</host>
+      <port>5000</port>
       <path>plugwise</path>
     </PlugwiseAdress>
   </environment>

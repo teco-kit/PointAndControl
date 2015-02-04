@@ -45,7 +45,7 @@ namespace IGS.Helperclasses
         /// </summary>
         private static UserTracker InitializeUserTracker(GestureStrategy filter, ReplacementStrategy replace)
         {
-            UserTracker userTracker = new UserTracker(filter, replace, false);
+            UserTracker userTracker = new UserTracker(filter, replace, true);
             userTracker.InitializeSensor();
             return userTracker;
         }
@@ -172,6 +172,25 @@ namespace IGS.Helperclasses
             root.Save(AppDomain.CurrentDomain.BaseDirectory + "samples.xml");
         }
 
+        public static void createLogFilePerSelect()
+        {
+            XElement root = new XElement("data");
+            root.Add(new XAttribute("Selects", "0"));
+            root.Save(AppDomain.CurrentDomain.BaseDirectory + "BA_REICHE_LogFilePerSelect.xml");
+        }
+
+        public static void createLogFilePerSelectSmoothed()
+        {
+            XElement root = new XElement("data");
+            root.Add(new XAttribute("Selects", "0"));
+            root.Save(AppDomain.CurrentDomain.BaseDirectory + "BA_REICHE_LogFilePerSelectSmoothed.xml");
+        }
+
+        public static void createGeneralLogFile()
+        {
+            XElement root = new XElement("log");
+            root.Save(AppDomain.CurrentDomain.BaseDirectory + "program_log.xml");
+        }
        
 
     }

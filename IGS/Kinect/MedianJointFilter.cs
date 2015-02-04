@@ -90,36 +90,39 @@ namespace IGS.Kinect
         //Median vector filterting Paper: Noise reduction by vector median filtering by Yike Liu
         public override Vector3D[] jointFilter(List<Vector3D[]> jointLists)
         {
+            Console.WriteLine("NumberJointSmooth = " + jointLists.Count);
             Vector3D[] filtered = new Vector3D[4];
+            double minDist = 0;
+            int indexOfMinDist = 0;
+            double[] distArray = new double[jointLists.Count];
             List<double> distanceList = new List<double>();
-
-            List<Vector3D> joints = new List<Vector3D>();
+         
             for (int jointMarker = 0; jointMarker < jointLists[1].Length; jointMarker++)
             {
-                for (int jlIterator = 0; jlIterator < jointLists.Count; jlIterator++)
-                {
-                    joints.Add(jointLists[jlIterator][jointMarker]);
-                }
 
-
-                for (int i = 0; i < joints.Count; i++)
+                minDist = double.MaxValue;
+                indexOfMinDist = 0;
+                
+                for (int i = 0; i < jointLists.Count; i++)
                 {
                     double tmpTotalDist = 0;
-                    for (int j = 0; j <  joints.Count; j++)
+                    for (int j = i+1; j <  jointLists.Count; j++)
                     {
-                        if (i != j)
-                        {
-                            tmpTotalDist += l2Norm(joints[i], joints[j]);
-                        }
+                            double tmpDist = l2Norm(jointLists[i][jointMarker], jointLists[j][jointMarker]);
+                            distArray[i] += tmpDist;
+                            distArray[j] += tmpDist;
                     }
 
-                    distanceList.Add(tmpTotalDist);
-
+                    if (minDist > distArray[i])
+                    {
+                        minDist = distArray[i];
+                        indexOfMinDist = i;
+                    }
                 }
-
-                filtered[jointMarker] = joints[distanceList.IndexOf(distanceList.Min())];
-                distanceList.Clear();
-                joints.Clear();
+               
+                filtered[jointMarker] = jointLists[indexOfMinDist][jointMarker];
+                distArray = new double[jointLists.Count];
+                
             }
 
 
