@@ -544,6 +544,11 @@ namespace IGS.Server.WebServer
                 p.WriteSuccess("text/javascript");
                 sendData(p);
             }
+            else if (p.HttpUrl.EndsWith(".json"))
+            {
+                p.WriteSuccess("text/json");
+                sendData(p);
+            }
             else if (p.HttpUrl.EndsWith(".jpg"))
             {
                 p.WriteSuccess("image/jpg");

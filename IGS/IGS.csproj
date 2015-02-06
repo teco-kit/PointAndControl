@@ -14,6 +14,8 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
     <PublishUrl>veröffentlichen\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -28,8 +30,6 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -56,6 +56,9 @@
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\HttpRoot\favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="HelixToolkit">
@@ -188,8 +191,10 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\Thumbs.db" />
-    <None Include="Resources\HttpRoot\Plugwise\img\Thumbs.db" />
+    <None Include="Resources\HttpRoot\all.json" />
+    <None Include="Resources\HttpRoot\Boxee\img\Thumbs.db" />
+    <None Include="Resources\HttpRoot\js\jquery.mobile-1.4.5.min.map" />
+    <None Include="Resources\HttpRoot\single.json" />
     <None Include="Resources\HttpRoot\XBMCv11\img\Thumbs.db" />
     <None Include="Resources\IGS.apk" />
   </ItemGroup>
@@ -207,6 +212,37 @@
     <Resource Include="Images\Status.png" />
     <Resource Include="Images\UncheckedHover.png" />
     <Resource Include="Images\UncheckedNormal.png" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\back.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\bg.jpg" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\down.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\left.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\mute.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\pause.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\play.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\right.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\select.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\stop.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\up.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\voldown.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\volup.gif" />
+    <Resource Include="Resources\HttpRoot\favicon.ico" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\bg.jpg" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\mute.gif" />
+    <Resource Include="Resources\HttpRoot\Plugwise\img\bg.jpg" />
+    <Resource Include="Resources\HttpRoot\Presenter\img\bg.jpg" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\back.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\bg.jpg" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\down.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\left.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\mute.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\pause.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\play.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\right.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\select.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\stop.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\up.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\voldown.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\volup.gif" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
@@ -227,89 +263,27 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\configuration.xml" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Resources\HttpRoot\Boxee\css\screen.css" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\back.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\bg.jpg" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\down.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\left.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\mute.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\pause.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\play.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\right.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\select.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\stop.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\up.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\voldown.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\volup.gif" />
     <Content Include="Resources\HttpRoot\Boxee\index.html" />
-    <Resource Include="Resources\HttpRoot\favicon.ico" />
-    <Content Include="Resources\HttpRoot\jquery-1.8.3.min.js" />
-    <Content Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\audio.html" />
+    <Content Include="Resources\HttpRoot\css\site.css" />
+    <Resource Include="Resources\HttpRoot\css\themes\default\images\ajax-loader.gif" />
+    <Content Include="Resources\HttpRoot\css\themes\default\jquery.mobile-1.4.5.min.css" />
+    <Resource Include="Resources\HttpRoot\img\activate.gif" />
+    <Resource Include="Resources\HttpRoot\img\ic_launcher.png" />
+    <Resource Include="Resources\HttpRoot\img\selectdevice.gif" />
+    <Content Include="Resources\HttpRoot\index.html" />
+    <Content Include="Resources\HttpRoot\js\jquery.min.js" />
+    <Content Include="Resources\HttpRoot\js\jquery.mobile-1.4.5.min.js" />
+    <Content Include="Resources\HttpRoot\js\remote.js" />
     <Content Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\css\screen.css" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\audio.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\back.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\bg.jpg" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\down.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\left.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\mute.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\off.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\on.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\pause.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\play.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\right.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\select.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\src.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\stop.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\up.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\voldown.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\volup.gif" />
     <Content Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\index.html" />
-    <Content Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\src.html" />
     <Content Include="Resources\HttpRoot\Plugwise\css\screen.css" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\back.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\bg.jpg" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\down.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\left.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\mute.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\pause.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\play.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\right.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\select.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\stop.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\up.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\voldown.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\volup.gif" />
     <Content Include="Resources\HttpRoot\Plugwise\index.html" />
     <Content Include="Resources\HttpRoot\Presenter\css\screen.css" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\back.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\bg.jpg" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\down.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\left.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\mute.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\pause.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\play.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\right.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\select.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\stop.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\up.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\voldown.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\volup.gif" />
     <Content Include="Resources\HttpRoot\Presenter\index.html" />
-    <Resource Include="Resources\HttpRoot\test.png" />
     <Content Include="Resources\HttpRoot\XBMCv11\css\screen.css" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\back.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\bg.jpg" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\down.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\left.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\mute.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\pause.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\play.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\right.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\select.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\stop.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\up.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\voldown.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\volup.gif" />
     <Content Include="Resources\HttpRoot\XBMCv11\index.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
