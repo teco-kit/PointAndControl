@@ -19,7 +19,7 @@
         var items = [];
         
         if (data.size() == 1) {
-            // move to item
+            // navigate to item
             alterContent( key + '/index.html' );
         } else {
           $.each(data, function(key, val) {
@@ -28,7 +28,7 @@
 
           $( '#devicelist' ).html = items.join('');
           
-          // move to list
+          // navigate to list
           location.hash = 'listdevices';
         }
       });
@@ -44,7 +44,7 @@
 
         $( '#devicelist' ).html = items.join('');
         
-        // move to list
+        // navigate to list
         location.hash = 'listdevices';
       });
     }
