@@ -507,7 +507,7 @@ namespace IGS.Helperclasses
 
             XmlNode rootNode = docConfig.SelectSingleNode("/data");
 
-            int select = int.Parse(rootNode.Attributes[0].InnerText);
+            int select = int.Parse(rootNode.Attributes[0].Value);
 
 
 
@@ -530,7 +530,7 @@ namespace IGS.Helperclasses
             }
             xmlSelect.AppendChild(xmlSkeleton);
             rootNode.AppendChild(xmlSelect);
-            rootNode.Attributes[0].InnerText = (select++).ToString();
+            rootNode.Attributes[0].Value = (select+1).ToString();
 
             docConfig.Save(path);
 
@@ -968,8 +968,7 @@ namespace IGS.Helperclasses
 
             XmlNode rootNode = docConfig.SelectSingleNode("/data");
 
-            int select = int.Parse(rootNode.Attributes[0].InnerText);
-
+            int select = int.Parse(rootNode.Attributes[0].Value);
             XmlElement xmlSelect = docConfig.CreateElement("select");
             int skeletonCounter = 0;
             xmlSelect.SetAttribute("time", DateTime.Now.ToString("HH:mm:ss"));
@@ -1002,7 +1001,7 @@ namespace IGS.Helperclasses
 
             xmlSelect.SetAttribute("skelCount", skeletonCounter.ToString());
             rootNode.AppendChild(xmlSelect);
-            rootNode.Attributes[0].InnerText = (select++).ToString();
+            rootNode.Attributes[0].Value = (select++).ToString();
             docConfig.Save(path);
 
             return true;
@@ -1022,7 +1021,8 @@ namespace IGS.Helperclasses
             }
 
             XmlNode rootNode = docConfig.SelectSingleNode("/data");
-
+            int selected = int.Parse(rootNode.Attributes[0].Value);
+            rootNode.Attributes[0].Value = (selected - 1).ToString();
             rootNode.RemoveChild(rootNode.LastChild);
             docConfig.Save(path);
 
@@ -1037,8 +1037,10 @@ namespace IGS.Helperclasses
             }
 
             rootNode = docConfig.SelectSingleNode("/data");
-
+            
             rootNode.RemoveChild(rootNode.LastChild);
+            selected = int.Parse(rootNode.Attributes[0].Value);
+            rootNode.Attributes[0].Value = (selected - 1).ToString();
             docConfig.Save(path);
 
         }

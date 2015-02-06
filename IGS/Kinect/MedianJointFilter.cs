@@ -90,7 +90,7 @@ namespace IGS.Kinect
         //Median vector filterting Paper: Noise reduction by vector median filtering by Yike Liu
         public override Vector3D[] jointFilter(List<Vector3D[]> jointLists)
         {
-            Console.WriteLine("NumberJointSmooth = " + jointLists.Count);
+            
             Vector3D[] filtered = new Vector3D[4];
             double minDist = 0;
             int indexOfMinDist = 0;
@@ -105,7 +105,6 @@ namespace IGS.Kinect
                 
                 for (int i = 0; i < jointLists.Count; i++)
                 {
-                    double tmpTotalDist = 0;
                     for (int j = i+1; j <  jointLists.Count; j++)
                     {
                             double tmpDist = l2Norm(jointLists[i][jointMarker], jointLists[j][jointMarker]);

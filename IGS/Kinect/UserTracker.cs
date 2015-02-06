@@ -275,7 +275,6 @@ namespace IGS.Server.Kinect
                 
                 if (checkIfAllBodysAreSame() == false) { 
                     
-                   Console.WriteLine("In collect are same == false"); 
                     return Get30Coordinates(id); 
                 }
                 collectAfterClick = false;
@@ -334,17 +333,10 @@ namespace IGS.Server.Kinect
         {
             
             
-            //var watch = Stopwatch.StartNew();
             List<Vector3D[]> coords = this.Get30Coordinates(id);
-            //watch.Stop();
-            //var elapsedMs = watch.ElapsedMilliseconds;
-            //Console.WriteLine("collect of vectors:" + elapsedMs);
-
-             var watch = Stopwatch.StartNew();
+         
+             
             Vector3D[] smoothed = skeletonJointFilter.jointFilter(coords);
-            watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
-            Console.WriteLine("smoothing time:" + elapsedMs);
 
             return smoothed;
         }

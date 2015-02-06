@@ -291,9 +291,6 @@ public partial class MainWindow
         this.displayHeight = depthFrameDescription.Width;
 
         this.imageSourceSkeleton = new DrawingImage(this._drawingGroup);
-
-
-       
     }
 
     /// <summary>
@@ -893,7 +890,7 @@ public partial class MainWindow
     {
         List<Vector3D[]> l = new List<Vector3D[]>();
         Random r = new Random();
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 4; i++)
         {
             Vector3D[] vecs = new Vector3D[4];
             for (int j = 0; j < 4; j++)
