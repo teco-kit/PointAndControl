@@ -16,8 +16,8 @@ namespace IGS.KNN
         public KNNClassifier knnClassifier { get; set; }
         public SampleCollector collector { get; set; }
 
-        public SampleExtractor extractor { get; set; }
-        public SampleSplitter splitter { get; set; }
+        //public SampleExtractor extractor { get; set; }
+        //public SampleSplitter splitter { get; set; }
 
         public ulong deviceClassificationCount { get; set; }
         public ulong deviceClassificationErrorCount { get; set; }
@@ -26,8 +26,8 @@ namespace IGS.KNN
         {
             knnClassifier = new KNNClassifier(XMLComponentHandler.readWallProjectionSamplesFromXML());
             
-            extractor = new SampleExtractor("BA_REICHE_LogFile");
-            splitter = new SampleSplitter();
+            //extractor = new SampleExtractor("BA_REICHE_LogFile");
+            //splitter = new SampleSplitter();
             deviceClassificationCount = 0;
             collector = new SampleCollector(knnClassifier);
         }
@@ -36,13 +36,14 @@ namespace IGS.KNN
 
         public void onlineLearn(User u)
         {
-            new Thread(delegate()
-            {
-                knnClassifier.learnOnline(u.lastClassDevSample);
-            }).Start(); 
             
-            u.deviceIDChecked = true;
-            u.lastClassDevSample = null;
+                knnClassifier.learnOnline(u.lastClassDevSample);
+
+                
+                u.deviceIDChecked = true;
+               
+                u.lastClassDevSample = null;
+                u.lastChosenDeviceID = "";
         }
 
        

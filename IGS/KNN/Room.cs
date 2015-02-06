@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using HelixToolkit.Wpf;
 using System.Windows.Media.Media3D;
 using System.Drawing;
+using IGS.Helperclasses;
 
 namespace IGS.KNN
 {
@@ -232,12 +233,12 @@ namespace IGS.KNN
 
                             }
                             virtualWidthReducer++;
-                            //Console.WriteLine(newPoint);
+                         
                             WallProjectionSample sample = new WallProjectionSample(newPoint);
                             sample = knn.classify(sample);
-                            //Console.WriteLine(sample.sampleDeviceName);
+                          
                             Color c = knn.deviceColorLookupByName(sample.sampleDeviceName);
-                            //Console.WriteLine("X:" + stepCounterVirtualWidth + " Y: " + stepCounterVirtualHeight + " Color:" + c.ToString());
+                           
                             bitmap.SetPixel(stepCounterVirtualWidth, stepCounterVirtualHeight, c);
                             Console.Write(".");
                         }
@@ -253,7 +254,8 @@ namespace IGS.KNN
 
                 
             }
-            
+
+            XMLComponentHandler.writeLogEntry("Calculated Device BMP");
         }
               
     

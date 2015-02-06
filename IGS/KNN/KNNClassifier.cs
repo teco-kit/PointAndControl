@@ -31,27 +31,32 @@ namespace IGS.KNN
 
         public KNNClassifier(List<WallProjectionSample> list)
         {
-       
 
+            pendingSamples = new List<WallProjectionSample>();
+            samples = new List<WallProjectionSample>();
+            devicesRepresentation = new List<deviceRep>();
+            
             var descriptor = Descriptor.Create<WallProjectionSample>();
             generator = new KNNGenerator();
             generator.Descriptor = descriptor;
             
-            initialized = false;
-
-            learnBatch(list);
-            trainClassifier();
-
-            pendingSamples = new List<WallProjectionSample>();
-
-            devicesRepresentation = new List<deviceRep>();
             
+            if (list != null && list.Count != 0)
+            {
+                learnBatch(list);
+                trainClassifier();
+                
+            }
+            else Console.WriteLine("Please add more Samples!");
+            
+           
             foreach (WallProjectionSample sample in samples)
             {
                 checkAndWriteColorForDevice(sample.sampleDeviceName);
+               
             }
             
-            initialized = true;
+           
         }
 
 
@@ -119,23 +124,17 @@ namespace IGS.KNN
 
         public void learnBatch(List<WallProjectionSample> trainingSamples)
         {
-            if (trainingSamples == null) return;
+            if (trainingSamples == null || trainingSamples.Count == 0) return;
             
-            if (initialized == true)
-            {
+          
                 foreach (WallProjectionSample s in trainingSamples)
                 {
                     samples.Add(s);
                     checkAndWriteColorForDevice(s.sampleDeviceName);
-                    XMLComponentHandler.writeWallProjectionSampleToXML(s);
                 }
-
+            
                 trainClassifier();
-            }
-            else
-            {
-                samples = trainingSamples;
-            }
+            
         }
 
         public void learnOnline(WallProjectionSample s)
@@ -173,6 +172,8 @@ namespace IGS.KNN
 
             return newLabel;
         }
+
+        
         
     }
 }
