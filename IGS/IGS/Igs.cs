@@ -192,13 +192,14 @@ namespace IGS.Server.IGS
             String value = args.Val;
             String wlanAdr = args.ClientIp;
             String retStr = "";
+            
             if(cmdId != "popup")
-            XMLComponentHandler.writeLogEntry("Command arrived! devID: " + devId + " cmdID: " + cmdId + " value: " + value + " wlanAdr: " + wlanAdr);
-
-           
+                XMLComponentHandler.writeLogEntry("Command arrived! devID: " + devId + " cmdID: " + cmdId + " value: " + value + " wlanAdr: " + wlanAdr);           
            
             if (devId == "server")
             {
+                args.P.WriteSuccess("text/json");
+
                 if (cmdId != "addUser" && cmdId != "popup")
                 {
                     onlineNotSucces(devId, wlanAdr);
@@ -298,6 +299,8 @@ namespace IGS.Server.IGS
                     onlineNotSucces(devId, wlanAdr);
                     retStr = getControlPagePathHttp(devId);
                     XMLComponentHandler.writeLogEntry("Response to 'getControlPath': " + retStr);
+                    args.P.WriteRedirect(retStr);
+
                     return retStr;
                 }
                 else if (devId != null && cmdId != null && Data.getDeviceByID(devId) != null)
@@ -325,10 +328,20 @@ namespace IGS.Server.IGS
             //    }
                 
             //}
+            result = "{";
+
             if (devices != null)
             {
-                result = devices.Aggregate(result, (current, dev) => current + (dev.Id + "\t" + dev.Name + "\n"));
+                Device[] deviceList = devices.ToArray<Device>();
+                for (int i = 0; i < deviceList.Length; i++)
+                {
+                    if (i != 0)
+                        result += ",";
+                    result += "\"" + deviceList[i].Id + "\":\"" + deviceList[i].Name + "\"";
+                }
+                    //result = devices.Aggregate(result, (current, dev) => current + ("{" + dev.Id + ":" + dev.Name + "},"));
             }
+            result += "}";
             return result;
         }
 
@@ -661,7 +674,7 @@ namespace IGS.Server.IGS
 
             Type t = Data.getDeviceByID(id).GetType();
 
-            controlPath = "Http://" + Server.LocalIP + ":8080" + "/"+ t.Name + "/" +"index.html";
+            controlPath = "http://" + Server.LocalIP + ":8080" + "/"+ t.Name + "/" +"index.html";
 
             return controlPath;
         }

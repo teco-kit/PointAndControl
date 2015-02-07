@@ -383,6 +383,16 @@ namespace IGS.Server.WebServer
             OutputStream.WriteLine("Connection: close");
             OutputStream.WriteLine("");
         }
+
+        /// <summary>
+        ///     Responses to redirect to another URL(301).
+        /// </summary>
+        public void WriteRedirect(String new_location)
+        {
+            OutputStream.WriteLine("HTTP/1.1 301 Moved Permanently");
+            OutputStream.WriteLine("Location: " + new_location);
+            OutputStream.WriteLine("");
+        }
     }
 
     /// <summary>
@@ -549,6 +559,11 @@ namespace IGS.Server.WebServer
                 p.WriteSuccess("text/json");
                 sendData(p);
             }
+            else if (p.HttpUrl.EndsWith(".map"))
+            {
+                p.WriteSuccess("text/text");
+                sendData(p);
+            }
             else if (p.HttpUrl.EndsWith(".jpg"))
             {
                 p.WriteSuccess("image/jpg");
@@ -571,7 +586,6 @@ namespace IGS.Server.WebServer
             }
             else
             {
-                p.WriteSuccess("text/html");
                 NameValueCollection col = HttpUtility.ParseQueryString(p.HttpUrl);
                 String device = col["dev"];
                 String temp = col["cmd"];
@@ -584,6 +598,8 @@ namespace IGS.Server.WebServer
                     String clientIp = ((IPEndPoint)p.Socket.Client.RemoteEndPoint).Address.ToString();
                     OnRequest(new HttpEventArgs(clientIp, device, command, value, p));
 
+                } else {
+                    p.WriteFailure();
                 }
             }
 

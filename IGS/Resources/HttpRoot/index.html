@@ -1,145 +1,154 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Point&amp;Control</title>
-  <link rel="shortcut icon" href="favicon.ico">
-	<link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
-	<link rel="stylesheet" href="css/site.css">
-	<script src="js/jquery.min.js"></script>
-	<script src="js/jquery.mobile-1.4.5.min.js"></script>
-</head>
-<body>
-  <script>
-    getAllDevices = function( event ) {
-      event.preventDefault();
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Point&amp;Control</title>
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css" />
+    <link rel="stylesheet" href="css/site.css" />
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+  </head>
+  <body>
+    <script> 
+//<![CDATA[
+      updateDeviceList = function( event ) {
+        console.log('it happened');
 
-      $.getJSON('all.json', function(data) {
-        var items = [];
-        
-        if (data.size() == 1) {
-            // navigate to item
-            alterContent( key + '/index.html' );
-        } else {
+        $.ajax({url: '/?dev=server&cmd=list', async: true, dataType: 'json', success: function (data) {
+          var items = [];
+
+          console.log('same here');
+          if (!data) {
+            return;
+          }
+
           $.each(data, function(key, val) {
-            items.push('<li href="' + key + '/index.html">' + val + '</li>');
+            items.push('<li><a href="/?dev=' + key + '&cmd=getControlPath" data-ajax="false">' + val + '</a></li>');
           });
 
-          $( '#devicelist' ).html = items.join('');
-          
+          $( '#devicelist' ).html(items.join(''));
+          $( '#devicelist' ).listview('refresh');
+
+          $.mobile.loading('hide');
+
           // navigate to list
-          location.hash = 'listdevices';
-        }
-      });
-    }
-    
-    getSpecificDevices = function( event ) {
-      $.getJSON('single.json', function(data) {
-        var items = [];
+          // location.hash = 'listdevices';
+        }});
+      }
 
-        $.each(data, function(key, val) {
-          items.push('<li href="' + key + '/index.html">' + val + '</li>');
+      $( function(event) {
+        $(document).on('pagecontainerbeforetransition', function(event, ui){
+          hash = ui.absUrl ? $.mobile.path.parseUrl(ui.absUrl).hash : "";
+          if (hash == '#listdevices') {
+            updateDeviceList(event);
+          }
         });
+      }); 
+//]]>
+    </script>
 
-        $( '#devicelist' ).html = items.join('');
-        
-        // navigate to list
-        location.hash = 'listdevices';
-      });
-    }
-  
-    $( function(event) {
-      // Bind to the click
-      $( '.btn-skip' ).click(getAllDevices);
-    });
-  </script>
-
-  <div data-role="page" id="register">
-    <div data-role="header" data-position="fixed" data-tap-toggle="false">
-      <h1>Please Register</h1>
-    </div><!-- /header -->
-
-    <div role="main" class="ui-content fullscreen">
-      <a href="#point" style="text-decoration:none">
-        <div id="activate">Raise your arm and touch the screen</div>
-      </a>
-    </div><!-- /content -->
-      
-    <div data-role="footer" data-position="fixed" data-tap-toggle="false">
-      <div data-role="navbar" data-iconpos="right">
-        <ul>
-          <li><a href="#listdevices" class="btn-skip ui-title" data-icon="carat-r">Skip to list</a></li>
-        </ul>
+    <div data-role="page" id="register">
+      <div data-role="header" data-position="fixed" data-tap-toggle="false">
+        <h1>Please Register</h1>
       </div>
-    </div><!-- /footer -->  
-  </div>
+      <!-- /header -->
 
-  <div data-role="page" id="point">
-    <div data-role="header" data-position="fixed" data-tap-toggle="false">
-      <h1>Select Device</h1>
-      <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Back</a>
-    </div><!-- /header -->
-
-    <div role="main" class="ui-content fullscreen">
-      <a href="#listdevices" style="text-decoration:none">
-        <div id="pointdevice">Point and touch the screen</div>
-      </a>
-    </div><!-- /content -->
-      
-    <div data-role="footer" data-position="fixed" data-tap-toggle="false">
-      <div data-role="navbar" data-iconpos="right">
-        <ul>
-          <li><a href="#listdevices" class="btn-skip" data-icon="carat-r">Skip to list</a></li>
-        </ul>
+      <div role="main" class="ui-content fullscreen">
+        <a href="#point" style="text-decoration:none">
+          <div id="activate">Raise your arm and touch the screen</div>
+        </a>
       </div>
-    </div><!-- /footer -->  
-  </div>
-  
-  <div data-role="page" id="listdevices">
-    <div data-role="header" data-position="fixed" data-tap-toggle="false">
-      <h1>Select Device</h1>
-      <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Back</a>
-      <a href="#adddevice" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all ui-btn-icon-right ui-icon-plus">New</a>
-    </div><!-- /header -->
+      <!-- /content -->
 
-    <div role="main" class="ui-content">
-      <ul id="devicelist" data-role="listview">
-        <li><a href="./NecLcdMonitorMultiSyncV421/index.html" data-ajax="false">TV</a></li>
+      <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+        <div data-role="navbar" data-iconpos="right">
+          <ul>
+            <li>
+              <a href="#listdevices" class="btn-skip ui-title" data-icon="carat-r">Skip to list</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- /footer -->
+    </div>
+
+    <div data-role="page" id="point">
+      <div data-role="header" data-position="fixed" data-tap-toggle="false">
+        <h1>Select Device</h1>
+        <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Back</a>
+      </div>
+      <!-- /header -->
+
+      <div role="main" class="ui-content fullscreen">
+        <a href="#listdevices" style="text-decoration:none">
+          <div id="pointdevice">Point and touch the screen</div>
+        </a>
+      </div>
+      <!-- /content -->
+
+      <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+        <div data-role="navbar" data-iconpos="right">
+          <ul>
+            <li>
+              <a href="#listdevices" class="btn-skip" data-icon="carat-r">Skip to list</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- /footer -->
+    </div>
+
+    <div data-role="page" id="listdevices">
+      <div data-role="header" data-position="fixed" data-tap-toggle="false">
+        <h1>Select Device</h1>
+        <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Back</a>
+        <a href="#adddevice" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all ui-btn-icon-right ui-icon-plus">New</a>
+      </div>
+      <!-- /header -->
+
+      <div role="main" class="ui-content">
+        <ul id="devicelist" data-role="listview">
+          <!--<li><a href="./NecLcdMonitorMultiSyncV421/index.html" data-ajax="false">TV</a></li>
         <li><a href="./XBMCv11/index.html" data-ajax="false">Media Center</a></li>
-        <li><a href="./Plugwise/index.html" data-ajax="false">Lamp</a></li>
-      </ul>
-    </div><!-- /content -->
-      
-  </div>
-  
-  <div data-role="page" data-dialog="true" id="adddevice">
-    <div data-role="header">
-      <h1>Add New Device</h1>
-    </div><!-- /header -->
+        <li><a href="./Plugwise/index.html" data-ajax="false">Lamp</a></li> -->
+        </ul>
+      </div>
+      <!-- /content -->
 
-    <div role="main" class="ui-content">
-      <form>
-        <div class="ui-field-contain">
-          <label for="text-name">Device name:</label>
-          <input type="text" name="text-name" id="text-name" value="">
+    </div>
+
+    <div data-role="page" data-dialog="true" id="adddevice">
+      <div data-role="header">
+        <h1>Add New Device</h1>
+      </div>
+      <!-- /header -->
+
+      <div role="main" class="ui-content">
+        <form>
+          <div class="ui-field-contain">
+            <label for="text-name">Device name:</label>
+            <input type="text" name="text-name" id="text-name" value="" />
         </div>
-        <div class="ui-field-contain">
-          <label for="text-type">Type:</label>
-          <input type="text" name="text-type" id="text-type" value="">
+          <div class="ui-field-contain">
+            <label for="text-type">Type:</label>
+            <input type="text" name="text-type" id="text-type" value="" />
         </div>
-        <div class="ui-field-contain">
-          <label for="text-id">ID:</label>
-          <input type="text" name="text-id" id="text-id" value="">
+          <div class="ui-field-contain">
+            <label for="text-id">ID:</label>
+            <input type="text" name="text-id" id="text-id" value="" />
         </div>
-        <div class="ui-field-contain">
-          <label for="text-port">Port:</label>
-          <input type="text" name="text-port" id="text-port" value="">
+          <div class="ui-field-contain">
+            <label for="text-port">Port:</label>
+            <input type="text" name="text-port" id="text-port" value="" />
         </div>
-        <input type="button" href="#" value="Add Device">
+          <input type="button" href="#" value="Add Device" />
       </form>
-    </div><!-- /content -->
-      
-  </div>
-  
-</body>
+      </div>
+      <!-- /content -->
+
+    </div>
+
+  </body>
+</html>
