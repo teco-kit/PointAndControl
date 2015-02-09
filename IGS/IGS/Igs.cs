@@ -188,102 +188,100 @@ namespace IGS.Server.IGS
         public String InterpretCommand(object sender, HttpEventArgs args)
         {
             String devId = args.Dev;
-            String cmdId = args.Cmd;
+            String cmd = args.Cmd;
             String value = args.Val;
             String wlanAdr = args.ClientIp;
             String retStr = "";
+            String msg = "";
+            Boolean success = false;
             
-            if(cmdId != "popup")
-                XMLComponentHandler.writeLogEntry("Command arrived! devID: " + devId + " cmdID: " + cmdId + " value: " + value + " wlanAdr: " + wlanAdr);           
+            if(cmd != "popup")
+                XMLComponentHandler.writeLogEntry("Command arrived! devID: " + devId + " cmdID: " + cmd + " value: " + value + " wlanAdr: " + wlanAdr);           
            
             if (devId == "server")
             {
-                args.P.WriteSuccess("text/json");
+                // return JSON formatted message
+                args.P.WriteSuccess("application/json");
+                retStr = "{\"cmd\":\"" + cmd + "\"";
 
-                if (cmdId != "addUser" && cmdId != "popup")
+
+                if (cmd != "addUser" && cmd != "popup")
                 {
-                    onlineNotSucces(devId, wlanAdr);
+                    // notify online learner that no control command was sent
+                    onlineNoSucces(devId, wlanAdr);
                 }
-                switch (cmdId)
+
+                switch (cmd)
                 {
                     case "addUser":
-
-                        retStr = AddUser(wlanAdr).ToString();
-                       XMLComponentHandler.writeLogEntry("Response to 'addUser': " + retStr);
-                        return retStr;
+                        success = AddUser(wlanAdr);
+                        break;
 
                     case "close":
-                        retStr = DelUser(wlanAdr).ToString();
-                        XMLComponentHandler.writeLogEntry("Response to 'close': " + retStr);
-                        return retStr;
+                        success = DelUser(wlanAdr);
+                        break;
 
                     case "activateGestureCtrl":
-
                         if (Data.GetUserByIp(wlanAdr) != null)
                         {
-                            retStr = SkeletonIdToUser(wlanAdr).ToString();
-                            XMLComponentHandler.writeLogEntry("Response to 'activateGestureCtrl': " + retStr);
-                            return retStr;
-
+                            success = SkeletonIdToUser(wlanAdr);
                         }
 
-                        retStr = "Aktivierung nicht möglich.\nBitte starten Sie die App neu.";
+                        if (!success)
+                            msg = "Activation of gesture control failed. Please check camera and restart application.";
 
-                        return retStr;
+                        break;
+
                     case "selectDevice":
                         if (Data.GetUserByIp(wlanAdr).TrackingState)
                         {
-                            
-                            retStr = MakeDeviceString(ChooseDevice(wlanAdr));
-                          XMLComponentHandler.writeLogEntry("Response to 'selectDevice': " + retStr);
-                            return retStr;
+                            success = true;
+                            retStr += MakeDeviceString(ChooseDevice(wlanAdr));
+                            break;
                         }
-                        Server.SendResponse(args.P, "ungueltiger Befehl");
-                        break;
-                    case "list":
 
-                        retStr = MakeDeviceString(Data.Devices);
-                        XMLComponentHandler.writeLogEntry("Response to 'list': " + retStr);
-                        return retStr;
+                        msg = "No device found. Please try again.";
+                        break;
+
+                    case "list":
+                        success = true;
+                        retStr += MakeDeviceString(Data.Devices);
+                        break;
+
                     case "addDevice":
                         string[] parameter = value.Split(':');
                         if (parameter.Length == 4)
                         {
-
-                           retStr = AddDevice(parameter);
-
-                             
-                          XMLComponentHandler.writeLogEntry("Response to 'addDevice': " + retStr);
-                            return retStr;
+                          success = true;
+                          msg = AddDevice(parameter);
+                          break;
                         }
 
-                        retStr = "Kein Gerät hinzugefügt. Paramter Anzahl nicht Korrekt";
-
-                        return retStr;
-                    case "collectDeviceSample":
-                        Console.WriteLine("collect kam an!" + "Value:" + value);
-                        retStr = collectSample(wlanAdr, value);
-                       XMLComponentHandler.writeLogEntry("Response to 'collectDeviceSample': " + retStr);
-                        
-                        return retStr;
+                        msg = "Failed to add device. Incorrect number of parameters";
+                        break;
 
                     case "popup":
-                        String msg = "";
                         if (Data.GetUserByIp(wlanAdr) != null)
                         {
+                            success = true;   
                             msg = Data.GetUserByIp(wlanAdr).Errors;
                             Data.GetUserByIp(wlanAdr).ClearErrors();
                         }
-                    
-                        retStr = msg;
-                        if (msg != "")
-                        {
-                            XMLComponentHandler.writeLogEntry("Response to 'popup': " + retStr);
-                        }
-                        return retStr;
+                        break;
                 }
+
+                // finalize JSON response
+                retStr += ",\"success\":" + success.ToString() + ",\"msg\":\"" + msg + "\"}";
+                Console.WriteLine(retStr);
+
+                if (cmd != "popup" || msg != "")
+                {
+                    XMLComponentHandler.writeLogEntry("Response to '" + cmd + "': " + retStr);
+                }
+
+                return retStr;
             }
-            else
+            else if (devId != null && Data.getDeviceByID(devId) != null)
             {
                 //if (cmdId == "addDeviceCoord")
                 //{
@@ -294,24 +292,39 @@ namespace IGS.Server.IGS
                 //    return retStr;
 
                 //}
-                if (devId != null && cmdId == "getControlPath" && Data.getDeviceByID(devId) != null)
+                if (cmd == "getControlPath")
                 {
-                    onlineNotSucces(devId, wlanAdr);
+                    onlineNoSucces(devId, wlanAdr);
                     retStr = getControlPagePathHttp(devId);
                     XMLComponentHandler.writeLogEntry("Response to 'getControlPath': " + retStr);
+                    // redirect to device control path
                     args.P.WriteRedirect(retStr);
 
                     return retStr;
                 }
-                else if (devId != null && cmdId != null && Data.getDeviceByID(devId) != null)
+                else if (cmd == "collectDeviceSample")
                 {
+                    Console.WriteLine("collect kam an!" + "Value:" + value);
+                    retStr = collectSample(wlanAdr, value);
+                    XMLComponentHandler.writeLogEntry("Response to 'collectDeviceSample': " + retStr);
+
+                    return retStr;
+                }
+                else if (cmd != null)
+                {
+                    // assumes that correct device was selected
                     executeOnlineLearning(devId, wlanAdr);
-                    retStr = Data.getDeviceByID(devId).Transmit(cmdId, value);
+                    retStr = Data.getDeviceByID(devId).Transmit(cmd, value);
                     XMLComponentHandler.writeLogEntry("Response to 'control device': " + retStr);
                     return retStr;
                 }
-               
-                Server.SendResponse(args.P, "ungueltiger Befehl");
+
+            }
+            else
+            {   
+                // TODO: JSON response
+                retStr = "Invalid command";
+                return retStr;
             }
             return null;
         }
@@ -319,16 +332,7 @@ namespace IGS.Server.IGS
 
         private String MakeDeviceString(IEnumerable<Device> devices)
         {
-            String result = "";
-            //if (devices != null && devices.Count() == 1)
-            //{
-            //    foreach (Device d in devices)
-            //    {
-            //        return getControlPagePath(d.Id);
-            //    }
-                
-            //}
-            result = "{";
+            String result = "\"devices\":[";
 
             if (devices != null)
             {
@@ -337,11 +341,10 @@ namespace IGS.Server.IGS
                 {
                     if (i != 0)
                         result += ",";
-                    result += "\"" + deviceList[i].Id + "\":\"" + deviceList[i].Name + "\"";
+                    result += "{\"id\":\"" + deviceList[i].Id + "\", \"name\":\"" + deviceList[i].Name + "\"}";
                 }
-                    //result = devices.Aggregate(result, (current, dev) => current + ("{" + dev.Id + ":" + dev.Name + "},"));
             }
-            result += "}";
+            result += "]";
             return result;
         }
 
@@ -694,11 +697,11 @@ namespace IGS.Server.IGS
                 }
                 return;
             }
-            onlineNotSucces(devId, wLanAdr);
+            onlineNoSucces(devId, wLanAdr);
             
         }
 
-        public void onlineNotSucces(String devId, String wLanAdr)
+        public void onlineNoSucces(String devId, String wLanAdr)
         {
             
             User tmpUser = Data.GetUserByIp(wLanAdr);

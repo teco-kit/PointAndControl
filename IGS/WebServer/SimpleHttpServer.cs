@@ -534,73 +534,95 @@ namespace IGS.Server.WebServer
 
         /// <summary>
         ///     Processes the GET-request.
-        ///     Either the requested file will be send to the client or the provided parameters will be processed.
+        ///     Either the requested file will be sent to the client or the provided parameters will be processed.
         ///     <param name="p">the HttpProcessor</param>
         /// </summary>
         public override void HandleGetRequest(HttpProcessor p)
         {
-            if (p.HttpUrl.EndsWith(".html"))
+            String querystring = null;
+            String pathstring = null;
+            // check query part of string
+            int iqs = p.HttpUrl.IndexOf('?');
+            // If query string variables exist, put them in a string.
+            if (iqs >= 0)
+            {
+                querystring = (iqs < p.HttpUrl.Length - 1) ? p.HttpUrl.Substring(iqs + 1) : String.Empty;
+                pathstring = p.HttpUrl.Substring(0, iqs);
+            }
+            else
+            {
+                pathstring = p.HttpUrl;
+            }
+
+            // check for file
+            if (pathstring.EndsWith(".html"))
             {
                 p.WriteSuccess("text/html");
                 sendData(p);
             }
-            else if (p.HttpUrl.EndsWith(".css"))
+            else if (pathstring.EndsWith(".css"))
             {
                 p.WriteSuccess("text/css");
                 sendData(p);
             }
-            else if (p.HttpUrl.EndsWith(".js"))
+            else if (pathstring.EndsWith(".js"))
             {
                 p.WriteSuccess("text/javascript");
                 sendData(p);
             }
-            else if (p.HttpUrl.EndsWith(".json"))
+            else if (pathstring.EndsWith(".json"))
             {
-                p.WriteSuccess("text/json");
+                p.WriteSuccess("application/json");
                 sendData(p);
             }
-            else if (p.HttpUrl.EndsWith(".map"))
+            else if (pathstring.EndsWith(".map"))
             {
-                p.WriteSuccess("text/text");
+                p.WriteSuccess("application/octet-stream");
                 sendData(p);
             }
-            else if (p.HttpUrl.EndsWith(".jpg"))
+            else if (pathstring.EndsWith(".jpg"))
             {
                 p.WriteSuccess("image/jpg");
                 sendData(p);
             }
-            else if (p.HttpUrl.EndsWith(".gif"))
+            else if (pathstring.EndsWith(".gif"))
             {
                 p.WriteSuccess("image/gif");
                 sendData(p);
             }
-            else if (p.HttpUrl.EndsWith(".png"))
+            else if (pathstring.EndsWith(".png"))
             {
                 p.WriteSuccess("image/png");
                 sendData(p);
             }
-            else if (p.HttpUrl.EndsWith(".ico"))
+            else if (pathstring.EndsWith(".ico"))
             {
                 p.WriteSuccess("image/x-icon");
                 sendData(p);
             }
-            else
+            else if (querystring.Length > 0) //TODO: currently we either serve files or process query parameters
             {
-                NameValueCollection col = HttpUtility.ParseQueryString(p.HttpUrl);
+                NameValueCollection col = HttpUtility.ParseQueryString(querystring);
                 String device = col["dev"];
                 String temp = col["cmd"];
-                if (temp != null)
+                if (device != null && temp != null)
                 {
+                    // TODO: clean this mess up
                     String[] cmdval = temp.Split('_');
                     String command = cmdval[0];
                     String value = "";
-                    if (cmdval.Length > 1) value = cmdval[1].Trim();
+                    if (cmdval.Length > 1) 
+                        value = cmdval[1].Trim();
                     String clientIp = ((IPEndPoint)p.Socket.Client.RemoteEndPoint).Address.ToString();
                     OnRequest(new HttpEventArgs(clientIp, device, command, value, p));
 
                 } else {
                     p.WriteFailure();
                 }
+            }
+            else
+            {
+                p.WriteFailure();
             }
 
         }

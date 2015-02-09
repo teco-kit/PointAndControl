@@ -2,6 +2,16 @@ body {
   overflow:hidden;
 }
 
+div.toast {
+  display: block;
+  background: #333;
+  opacity: 0.90;
+  position: fixed;
+  text-align: center;
+  text-shadow: none;
+  color: #fff;
+}
+
 .ui-content.fullscreen{
   padding: 0;
   text-align: center;

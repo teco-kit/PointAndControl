@@ -13,32 +13,53 @@
   <body>
     <script> 
 //<![CDATA[
+      var toast = function(msg){
+        $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all toast'>"+msg+"</div>")
+        .css({ padding: "5px",
+          width: "290px",
+          left: ($(window).width() - 300)/2,
+          top: "0.7em" })
+        .appendTo( $.mobile.pageContainer ).delay( 1500 )
+        .fadeOut( 400, function(){
+          $(this).remove();
+        });
+      }
+            
       updateDeviceList = function( event ) {
-        console.log('it happened');
-
-        $.ajax({url: '/?dev=server&cmd=list', async: true, dataType: 'json', success: function (data) {
+        $.getJSON('/?dev=server&cmd=list', function (data) {
           var items = [];
 
-          console.log('same here');
-          if (!data) {
+          if (!data || !data.devices || data.devices.size == 0) {
+            $( '#devicelist' ).html('<li>No devices in list</li>');
+            $( '#devicelist' ).listview('refresh');
+            
             return;
           }
-
-          $.each(data, function(key, val) {
-            items.push('<li><a href="/?dev=' + key + '&cmd=getControlPath" data-ajax="false">' + val + '</a></li>');
+          
+          $.each(data.devices, function(device) {
+            items.push('<li><a href="/?dev=' + device.id + '&cmd=getControlPath" data-ajax="false">' + device.name + '</a></li>');
           });
 
           $( '#devicelist' ).html(items.join(''));
           $( '#devicelist' ).listview('refresh');
-
-          $.mobile.loading('hide');
-
-          // navigate to list
-          // location.hash = 'listdevices';
-        }});
+        });
+      }
+      
+      pollStatus = function () {
+        // get status from server and generate toast
+        
       }
 
       $( function(event) {
+        // add user on server
+        $( '#activate' ).on('click', function(event) {
+          event.preventDefault();
+          
+          toast('Test of very long message with lots of text and many other things');
+        });
+        
+        // start polling of server for popups
+      
         $(document).on('pagecontainerbeforetransition', function(event, ui){
           hash = ui.absUrl ? $.mobile.path.parseUrl(ui.absUrl).hash : "";
           if (hash == '#listdevices') {
@@ -110,9 +131,7 @@
 
       <div role="main" class="ui-content">
         <ul id="devicelist" data-role="listview">
-          <!--<li><a href="./NecLcdMonitorMultiSyncV421/index.html" data-ajax="false">TV</a></li>
-        <li><a href="./XBMCv11/index.html" data-ajax="false">Media Center</a></li>
-        <li><a href="./Plugwise/index.html" data-ajax="false">Lamp</a></li> -->
+          <li>No devices in list</li>
         </ul>
       </div>
       <!-- /content -->

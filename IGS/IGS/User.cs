@@ -75,7 +75,7 @@ namespace IGS.Server.IGS
         /// </summary>
         public void AddError(String msg)
         {
-            Errors += (msg + "\n");
+            Errors += (msg + "<br/>");
         }
 
         /// <summary>
