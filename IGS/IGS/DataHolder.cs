@@ -70,13 +70,14 @@ namespace IGS.Server.IGS
         ///     and adds the user to the user-list.
         ///     <param name="wlanAdr"> Used to identify and to add a user</param>
         /// </summary>
+        /// //TODO: change return value to something more meaningful
         public bool AddUser(String wlanAdr)
         {
             for (int i = 0; i < _users.Count; i++)
             {
                 if (_users[i].WlanAdr == wlanAdr)
                 {
-                    return false;
+                    return true;
                 }
             }
             User createdUser = new User(wlanAdr);

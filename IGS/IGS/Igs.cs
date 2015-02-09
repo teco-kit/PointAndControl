@@ -236,7 +236,7 @@ namespace IGS.Server.IGS
                         if (Data.GetUserByIp(wlanAdr).TrackingState)
                         {
                             success = true;
-                            retStr += MakeDeviceString(ChooseDevice(wlanAdr));
+                            retStr += "," + MakeDeviceString(ChooseDevice(wlanAdr));
                             break;
                         }
 
@@ -245,7 +245,7 @@ namespace IGS.Server.IGS
 
                     case "list":
                         success = true;
-                        retStr += MakeDeviceString(Data.Devices);
+                        retStr += "," + MakeDeviceString(Data.Devices);
                         break;
 
                     case "addDevice":
@@ -271,7 +271,7 @@ namespace IGS.Server.IGS
                 }
 
                 // finalize JSON response
-                retStr += ",\"success\":" + success.ToString() + ",\"msg\":\"" + msg + "\"}";
+                retStr += ",\"success\":" + success.ToString().ToLower() +",\"msg\":\"" + msg + "\"}";
                 Console.WriteLine(retStr);
 
                 if (cmd != "popup" || msg != "")
@@ -677,7 +677,7 @@ namespace IGS.Server.IGS
 
             Type t = Data.getDeviceByID(id).GetType();
 
-            controlPath = "http://" + Server.LocalIP + ":8080" + "/"+ t.Name + "/" +"index.html";
+            controlPath = "http://" + Server.LocalIP + ":8080" + "/"+ t.Name + "/" +"index.html?dev=" + id;
 
             return controlPath;
         }
@@ -685,6 +685,9 @@ namespace IGS.Server.IGS
         public void executeOnlineLearning(String devId,  String wLanAdr)
         {
             User tmpUser = Data.GetUserByIp(wLanAdr);
+
+            if (tmpUser == null || tmpUser.lastChosenDeviceID == null)
+                return;
 
             if (devId == tmpUser.lastChosenDeviceID)
             {

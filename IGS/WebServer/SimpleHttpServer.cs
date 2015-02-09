@@ -649,11 +649,21 @@ namespace IGS.Server.WebServer
         /// </summary>
         private void sendData(HttpProcessor p)
         {
-            
-            if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\"  + p.HttpUrl))
+            String pathstring = null;
+            int iqs = p.HttpUrl.IndexOf("?");
+            if (iqs == -1)
+            {
+                pathstring = p.HttpUrl;
+            }
+            else if (iqs > 0)
+            {
+                pathstring = p.HttpUrl.Substring(0, iqs);
+            }
+
+            if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\" + pathstring))
             {
                 using (
-                    Stream fs = File.Open(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\"  +  p.HttpUrl,
+                    Stream fs = File.Open(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\" + pathstring,
                                           FileMode.Open)
                     )
                 {

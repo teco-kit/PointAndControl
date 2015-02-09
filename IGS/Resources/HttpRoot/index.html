@@ -24,41 +24,116 @@
           $(this).remove();
         });
       }
-            
-      updateDeviceList = function( event ) {
+       
+
+      // TODO: abstract commands into single function
+      var updateDeviceList = function( event ) {
         $.getJSON('/?dev=server&cmd=list', function (data) {
           var items = [];
 
-          if (!data || !data.devices || data.devices.size == 0) {
+          if (!data || !data.devices || data.devices.length == 0) {
             $( '#devicelist' ).html('<li>No devices in list</li>');
             $( '#devicelist' ).listview('refresh');
             
             return;
           }
           
-          $.each(data.devices, function(device) {
+          for (var i = 0; i < data.devices.length; i++) {
+            var device = data.devices[i];
             items.push('<li><a href="/?dev=' + device.id + '&cmd=getControlPath" data-ajax="false">' + device.name + '</a></li>');
-          });
+          }
 
           $( '#devicelist' ).html(items.join(''));
           $( '#devicelist' ).listview('refresh');
         });
       }
       
-      pollStatus = function () {
+      var registerUser = function() {
+        $.getJSON('/?dev=server&cmd=addUser', function (data) {
+          var items = [];
+
+          if (!data) {            
+            return;
+          }
+          
+          if (data.success){
+            // start polling server
+            setTimeout(pollStatus, 1000);
+          }
+          
+          //TODO: check response          
+        });
+      }
+      
+      var activateGestureControl = function () {
+        $.getJSON('/?dev=server&cmd=activateGestureCtrl', function (data) {
+          var items = [];
+
+          if (!data) {            
+            return;
+          }
+          
+          if (data.msg != '') {
+            toast(data.msg);
+          }
+          
+          if (data.success) {
+            $( ':mobile-pagecontainer' ).pagecontainer( 'change', '#point');
+          }        
+        });
+      }
+      
+      var selectDevice = function () {
+        $.getJSON('/?dev=server&cmd=selectDevice', function (data) {
+          var items = [];
+
+          if (!data || !data.devices) {            
+            return;
+          }
+          
+          if (data.msg != '') {
+            toast(data.msg);
+          }
+          
+          if (data.success) {
+            window.location.assign('/?dev=' + data.devices[0].id + '&cmd=getControlPath');
+          }        
+        });
+      }
+      
+      var pollStatus = function () {
         // get status from server and generate toast
-        
+        $.getJSON('/?dev=server&cmd=popup', function (data) {
+          var items = [];
+
+          if (!data) {            
+            return;
+          }
+          
+          if (data.msg != '') {
+            toast(data.msg);
+          }
+          
+          //TODO: react on content/status
+          if (data.success) {
+            setTimeout(pollStatus, 1000);
+          }        
+        });
       }
 
       $( function(event) {
         // add user on server
+        registerUser();
+        
+        // activate gesture control
         $( '#activate' ).on('click', function(event) {
-          event.preventDefault();
-          
-          toast('Test of very long message with lots of text and many other things');
+          activateGestureControl();
         });
         
-        // start polling of server for popups
+        // get device pointed at
+        $( '#pointdevice' ).on('click', function(event) {
+          selectDevice();
+        });
       
         $(document).on('pagecontainerbeforetransition', function(event, ui){
           hash = ui.absUrl ? $.mobile.path.parseUrl(ui.absUrl).hash : "";
@@ -77,9 +152,7 @@
       <!-- /header -->
 
       <div role="main" class="ui-content fullscreen">
-        <a href="#point" style="text-decoration:none">
-          <div id="activate">Raise your arm and touch the screen</div>
-        </a>
+        <div id="activate">Raise your arm and touch the screen</div>
       </div>
       <!-- /content -->
 
@@ -103,9 +176,7 @@
       <!-- /header -->
 
       <div role="main" class="ui-content fullscreen">
-        <a href="#listdevices" style="text-decoration:none">
-          <div id="pointdevice">Point and touch the screen</div>
-        </a>
+        <div id="pointdevice">Point and touch the screen</div>
       </div>
       <!-- /content -->
 
