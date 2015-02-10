@@ -20,18 +20,20 @@ div.toast {
 
 div#activate {
   width:100%; 
-  font-size:5em; 
+  height:390px;
+  font-size:4em; 
   color: #000;
   text-align:center; 
-  background: #ffffff url('../img/activate.gif') no-repeat center center;
-  padding: 1em 0.1em;
+  background: #ffffff url('../img/activate.png') no-repeat center center;
+  padding-top: 150px;
 }
 
 div#pointdevice {
   width:100%;
-  font-size:5em; 
+  height:350px;
+  font-size:4em; 
   color: #000; 
   text-align:center; 
-  background: #ffffff url('../img/selectdevice.gif') no-repeat center center;
-  padding: 2em 0.1em;
+  background: #ffffff url('../img/selection.png') no-repeat center center;
+  padding-top: 190px;
 }

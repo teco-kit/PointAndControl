@@ -273,6 +273,7 @@
     <Resource Include="Resources\HttpRoot\img\activate.gif" />
     <Resource Include="Resources\HttpRoot\img\ic_launcher.png" />
     <Resource Include="Resources\HttpRoot\img\selectdevice.gif" />
+    <Resource Include="Resources\HttpRoot\img\activate.png" />
     <Content Include="Resources\HttpRoot\index.html" />
     <Content Include="Resources\HttpRoot\js\jquery.min.js" />
     <Content Include="Resources\HttpRoot\js\jquery.mobile-1.4.5.min.js" />

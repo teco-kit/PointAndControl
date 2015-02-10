@@ -13,6 +13,9 @@
   <body>
     <script> 
 //<![CDATA[
+      // check if vibration is supported
+      var supportsVibrate = "vibrate" in navigator;
+
       var toast = function(msg){
         $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all toast'>"+msg+"</div>")
         .css({ padding: "5px",
@@ -23,6 +26,10 @@
         .fadeOut( 400, function(){
           $(this).remove();
         });
+        
+        if (supportsVibrate) {
+          navigator.vibrate([100, 100, 100, 100, 100]);
+        }
       }
        
 
@@ -78,6 +85,9 @@
           }
           
           if (data.success) {
+            if (supportsVibrate) {
+              navigator.vibrate(500);
+            }
             $( ':mobile-pagecontainer' ).pagecontainer( 'change', '#point');
           }        
         });
@@ -96,6 +106,9 @@
           }
           
           if (data.success) {
+            if (supportsVibrate) {
+              navigator.vibrate(500);
+            }
             window.location.assign('/?dev=' + data.devices[0].id + '&cmd=getControlPath');
           }        
         });
@@ -114,10 +127,12 @@
             toast(data.msg);
           }
           
-          //TODO: react on content/status
+          //TODO: react properly on content/status
           if (data.success) {
             setTimeout(pollStatus, 1000);
-          }        
+          } else {
+            setTimeout(registerUser(), 1000);
+          }
         });
       }
 

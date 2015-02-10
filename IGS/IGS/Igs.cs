@@ -144,6 +144,7 @@ namespace IGS.Server.IGS
             if (user != null)
             {
                 user.AddError("You left the room!");
+                user.TrackingState = false;
             }
             Data.DelTrackedSkeleton(args.SkeletonId);
         }
@@ -233,6 +234,12 @@ namespace IGS.Server.IGS
                         break;
 
                     case "selectDevice":
+                        if (Data.GetUserByIp(wlanAdr) == null)
+                        {
+                            msg = "Please register first";
+                            break;
+                        }
+
                         if (Data.GetUserByIp(wlanAdr).TrackingState)
                         {
                             success = true;
