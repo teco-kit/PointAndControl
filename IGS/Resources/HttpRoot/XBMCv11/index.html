@@ -1,7 +1,9 @@
-<html>
+ï»¿<html>
 	<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 		<title>XBMC</title>
-		<link rel="stylesheet" type="text/css" href="css/screen.css">
+		<link rel="stylesheet" type="text/css" href="../css/remote.css">
 		<script type="text/javascript" src="../js/jquery.min.js"></script>
 		<script type="text/javascript" src="../js/remote.js"></script>
 		<script type="text/javascript">
@@ -29,7 +31,7 @@
 	<body>
 		<div id="container">
 			<div id="header">
-				<button id="buInputtxt">Tastatur einblenden</button>
+				<button id="buInputtxt">Show keyboard</button>
 				<input type="text" id="tfinput" style="width: 0px; border: none;" /><br />
 			</div>
 			<div class="content">
@@ -111,12 +113,6 @@
 					</button>
 					</div>
 				</div>
-			</div>
-			<div id="footer">
-				Radius:
-				<input type="text" maxlength="8" size="8" id="tfRadius" >
-				<button onclick="sendcmd('addDeviceCoord_' + $('#tfRadius').val())">
-				Koordinaten hinzufügen
 			</div>
 		</div>
 	</body>

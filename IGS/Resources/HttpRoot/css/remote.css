@@ -7,7 +7,7 @@ html, body {
 }
  
 #container {
-	background-image: url(../img/bg.jpg);	
+  background-image: url(../img/remote_bg.jpg);	
 }
  
 #header {
@@ -28,22 +28,23 @@ html, body {
 }
 
 #header button:hover {
-  background-color: #00ff00;
+	background-color: #00ff00;
 }
 
 #header button:active {
-  background-color: #00bb00;
+	background-color: #00bb00;
 }
  
 div.content {
   display: table;
   width: 100%;
-  height: 80%;
+  height: 90%;
 }
- 
+
 div.row {
   display: table-row;
 }
+
 div.element {
   display: table-cell;
   text-align: center;
@@ -89,9 +90,10 @@ div.element button:active {
 }
 
 #footer button:hover {
-	background-color: #00ff00;
+  background-color: #00ff00;
 }
 
 #footer button:active {
-	background-color: #00bb00;
+  background-color: #00bb00;
 }
+
