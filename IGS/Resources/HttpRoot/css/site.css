@@ -28,7 +28,7 @@ div#activate {
   padding-top: 150px;
 }
 
-div#pointdevice {
+div#pointdevice, div#locatedevice{
   width:100%;
   height:350px;
   font-size:4em; 

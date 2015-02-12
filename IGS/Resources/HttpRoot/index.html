@@ -36,7 +36,8 @@
       // TODO: abstract commands into single function
       var updateDeviceList = function( event ) {
         $.getJSON('/?dev=server&cmd=list', function (data) {
-          var items = [];
+          var listItems = [];
+          var optionItems = [];
 
           if (!data || !data.devices || data.devices.length == 0) {
             $( '#devicelist' ).html('<li>No devices in list</li>');
@@ -44,14 +45,20 @@
             
             return;
           }
+
+          optionItems.push('<option>Choose device...</option>')
           
           for (var i = 0; i < data.devices.length; i++) {
             var device = data.devices[i];
-            items.push('<li><a href="/?dev=' + device.id + '&cmd=getControlPath" data-ajax="false">' + device.name + '</a></li>');
+            listItems.push('<li><a href="/?dev=' + device.id + '&cmd=getControlPath" data-ajax="false">' + device.name + '</a></li>');
+            optionItems.push('<option value="' + device.id + '">' + device.name + '</option>');
           }
 
-          $( '#devicelist' ).html(items.join(''));
-          $( '#devicelist' ).listview('refresh');
+          $('#devicelist').html(listItems.join(''));
+          $('#devicelist').listview('refresh');
+
+          $('#select-device').html(optionItems.join(''));
+          $('#select-device').selectmenu('refresh');
         });
       }
       
@@ -114,6 +121,19 @@
         });
       }
       
+      var locateDevice = function () {
+          var selectedDevice = $('#select-device').val();
+          if (selectedDevice == "")
+              return;
+          $.getJSON('/?dev=' + selectedDevice + '&cmd=collectDeviceSample', function (data) {
+              if (supportsVibrate) {
+                  navigator.vibrate(500);
+              }
+
+              toast('Location sent');
+          });
+      }
+
       var pollStatus = function () {
         // get status from server and generate toast
         $.getJSON('/?dev=server&cmd=popup', function (data) {
@@ -149,10 +169,15 @@
         $( '#pointdevice' ).on('click', function(event) {
           selectDevice();
         });
-      
+
+        // locate device
+        $('#locatedevice').on('click', function (event) {
+          locateDevice();
+        });
+
         $(document).on('pagecontainerbeforetransition', function(event, ui){
           hash = ui.absUrl ? $.mobile.path.parseUrl(ui.absUrl).hash : "";
-          if (hash == '#listdevices') {
+          if (hash == '#listdevices' || hash == '#locate') {
             updateDeviceList(event);
           }
         });
@@ -211,7 +236,7 @@
       <div data-role="header" data-position="fixed" data-tap-toggle="false">
         <h1>Select Device</h1>
         <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Back</a>
-        <a href="#adddevice" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all ui-btn-icon-right ui-icon-plus">New</a>
+        <!--<a href="#adddevice" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all ui-btn-icon-right ui-icon-plus">New</a>-->
       </div>
       <!-- /header -->
 
@@ -222,6 +247,32 @@
       </div>
       <!-- /content -->
 
+    </div>
+
+    <div data-role="page" id="locate">
+        <div data-role="header" data-position="fixed" data-tap-toggle="false">
+            <h1>Add new device location</h1>
+            <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Back</a>
+        </div>
+        <!-- /header -->
+
+        <div role="main" class="ui-content fullscreen">
+            <div id="locatedevice">Locate by pointing</div>
+        </div>
+        <!-- /content -->
+
+        <div data-role="footer" data-position="fixed" data-tap-toggle="false" style="text-align: center;">
+            <form style="width:100%">
+                <label for="select-device" class="select" style=" display:none">Device:</label>
+                <select name="select-device" id="select-device" data-mini="true">
+                    <option value="">Choose Device...</option>
+                    <option value="dev1">The 1st Option</option>
+                    <option value="dev2">The 2nd Option</option>
+                    <option value="dev3">The 3rd Option</option>
+                    <option value="dev4">The 4th Option</option>
+                </select>
+            </form>
+        </div> <!-- /footer -->
     </div>
 
     <div data-role="page" data-dialog="true" id="adddevice">
@@ -241,8 +292,8 @@
             <input type="text" name="text-type" id="text-type" value="" />
         </div>
           <div class="ui-field-contain">
-            <label for="text-id">ID:</label>
-            <input type="text" name="text-id" id="text-id" value="" />
+            <label for="text-id">Address:</label>
+            <input type="text" name="text-address" id="text-address" value="" />
         </div>
           <div class="ui-field-contain">
             <label for="text-port">Port:</label>
