@@ -122,6 +122,7 @@ namespace IGS.Server.IGS
             String str = "";
             Server.SendResponse(e.P, str);
         }
+
         private void server_Request(object sender, HttpEventArgs e)
         {
             Debug.WriteLine("server_Request");
@@ -204,8 +205,7 @@ namespace IGS.Server.IGS
                 // return JSON formatted message
                 args.P.WriteSuccess("application/json");
                 retStr = "{\"cmd\":\"" + cmd + "\"";
-
-
+                
                 if (cmd != "addUser" && cmd != "popup")
                 {
                     // notify online learner that no control command was sent
@@ -288,44 +288,34 @@ namespace IGS.Server.IGS
 
                 return retStr;
             }
-            else if (devId != null && Data.getDeviceByID(devId) != null)
+            else if (devId != null && Data.getDeviceByID(devId) != null && cmd != null)
             {
-                //if (cmdId == "addDeviceCoord")
-                //{
-                    
-                //    retStr = AddDeviceCoord(devId, wlanAdr, value);
-                //    XMLComponentHandler.writeLogEntry("Response to 'addDeviceCoord': " + retStr);
-                    
-                //    return retStr;
-
-                //}
-                if (cmd == "getControlPath")
+                switch (cmd)
                 {
-                    onlineNoSucces(devId, wlanAdr);
-                    retStr = getControlPagePathHttp(devId);
-                    XMLComponentHandler.writeLogEntry("Response to 'getControlPath': " + retStr);
-                    // redirect to device control path
-                    args.P.WriteRedirect(retStr);
+                    case  "getControlPath":
+                        onlineNoSucces(devId, wlanAdr);
+                        retStr = getControlPagePathHttp(devId);
+                        // redirect to device control path
+                        args.P.WriteRedirect(retStr);
 
-                    return retStr;
-                }
-                else if (cmd == "collectDeviceSample")
-                {
-                    Console.WriteLine("collect kam an!" + "Value:" + value);
-                    retStr = collectSample(wlanAdr, value);
-                    XMLComponentHandler.writeLogEntry("Response to 'collectDeviceSample': " + retStr);
+                        break;
 
-                    return retStr;
-                }
-                else if (cmd != null)
-                {
-                    // assumes that correct device was selected
-                    executeOnlineLearning(devId, wlanAdr);
-                    retStr = Data.getDeviceByID(devId).Transmit(cmd, value);
-                    XMLComponentHandler.writeLogEntry("Response to 'control device': " + retStr);
-                    return retStr;
+                    case "addDeviceLocation":
+                        retStr = collectSample(devId, wlanAdr);
+                        // retStr = AddDeviceCoord(devId, wlanAdr, value);
+
+                        break;
+
+                    default:
+                        // assumes that correct device was selected
+                        executeOnlineLearning(devId, wlanAdr);
+                        retStr = Data.getDeviceByID(devId).Transmit(cmd, value);
+
+                        break;
                 }
 
+                XMLComponentHandler.writeLogEntry("Response to '" + cmd + "': " + retStr);
+                return retStr;
             }
             else
             {   
@@ -409,8 +399,6 @@ namespace IGS.Server.IGS
 
                 Device device = Data.GetDeviceByName(sample.sampleDeviceName);
                 sample.sampleDeviceName = device.Name;
-
-                
               
                 if (sample != null)
                 {
@@ -481,7 +469,6 @@ namespace IGS.Server.IGS
                     count++;
             }
             string idparams = parameter[0] + "_" + count;
-
             
             XMLComponentHandler.addDeviceToXML(parameter, count);
 
@@ -521,11 +508,11 @@ namespace IGS.Server.IGS
             IGSKinect = new devKinect("devKinect", kinectBall, tiltingDegree, roomOrientation);
         }
 
-        public String collectSample(String wlan, String devID)
+        public String collectSample(String devID, String wlan)
         {
             User tmpUser = Data.GetUserByIp(wlan);
 
-            Device dev = Data.GetDeviceByName(devID);
+            Device dev = Data.getDeviceByID(devID);
             if (dev != null)
             {
                 if (Tracker.Bodies.Count == 0)
@@ -582,7 +569,6 @@ namespace IGS.Server.IGS
                                     "</data>");
             }
 
-
             XmlNode rootNode = docConfig.SelectSingleNode("/data");
 
             //try to find existing device
@@ -599,10 +585,6 @@ namespace IGS.Server.IGS
                 deviceNode = xmlDevice;
             }
 
-            
-            
-
-
             XmlElement xmlSkeleton = docConfig.CreateElement("skeleton");
             xmlSkeleton.SetAttribute("time", DateTime.Now.ToString("HH:mm:ss"));
             xmlSkeleton.SetAttribute("date", DateTime.Now.ToShortDateString());
@@ -616,11 +598,9 @@ namespace IGS.Server.IGS
                 xmlJoint.SetAttribute("Y", body.Joints[jointType].Position.Y.ToString());
                 xmlJoint.SetAttribute("Z", body.Joints[jointType].Position.Z.ToString());
                 xmlSkeleton.AppendChild(xmlJoint);
-
             }
 
             deviceNode.AppendChild(xmlSkeleton);
-
 
             docConfig.Save(path);
 
@@ -674,9 +654,6 @@ namespace IGS.Server.IGS
             docConfig.Save(path);
 
         }
-
-        
-
 
         public String getControlPagePathHttp(String id)
         {

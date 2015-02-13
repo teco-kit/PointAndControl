@@ -226,10 +226,7 @@
     <Resource Include="Resources\HttpRoot\Boxee\img\voldown.gif" />
     <Resource Include="Resources\HttpRoot\Boxee\img\volup.gif" />
     <Resource Include="Resources\HttpRoot\favicon.ico" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\bg.jpg" />
     <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\mute.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\bg.jpg" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\bg.jpg" />
     <Resource Include="Resources\HttpRoot\XBMCv11\img\back.gif" />
     <Resource Include="Resources\HttpRoot\XBMCv11\img\bg.jpg" />
     <Resource Include="Resources\HttpRoot\XBMCv11\img\down.gif" />
@@ -265,8 +262,8 @@
     <Resource Include="Resources\configuration.xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\HttpRoot\Boxee\css\screen.css" />
     <Content Include="Resources\HttpRoot\Boxee\index.html" />
+    <Content Include="Resources\HttpRoot\css\remote.css" />
     <Content Include="Resources\HttpRoot\css\site.css" />
     <Resource Include="Resources\HttpRoot\css\themes\default\images\ajax-loader.gif" />
     <Content Include="Resources\HttpRoot\css\themes\default\jquery.mobile-1.4.5.min.css" />
@@ -274,17 +271,15 @@
     <Resource Include="Resources\HttpRoot\img\ic_launcher.png" />
     <Resource Include="Resources\HttpRoot\img\selectdevice.gif" />
     <Resource Include="Resources\HttpRoot\img\activate.png" />
+    <Resource Include="Resources\HttpRoot\img\remote_bg.jpg" />
     <Content Include="Resources\HttpRoot\index.html" />
     <Content Include="Resources\HttpRoot\js\jquery.min.js" />
     <Content Include="Resources\HttpRoot\js\jquery.mobile-1.4.5.min.js" />
     <Content Include="Resources\HttpRoot\js\remote.js" />
-    <Content Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\css\screen.css" />
+    <Content Include="Resources\HttpRoot\js\site.js" />
     <Content Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\index.html" />
-    <Content Include="Resources\HttpRoot\Plugwise\css\screen.css" />
     <Content Include="Resources\HttpRoot\Plugwise\index.html" />
-    <Content Include="Resources\HttpRoot\Presenter\css\screen.css" />
     <Content Include="Resources\HttpRoot\Presenter\index.html" />
-    <Content Include="Resources\HttpRoot\XBMCv11\css\screen.css" />
     <Content Include="Resources\HttpRoot\XBMCv11\index.html" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

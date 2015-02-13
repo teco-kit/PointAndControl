@@ -660,6 +660,7 @@ namespace IGS.Server.WebServer
                 pathstring = p.HttpUrl.Substring(0, iqs);
             }
 
+            //TODO: make httproot configurable
             if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\" + pathstring))
             {
                 using (
