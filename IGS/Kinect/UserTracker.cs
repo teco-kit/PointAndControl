@@ -55,11 +55,12 @@ namespace IGS.Server.Kinect
             Filter = filter;
             Strategy = replace;
             Bodies = new List<TrackedSkeleton>();
-            collectAfterClick = false;
-            lastBodies = new List<Body[]>();
             movingWindowCollect = movingWindow;
+            collectAfterClick = true;
+            lastBodies = new List<Body[]>();
             this.skeletonJointFilter = new MedianJointFilter();
             lastBodiesPuffer = new List<Body[]>();
+            workingOnWindow = false;
         }
 
         /// <summary>
@@ -171,7 +172,7 @@ namespace IGS.Server.Kinect
         {
             bool same = true;
 
-            for(int i = 0; i < lastBodies[0].Length; i++)
+            for (int i = 0; i < lastBodies[0].Length; i++)
             {
                 ulong bodyID = lastBodies[0][i].TrackingId;
                 foreach (Body[] bodies in lastBodies)
@@ -194,7 +195,7 @@ namespace IGS.Server.Kinect
         /// </summary>
         public int GetSkeletonId(int igsSkelId)
         {
-          
+
             if (Bodies.Any(s => s.Id == igsSkelId))
             {
                 return igsSkelId;
@@ -216,13 +217,13 @@ namespace IGS.Server.Kinect
             {
                 return s.Id;
             }
-           
+
             return -1;
         }
 
 
-        
-        
+
+
 
         /// <summary>
         ///     Interface to the IGS where the koordinates of ellbow/wrist of both arms regarding the kinect coordinate system of the kinect will be requested.
@@ -264,33 +265,39 @@ namespace IGS.Server.Kinect
         {
             List<Vector3D[]> returnList = new List<Vector3D[]>();
             workingOnWindow = true;
-            if(movingWindowCollect == false){
-            if (collectAfterClick == false)
+            if (movingWindowCollect == false)
             {
-                collectAfterClick = true;
-                while (lastBodies.Count != 15)
+                if (collectAfterClick == false)
                 {
+                    collectAfterClick = true;
+                    while (lastBodies.Count != 15)
+                    {
 
+                    }
+
+                    if (checkIfAllBodysAreSame() == false)
+                    {
+                        return Get30Coordinates(id);
+                    }
+                    collectAfterClick = false;
                 }
-                
-                if (checkIfAllBodysAreSame() == false) { 
-                    
-                    return Get30Coordinates(id); 
-                }
-                collectAfterClick = false;
-            }
-            else return null;
+                else return null;
             }
 
-
-                foreach (TrackedSkeleton sTracked in Bodies.Where(sTracked => sTracked.Id == id))
+            int searchForLastBody = 1;
+            foreach (TrackedSkeleton sTracked in Bodies.Where(sTracked => sTracked.Id == id))
+            {
+                sTracked.Actions = sTracked.Actions + 1;
+                foreach (Body[] bodies in lastBodies)
                 {
-                    sTracked.Actions = sTracked.Actions + 1;
-                    foreach (Body[] bodies in lastBodies)
-                    { 
                     foreach (Body s in bodies)
+
                     {
                         if ((int)s.TrackingId != id) continue;
+                        if (searchForLastBody == lastBodies.Count)
+                        {
+                            XMLComponentHandler.writeUserJointsPerSelectClick(s);
+                        }
                         Vector3D[] result = new Vector3D[4];
                         result[0] = new Vector3D(s.Joints[JointType.ShoulderLeft].Position.X,
                                                  s.Joints[JointType.ShoulderLeft].Position.Y,
@@ -305,37 +312,34 @@ namespace IGS.Server.Kinect
                                                  s.Joints[JointType.WristRight].Position.Y,
                                                  s.Joints[JointType.WristRight].Position.Z);
                         returnList.Add(result);
-                        
+
                     }
+                    searchForLastBody++;
                 }
             }
-                
 
-                  
-                        XMLComponentHandler.writeUserjointsPerSelectSmoothed(id, lastBodies);
-                    
-                
-                
 
-              
-                
-                if (movingWindowCollect == false)
-                {
-                    lastBodies.Clear();
-                }
-                this.copyFromBodiesPufferToBodyArray();
-                workingOnWindow = false;
-               return returnList;
+
+            XMLComponentHandler.writeUserjointsPerSelectSmoothed(id, lastBodies);
+
+
+            if (movingWindowCollect == false)
+            {
+                lastBodies.Clear();
+            }
+            this.copyFromBodiesPufferToBodyArray();
+            workingOnWindow = false;
+            return returnList;
         }
 
 
         public Vector3D[] getMedianFilteredCoordinates(int id)
         {
-            
-            
+
+
             List<Vector3D[]> coords = this.Get30Coordinates(id);
-         
-             
+
+
             Vector3D[] smoothed = skeletonJointFilter.jointFilter(coords);
 
             return smoothed;
@@ -412,7 +416,7 @@ namespace IGS.Server.Kinect
                 {
                     //checks if a skeleton doesnt exist anymore.
                     foreach (Body s in _bodiesLastFrame.Where(s => s != null && !idsSeen.Contains((int)s.TrackingId) && s.TrackingId != 0))
-                    {  
+                    {
                         this.OnUserLeft(this, new KinectUserEventArgs((int)s.TrackingId));
                         for (int i = 0; i < Bodies.Count; i++)
                         {
@@ -422,7 +426,7 @@ namespace IGS.Server.Kinect
                     }
                 }
                 _bodiesLastFrame = bodies;
-                
+
                 if (collectAfterClick == true || movingWindowCollect == true)
                 {
                     Body[] bodiesToSave = new Body[bodies.Length];
@@ -463,7 +467,9 @@ namespace IGS.Server.Kinect
             else
             {
                 lastBodies.RemoveRange(0, lastBodiesPuffer.Count);
-                lastBodiesPuffer.Concat(lastBodies);
+                lastBodies = (List<Body[]>)lastBodiesPuffer.Concat(lastBodies);
+                lastBodiesPuffer.Clear();
+                Console.WriteLine("lastBodies COunt: " + lastBodies.Count);
                 return;
             }
         }

@@ -516,6 +516,9 @@ namespace IGS.Helperclasses
             xmlSelect.SetAttribute("time", DateTime.Now.ToString("HH:mm:ss"));
             xmlSelect.SetAttribute("date", DateTime.Now.ToShortDateString());
             xmlSkeleton.SetAttribute("skelID", b.TrackingId.ToString());
+            xmlSelect.SetAttribute("devID", "");
+            xmlSelect.SetAttribute("devName", "");
+
 
             foreach (JointType jointType in Enum.GetValues(typeof(JointType)))
             {
@@ -974,6 +977,8 @@ namespace IGS.Helperclasses
             xmlSelect.SetAttribute("time", DateTime.Now.ToString("HH:mm:ss"));
             xmlSelect.SetAttribute("date", DateTime.Now.ToShortDateString());
             xmlSelect.SetAttribute("skelID", id.ToString());
+            xmlSelect.SetAttribute("devID", "");
+            xmlSelect.SetAttribute("devName", "");
 
             foreach (Body[] bodies in bodiesList)
             {
@@ -1043,6 +1048,44 @@ namespace IGS.Helperclasses
             rootNode.Attributes[0].Value = (selected - 1).ToString();
             docConfig.Save(path);
 
+        }
+
+        public static void writeClassifiedDeviceToLastSelect(Device dev)
+        {
+            String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelectSmoothed.xml";
+
+            XmlDocument docConfig = new XmlDocument();
+
+            if (File.Exists(path))
+            {
+                docConfig.Load(path);
+            }
+
+            XmlNode rootNode = docConfig.SelectSingleNode("/data");
+
+            XmlNode lastSelect = rootNode.LastChild;
+
+            lastSelect.Attributes[3].Value = dev.Id;
+            lastSelect.Attributes[4].Value = dev.Name;
+
+            docConfig.Save(path);
+
+            path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelect.xml";
+
+            //add device to configuration XML
+            docConfig = new XmlDocument();
+
+
+            if (File.Exists(path))
+            {
+                docConfig.Load(path);
+            }
+
+            rootNode = docConfig.SelectSingleNode("/data");
+            lastSelect = rootNode.LastChild;
+            lastSelect.Attributes[3].Value = dev.Id;
+            lastSelect.Attributes[4].Value = dev.Name;
+            docConfig.Save(path);
         }
        
 
