@@ -197,10 +197,10 @@ namespace IGS.Server.IGS
 
             if (devId == "server")
             {
-                if (cmdId != "addUser" && cmdId != "popup")
-                {
-                    onlineNotSucces(devId, wlanAdr);
-                }
+                //if (cmdId != "addUser" && cmdId != "popup")
+                //{
+                //    onlineNotSucces(devId, wlanAdr);
+                //}
                 switch (cmdId)
                 {
                     case "addUser":
@@ -293,14 +293,14 @@ namespace IGS.Server.IGS
                 //}
                 if (devId != null && cmdId == "getControlPath" && Data.getDeviceByID(devId) != null)
                 {
-                    onlineNotSucces(devId, wlanAdr);
+                    //onlineNotSucces(devId, wlanAdr);
                     retStr = getControlPagePathHttp(devId);
                     XMLComponentHandler.writeLogEntry("Response to 'getControlPath': " + retStr);
                     return retStr;
                 }
                 else if (devId != null && cmdId != null && Data.getDeviceByID(devId) != null)
                 {
-                    executeOnlineLearning(devId, wlanAdr);
+                    //executeOnlineLearning(devId, wlanAdr);
                     retStr = Data.getDeviceByID(devId).Transmit(cmdId, value);
                     XMLComponentHandler.writeLogEntry("Response to 'control device': " + retStr);
                     return retStr;
@@ -397,6 +397,7 @@ namespace IGS.Server.IGS
                             Point3D p = new Point3D(vecs[2].X, vecs[2].Y, vecs[2].Z);
                             XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
                             XMLComponentHandler.writeSampleToXML(vecs, sample.sampleDeviceName);
+                            XMLComponentHandler.writeClassifiedDeviceToLastSelect(d);
                             dev.Add(d);
                             tempUser.lastChosenDeviceID = d.Id;
                             tempUser.lastClassDevSample = sample;
