@@ -283,7 +283,7 @@ namespace IGS
         /// </summary>
         /// <param name="devKinect">the representation of the kinect camera of the IGS to get its information of size and 
         ///                         and position</param>
-        public void SetKinectCamera(IGS.Server.Devices.devKinect devKinect)
+        public void SetKinectCamera(devKinect devKinect)
         {
             Point3D center = new Point3D();
 

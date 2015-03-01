@@ -59,5 +59,24 @@ namespace IGS.KNN
         {
             knnClassifier.learnBatch(samples);
         }
+
+        public bool calculateWallProjectionSample(Vector3D[] vectors, String deviceName)
+        {
+            bool success = false;
+            WallProjectionSample sample = collector.calculateWallProjectionSample(vectors, deviceName);
+
+            if (sample.sampleDeviceName.Equals("nullSample") == false)
+            {
+               knnClassifier.pendingSamples.Add(sample);
+               XMLComponentHandler.writeWallProjectionSampleToXML(sample);
+               Point3D p = new Point3D(vectors[2].X, vectors[2].Y, vectors[2].Z);
+               XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
+               XMLComponentHandler.writeSampleToXML(vectors, sample.sampleDeviceName);
+               
+               success = true;
+
+            }
+            return success;
+        }
     }
 }

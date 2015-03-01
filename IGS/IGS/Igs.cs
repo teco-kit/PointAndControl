@@ -14,6 +14,7 @@ using System.Text;
 using IGS.KNN;
 using Microsoft.Kinect;
 using System.Threading;
+using IGS.IGS;
 
 namespace IGS.Server.IGS
 {
@@ -52,7 +53,8 @@ namespace IGS.Server.IGS
 
             this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Centre);
             this.classification = new ClassificationHandler();
-
+            this.chooseDeviceMethod = new DevChooseMethodKNN(classification);
+            
         }
 
 
@@ -94,6 +96,8 @@ namespace IGS.Server.IGS
         public CoordTransform Transformer { get; set; }
 
         public ClassificationHandler classification { get; set; }
+
+        public ChooseDeviceMethod chooseDeviceMethod { get; set; }
 
         /// <summary>
         /// 
@@ -230,8 +234,7 @@ namespace IGS.Server.IGS
                     case "selectDevice":
                         if (Data.GetUserByIp(wlanAdr).TrackingState)
                         {
-
-                            retStr = MakeDeviceString(ChooseDevice(wlanAdr));
+                            retStr = MakeDeviceString(chooseDeviceMethod.chooseDevice(wlanAdr, Transformer, Tracker, Data));
                             XMLComponentHandler.writeLogEntry("Response to 'selectDevice': " + retStr);
                             return retStr;
                         }
@@ -355,7 +358,7 @@ namespace IGS.Server.IGS
             if (tempUser != null)
             {
 
-                WallProjectionSample sample = classification.collector.calculateSample(vecs, "");
+                WallProjectionSample sample = classification.collector.calculateWallProjectionSample(vecs, "");
 
                 //String label = collector.calcRoomModel.hitSquareCheck(new Point3D(sample.x, sample.y, sample.z));
                 //if (label != null)
@@ -378,7 +381,7 @@ namespace IGS.Server.IGS
                 Console.WriteLine("Classified: " + sample.sampleDeviceName);
                 XMLComponentHandler.writeLogEntry("Device classified to" + sample.sampleDeviceName);
                 Body body = Tracker.GetBodyById(tempUser.SkeletonId);
-                writeUserJointsToXmlFile(tempUser, Data.GetDeviceByName(sample.sampleDeviceName), body);
+                XMLComponentHandler.writeUserJointsToXmlFile(tempUser, Data.GetDeviceByName(sample.sampleDeviceName), body);
                 //XMLComponentHandler.writeUserJointsPerSelectClick(body);
                 classification.deviceClassificationCount++;
 
@@ -508,151 +511,25 @@ namespace IGS.Server.IGS
                 {
                     return "No bodys found by kinect";
                 }
+                Body body = Tracker.GetBodyById(tmpUser.SkeletonId);
                 Vector3D[] vectors = Transformer.transformJointCoords(Tracker.getMedianFilteredCoordinates(tmpUser.SkeletonId));
                 //Vector3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(tmpUser.SkeletonId));
-                WallProjectionSample sample = classification.collector.calculateSample(vectors, dev.Name);
-                if (sample.sampleDeviceName.Equals("nullSample") == false)
+               
+                if (classification.calculateWallProjectionSample(vectors, dev.Name) == true)
                 {
-                    classification.knnClassifier.pendingSamples.Add(sample);
-                    Body body = Tracker.GetBodyById(tmpUser.SkeletonId);
-                    writeUserJointsToXmlFile(tmpUser, dev, body);
+                    //XMLComponentHandler.writeUserJointsToXmlFile(tmpUser, dev, body);
                     //XMLComponentHandler.writeUserJointsPerSelectClick(body);
-                    XMLComponentHandler.writeWallProjectionSampleToXML(sample);
-                    Point3D p = new Point3D(vectors[2].X, vectors[2].Y, vectors[2].Z);
-                    XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
-                    XMLComponentHandler.writeSampleToXML(vectors, sample.sampleDeviceName);
+                    XMLComponentHandler.writeClassifiedDeviceToLastSelect(dev);
                     return "sample added";
                 }
                 else
                 {
+                    XMLComponentHandler.deleteLastUserSkeletonSelected();
                     return "direction didn't hit a wall";
                 }
             }
             return "Sample not added, deviceID not found";
         }
-
-        /// <summary>
-        ///     Creates or updates Log file with current user raw skeleton data.\n
-        ///     <param name="user">current user</param>
-        ///     <param name="device">current device</param>
-        /// </summary>
-        private void writeUserJointsToXmlFile(User user, Device device, Body body)
-        {
-            if (body == null)
-            {
-                Console.Out.WriteLine("No Body found, cannot write to xml");
-                return;
-            }
-            String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFile.xml";
-
-            //add device to configuration XML
-            XmlDocument docConfig = new XmlDocument();
-
-            if (File.Exists(path))
-            {
-                docConfig.Load(path);
-            }
-            else
-            {
-                docConfig.LoadXml("<data>" +
-                                    "</data>");
-            }
-
-
-            XmlNode rootNode = docConfig.SelectSingleNode("/data");
-
-            //try to find existing device
-            XmlNode deviceNode = docConfig.SelectSingleNode("/data/device[@id='" + device.Id + "']");
-
-            if (deviceNode == null)
-            {
-                //Create Device node
-                XmlElement xmlDevice = docConfig.CreateElement("device");
-                xmlDevice.SetAttribute("id", device.Id);
-                xmlDevice.SetAttribute("name", device.Name);
-                rootNode.AppendChild(xmlDevice);
-
-                deviceNode = xmlDevice;
-            }
-
-
-
-
-
-            XmlElement xmlSkeleton = docConfig.CreateElement("skeleton");
-            xmlSkeleton.SetAttribute("time", DateTime.Now.ToString("HH:mm:ss"));
-            xmlSkeleton.SetAttribute("date", DateTime.Now.ToShortDateString());
-
-            foreach (JointType jointType in Enum.GetValues(typeof(JointType)))
-            {
-                XmlElement xmlJoint = docConfig.CreateElement("joint");
-                xmlJoint.SetAttribute("type", jointType.ToString());
-
-                xmlJoint.SetAttribute("X", body.Joints[jointType].Position.X.ToString());
-                xmlJoint.SetAttribute("Y", body.Joints[jointType].Position.Y.ToString());
-                xmlJoint.SetAttribute("Z", body.Joints[jointType].Position.Z.ToString());
-                xmlSkeleton.AppendChild(xmlJoint);
-
-            }
-
-            deviceNode.AppendChild(xmlSkeleton);
-
-
-            docConfig.Save(path);
-
-
-        }
-
-        private void writeUserJointsPerSelectClick(User u, Body b)
-        {
-            if (b == null)
-            {
-                Console.Out.WriteLine("No Body found, cannot write to xml");
-                return;
-            }
-            String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelect.xml";
-
-            //add device to configuration XML
-            XmlDocument docConfig = new XmlDocument();
-
-
-            docConfig.Load(path);
-
-
-
-            XmlNode rootNode = docConfig.SelectSingleNode("/data");
-
-            int select = int.Parse(rootNode.Attributes[0].InnerText);
-
-
-
-            XmlElement xmlSelect = docConfig.CreateElement("select");
-            XmlElement xmlSkeleton = docConfig.CreateElement("skeleton");
-            xmlSelect.SetAttribute("time", DateTime.Now.ToString("HH:mm:ss"));
-            xmlSelect.SetAttribute("date", DateTime.Now.ToShortDateString());
-            xmlSkeleton.SetAttribute("skelID", b.TrackingId.ToString());
-
-            foreach (JointType jointType in Enum.GetValues(typeof(JointType)))
-            {
-                XmlElement xmlJoint = docConfig.CreateElement("joint");
-                xmlJoint.SetAttribute("type", jointType.ToString());
-
-                xmlJoint.SetAttribute("X", b.Joints[jointType].Position.X.ToString());
-                xmlJoint.SetAttribute("Y", b.Joints[jointType].Position.Y.ToString());
-                xmlJoint.SetAttribute("Z", b.Joints[jointType].Position.Z.ToString());
-                xmlSkeleton.AppendChild(xmlJoint);
-
-            }
-            xmlSelect.AppendChild(xmlSkeleton);
-            rootNode.AppendChild(xmlSelect);
-            rootNode.Attributes[0].InnerText = (select++).ToString();
-
-            docConfig.Save(path);
-
-        }
-
-
-
 
         public String getControlPagePathHttp(String id)
         {

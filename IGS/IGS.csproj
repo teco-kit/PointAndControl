@@ -112,6 +112,9 @@
     <Compile Include="Helperclasses\SampleExtractor.cs" />
     <Compile Include="Helperclasses\SampleSplitter.cs" />
     <Compile Include="Helperclasses\XMLComponentHandler.cs" />
+    <Compile Include="IGS\ChooseDeviceMethod.cs" />
+    <Compile Include="IGS\DevChooseMethodCollDet.cs" />
+    <Compile Include="IGS\DevChooseMethodKNN.cs" />
     <Compile Include="Kinect\MedianJointFilter.cs" />
     <Compile Include="Kinect\SkeletonJointFilter.cs" />
     <Compile Include="Kinect\TrackingStateEventArgs.cs" />

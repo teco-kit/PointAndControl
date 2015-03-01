@@ -13,7 +13,6 @@ namespace IGS.KNN
 {
     public class SampleCollector
     {
-        public List<WallProjectionSample> sampleList {get; set;}
         public Room calcRoomModel { get; set; }
         
         public SampleCollector(KNNClassifier handler)
@@ -21,16 +20,16 @@ namespace IGS.KNN
             String[] roomComps = XMLComponentHandler.readRoomComponents();
             calcRoomModel = new Room(float.Parse(roomComps[0]),  float.Parse(roomComps[1]) , float.Parse(roomComps[2]));
 
-            //if (handler.samples.Count != 0)
-            //{
-            //    new Thread(delegate()
-            //    {
-            //        calcRoomModel.calculateDeviceAreas(handler);
-            //    }).Start();
-            //}
+            if (handler.samples.Count != 0)
+            {
+                new Thread(delegate()
+                {
+                    calcRoomModel.calculateDeviceAreas(handler);
+                }).Start();
+            }
         }
 
-        public WallProjectionSample calculateSample(Vector3D[] vectors, String devName)
+        public WallProjectionSample calculateWallProjectionSample(Vector3D[] vectors, String devName)
         {   
             Vector3D direction = Vector3D.Subtract(vectors[3], vectors[2]);
             Ray3D ray = new Ray3D(vectors[2].ToPoint3D(), direction);
@@ -52,7 +51,7 @@ namespace IGS.KNN
             return sample;
         }
 
-        public WallProjectionSample calculateSample(Vector3D direction, Vector3D position, String devName)
+        public WallProjectionSample calculateWallProjectionSample(Vector3D direction, Vector3D position, String devName)
         {
             
             Ray3D ray = new Ray3D(position.ToPoint3D(), direction);

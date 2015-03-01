@@ -114,7 +114,7 @@ namespace IGS.Helperclasses
             List<WallProjectionSample> wallProjectionSamples = new List<WallProjectionSample>();
             foreach (SampleExtractor.rawSample rawSample in sampleList)
             {
-                WallProjectionSample sample = collector.calculateSample(rawSample.direction, rawSample.position, rawSample.label);
+                WallProjectionSample sample = collector.calculateWallProjectionSample(rawSample.direction, rawSample.position, rawSample.label);
                 wallProjectionSamples.Add(sample);
             }
             XMLComponentHandler.testAndCreateSampleXML("rawSampleWallProjection");
@@ -130,7 +130,7 @@ namespace IGS.Helperclasses
             WallProjectionSample tmpSample = new WallProjectionSample();
             foreach (SampleExtractor.rawSample rawSample in sampleList)
             {
-                tmpSample = collector.calculateSample(rawSample.direction, rawSample.position, rawSample.label);
+                tmpSample = collector.calculateWallProjectionSample(rawSample.direction, rawSample.position, rawSample.label);
 
                 WallProjectionAndPositionSample sample = new WallProjectionAndPositionSample(tmpSample, new Point3D(rawSample.position.X, rawSample.position.Y, rawSample.position.Z), rawSample.label);
                 wallProjectionSamples.Add(sample);
@@ -148,7 +148,7 @@ namespace IGS.Helperclasses
             List<WallProjectionSample> wallProjectionSamples = new List<WallProjectionSample>();
             foreach (SampleExtractor.rawSample rawSample in rawSampleList)
             {
-                WallProjectionSample sample = collector.calculateSample(rawSample.direction, rawSample.position, rawSample.label);
+                WallProjectionSample sample = collector.calculateWallProjectionSample(rawSample.direction, rawSample.position, rawSample.label);
                 wallProjectionSamples.Add(sample);
             }
             XMLComponentHandler.testAndCreateSampleXML(filePath);
@@ -164,7 +164,7 @@ namespace IGS.Helperclasses
             WallProjectionSample tmpSample = new WallProjectionSample();
             foreach (SampleExtractor.rawSample rawSample in rawSampleList)
             {
-                tmpSample = collector.calculateSample(rawSample.direction, rawSample.position, rawSample.label);
+                tmpSample = collector.calculateWallProjectionSample(rawSample.direction, rawSample.position, rawSample.label);
 
                 WallProjectionAndPositionSample sample = new WallProjectionAndPositionSample(tmpSample, new Point3D(rawSample.position.X, rawSample.position.Y, rawSample.position.Z), rawSample.label);
                 wallProjectionSamples.Add(sample);

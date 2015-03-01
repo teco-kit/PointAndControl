@@ -1,5 +1,6 @@
 ﻿using IGS.KNN;
 using IGS.Server.Devices;
+using IGS.Server.IGS;
 using Microsoft.Kinect;
 using System;
 using System.Collections.Generic;
@@ -1086,6 +1087,78 @@ namespace IGS.Helperclasses
             lastSelect.Attributes[3].Value = dev.Id;
             lastSelect.Attributes[4].Value = dev.Name;
             docConfig.Save(path);
+        }
+
+        /// <summary>
+        ///     Creates or updates Log file with current user raw skeleton data.\n
+        ///     <param name="user">current user</param>
+        ///     <param name="device">current device</param>
+        /// </summary>
+        public static void writeUserJointsToXmlFile(User user, Device device, Body body)
+        {
+            if (body == null)
+            {
+                Console.Out.WriteLine("No Body found, cannot write to xml");
+                return;
+            }
+            String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFile.xml";
+
+            //add device to configuration XML
+            XmlDocument docConfig = new XmlDocument();
+
+            if (File.Exists(path))
+            {
+                docConfig.Load(path);
+            }
+            else
+            {
+                docConfig.LoadXml("<data>" +
+                                    "</data>");
+            }
+
+
+            XmlNode rootNode = docConfig.SelectSingleNode("/data");
+
+            //try to find existing device
+            XmlNode deviceNode = docConfig.SelectSingleNode("/data/device[@id='" + device.Id + "']");
+
+            if (deviceNode == null)
+            {
+                //Create Device node
+                XmlElement xmlDevice = docConfig.CreateElement("device");
+                xmlDevice.SetAttribute("id", device.Id);
+                xmlDevice.SetAttribute("name", device.Name);
+                rootNode.AppendChild(xmlDevice);
+
+                deviceNode = xmlDevice;
+            }
+
+
+
+
+
+            XmlElement xmlSkeleton = docConfig.CreateElement("skeleton");
+            xmlSkeleton.SetAttribute("time", DateTime.Now.ToString("HH:mm:ss"));
+            xmlSkeleton.SetAttribute("date", DateTime.Now.ToShortDateString());
+
+            foreach (JointType jointType in Enum.GetValues(typeof(JointType)))
+            {
+                XmlElement xmlJoint = docConfig.CreateElement("joint");
+                xmlJoint.SetAttribute("type", jointType.ToString());
+
+                xmlJoint.SetAttribute("X", body.Joints[jointType].Position.X.ToString());
+                xmlJoint.SetAttribute("Y", body.Joints[jointType].Position.Y.ToString());
+                xmlJoint.SetAttribute("Z", body.Joints[jointType].Position.Z.ToString());
+                xmlSkeleton.AppendChild(xmlJoint);
+
+            }
+
+            deviceNode.AppendChild(xmlSkeleton);
+
+
+            docConfig.Save(path);
+
+
         }
        
 
