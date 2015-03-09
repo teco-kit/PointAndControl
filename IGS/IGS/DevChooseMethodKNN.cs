@@ -43,8 +43,8 @@ namespace IGS.IGS
 
                 Console.WriteLine("Classified: " + sample.sampleDeviceName);
                 XMLComponentHandler.writeLogEntry("Device classified to" + sample.sampleDeviceName);
-                Body body = Tracker.GetBodyById(tempUser.SkeletonId);
-                XMLComponentHandler.writeUserJointsToXmlFile(tempUser, Data.GetDeviceByName(sample.sampleDeviceName), body);
+                //Body body = Tracker.GetBodyById(tempUser.SkeletonId);
+                //XMLSkeletonJointRecords.writeUserJointsToXmlFile(tempUser, Data.GetDeviceByName(sample.sampleDeviceName), body);
                 //XMLComponentHandler.writeUserJointsPerSelectClick(body);
                 classificationHandler.deviceClassificationCount++;
 
@@ -63,11 +63,11 @@ namespace IGS.IGS
                             Point3D p = new Point3D(vecs[2].X, vecs[2].Y, vecs[2].Z);
                             XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
                             XMLComponentHandler.writeSampleToXML(vecs, sample.sampleDeviceName);
-                            XMLComponentHandler.writeClassifiedDeviceToLastSelect(d);
+                            XMLSkeletonJointRecords.writeClassifiedDeviceToLastSelect(d);
                             dev.Add(d);
-                            tempUser.lastChosenDeviceID = d.Id;
-                            tempUser.lastClassDevSample = sample;
-                            tempUser.deviceIDChecked = false;
+                            //tempUser.lastChosenDeviceID = d.Id;
+                            //tempUser.lastClassDevSample = sample;
+                            //tempUser.deviceIDChecked = false;
                             return dev;
                         }
                     }

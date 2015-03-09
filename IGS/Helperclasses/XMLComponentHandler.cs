@@ -489,56 +489,7 @@ namespace IGS.Helperclasses
         }
 
 
-        public static void writeUserJointsPerSelectClick(Body b)
-        {
-            if (b == null)
-            {
-                Console.Out.WriteLine("No Body found, cannot write to xml");
-                return;
-            }
-            String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelect.xml";
-
-            //add device to configuration XML
-            XmlDocument docConfig = new XmlDocument();
-
-
-            docConfig.Load(path);
-
-
-
-            XmlNode rootNode = docConfig.SelectSingleNode("/data");
-
-            int select = int.Parse(rootNode.Attributes[0].Value);
-
-
-
-            XmlElement xmlSelect = docConfig.CreateElement("select");
-            XmlElement xmlSkeleton = docConfig.CreateElement("skeleton");
-            xmlSelect.SetAttribute("time", DateTime.Now.ToString("HH:mm:ss"));
-            xmlSelect.SetAttribute("date", DateTime.Now.ToShortDateString());
-            xmlSkeleton.SetAttribute("skelID", b.TrackingId.ToString());
-            xmlSelect.SetAttribute("devID", "");
-            xmlSelect.SetAttribute("devName", "");
-
-
-            foreach (JointType jointType in Enum.GetValues(typeof(JointType)))
-            {
-                XmlElement xmlJoint = docConfig.CreateElement("joint");
-                xmlJoint.SetAttribute("type", jointType.ToString());
-
-                xmlJoint.SetAttribute("X", b.Joints[jointType].Position.X.ToString());
-                xmlJoint.SetAttribute("Y", b.Joints[jointType].Position.Y.ToString());
-                xmlJoint.SetAttribute("Z", b.Joints[jointType].Position.Z.ToString());
-                xmlSkeleton.AppendChild(xmlJoint);
-
-            }
-            xmlSelect.AppendChild(xmlSkeleton);
-            rootNode.AppendChild(xmlSelect);
-            rootNode.Attributes[0].Value = (select+1).ToString();
-
-            docConfig.Save(path);
-
-        }
+       
         public static void writeWallProjectionSampleToXML(WallProjectionSample sample)
         {
             XmlDocument docConfig = new XmlDocument();
@@ -655,9 +606,9 @@ namespace IGS.Helperclasses
             return;
         }
 
-        public static List<WallProjectionSample> readWallProjectionAndPositionSamplesFromXML()
+        public static List<WallProjectionAndPositionSample> readWallProjectionAndPositionSamplesFromXML()
         {
-            List<WallProjectionSample> sampleList = new List<WallProjectionSample>();
+            List<WallProjectionAndPositionSample> sampleList = new List<WallProjectionAndPositionSample>();
 
             XmlDocument docConfig = new XmlDocument();
             docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionAndPositionSamples.xml");
@@ -677,17 +628,17 @@ namespace IGS.Helperclasses
                     {
                         foreach (XmlNode sample in prop.ChildNodes)
                         {
-                            WallProjectionSample s = new WallProjectionSample(new Point3D(
+                            WallProjectionAndPositionSample s = new WallProjectionAndPositionSample(new Point3D(
                                 double.Parse(sample.FirstChild.ChildNodes[0].InnerText),
                                 double.Parse(sample.FirstChild.ChildNodes[1].InnerText),
-                                double.Parse(sample.FirstChild.ChildNodes[2].InnerText)), knnDeviceName);
+                                double.Parse(sample.FirstChild.ChildNodes[2].InnerText)), 
 
-                            Vector3D position = new Vector3D(
+                            new Point3D(
                                 double.Parse(sample.ChildNodes[1].ChildNodes[0].InnerText),
                                 double.Parse(sample.ChildNodes[1].ChildNodes[1].InnerText),
                                 double.Parse(sample.ChildNodes[1].ChildNodes[2].InnerText)
-                            );
-
+                            ), knnDeviceName);
+                            
                             sampleList.Add(s);
                         }
                     }
@@ -831,6 +782,104 @@ namespace IGS.Helperclasses
             return;
         }
 
+        public static void writeSampleToXML(Vector3D upPoint, Vector3D direction, String deviceName, String path)
+        {
+            XmlDocument docConfig = new XmlDocument();
+            
+            docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\" + path + ".xml");
+            XmlNode node = docConfig.SelectSingleNode("/devices");
+            
+            foreach (XmlNode deviceNode in node.ChildNodes)
+            {
+                if (deviceNode.FirstChild.InnerText == deviceName
+                    && deviceNode.FirstChild.Name == "deviceName"
+                    && deviceNode.ChildNodes[1].Name == "samples")
+                {
+
+                    XmlElement sample = docConfig.CreateElement("sample");
+                    XmlNode xmlSamples = deviceNode.ChildNodes[1];
+
+                    XmlElement xmlPosition = docConfig.CreateElement("position");
+                    XmlElement posX = docConfig.CreateElement("X");
+                    posX.InnerText = upPoint.X.ToString();
+                    xmlPosition.AppendChild(posX);
+                    XmlElement posY = docConfig.CreateElement("Y");
+                    posY.InnerText = upPoint.Y.ToString();
+                    xmlPosition.AppendChild(posY);
+                    XmlElement posZ = docConfig.CreateElement("Z");
+                    posZ.InnerText = upPoint.Z.ToString();
+                    xmlPosition.AppendChild(posZ);
+                    sample.AppendChild(xmlPosition);
+
+
+                    XmlElement xmlDirection = docConfig.CreateElement("direction");
+                    XmlElement dirX = docConfig.CreateElement("X");
+                    dirX.InnerText = direction.X.ToString();
+                    xmlDirection.AppendChild(dirX);
+                    XmlElement dirY = docConfig.CreateElement("Y");
+                    dirY.InnerText = direction.Y.ToString();
+                    xmlDirection.AppendChild(dirY);
+                    XmlElement dirZ = docConfig.CreateElement("Z");
+                    dirZ.InnerText = direction.Z.ToString();
+                    xmlDirection.AppendChild(dirZ);
+                    sample.AppendChild(xmlDirection);
+
+
+
+
+                    deviceNode.ChildNodes[1].AppendChild(sample);
+
+                    docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\samples.xml");
+                    return;
+                    //xmlPosition.SetAttribute("X:", sample.x.ToString());
+                    //xmlPosition.SetAttribute("Y:", sample.y.ToString());
+                    //xmlPosition.SetAttribute("Z:", sample.z.ToString());
+
+                }
+            }
+
+            XmlElement newDev = docConfig.CreateElement("device");
+            XmlElement devName = docConfig.CreateElement("deviceName");
+            devName.InnerText = deviceName;
+            XmlElement samplePositions = docConfig.CreateElement("samples");
+            XmlElement newSample = docConfig.CreateElement("sample");
+
+
+            XmlElement position = docConfig.CreateElement("position");
+            XmlElement pX = docConfig.CreateElement("X");
+            pX.InnerText = upPoint.X.ToString();
+            position.AppendChild(pX);
+            XmlElement pY = docConfig.CreateElement("Y");
+            pY.InnerText = upPoint.Y.ToString();
+            position.AppendChild(pY);
+            XmlElement pZ = docConfig.CreateElement("Z");
+            pZ.InnerText = upPoint.Z.ToString();
+            position.AppendChild(pZ);
+            newSample.AppendChild(position);
+
+
+            XmlElement nDirection = docConfig.CreateElement("direction");
+            XmlElement dX = docConfig.CreateElement("X");
+            dX.InnerText = direction.X.ToString();
+            nDirection.AppendChild(dX);
+            XmlElement dY = docConfig.CreateElement("Y");
+            dY.InnerText = direction.Y.ToString();
+            nDirection.AppendChild(dY);
+            XmlElement dZ = docConfig.CreateElement("Z");
+            dZ.InnerText = direction.Z.ToString();
+            nDirection.AppendChild(dZ);
+            newSample.AppendChild(nDirection);
+
+            samplePositions.AppendChild(newSample);
+            newDev.AppendChild(devName);
+            newDev.AppendChild(samplePositions);
+
+            node.AppendChild(newDev);
+            docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\samples.xml");
+            return;
+        }
+
+
         public static void testAndCreateSampleXML(String fileName)
         {
             String p = AppDomain.CurrentDomain.BaseDirectory + "\\" + fileName + ".xml";
@@ -843,31 +892,7 @@ namespace IGS.Helperclasses
             }
         }
 
-        public static void deleteLastUserSkeletonFromLogXML(Device dev)
-        {
-            String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFile.xml";
-
-            //add device to configuration XML
-            XmlDocument docConfig = new XmlDocument();
-
-            if (File.Exists(path))
-            {
-                docConfig.Load(path);
-            }
-
-            XmlNode rootNode = docConfig.SelectSingleNode("/data");
-
-            foreach (XmlNode device in rootNode.ChildNodes)
-            {
-                if (device.Attributes[0].Value == dev.Id)
-                {
-                    device.RemoveChild(device.LastChild);
-                    docConfig.Save(path);
-                    return;
-                }
-            }
-
-        }
+      
 
         public static void deleteLastSampleFromSampleLogs(Device dev)
         {
@@ -916,7 +941,7 @@ namespace IGS.Helperclasses
             
          
 
-            path = AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionAndPositionSamples.xml.xml";
+            path = AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionAndPositionSamples.xml";
 
             if (File.Exists(path))
             {
@@ -958,208 +983,81 @@ namespace IGS.Helperclasses
 
         }
 
-        public static bool writeUserjointsPerSelectSmoothed(int id, List<Body[]> bodiesList)
+
+
+        public static List<NormalSample> readWNormalSamplesFromXML()
         {
-            String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelectSmoothed.xml";
+            List<NormalSample> sampleList = new List<NormalSample>();
 
-            //add device to configuration XML
             XmlDocument docConfig = new XmlDocument();
+            docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\Samples.xml");
 
+            XmlNodeList devices = docConfig.SelectSingleNode("/devices").ChildNodes;
+
+            foreach (XmlNode device in devices)
+            {
+                String knnDeviceName = "";
+                foreach (XmlNode prop in device)
+                {
+                    if (prop.Name.Equals("deviceName"))
+                    {
+                        knnDeviceName = prop.InnerText;
+                    }
+                    else if (prop.Name.Equals("samples"))
+                    {
+                        foreach (XmlNode sample in prop.ChildNodes)
+                        {
+                            NormalSample s = new NormalSample(new Point3D(
+                                double.Parse(sample.FirstChild.ChildNodes[0].InnerText),
+                                double.Parse(sample.FirstChild.ChildNodes[1].InnerText),
+                                double.Parse(sample.FirstChild.ChildNodes[2].InnerText)),
+
+                            new Vector3D(
+                                double.Parse(sample.ChildNodes[1].ChildNodes[0].InnerText),
+                                double.Parse(sample.ChildNodes[1].ChildNodes[1].InnerText),
+                                double.Parse(sample.ChildNodes[1].ChildNodes[2].InnerText)
+                            ), knnDeviceName);
+
+                            sampleList.Add(s);
+                        }
+                    }
+                }
+
+            }
+
+            return sampleList;
+        }
+
+        public static void writeDifferencesPerSelect(double diffLS, double diffLW, double diffRW, double diffRS)
+        {
+
+            XmlDocument docConfig = new XmlDocument();
+            String path = AppDomain.CurrentDomain.BaseDirectory + "\\DifferencesPerSelect.xml";
+            if (!File.Exists(path))
+            {
+                XElement root = new XElement("selects");
+                root.Save(path);
+            }
 
             docConfig.Load(path);
 
+            XmlNode rootNode = docConfig.SelectSingleNode("/selects");
 
+            XmlElement newElement = docConfig.CreateElement("select");
+            newElement.SetAttribute("difference_LeftShoulder", diffLS.ToString());
+            newElement.SetAttribute("difference_LeftWrist", diffLW.ToString());
+            newElement.SetAttribute("difference_RightShoulder", diffRS.ToString());
+            newElement.SetAttribute("difference_RightWrist", diffRW.ToString());
+       
 
-            XmlNode rootNode = docConfig.SelectSingleNode("/data");
+            rootNode.AppendChild(newElement);
 
-            int select = int.Parse(rootNode.Attributes[0].Value);
-            XmlElement xmlSelect = docConfig.CreateElement("select");
-            int skeletonCounter = 0;
-            xmlSelect.SetAttribute("time", DateTime.Now.ToString("HH:mm:ss"));
-            xmlSelect.SetAttribute("date", DateTime.Now.ToShortDateString());
-            xmlSelect.SetAttribute("skelID", id.ToString());
-            xmlSelect.SetAttribute("devID", "");
-            xmlSelect.SetAttribute("devName", "");
-
-            foreach (Body[] bodies in bodiesList)
-            {
-                foreach (Body body in bodies)
-                {
-                    if ((int)body.TrackingId == id)
-                    {
-                        XmlElement xmlSkeleton = docConfig.CreateElement("skeleton");
-                        foreach (JointType jointType in Enum.GetValues(typeof(JointType)))
-                        {
-                            XmlElement xmlJoint = docConfig.CreateElement("joint");
-                            xmlJoint.SetAttribute("type", jointType.ToString());
-
-                            xmlJoint.SetAttribute("X", body.Joints[jointType].Position.X.ToString());
-                            xmlJoint.SetAttribute("Y", body.Joints[jointType].Position.Y.ToString());
-                            xmlJoint.SetAttribute("Z", body.Joints[jointType].Position.Z.ToString());
-                            xmlSkeleton.AppendChild(xmlJoint);
-                        }
-                        xmlSelect.AppendChild(xmlSkeleton);
-                        skeletonCounter++;
-                        break;
-                    }
-                }
-            }
-
-            xmlSelect.SetAttribute("skelCount", skeletonCounter.ToString());
-            rootNode.AppendChild(xmlSelect);
-            rootNode.Attributes[0].Value = (select++).ToString();
-            docConfig.Save(path);
-
-            return true;
-        }
-
-
-        public static void deleteLastUserSkeletonSelected()
-        {
-            String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelectSmoothed.xml";
-
-            //add device to configuration XML
-            XmlDocument docConfig = new XmlDocument();
-
-            if (File.Exists(path))
-            {
-                docConfig.Load(path);
-            }
-
-            XmlNode rootNode = docConfig.SelectSingleNode("/data");
-            int selected = int.Parse(rootNode.Attributes[0].Value);
-            rootNode.Attributes[0].Value = (selected - 1).ToString();
-            rootNode.RemoveChild(rootNode.LastChild);
-            docConfig.Save(path);
-
-            path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelect.xml";
-
-            //add device to configuration XML
-            docConfig = new XmlDocument();
-
-            if (File.Exists(path))
-            {
-                docConfig.Load(path);
-            }
-
-            rootNode = docConfig.SelectSingleNode("/data");
-            
-            rootNode.RemoveChild(rootNode.LastChild);
-            selected = int.Parse(rootNode.Attributes[0].Value);
-            rootNode.Attributes[0].Value = (selected - 1).ToString();
-            docConfig.Save(path);
-
-        }
-
-        public static void writeClassifiedDeviceToLastSelect(Device dev)
-        {
-            String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelectSmoothed.xml";
-
-            XmlDocument docConfig = new XmlDocument();
-
-            if (File.Exists(path))
-            {
-                docConfig.Load(path);
-            }
-
-            XmlNode rootNode = docConfig.SelectSingleNode("/data");
-
-            XmlNode lastSelect = rootNode.LastChild;
-
-            lastSelect.Attributes[3].Value = dev.Id;
-            lastSelect.Attributes[4].Value = dev.Name;
-
-            docConfig.Save(path);
-
-            path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelect.xml";
-
-            //add device to configuration XML
-            docConfig = new XmlDocument();
-
-
-            if (File.Exists(path))
-            {
-                docConfig.Load(path);
-            }
-
-            rootNode = docConfig.SelectSingleNode("/data");
-            lastSelect = rootNode.LastChild;
-            lastSelect.Attributes[3].Value = dev.Id;
-            lastSelect.Attributes[4].Value = dev.Name;
             docConfig.Save(path);
         }
 
-        /// <summary>
-        ///     Creates or updates Log file with current user raw skeleton data.\n
-        ///     <param name="user">current user</param>
-        ///     <param name="device">current device</param>
-        /// </summary>
-        public static void writeUserJointsToXmlFile(User user, Device device, Body body)
-        {
-            if (body == null)
-            {
-                Console.Out.WriteLine("No Body found, cannot write to xml");
-                return;
-            }
-            String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFile.xml";
+     
 
-            //add device to configuration XML
-            XmlDocument docConfig = new XmlDocument();
-
-            if (File.Exists(path))
-            {
-                docConfig.Load(path);
-            }
-            else
-            {
-                docConfig.LoadXml("<data>" +
-                                    "</data>");
-            }
-
-
-            XmlNode rootNode = docConfig.SelectSingleNode("/data");
-
-            //try to find existing device
-            XmlNode deviceNode = docConfig.SelectSingleNode("/data/device[@id='" + device.Id + "']");
-
-            if (deviceNode == null)
-            {
-                //Create Device node
-                XmlElement xmlDevice = docConfig.CreateElement("device");
-                xmlDevice.SetAttribute("id", device.Id);
-                xmlDevice.SetAttribute("name", device.Name);
-                rootNode.AppendChild(xmlDevice);
-
-                deviceNode = xmlDevice;
-            }
-
-
-
-
-
-            XmlElement xmlSkeleton = docConfig.CreateElement("skeleton");
-            xmlSkeleton.SetAttribute("time", DateTime.Now.ToString("HH:mm:ss"));
-            xmlSkeleton.SetAttribute("date", DateTime.Now.ToShortDateString());
-
-            foreach (JointType jointType in Enum.GetValues(typeof(JointType)))
-            {
-                XmlElement xmlJoint = docConfig.CreateElement("joint");
-                xmlJoint.SetAttribute("type", jointType.ToString());
-
-                xmlJoint.SetAttribute("X", body.Joints[jointType].Position.X.ToString());
-                xmlJoint.SetAttribute("Y", body.Joints[jointType].Position.Y.ToString());
-                xmlJoint.SetAttribute("Z", body.Joints[jointType].Position.Z.ToString());
-                xmlSkeleton.AppendChild(xmlJoint);
-
-            }
-
-            deviceNode.AppendChild(xmlSkeleton);
-
-
-            docConfig.Save(path);
-
-
-        }
+        
        
 
     }

@@ -486,6 +486,25 @@ namespace IGS
                 }
             }
         }
+
+        private void fillRoomWithColoredSampleSmoothedAndUnsmoothed(List<WallProjectionSample> nonSmoothed, List<WallProjectionSample> smoothed)
+        {
+            foreach (WallProjectionSample s in nonSmoothed)
+            {
+                
+                Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.Red));
+                addSampleView(new Point3D(s.x, s.y, s.z), mat);
+                
+            }
+
+            foreach (WallProjectionSample s in smoothed)
+            {
+
+                Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.Blue));
+                addSampleView(new Point3D(s.x, s.y, s.z), mat);
+
+            }
+        }
         /// <summary>
         /// Creates a pipe (bone) between two joints
         /// </summary>
@@ -680,19 +699,7 @@ namespace IGS
         //     mainViewport.Children.Add(floor);
         //}
 
-        public void addSampleView(Point3D center) 
-        {
-            Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.Yellow));
-            SphereVisual3D sample = new SphereVisual3D();
-            sample.Center = center;
-            sample.BackMaterial = mat;
-            sample.Material = mat;
-            sample.PhiDiv = 10;
-            sample.Radius = 0.05;
-            sample.ThetaDiv = 10;
-            this.mainViewport.Children.Add(sample);
-        }
-
+       
         public void addSampleView(Point3D center, Material mat)
         {
             

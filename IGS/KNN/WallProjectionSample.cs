@@ -42,5 +42,13 @@ namespace IGS.KNN
             sampleDeviceName = deviceName;
         }
 
+        public WallProjectionSample(WallProjectionAndPositionSample wpaps)
+        {
+            this.x = wpaps.wallPositionX;
+            this.y = wpaps.wallPositionY;
+            this.z = wpaps.wallPositionZ;
+            this.sampleDeviceName = wpaps.sampleDeviceName;
+        }
+
     }
 }

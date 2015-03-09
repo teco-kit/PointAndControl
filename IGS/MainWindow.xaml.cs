@@ -291,6 +291,10 @@ public partial class MainWindow
         this.displayHeight = depthFrameDescription.Width;
 
         this.imageSourceSkeleton = new DrawingImage(this._drawingGroup);
+
+        
+
+      
     }
 
     /// <summary>
@@ -718,10 +722,7 @@ public partial class MainWindow
         if (_3Dview != null)
         {
             _3Dview.createRoom(width, depth, height);
-            foreach(WallProjectionSample s in _igs.classification.knnClassifier.samples)
-            {
-                _3Dview.addSampleView(new Point3D(s.x, s.y, s.z));
-            }
+           
         }
 
     }
@@ -901,6 +902,11 @@ public partial class MainWindow
         }
 
         return l;
+    }
+
+    private void CreateTestFiles_Button_Click(object sender, RoutedEventArgs e)
+    {
+        _igs.classification.createTestLists();
     }
 
    

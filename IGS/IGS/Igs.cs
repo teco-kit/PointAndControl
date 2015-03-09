@@ -52,9 +52,9 @@ namespace IGS.Server.IGS
 
 
             this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Centre);
-            this.classification = new ClassificationHandler();
+           
             this.chooseDeviceMethod = new DevChooseMethodKNN(classification);
-            
+            this.classification = new ClassificationHandler();
         }
 
 
@@ -360,28 +360,12 @@ namespace IGS.Server.IGS
 
                 WallProjectionSample sample = classification.collector.calculateWallProjectionSample(vecs, "");
 
-                //String label = collector.calcRoomModel.hitSquareCheck(new Point3D(sample.x, sample.y, sample.z));
-                //if (label != null)
-                //{
-                //    sample.sampleDeviceName = label;
-
-
-                //    foreach (Device d in Data.Devices)
-                //    {
-                //        if (d.Name.ToLower() == sample.sampleDeviceName.ToLower())
-                //        {
-                //            dev.Add(d);
-                //            return dev;
-                //        }
-                //    }
-                //}
-
                 sample = classification.classify(sample);
 
                 Console.WriteLine("Classified: " + sample.sampleDeviceName);
                 XMLComponentHandler.writeLogEntry("Device classified to" + sample.sampleDeviceName);
                 Body body = Tracker.GetBodyById(tempUser.SkeletonId);
-                XMLComponentHandler.writeUserJointsToXmlFile(tempUser, Data.GetDeviceByName(sample.sampleDeviceName), body);
+                //XMLSkeletonJointRecords.writeUserJointsToXmlFile(tempUser, Data.GetDeviceByName(sample.sampleDeviceName), body);
                 //XMLComponentHandler.writeUserJointsPerSelectClick(body);
                 classification.deviceClassificationCount++;
 
@@ -396,15 +380,15 @@ namespace IGS.Server.IGS
                     {
                         if (d.Name.ToLower() == sample.sampleDeviceName.ToLower())
                         {
-                            XMLComponentHandler.writeWallProjectionSampleToXML(sample);
+                            //XMLComponentHandler.writeWallProjectionSampleToXML(sample);
                             Point3D p = new Point3D(vecs[2].X, vecs[2].Y, vecs[2].Z);
-                            XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
-                            XMLComponentHandler.writeSampleToXML(vecs, sample.sampleDeviceName);
-                            XMLComponentHandler.writeClassifiedDeviceToLastSelect(d);
+                            //XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
+                            //XMLComponentHandler.writeSampleToXML(vecs, sample.sampleDeviceName);
+                            //XMLSkeletonJointRecords.writeClassifiedDeviceToLastSelect(d);
                             dev.Add(d);
-                            tempUser.lastChosenDeviceID = d.Id;
-                            tempUser.lastClassDevSample = sample;
-                            tempUser.deviceIDChecked = false;
+                            //tempUser.lastChosenDeviceID = d.Id;
+                            //tempUser.lastClassDevSample = sample;
+                            //tempUser.deviceIDChecked = false;
                             return dev;
                         }
                     }
@@ -502,6 +486,7 @@ namespace IGS.Server.IGS
 
         public String collectSample(String wlan, String devID)
         {
+          
             User tmpUser = Data.GetUserByIp(wlan);
 
             Device dev = Data.GetDeviceByName(devID);
@@ -511,20 +496,20 @@ namespace IGS.Server.IGS
                 {
                     return "No bodys found by kinect";
                 }
-                Body body = Tracker.GetBodyById(tmpUser.SkeletonId);
+                
                 Vector3D[] vectors = Transformer.transformJointCoords(Tracker.getMedianFilteredCoordinates(tmpUser.SkeletonId));
                 //Vector3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(tmpUser.SkeletonId));
-               
-                if (classification.calculateWallProjectionSample(vectors, dev.Name) == true)
+             
+                if (classification.calculateWallProjectionSampleAndLearn(vectors, dev.Name) == true)
                 {
                     //XMLComponentHandler.writeUserJointsToXmlFile(tmpUser, dev, body);
                     //XMLComponentHandler.writeUserJointsPerSelectClick(body);
-                    XMLComponentHandler.writeClassifiedDeviceToLastSelect(dev);
+                    XMLSkeletonJointRecords.writeClassifiedDeviceToLastSelect(dev);
                     return "sample added";
                 }
                 else
                 {
-                    XMLComponentHandler.deleteLastUserSkeletonSelected();
+                    XMLSkeletonJointRecords.deleteLastUserSkeletonSelected();
                     return "direction didn't hit a wall";
                 }
             }
@@ -542,55 +527,53 @@ namespace IGS.Server.IGS
             return controlPath;
         }
 
-        public void executeOnlineLearning(String devId, String wLanAdr)
-        {
-            User tmpUser = Data.GetUserByIp(wLanAdr);
+        //public void executeOnlineLearning(String devId, String wLanAdr)
+        //{
+        //    User tmpUser = Data.GetUserByIp(wLanAdr);
 
-            if (devId == tmpUser.lastChosenDeviceID)
-            {
-                if (tmpUser.deviceIDChecked == false && tmpUser.lastClassDevSample != null)
-                {
-                    Device dev = Data.getDeviceByID(devId);
-                    classification.onlineLearn(tmpUser);
-                    XMLComponentHandler.writeClassifiedDeviceToLastSelect(dev);
-                    XMLComponentHandler.writeLogEntry("Executed OnlineLearning: Result: Device was classified correctly");
-                    return;
-                }
-                return;
-            }
-            onlineNotSucces(devId, wLanAdr);
+        //    if (devId == tmpUser.lastChosenDeviceID)
+        //    {
+        //        if (tmpUser.deviceIDChecked == false && tmpUser.lastClassDevSample != null)
+        //        {
+        //            Device dev = Data.getDeviceByID(devId);
+        //            classification.onlineLearn(tmpUser);
+        //            XMLSkeletonJointRecords.writeClassifiedDeviceToLastSelect(dev);
+        //            XMLComponentHandler.writeLogEntry("Executed OnlineLearning: Result: Device was classified correctly");
+        //            return;
+        //        }
+        //        return;
+        //    }
+        //    //onlineNotSucces(devId, wLanAdr);
 
-        }
+        //}
 
-        public void onlineNotSucces(String devId, String wLanAdr)
-        {
-
-            User tmpUser = Data.GetUserByIp(wLanAdr);
-
-
-            if (tmpUser != null && tmpUser.deviceIDChecked == false && tmpUser.lastClassDevSample != null)
-            {
-
-                Device userDev = Data.getDeviceByID(tmpUser.lastChosenDeviceID);
-                if (devId != userDev.Id)
-                {
-                    classification.deviceClassificationErrorCount++;
-                    XMLComponentHandler.deleteLastUserSkeletonFromLogXML(userDev);
-                    XMLComponentHandler.deleteLastSampleFromSampleLogs(userDev);
-                    XMLComponentHandler.deleteLastUserSkeletonSelected();
-                    tmpUser.deviceIDChecked = true;
-                    tmpUser.lastClassDevSample = null;
-                    tmpUser.lastChosenDeviceID = "";
+        //public void onlineNotSucces(String devId, String wLanAdr)
+        //{
+        //    User tmpUser = Data.GetUserByIp(wLanAdr);
 
 
-                    Console.WriteLine("Wrong Device!");
-                    XMLComponentHandler.writeLogEntry("Executed OnlineLearning: Result: Device was classified wrong");
+        //    if (tmpUser != null && tmpUser.deviceIDChecked == false && tmpUser.lastClassDevSample != null)
+        //    {
+
+        //        Device userDev = Data.getDeviceByID(tmpUser.lastChosenDeviceID);
+        //        if (devId != userDev.Id)
+        //        {
+        //            classification.deviceClassificationErrorCount++;
+        //            XMLSkeletonJointRecords.deleteLastUserSkeletonFromLogXML(userDev);
+        //            XMLComponentHandler.deleteLastSampleFromSampleLogs(userDev);
+        //            XMLSkeletonJointRecords.deleteLastUserSkeletonSelected();
+        //            tmpUser.deviceIDChecked = true;
+        //            tmpUser.lastClassDevSample = null;
+        //            tmpUser.lastChosenDeviceID = "";
+
+
+        //            Console.WriteLine("Wrong Device!");
+        //            XMLComponentHandler.writeLogEntry("Executed OnlineLearning: Result: Device was classified wrong");
                     
-                    return;
-                }
-            }
-
-        }
+        //            return;
+        //        }
+        //    }
+        //}
 
 
 

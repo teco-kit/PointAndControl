@@ -16,13 +16,6 @@ namespace IGS.KNN
         float width { get; set; }
         float depth { get; set; }
         float height { get; set; }
-
-        public struct labelEntry
-        {
-            public String label;
-            public List<Point3D> pointList;
-        }
-
        
         RoomPlane ceiling { get; set; }
         RoomPlane floor { get; set; }
@@ -116,7 +109,7 @@ namespace IGS.KNN
             //a List of Lists containing vectors for devices to retrieve the classificationboxes for 
             //every device
 
-            float step = 0.01f;
+            float step = 0.001f;
             int virtualWidthReducer = 1;
             int virtualHeightReducer = 1;
 

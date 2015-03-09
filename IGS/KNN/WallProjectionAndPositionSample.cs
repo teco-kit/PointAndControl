@@ -8,7 +8,7 @@ using System.Windows.Media.Media3D;
 
 namespace IGS.KNN
 {
-    class WallProjectionAndPositionSample 
+    public class WallProjectionAndPositionSample 
     {
         [Feature]
         public double wallPositionX { get; set; }

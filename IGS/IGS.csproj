@@ -108,10 +108,12 @@
     <Compile Include="Devices\TCP.cs" />
     <Compile Include="Devices\XBMCv11.cs" />
     <Compile Include="Helperclasses\CoordTransform.cs" />
+    <Compile Include="Helperclasses\DifferenceCalculator.cs" />
     <Compile Include="Helperclasses\Initializer.cs" />
     <Compile Include="Helperclasses\SampleExtractor.cs" />
     <Compile Include="Helperclasses\SampleSplitter.cs" />
     <Compile Include="Helperclasses\XMLComponentHandler.cs" />
+    <Compile Include="Helperclasses\XMLSkeletonJointRecords.cs" />
     <Compile Include="IGS\ChooseDeviceMethod.cs" />
     <Compile Include="IGS\DevChooseMethodCollDet.cs" />
     <Compile Include="IGS\DevChooseMethodKNN.cs" />
@@ -119,6 +121,7 @@
     <Compile Include="Kinect\SkeletonJointFilter.cs" />
     <Compile Include="Kinect\TrackingStateEventArgs.cs" />
     <Compile Include="KNN\KNNClassifier.cs" />
+    <Compile Include="KNN\NormalSample.cs" />
     <Compile Include="KNN\Ray3D.cs" />
     <Compile Include="KNN\Room.cs" />
     <Compile Include="KNN\ClassificationHandler.cs" />
