@@ -31,14 +31,15 @@ namespace IGS.IGS
             List<Device> dev = new List<Device>();
             User tempUser = Data.GetUserByIp(wlanAdr);
             Vector3D[] vecs = Transformer.transformJointCoords(Tracker.getMedianFilteredCoordinates(tempUser.SkeletonId));
+     
             //Vector3D[] vecs = Transformer.transformJointCoords(Tracker.GetCoordinates(tempUser.SkeletonId));
             if (tempUser != null)
             {
-
+                
                 WallProjectionSample sample = classificationHandler.collector.calculateWallProjectionSample(vecs, "");
 
-                
 
+               
                 sample = classificationHandler.classify(sample);
 
                 Console.WriteLine("Classified: " + sample.sampleDeviceName);

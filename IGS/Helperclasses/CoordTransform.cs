@@ -163,6 +163,16 @@ namespace IGS.Server.IGS
             return resPoint;
         }
 
+        public Vector3D transformVector3D(Vector3D vec)
+        {
+            Vector3D newVec = vec;
+
+            newVec = Vector3D.Multiply(vec, rotationMatrix);
+            newVec = vec + transVector;
+
+            return newVec;
+        }
+
         /// <summary>
         /// This method transforms a given point to world coordinates
         /// </summary>

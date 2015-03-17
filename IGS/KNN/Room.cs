@@ -79,6 +79,9 @@ namespace IGS.KNN
                 if ((ray.PlaneIntersection(wall.plane.Position, wall.plane.Normal)) != null)
                 {
                     wallPoint = (Point3D)ray.PlaneIntersection(wall.plane.Position, wall.plane.Normal);
+                    wallPoint.X = Math.Round(wallPoint.X, 7);
+                    wallPoint.Y = Math.Round(wallPoint.Y, 7);
+                    wallPoint.Z = Math.Round(wallPoint.Z, 7);
                     if ((width >= wallPoint.X && wallPoint.X >= 0
                         &&
                         depth >= wallPoint.Y && wallPoint.Y >= 0
@@ -179,8 +182,6 @@ namespace IGS.KNN
 
                         Console.WriteLine("StepsWidth:" + maxStepVirtualWidth);
                         Console.WriteLine("StepsHight:" + maxStepVirtualHeight);
-
-                        //virtualWidthResetter = wall.width;
                     }
 
                     

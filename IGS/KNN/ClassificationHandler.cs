@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 using IGS.Server.IGS;
 using System.Threading;
+using System.IO;
 
 namespace IGS.KNN
 {
@@ -22,11 +23,11 @@ namespace IGS.KNN
         public ulong deviceClassificationCount { get; set; }
         public ulong deviceClassificationErrorCount { get; set; }
 
-        public ClassificationHandler()
+        public ClassificationHandler(CoordTransform transformer)
         {
             knnClassifier = new KNNClassifier(XMLComponentHandler.readWallProjectionSamplesFromXML());
             
-            extractor = new SampleExtractor();
+            extractor = new SampleExtractor(transformer);
             splitter = new SampleSplitter();
             deviceClassificationCount = 0;
             collector = new SampleCollector(knnClassifier);
@@ -94,12 +95,7 @@ namespace IGS.KNN
             List<List<SampleExtractor.rawSample>> splittedFrontToBackSmoothed = splitter.splitRoomFrontAndBack(extractor.rawSamplesPerSelectSmoothed, 0.5);
             List<List<SampleExtractor.rawSample>> splittedRightToLeft = splitter.splitRoomRightAndLeft(extractor.rawSamplesPerSelect, 0.5);
             List<List<SampleExtractor.rawSample>> splittedRightToLeftSmoothed = splitter.splitRoomRightAndLeft(extractor.rawSamplesPerSelectSmoothed, 0.5);
-            List<List<SampleExtractor.rawSample>> onlineLearningSplit = splitter.splitRawSamplesRandomForOnline(extractor.rawSamplesPerSelect, 2);
-            List<List<SampleExtractor.rawSample>> onlineLearningSplitSmoothed = splitter.splitRawSamplesRandomForOnline(extractor.rawSamplesPerSelectSmoothed, 10);
-            List<List<SampleExtractor.rawSample>> onlineLearningSplitMerged = extractor.rawSampleOnlinePartsMerger(onlineLearningSplit);
-            List<List<SampleExtractor.rawSample>> onlineLearningSplitMergedSmoothed = extractor.rawSampleOnlinePartsMerger(onlineLearningSplitSmoothed);
 
-            
 
             extractor.calculateAndWriteWallProjectionSamples(collector, "frontToBackBack_WallProjectionSamples", splittedFrontToBack[0]);
             extractor.calculateAndWriteWallProjectionSamples(collector, "frontToBackFront_WallProjectionSamples", splittedFrontToBack[1]);
@@ -113,6 +109,7 @@ namespace IGS.KNN
             extractor.calculateAndWriteWallProjectionSamples(collector, "AllSmoothed_WallProjectionSamples", extractor.rawSamplesPerSelectSmoothed);
 
 
+
             extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "frontToBackBack_WallProjectionAndPositionSamples", splittedFrontToBack[0]);
             extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "frontToBackFront_WallProjectionAndPositionSamples", splittedFrontToBack[1]);
             extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "frontToBackBackSmoothed_WallProjectionAndPositionSamples", splittedFrontToBackSmoothed[0]);
@@ -124,22 +121,28 @@ namespace IGS.KNN
             extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "All_WallProjectionAndPositionSamples", extractor.rawSamplesPerSelect);
             extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "AllSmoothed_WallProjectionAndPositionSamples", extractor.rawSamplesPerSelectSmoothed);
 
-            extractor.writeNormalSamplesFromRawSamples( "frontToBackBack_Samples", splittedFrontToBack[0]);
-            extractor.writeNormalSamplesFromRawSamples( "frontToBackFront_Samples", splittedFrontToBack[1]);
-            extractor.writeNormalSamplesFromRawSamples( "frontToBackBackSmoothed_Samples", splittedFrontToBackSmoothed[0]);
-            extractor.writeNormalSamplesFromRawSamples( "frontToBackFrontSmoothed_Samples", splittedFrontToBackSmoothed[1]);
-            extractor.writeNormalSamplesFromRawSamples( "rightToLeftRight_Samples", splittedRightToLeft[0]);
-            extractor.writeNormalSamplesFromRawSamples( "rightToLeftLeft_Samples", splittedRightToLeft[1]);
-            extractor.writeNormalSamplesFromRawSamples( "rightToLeftRightSmoothed_Samples", splittedRightToLeftSmoothed[0]);
-            extractor.writeNormalSamplesFromRawSamples( "rightToLeftLeftSmoothed_Samples", splittedRightToLeftSmoothed[1]);
-            extractor.writeNormalSamplesFromRawSamples( "All_Samples", extractor.rawSamplesPerSelect);
-            extractor.writeNormalSamplesFromRawSamples( "AllSmoothed_Samples", extractor.rawSamplesPerSelectSmoothed);
+            extractor.writeNormalSamplesFromRawSamples("frontToBackBack_Samples", splittedFrontToBack[0]);
+            extractor.writeNormalSamplesFromRawSamples("frontToBackFront_Samples", splittedFrontToBack[1]);
+            extractor.writeNormalSamplesFromRawSamples("frontToBackBackSmoothed_Samples", splittedFrontToBackSmoothed[0]);
+            extractor.writeNormalSamplesFromRawSamples("frontToBackFrontSmoothed_Samples", splittedFrontToBackSmoothed[1]);
+            extractor.writeNormalSamplesFromRawSamples("rightToLeftRight_Samples", splittedRightToLeft[0]);
+            extractor.writeNormalSamplesFromRawSamples("rightToLeftLeft_Samples", splittedRightToLeft[1]);
+            extractor.writeNormalSamplesFromRawSamples("rightToLeftRightSmoothed_Samples", splittedRightToLeftSmoothed[0]);
+            extractor.writeNormalSamplesFromRawSamples("rightToLeftLeftSmoothed_Samples", splittedRightToLeftSmoothed[1]);
+            extractor.writeNormalSamplesFromRawSamples("All_Samples", extractor.rawSamplesPerSelect);
+            extractor.writeNormalSamplesFromRawSamples("AllSmoothed_Samples", extractor.rawSamplesPerSelectSmoothed);
+
+
+            List<List<SampleExtractor.rawSample>> onlineLearningSplit = splitter.splitRawSamplesRandomForOnline(extractor.rawSamplesPerSelect, 2);
+            List<List<SampleExtractor.rawSample>> onlineLearningSplitSmoothed = splitter.splitRawSamplesRandomForOnline(extractor.rawSamplesPerSelectSmoothed, 2);
+            List<List<SampleExtractor.rawSample>> onlineLearningSplitMerged = extractor.rawSampleOnlinePartsMerger(onlineLearningSplit);
+            List<List<SampleExtractor.rawSample>> onlineLearningSplitMergedSmoothed = extractor.rawSampleOnlinePartsMerger(onlineLearningSplitSmoothed);
 
             for (int i = 0; i < onlineLearningSplitMerged.Count; i++)
             {
-                extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "OnlineAll" + "i" + "_WallProjectionAndPositionSamples", onlineLearningSplitMerged[i]);
-                extractor.calculateAndWriteWallProjectionSamples(collector, "OnlineAll" + "i" + "_WallProjectionSamples", onlineLearningSplitMerged[i]);
-                extractor.writeNormalSamplesFromRawSamples("OnlineAll" + "i" + "_Samples", onlineLearningSplitMerged[i]);
+                extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "OnlineAll" + i + "_WallProjectionAndPositionSamples", onlineLearningSplitMerged[i]);
+                extractor.calculateAndWriteWallProjectionSamples(collector, "OnlineAll" + i + "_WallProjectionSamples", onlineLearningSplitMerged[i]);
+                extractor.writeNormalSamplesFromRawSamples("OnlineAll" + i + "_Samples", onlineLearningSplitMerged[i]);
 
                 List<List<SampleExtractor.rawSample>> onlineFrontToBack = splitter.splitRoomFrontAndBack(onlineLearningSplitMerged[i], 0.5);
                 List<List<SampleExtractor.rawSample>> onlineRightToLeft = splitter.splitRoomRightAndLeft(onlineLearningSplitMerged[i], 0.5);

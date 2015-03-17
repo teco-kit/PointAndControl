@@ -379,7 +379,7 @@ public partial class MainWindow
                     {
                         foreach (Body body in bodies)
                         {
-
+                           
                             foreach (TrackedSkeleton ts in _igs.Tracker.Bodies)
                             {
                                 if ((int)body.TrackingId == ts.Id)

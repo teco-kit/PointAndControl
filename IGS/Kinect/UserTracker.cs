@@ -263,6 +263,7 @@ namespace IGS.Server.Kinect
 
         public List<Vector3D[]> Get30Coordinates(int id)
         {
+          
             List<Vector3D[]> returnList = new List<Vector3D[]>();
             workingOnWindow = true;
             if (movingWindowCollect == false)
@@ -283,7 +284,7 @@ namespace IGS.Server.Kinect
                 }
                 else return null;
             }
-
+          
             int searchForLastBody = 1;
             foreach (TrackedSkeleton sTracked in Bodies.Where(sTracked => sTracked.Id == id))
             {
@@ -298,7 +299,6 @@ namespace IGS.Server.Kinect
                         {
                             XMLSkeletonJointRecords.writeUserJointsPerSelectClick(s);
                             tmpBody = s;
-                            Console.WriteLine("TmpBody ID: " + s.TrackingId);
                         }
                         Vector3D[] result = new Vector3D[4];
                         result[0] = new Vector3D(s.Joints[JointType.ShoulderLeft].Position.X,
@@ -323,15 +323,15 @@ namespace IGS.Server.Kinect
 
 
             XMLSkeletonJointRecords.writeUserjointsPerSelectSmoothed(id, lastBodies);
-            Console.WriteLine("Last 15 bodies written to select smoothed");
+            
 
 
             if (movingWindowCollect == false)
             {
                 lastBodies.Clear();
             }
-            this.copyFromBodiesPufferToBodyArray();
-            Console.WriteLine("BodyArray Size: " + lastBodies.Count);
+            //this.copyFromBodiesPufferToBodyArray();
+            
             workingOnWindow = false;
             return returnList;
         }
@@ -343,9 +343,9 @@ namespace IGS.Server.Kinect
 
             List<Vector3D[]> coords = this.Get30Coordinates(id);
 
-
+          
             Vector3D[] smoothed = skeletonJointFilter.jointFilter(coords);
-
+           
             DifferenceCalculator.calculateBodyDifference(smoothed, DifferenceCalculator.calulateVecArray(tmpBody));
 
             return smoothed;
@@ -448,36 +448,36 @@ namespace IGS.Server.Kinect
                         }
                         lastBodies.Add(bodiesToSave);
                     }
-                    else
-                    {
-                        if (movingWindowCollect == true && lastBodiesPuffer.Count == 15)
-                        {
-                            lastBodiesPuffer.RemoveAt(0);
-                        }
-                        lastBodiesPuffer.Add(bodiesToSave);
-                    }
+                    //else
+                    //{
+                    //    if (movingWindowCollect == true && lastBodiesPuffer.Count == 15)
+                    //    {
+                    //        lastBodiesPuffer.RemoveAt(0);
+                    //    }
+                    //    lastBodiesPuffer.Add(bodiesToSave);
+                    //}
                 }
             }
 
         }
 
-        private void copyFromBodiesPufferToBodyArray()
-        {
-            if (lastBodiesPuffer.Count == 0) return;
-            else
-            {
-                lastBodies = lastBodiesPuffer;
-                lastBodiesPuffer.Clear();
-                return;
-            }
-            //else
-            //{
-            //    lastBodies.RemoveRange(0, lastBodiesPuffer.Count);
-            //    lastBodies = (List<Body[]>)lastBodiesPuffer.Concat(lastBodies);
-            //    lastBodiesPuffer.Clear();
-            //    Console.WriteLine("lastBodies COunt: " + lastBodies.Count);
-            //    return;
-            //}
-        }
+        //private void copyFromBodiesPufferToBodyArray()
+        //{
+        //    if (lastBodiesPuffer.Count == 0) return;
+        //    else if(lastBodiesPuffer.Count == 15)
+        //    {
+        //        lastBodies = lastBodiesPuffer;
+        //        lastBodiesPuffer.Clear();
+        //        return;
+        //    }
+        //    else
+        //    {
+        //        lastBodies.RemoveRange(0, lastBodiesPuffer.Count);
+        //        lastBodies = (List<Body[]>)lastBodiesPuffer.Concat(lastBodies);
+        //        lastBodiesPuffer.Clear();
+        //        Console.WriteLine("lastBodies COunt: " + lastBodies.Count);
+        //        return;
+        //    }
+        //}
     }
 }

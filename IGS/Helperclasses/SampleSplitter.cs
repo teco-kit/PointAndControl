@@ -17,11 +17,9 @@ namespace IGS.Helperclasses
         /// <summary>
         /// Splits the given rawsamples with their personpositions in 2 areas. Definition of the Area:
         /// Area:
-        ///    2
+        ///    1
         /// -------
-        ///    1   .origin
-        /// 
-        /// area number:arrayindice |  1: 0; 2:1;
+        ///    0   .origin
         /// 
         /// </summary>
         /// <param name="rawSampleList"></param>
@@ -41,7 +39,7 @@ namespace IGS.Helperclasses
 
             foreach (SampleExtractor.rawSample sample in rawSampleList)
             {
-                if (sample.positionShoulder.Z <= splitDistance)
+                if (sample.joints[2].Z <= splitDistance)
                 {
                     firstArea.Add(sample);
                 }
@@ -62,7 +60,7 @@ namespace IGS.Helperclasses
         /// Splits the given rawsamples with their personpositions in 2 areas. Definition of the Area:
         ///     
         ///    |
-        /// 2  |  1
+        /// 1  |  0
         ///    |    .origin
         /// 
         /// area number:arrayindice |  1: 0; 2:1;
@@ -85,7 +83,7 @@ namespace IGS.Helperclasses
 
             foreach (SampleExtractor.rawSample sample in rawSampleList)
             {
-                if (sample.positionShoulder.X <= splitDistance)
+                if (sample.joints[2].X <= splitDistance)
                 {
                     firstArea.Add(sample);
                 }
@@ -157,6 +155,16 @@ namespace IGS.Helperclasses
                     rawSamples.RemoveAt(chosenPlace);
                 }
                 result.Add(package);
+            }
+            if (rawSamples.Count > 0)
+            {
+                List<SampleExtractor.rawSample> endSamples = new List<SampleExtractor.rawSample>();
+                foreach (SampleExtractor.rawSample rs in rawSamples)
+                {
+                    endSamples.Add(rs);
+                }
+
+                result.Add(endSamples);
             }
 
             return result;

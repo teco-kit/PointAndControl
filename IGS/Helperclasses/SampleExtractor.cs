@@ -1,5 +1,6 @@
 ﻿using IGS.Kinect;
 using IGS.KNN;
+using IGS.Server.IGS;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,23 +17,22 @@ namespace IGS.Helperclasses
         public struct rawSample
         {
             public String label;
-            public Vector3D positionShoulder;
-            public Vector3D positionWrist;
-            public Vector3D direction;
+            public Vector3D[] joints;
         }
 
         public List<rawSample> rawSamplesPerSelectSmoothed { get; set; }
         public List<rawSample> rawSamplesPerSelect { get; set; }
-
+ 
         SkeletonJointFilter jointFilter { get; set; }
 
-        public SampleExtractor()
+        public SampleExtractor(CoordTransform Transformer)
         {
             rawSamplesPerSelectSmoothed = new List<rawSample>();
             jointFilter = new MedianJointFilter();
             rawSamplesPerSelect = new List<rawSample>();
-            readSkeletonsPerSelectFromXMLAndCreateRawSamples();
-            readSkeletonsPerSelectSmoothedFromXMLAndCreateRawSamples();
+     
+            readSkeletonsPerSelectFromXMLAndCreateRawSamples(Transformer);
+            readSkeletonsPerSelectSmoothedFromXMLAndCreateRawSamples(Transformer);
            
         }
 
@@ -43,7 +43,8 @@ namespace IGS.Helperclasses
 
             foreach (rawSample rs in sampleList)
             {
-                XMLComponentHandler.writeSampleToXML(rs.positionShoulder, rs.direction, rs.label, filePath);
+                Vector3D direction = Vector3D.Subtract(rs.joints[3], rs.joints[2]);
+                XMLComponentHandler.writeSampleToXML(rs.joints[2], direction, rs.label, filePath);
             }
         }
 
@@ -53,8 +54,11 @@ namespace IGS.Helperclasses
             List<WallProjectionSample> wallProjectionSamples = new List<WallProjectionSample>();
             foreach (SampleExtractor.rawSample rawSample in sampleList)
             {
-                WallProjectionSample sample = collector.calculateWallProjectionSample(rawSample.direction, rawSample.positionShoulder, rawSample.label);
-                wallProjectionSamples.Add(sample);
+                WallProjectionSample sample = collector.calculateWallProjectionSample(rawSample.joints, rawSample.label);
+                if (!sample.sampleDeviceName.Equals("nullSample"))
+                {
+                    wallProjectionSamples.Add(sample);
+                }
             }
             XMLComponentHandler.testAndCreateSampleXML(filePath);
             foreach (WallProjectionSample wps in wallProjectionSamples)
@@ -71,11 +75,15 @@ namespace IGS.Helperclasses
             WallProjectionSample tmpSample = new WallProjectionSample();
             foreach (SampleExtractor.rawSample rawSample in sampleList)
             {
-                tmpSample = collector.calculateWallProjectionSample(rawSample.direction, rawSample.positionShoulder, rawSample.label);
+                tmpSample = collector.calculateWallProjectionSample(rawSample.joints, rawSample.label);
 
-                WallProjectionAndPositionSample sample = new WallProjectionAndPositionSample(tmpSample, new Point3D(rawSample.positionShoulder.X, rawSample.positionShoulder.Y, rawSample.positionShoulder.Z), rawSample.label);
+                WallProjectionAndPositionSample sample = new WallProjectionAndPositionSample(tmpSample, new Point3D(rawSample.joints[2].X, rawSample.joints[2].Y, rawSample.joints[2].Z), rawSample.label);
 
-                wallProjectionSamplesAndPositionSamples.Add(sample);
+                if (!sample.sampleDeviceName.Equals("NullSample"))
+                {
+                    wallProjectionSamplesAndPositionSamples.Add(sample);
+                }
+                
             }
             XMLComponentHandler.testAndCreateSampleXML(filePath);
             foreach (WallProjectionAndPositionSample wpps in wallProjectionSamplesAndPositionSamples)
@@ -87,7 +95,7 @@ namespace IGS.Helperclasses
         }
 
 
-        public void readSkeletonsPerSelectFromXMLAndCreateRawSamples()
+        public void readSkeletonsPerSelectFromXMLAndCreateRawSamples(CoordTransform transformer)
         {
             String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelect.xml";
 
@@ -97,48 +105,69 @@ namespace IGS.Helperclasses
 
             XmlNodeList selects = rootNode.ChildNodes;
 
-           
-
-            bool foundDirectionPoint = false;
-            bool foundUpPoint = false;
+            bool foundWristRight = false;
+            bool foundShoulderRight = false;
+            bool foundWristLeft = false;
+            bool foundShoulderLeft = false;
 
 
             foreach (XmlNode select in selects)
             {
                 String deviceName = select.Attributes[3].Value;
-                Vector3D upPoint = new Vector3D();
-                Vector3D directionPoint = new Vector3D();
-                Vector3D direction = new Vector3D();
+
+                Vector3D WristRight = new Vector3D();
+                Vector3D ShoulderRight = new Vector3D();
+                Vector3D WristLeft = new Vector3D();
+                Vector3D ShoulderLeft = new Vector3D();
+                Vector3D[] smoothed = new Vector3D[4];
+
                 foreach (XmlNode joint in select.FirstChild)
                 {
                     if (joint.Attributes[0].Name.ToString().Equals("type") && joint.Attributes[0].Value.ToString().Equals("WristRight"))
-                                {
-                                    directionPoint.X = Double.Parse(joint.Attributes[1].Value);
-                                    directionPoint.Y = Double.Parse(joint.Attributes[2].Value);
-                                    directionPoint.Z = Double.Parse(joint.Attributes[3].Value);
-                                    foundDirectionPoint = true;
-                                }
-                    else if (joint.Attributes[0].Name.ToString().Equals("type") && joint.Attributes[0].Value.ToString().Equals("ShoulderRight"))
-                                {
-                                    upPoint.X = Double.Parse(joint.Attributes[1].Value);
-                                    upPoint.Y = Double.Parse(joint.Attributes[2].Value);
-                                    upPoint.Z = Double.Parse(joint.Attributes[3].Value);
-                                    foundUpPoint = true;
-                                }
-                    if (foundDirectionPoint == true && foundUpPoint == true)
                     {
-                        foundDirectionPoint = false;
-                        foundUpPoint = false;
-                        direction.X = directionPoint.X - upPoint.X;
-                        direction.Y = directionPoint.Y - upPoint.Y;
-                        direction.Z = directionPoint.Z - upPoint.Z;
+                        WristRight.X = Double.Parse(joint.Attributes[1].Value);
+                        WristRight.Y = Double.Parse(joint.Attributes[2].Value);
+                        WristRight.Z = Double.Parse(joint.Attributes[3].Value);
+                        foundWristRight = true;
+                    }
+                    else if (joint.Attributes[0].Name.ToString().Equals("type") && joint.Attributes[0].Value.ToString().Equals("ShoulderRight"))
+                    {
+                        ShoulderRight.X = Double.Parse(joint.Attributes[1].Value);
+                        ShoulderRight.Y = Double.Parse(joint.Attributes[2].Value);
+                        ShoulderRight.Z = Double.Parse(joint.Attributes[3].Value);
+                        foundShoulderRight = true;
+                    }
+                    else if (joint.Attributes[0].Name.ToString().Equals("type") && joint.Attributes[0].Value.ToString().Equals("WristLeft"))
+                    {
+                        WristLeft.X = Double.Parse(joint.Attributes[1].Value);
+                        WristLeft.Y = Double.Parse(joint.Attributes[2].Value);
+                        WristLeft.Z = Double.Parse(joint.Attributes[3].Value);
+                        foundWristLeft = true;
+                    }
+                    else if (joint.Attributes[0].Name.ToString().Equals("type") && joint.Attributes[0].Value.ToString().Equals("ShoulderLeft"))
+                    {
+                        ShoulderLeft.X = Double.Parse(joint.Attributes[1].Value);
+                        ShoulderLeft.Y = Double.Parse(joint.Attributes[2].Value);
+                        ShoulderLeft.Z = Double.Parse(joint.Attributes[3].Value);
+                        foundShoulderLeft = true;
+                    }
+                    if (foundWristRight == true && foundShoulderRight == true && foundWristLeft == true && foundShoulderLeft)
+                    {
+                        
+                        foundWristRight = false;
+                        foundShoulderRight = false;
+                        foundWristLeft = false;
+                        foundShoulderLeft = false;
 
-
+                        Vector3D[] tmpVecs = new Vector3D[] {
+                                ShoulderLeft, WristLeft, ShoulderRight, WristRight
+                            };
+                        Vector3D[] vecs = transformer.transformJointCoords(tmpVecs);
+                        
+                        
                         rawSample sample = new rawSample();
+                        sample.joints = vecs;
                         sample.label = deviceName;
-                        sample.direction = direction;
-                        sample.positionShoulder = upPoint;
-                        sample.positionWrist = directionPoint;
                         rawSamplesPerSelect.Add(sample);
                         break;
                     }
@@ -148,7 +177,7 @@ namespace IGS.Helperclasses
 
 
 
-        public void readSkeletonsPerSelectSmoothedFromXMLAndCreateRawSamples()
+        public void readSkeletonsPerSelectSmoothedFromXMLAndCreateRawSamples(CoordTransform transformer)
         {
             List<Vector3D[]> selectVectorsToSmooth = new List<Vector3D[]>();
             String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelectSmoothed.xml";
@@ -173,9 +202,7 @@ namespace IGS.Helperclasses
                 Vector3D WristLeft = new Vector3D();
                 Vector3D ShoulderLeft = new Vector3D();
                 Vector3D[] smoothed = new Vector3D[4];
-                Vector3D position = new Vector3D();
-                Vector3D directionPoint = new Vector3D();
-                Vector3D direction = new Vector3D();
+             
            
                 String deviceName = select.Attributes[3].Value;
                 foreach (XmlNode skeleton in select.ChildNodes)
@@ -212,15 +239,17 @@ namespace IGS.Helperclasses
                         }
                         if (foundWristRight == true && foundShoulderRight == true && foundWristLeft == true && foundShoulderLeft)
                         {
+
+                            
                             foundWristRight = false;
                             foundShoulderRight = false;
                             foundWristLeft = false;
                             foundShoulderLeft = false;
 
-                            Vector3D[] vecs = new Vector3D[] {
+                            Vector3D[] tmpVecs = new Vector3D[] {
                                 ShoulderLeft, WristLeft, ShoulderRight, WristRight
                             };
-
+                            Vector3D[] vecs = transformer.transformJointCoords(tmpVecs);
                             selectVectorsToSmooth.Add(vecs);
 
                             break;
@@ -230,17 +259,8 @@ namespace IGS.Helperclasses
 
                 smoothed = jointFilter.jointFilter(selectVectorsToSmooth);
 
-                position = smoothed[2];
-                directionPoint = smoothed[3];
-
-                direction.X = directionPoint.X - position.X;
-                direction.Y = directionPoint.Y - position.Y;
-                direction.Z = directionPoint.Z - position.Z;
-
                 rawSample sample = new rawSample();
-                sample.direction = direction;
-                sample.positionShoulder = position;
-                sample.positionWrist = directionPoint;
+                sample.joints = smoothed;
                 sample.label = deviceName;
 
                 rawSamplesPerSelectSmoothed.Add(sample);

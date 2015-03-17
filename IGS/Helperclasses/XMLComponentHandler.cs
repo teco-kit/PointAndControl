@@ -829,7 +829,7 @@ namespace IGS.Helperclasses
 
                     deviceNode.ChildNodes[1].AppendChild(sample);
 
-                    docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\samples.xml");
+                    docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\" + path + ".xml");
                     return;
                     //xmlPosition.SetAttribute("X:", sample.x.ToString());
                     //xmlPosition.SetAttribute("Y:", sample.y.ToString());
@@ -875,7 +875,7 @@ namespace IGS.Helperclasses
             newDev.AppendChild(samplePositions);
 
             node.AppendChild(newDev);
-            docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\samples.xml");
+            docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\"+ path + ".xml");
             return;
         }
 

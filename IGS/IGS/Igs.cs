@@ -52,9 +52,9 @@ namespace IGS.Server.IGS
 
 
             this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Centre);
-           
+            this.classification = new ClassificationHandler(Transformer);
             this.chooseDeviceMethod = new DevChooseMethodKNN(classification);
-            this.classification = new ClassificationHandler();
+            
         }
 
 
@@ -235,6 +235,7 @@ namespace IGS.Server.IGS
                         if (Data.GetUserByIp(wlanAdr).TrackingState)
                         {
                             retStr = MakeDeviceString(chooseDeviceMethod.chooseDevice(wlanAdr, Transformer, Tracker, Data));
+                            
                             XMLComponentHandler.writeLogEntry("Response to 'selectDevice': " + retStr);
                             return retStr;
                         }

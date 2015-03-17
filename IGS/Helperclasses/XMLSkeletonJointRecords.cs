@@ -205,7 +205,6 @@ namespace IGS.Helperclasses
                         }
                         xmlSelect.AppendChild(xmlSkeleton);
                         skeletonCounter++;
-                        Console.WriteLine("BodySmoothedID = " + body.TrackingId);
                         break;
 
                     }
