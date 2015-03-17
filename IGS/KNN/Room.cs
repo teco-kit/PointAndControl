@@ -84,9 +84,9 @@ namespace IGS.KNN
                     wallPoint.Z = Math.Round(wallPoint.Z, 7);
                     if ((width >= wallPoint.X && wallPoint.X >= 0
                         &&
-                        depth >= wallPoint.Y && wallPoint.Y >= 0
+                        height >= wallPoint.Y && wallPoint.Y >= 0
                         &&
-                        height >= wallPoint.Z && wallPoint.Z >= 0) == true)
+                        depth >= wallPoint.Z && wallPoint.Z >= 0) == true)
                     {
                         return wallPoint;
                     }
