@@ -75,6 +75,7 @@ namespace IGS.KNN
             this.personPositionX = personPosition.X;
             this.personPositionY = personPosition.Y;
             this.personPositionZ = personPosition.Z;
+            this.sampleDeviceName = wps.sampleDeviceName;
         }
 
     }
