@@ -97,6 +97,7 @@
     <Compile Include="Devices\Plugwise.cs" />
     <Compile Include="Devices\Presenter.cs" />
     <Compile Include="Devices\TCP.cs" />
+    <Compile Include="Devices\Kodi.cs" />
     <Compile Include="Devices\XBMCv11.cs" />
     <Compile Include="Helperclasses\CoordTransform.cs" />
     <Compile Include="Helperclasses\Initializer.cs" />
@@ -206,6 +207,23 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\configuration.xml" />
+    <Content Include="Resources\HttpRoot\Kodi\css\screen.css" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\back.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\bg.jpg" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\down.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\left.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\mute.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\pause.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\play.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\right.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\select.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\stop.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\up.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\voldown.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\volup.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\off.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\on.gif" />
+    <Content Include="Resources\HttpRoot\Kodi\index.html" />
     <Content Include="Resources\HttpRoot\Boxee\css\screen.css" />
     <Resource Include="Resources\HttpRoot\Boxee\img\back.gif" />
     <Resource Include="Resources\HttpRoot\Boxee\img\bg.jpg" />
