@@ -22,7 +22,7 @@ namespace IGS.Kinect
             double[] distArray = new double[jointLists.Count];
             List<double> distanceList = new List<double>();
          
-            for (int jointMarker = 0; jointMarker < jointLists[1].Length; jointMarker++)
+            for (int jointMarker = 0; jointMarker < jointLists[0].Length; jointMarker++)
             {
 
                 minDist = double.MaxValue;
@@ -50,7 +50,13 @@ namespace IGS.Kinect
             }
 
 
-            return filtered;
+            //for (int i = 0; i < 4; i++)
+            //{
+            //    Console.Write(filtered[i].ToString() + " , ");
+            //}
+            //Console.WriteLine("");
+
+                return filtered;
         }
 
         public Double l2Norm(Vector3D vec1, Vector3D vec2)

@@ -55,7 +55,6 @@ namespace IGS.KNN
                 checkAndWriteColorForDevice(sample.sampleDeviceName);
                
             }
-            
            
         }
 
@@ -93,12 +92,10 @@ namespace IGS.KNN
                     return;
                 }
             }
-
             deviceRep newColor = new deviceRep();
             newColor.deviceName = deviceName;
             newColor.color = pickRandomColor();
             Console.WriteLine("DeviceName: " + newColor.deviceName + " Color: " + newColor.color.Name);
-            Console.WriteLine("");
             devicesRepresentation.Add(newColor);
 
         }

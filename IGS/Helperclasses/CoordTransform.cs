@@ -126,6 +126,20 @@ namespace IGS.Server.IGS
             return result;
         }
 
+        public void transformJointCoordsReference(Vector3D[] joints)
+        {
+            
+            
+
+            for (int i = 0; i < joints.Length; i++)
+            {
+
+                joints[i] = Vector3D.Multiply(joints[i], rotationMatrix);
+                joints[i] = joints[i] + transVector;
+            }
+            
+        }
+
 
         /// <summary>
         /// Transforms all Vector3Ds in the Array to Point3D

@@ -27,6 +27,7 @@ namespace IGS.Helperclasses
         /// <returns></returns>
         public List<List<SampleExtractor.rawSample>> splitRoomFrontAndBack(List<SampleExtractor.rawSample> rawSampleList, double splitamount)
         {
+
             String[] roomMeasures = XMLComponentHandler.readRoomComponents();
 
             double depth = double.Parse(roomMeasures[2]);

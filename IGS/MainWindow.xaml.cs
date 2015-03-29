@@ -906,7 +906,8 @@ public partial class MainWindow
 
     private void CreateTestFiles_Button_Click(object sender, RoutedEventArgs e)
     {
-        _igs.classification.createTestLists();
+        _igs.classification.extractAndCreateLists(_igs.Transformer);
+    
     }
 
    
