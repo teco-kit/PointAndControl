@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Timers;
 
 namespace IGS.Server.Devices
 {
     class Kodi : Device
     {
-        
+            // Dll Import to nudge mouse
+            [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint = "SetCursorPos")]
+            internal extern static Int32 SetCursorPos(Int32 x, Int32 y);
+
             private Http _connection;
             private readonly String _commandString;
             private readonly String _absolutePathToKodi = "C:\\Program Files (x86)\\Kodi\\Kodi.exe"; // this is not nice;
@@ -46,7 +51,16 @@ namespace IGS.Server.Devices
                 {
                     Process p = Process.Start(_absolutePathToKodi);
                     if (p != null)
+                    {
+                        // wait a second before deactivating the screensaver
+                        System.Timers.Timer aTimer = new System.Timers.Timer();
+                        aTimer.Elapsed += new ElapsedEventHandler(DisableScreensaver);
+                        aTimer.Interval = 1000;
+                        aTimer.AutoReset = false;
+                        aTimer.Enabled = true;
+
                         return "True";
+                    }
                     else
                         return "False";
                 }
@@ -135,6 +149,12 @@ namespace IGS.Server.Devices
                 int cmdIdAscii = (int)cmdId.ToCharArray()[0];
                 cmdIdAscii += 61696;
                 return cmdIdAscii.ToString();
+            }
+
+            private static void DisableScreensaver(object source, ElapsedEventArgs e)
+            {
+                // Stops the screen saver by moving the cursor.
+                SetCursorPos(new Random().Next(100), new Random().Next(100));
             }
         }
     }
