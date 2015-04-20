@@ -223,9 +223,7 @@
     <Resource Include="Resources\HttpRoot\Kodi\img\volup.gif" />
     <Resource Include="Resources\HttpRoot\Kodi\img\off.gif" />
     <Resource Include="Resources\HttpRoot\Kodi\img\on.gif" />
-    <Content Include="Resources\HttpRoot\Kodi\index.html">
-      <SubType>Designer</SubType>
-    </Content>
+    <Content Include="Resources\HttpRoot\Kodi\index.html" />
     <Content Include="Resources\HttpRoot\Boxee\css\screen.css" />
     <Resource Include="Resources\HttpRoot\Boxee\img\back.gif" />
     <Resource Include="Resources\HttpRoot\Boxee\img\bg.jpg" />
