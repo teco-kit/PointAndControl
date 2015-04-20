@@ -155,6 +155,12 @@ namespace IGS.Server.Devices
             {
                 // Stops the screen saver by moving the cursor.
                 SetCursorPos(new Random().Next(100), new Random().Next(100));
+
+                // kill the screen saver
+                foreach (var process in Process.GetProcessesByName("gPhotoShow.scr"))
+                {
+                    process.Kill();
+                }
             }
         }
     }
