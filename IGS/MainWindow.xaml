@@ -172,6 +172,7 @@
             <Button x:Name="trainBatch_Button" Content="Train Samples Batch!" HorizontalAlignment="Left" Margin="10,539,0,0" VerticalAlignment="Top" Width="148" Click="trainBatch_Button_Click"/>
             <Button x:Name="WCBMP_Button" Content="Calculate_Classification_BMP" HorizontalAlignment="Left" Margin="10,584,0,0" VerticalAlignment="Top" Width="160" Height="31" Click="WCBMP_Button_Click" />
             <Button x:Name="CreateTestFiles_Button" Content="Create Test Splits" HorizontalAlignment="Left" Margin="10,643,0,0" VerticalAlignment="Top" Width="160" Click="CreateTestFiles_Button_Click"/>
+            <Button x:Name="CrossVal_Button" Content="Crossvalidate" HorizontalAlignment="Left" Margin="10,689,0,0" VerticalAlignment="Top" Width="160" Click="CrossVal_Button_Click"/>
         </Grid>
     </Grid>
 </Window>

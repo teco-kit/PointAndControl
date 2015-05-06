@@ -910,5 +910,12 @@ public partial class MainWindow
     
     }
 
+    
+    private void CrossVal_Button_Click(object sender, RoutedEventArgs e)
+    {
+        Crossvalidator crossval = new Crossvalidator(_igs.classification);
+        crossval.crossValidate();
+    }
+
    
 }

@@ -39,19 +39,23 @@ namespace IGS.Helperclasses
        } 
 
 
-        public void writeNormalSamplesFromRawSamples(String filePath, List<rawSample> sampleList)
+        public void writeNormalSamplesFromRawSamples(String DirectoryPath, List<rawSample> sampleList, String Filename)
         {
-            XMLComponentHandler.testAndCreateSampleXML("NormalSamples" + "\\" + filePath);
+            if (!Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "NormalSamples" + "\\" + DirectoryPath))
+            {
+                Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "NormalSamples" + "\\" + DirectoryPath);
+            }
+            XMLComponentHandler.testAndCreateSampleXML("NormalSamples" + "\\" + DirectoryPath + "\\" + Filename);
 
             foreach (rawSample rs in sampleList)
             {
                 Vector3D direction = Vector3D.Subtract(rs.joints[3], rs.joints[2]);
-                XMLComponentHandler.writeSampleToXML(rs.joints[2], direction, rs.label, "NormalSamples" + "\\" + filePath);
+                XMLComponentHandler.writeSampleToXML(rs.joints[2], direction, rs.label, "NormalSamples" + "\\" + DirectoryPath + "\\" + Filename);
             }
         }
 
 
-        public List<WallProjectionSample> calculateAndWriteWallProjectionSamples(SampleCollector collector, String filePath, List<rawSample> sampleList)
+        public List<WallProjectionSample> calculateAndWriteWallProjectionSamples(SampleCollector collector, String DirectoryPath, List<rawSample> sampleList, String Filename)
         {
             List<WallProjectionSample> wallProjectionSamples = new List<WallProjectionSample>();
             foreach (SampleExtractor.rawSample rawSample in sampleList)
@@ -62,16 +66,21 @@ namespace IGS.Helperclasses
                     wallProjectionSamples.Add(sample);
                 }
             }
-            XMLComponentHandler.testAndCreateSampleXML("WallProjectionSamples" + "\\" + filePath);
+
+            if (!Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "WallProjectionSamples" + "\\" + DirectoryPath))
+            {
+                Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "WallProjectionSamples" + "\\" + DirectoryPath);
+            }
+            XMLComponentHandler.testAndCreateSampleXML("WallProjectionSamples" + "\\" + DirectoryPath + "\\" + Filename);
             foreach (WallProjectionSample wps in wallProjectionSamples)
             {
-                XMLComponentHandler.writeWallProjectionSampleToXML(wps, "WallProjectionSamples" + "\\" + filePath);
+                XMLComponentHandler.writeWallProjectionSampleToXML(wps, "WallProjectionSamples" + "\\" + DirectoryPath + "\\" + Filename);
             }
 
             return wallProjectionSamples;
         }
 
-        public List<WallProjectionAndPositionSample> calculateAndWriteWallProjectionAndPositionSamples(SampleCollector collector, String filePath, List<rawSample> sampleList)
+        public List<WallProjectionAndPositionSample> calculateAndWriteWallProjectionAndPositionSamples(SampleCollector collector, String DirectoryPath, List<rawSample> sampleList, String Filename)
         {
             List<WallProjectionAndPositionSample> wallProjectionSamplesAndPositionSamples = new List<WallProjectionAndPositionSample>();
             WallProjectionSample tmpSample = new WallProjectionSample();
@@ -87,10 +96,15 @@ namespace IGS.Helperclasses
                 }
                 
             }
-            XMLComponentHandler.testAndCreateSampleXML("WallProjectionAndPositionSamples"+"\\" + filePath);
+
+            if (!Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "WallProjectionAndPositionSamples" + "\\" + DirectoryPath))
+            {
+                Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "WallProjectionAndPositionSamples"+"\\" + DirectoryPath);
+            }
+            XMLComponentHandler.testAndCreateSampleXML("WallProjectionAndPositionSamples"+"\\" + DirectoryPath + "\\" + Filename);
             foreach (WallProjectionAndPositionSample wpps in wallProjectionSamplesAndPositionSamples)
             {
-                XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(wpps, "WallProjectionAndPositionSamples" + "\\" + filePath);
+                XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(wpps, "WallProjectionAndPositionSamples" + "\\" + DirectoryPath + "\\" + Filename);
             }
 
             return wallProjectionSamplesAndPositionSamples;

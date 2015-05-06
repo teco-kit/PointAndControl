@@ -19,9 +19,9 @@ namespace IGS.KNN
         KNNGenerator generator { get; set; }
         LearningModel learned { get; set; }
         public List<deviceRep> devicesRepresentation { get; set; }
-
+        int distinctLabels { get; set; }
         public bool initialized { get; set; }
-
+        List<String> labels { get; set; }
         public struct deviceRep
         {
             public String deviceName;
@@ -31,6 +31,18 @@ namespace IGS.KNN
 
         public KNNClassifier(List<WallProjectionSample> list)
         {
+            distinctLabels = 0;
+            labels = new List<string>();
+
+            foreach (WallProjectionSample wps in list)
+            {
+                if(!labels.Contains(wps.sampleDeviceName))
+                {
+                    labels.Add(wps.sampleDeviceName);
+                    distinctLabels++;
+                }
+            }
+            
 
             pendingSamples = new List<WallProjectionSample>();
             samples = new List<WallProjectionSample>();
@@ -44,18 +56,8 @@ namespace IGS.KNN
             if (list != null && list.Count != 0)
             {
                 learnBatch(list);
-                trainClassifier();
-                
             }
-            else Console.WriteLine("Please add more Samples!");
-            
-           
-            foreach (WallProjectionSample sample in samples)
-            {
-                checkAndWriteColorForDevice(sample.sampleDeviceName);
-               
-            }
-           
+                       
         }
 
 
@@ -97,17 +99,30 @@ namespace IGS.KNN
             newColor.color = pickRandomColor();
             Console.WriteLine("DeviceName: " + newColor.deviceName + " Color: " + newColor.color.Name);
             devicesRepresentation.Add(newColor);
+            return;
+          
 
         }
 
         public void trainClassifier()
         {
+           
             if (samples.Count > 0)
             {
                 generator.K = (int)Math.Sqrt(samples.Count);
-                learned = Learner.Learn(samples, 0.80, 1000, generator);
+                learned = Learner.Learn(samples, 0.80, 500, generator);
             }
             else Console.WriteLine("Please create samples first!");
+
+        }
+
+        public void trainClassifier(List<WallProjectionSample> trainingSet)
+        {
+            if (trainingSet.Count > 0)
+            {
+                generator.K = (int)Math.Sqrt(trainingSet.Count);
+                learned = Learner.Learn(trainingSet, 0.80, 500, generator);
+            }
         }
 
         public WallProjectionSample classify(WallProjectionSample sample)
@@ -121,7 +136,7 @@ namespace IGS.KNN
 
         public void learnBatch(List<WallProjectionSample> trainingSamples)
         {
-            if (trainingSamples == null || trainingSamples.Count == 0) return;
+            if (trainingSamples == null || trainingSamples.Count == 0) { return; }
             
           
                 foreach (WallProjectionSample s in trainingSamples)
@@ -129,8 +144,8 @@ namespace IGS.KNN
                     samples.Add(s);
                     checkAndWriteColorForDevice(s.sampleDeviceName);
                 }
-            
-                trainClassifier();
+                Console.WriteLine("Going into trainClassifier");
+            trainClassifier();
             
         }
 

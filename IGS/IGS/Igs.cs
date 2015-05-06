@@ -54,6 +54,7 @@ namespace IGS.Server.IGS
             this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Centre);
             this.classification = new ClassificationHandler(Transformer);
             this.chooseDeviceMethod = new DevChooseMethodKNN(classification);
+           
             
         }
 

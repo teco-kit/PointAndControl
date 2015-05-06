@@ -143,6 +143,7 @@ namespace IGS.Helperclasses
         public List<List<SampleExtractor.rawSample>> splitRawSamplesRandomForOnline(List<SampleExtractor.rawSample> rawSamples, int packageSize)
         {
             List<List<SampleExtractor.rawSample>> result = new List<List<SampleExtractor.rawSample>>();
+            List<SampleExtractor.rawSample> endSamples = new List<SampleExtractor.rawSample>();
             int chosenPlace = 0;
             Random rand = new Random();
 
@@ -159,17 +160,83 @@ namespace IGS.Helperclasses
             }
             if (rawSamples.Count > 0)
             {
-                List<SampleExtractor.rawSample> endSamples = new List<SampleExtractor.rawSample>();
+            
                 foreach (SampleExtractor.rawSample rs in rawSamples)
                 {
                     endSamples.Add(rs);
                 }
-
-                result.Add(endSamples);
             }
+
+            int dividePlace = 0;
+            
+            while (endSamples.Count > 0)
+            {
+                if (dividePlace == 10)
+                {
+                    dividePlace = 0;
+                }
+                result[dividePlace].Add(endSamples[0]);
+                endSamples.Remove(endSamples[0]);
+                dividePlace++;
+
+            }
+            
 
             return result;
         }
 
+        public List<List<SampleExtractor.rawSample>> splitInOnePerDeviceSplits(List<SampleExtractor.rawSample> rawSamples)
+        {
+            List<List<SampleExtractor.rawSample>> sortedByDevice = new List<List<SampleExtractor.rawSample>>();
+            List<List<SampleExtractor.rawSample>> resultList = new List<List<SampleExtractor.rawSample>>();
+            Random rand = new Random();
+            bool found = false;
+            int chosenPlace = 0;
+           foreach(SampleExtractor.rawSample rs in rawSamples)
+           {
+               found = false;
+                foreach (List<SampleExtractor.rawSample> deviceLists in sortedByDevice)
+                {
+                    if (deviceLists[0].label == rs.label)
+                    {
+                        deviceLists.Add(rs);
+                        found = true;
+                    }
+                }
+                if (found == false)
+                {
+                    List<SampleExtractor.rawSample> deviceList = new List<SampleExtractor.rawSample>();
+                    deviceList.Add(rs);
+                    sortedByDevice.Add(deviceList);
+                }
+            }
+
+
+            int minCount = int.MaxValue;
+
+            foreach (List<SampleExtractor.rawSample> devList in sortedByDevice)
+            {
+                if (devList.Count < minCount)
+                {
+                    minCount = devList.Count;
+                }
+            }
+
+            for (int i = 0; i < minCount; i++)
+            {
+                List<SampleExtractor.rawSample> onlineSplit = new List<SampleExtractor.rawSample>();
+                foreach (List<SampleExtractor.rawSample> deviceList in sortedByDevice)
+                {
+                    chosenPlace = rand.Next(0, deviceList.Count);
+                    onlineSplit.Add(deviceList[chosenPlace]);
+                    deviceList.Remove(deviceList[chosenPlace]);
+                }
+                resultList.Add(onlineSplit);
+            }
+
+                return resultList;
+        }
+
+        
     }
 }
