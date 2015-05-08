@@ -68,25 +68,63 @@ namespace IGS.KNN
         /// <param name="vectors"></param>
         /// <param name="deviceName"></param>
         /// <returns></returns>
-        public bool calculateWallProjectionSampleAndLearn(Vector3D[] vectors, String deviceName)
+        public bool calculateWallProjectionSampleAndLearn(List<Vector3D[]> vectorsList, String deviceName)
         {
+            
             bool success = false;
-            WallProjectionSample sample = collector.calculateWallProjectionSample(vectors, deviceName);
-
-            if (sample.sampleDeviceName.Equals("nullSample") == false)
-            {
-               knnClassifier.pendingSamples.Add(sample);
-               XMLComponentHandler.writeWallProjectionSampleToXML(sample);
-              
-               Point3D p = new Point3D(vectors[2].X, vectors[2].Y, vectors[2].Z);
-               XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
            
-               XMLComponentHandler.writeSampleToXML(vectors, sample.sampleDeviceName);
-             
-              
-               success = true;
+            List<WallProjectionSample> sampleList = new List<WallProjectionSample>();
+            foreach (Vector3D[] vectors in vectorsList)
+            {
+                WallProjectionSample sample = collector.calculateWallProjectionSample(vectors, deviceName);
+
+                if (sample.sampleDeviceName.Equals("nullSample") == false)
+                {
+
+                    XMLComponentHandler.writeWallProjectionSampleToXML(sample);
+                    Point3D p = new Point3D(vectors[2].X, vectors[2].Y, vectors[2].Z);
+                    XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
+                    XMLComponentHandler.writeSampleToXML(vectors, sample.sampleDeviceName);
+
+                    sampleList.Add(sample);
+
+                    success = true;
+
+                }
 
             }
+
+            knnClassifier.learnBatch(sampleList);
+
+            return success;
+        }
+
+        public bool calculateWallProjectionSampleAndLearn(Vector3D[] vectors, String deviceName)
+        {
+
+            bool success = false;
+
+            
+            
+                WallProjectionSample sample = collector.calculateWallProjectionSample(vectors, deviceName);
+
+                if (sample.sampleDeviceName.Equals("nullSample") == false)
+                {
+
+                    XMLComponentHandler.writeWallProjectionSampleToXML(sample);
+                    Point3D p = new Point3D(vectors[2].X, vectors[2].Y, vectors[2].Z);
+                    XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
+                    XMLComponentHandler.writeSampleToXML(vectors, sample.sampleDeviceName);
+
+                    knnClassifier.pendingSamples.Add(sample);
+
+                    success = true;
+
+                }
+
+            
+
+
             return success;
         }
 
@@ -150,28 +188,6 @@ namespace IGS.KNN
                     extractor.writeNormalSamplesFromRawSamples("\\" + j, extractor.rawSamplesPerSelect, "AllRest");
                     extractor.writeNormalSamplesFromRawSamples("\\" + j, extractor.rawSamplesPerSelectSmoothed, "AllRestSmoothed");
 
-                    //int d = 5;//extractor.rawSamplesPerSelect.Count / extractor.rawSamplesPerSelect.Count;
-                    //int x = 5;//extractor.rawSamplesPerSelect.Count /extractor.rawSamplesPerSelect.Count ;
-                    //List<List<SampleExtractor.rawSample>> onlineLearningSplit = splitter.splitRawSamplesRandomForOnline(extractor.rawSamplesPerSelect, d);
-                    //List<List<SampleExtractor.rawSample>> onlineLearningSplitSmoothed = splitter.splitRawSamplesRandomForOnline(extractor.rawSamplesPerSelectSmoothed, x);
-                    //List<List<SampleExtractor.rawSample>> onlineLearningSplitMerged = extractor.rawSampleOnlinePartsMerger(onlineLearningSplit);
-                    //List<List<SampleExtractor.rawSample>> onlineLearningSplitMergedSmoothed = extractor.rawSampleOnlinePartsMerger(onlineLearningSplitSmoothed);
-
-                    //for (int i = 0; i < onlineLearningSplitMerged.Count; i++)
-                    //{
-                    //    extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "\\" + "Online" + "\\" + j + "\\" + "AllRest", onlineLearningSplitMerged[i], "AllRest" + i);
-                    //    extractor.calculateAndWriteWallProjectionSamples(collector, "\\" + "Online" + "\\" + j + "\\" + "AllRest", onlineLearningSplitMerged[i], "AllRest" + i);
-                    //    extractor.writeNormalSamplesFromRawSamples("\\" + "Online" + "\\" + j + "\\" + "AllRest", onlineLearningSplitMerged[i], "AllRest" + i);
-
-                    //}
-
-                    //for (int i = 0; i < onlineLearningSplitMergedSmoothed.Count; i++)
-                    //{
-                    //    extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "\\" + "Online" + "\\" + j + "\\" + "AllRestSmoothed", onlineLearningSplitMergedSmoothed[i], "AllRest" + i);
-                    //    extractor.calculateAndWriteWallProjectionSamples(collector, "\\" + "Online" + "\\" + j + "\\" + "AllRestSmoothed", onlineLearningSplitMergedSmoothed[i], "AllRest" + i);
-                    //    extractor.writeNormalSamplesFromRawSamples("\\" + "Online" + "\\" + j + "\\" + "AllRestSmoothed", onlineLearningSplitMergedSmoothed[i], "AllRest" + i);
-                    //}
-
                     j++;
                 }
             
@@ -225,29 +241,6 @@ namespace IGS.KNN
 
                 extractor.writeNormalSamplesFromRawSamples("\\" + j , extractor.rawSamplesPerSelect, "AllOne");
                 extractor.writeNormalSamplesFromRawSamples("\\" + j , extractor.rawSamplesPerSelectSmoothed, "AllOneSmoothed");
-
-
-                //int d = 5;//extractor.rawSamplesPerSelect.Count / extractor.rawSamplesPerSelect.Count;
-                //int x = 5;// extractor.rawSamplesPerSelectSmoothed.Count / extractor.rawSamplesPerSelectSmoothed.Count;
-                //List<List<SampleExtractor.rawSample>> onlineLearningSplit = splitter.splitRawSamplesRandomForOnline(extractor.rawSamplesPerSelect, d);
-                //List<List<SampleExtractor.rawSample>> onlineLearningSplitSmoothed = splitter.splitRawSamplesRandomForOnline(extractor.rawSamplesPerSelectSmoothed, x);
-                //List<List<SampleExtractor.rawSample>> onlineLearningSplitMerged = extractor.rawSampleOnlinePartsMerger(onlineLearningSplit);
-                //List<List<SampleExtractor.rawSample>> onlineLearningSplitMergedSmoothed = extractor.rawSampleOnlinePartsMerger(onlineLearningSplitSmoothed);
-
-                //for (int i = 0; i < onlineLearningSplitMerged.Count; i++)
-                //{
-                //    extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "\\" + "Online" + "\\" +  j + "\\" + "AllOne", onlineLearningSplitMerged[i], "AllOne" + i);
-                //    extractor.calculateAndWriteWallProjectionSamples(collector, "\\" + "Online" + "\\"+ j + "\\" + "AllOne", onlineLearningSplitMerged[i], "AllOne" + i);
-                //    extractor.writeNormalSamplesFromRawSamples("\\" + "Online" + "\\" + j + "\\" + "AllOne", onlineLearningSplitMerged[i],  "AllOne" + i);
-
-                //}
-
-                //for (int i = 0; i < onlineLearningSplitMergedSmoothed.Count; i++)
-                //{
-                //    extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "\\" + "Online" + "\\"+  j + "\\" + "AllOneSmoothed", onlineLearningSplitMergedSmoothed[i], "AllOne" + i);
-                //    extractor.calculateAndWriteWallProjectionSamples(collector,"\\" + "Online" + "\\" + j + "\\" + "AllOneSmoothed", onlineLearningSplitMergedSmoothed[i], "AllOne" + i);
-                //    extractor.writeNormalSamplesFromRawSamples("\\" + "Online" + "\\" + j + "\\" + "AllOneSmoothed", onlineLearningSplitMergedSmoothed[i], "AllOne" + i);
-                //}
 
                 j++;
             }
@@ -318,68 +311,6 @@ namespace IGS.KNN
             extractor.writeNormalSamplesFromRawSamples("", extractor.rawSamplesPerSelectSmoothed,"AllSmoothed");
 
 
-            //int d = 5;//extractor.rawSamplesPerSelect.Count / extractor.rawSamplesPerSelect.Count;
-            //int x = 5;//extractor.rawSamplesPerSelectSmoothed.Count / extractor.rawSamplesPerSelectSmoothed.Count;
-            //List<List<SampleExtractor.rawSample>> onlineLearningSplit = splitter.splitRawSamplesRandomForOnline(extractor.rawSamplesPerSelect, d);
-            //List<List<SampleExtractor.rawSample>> onlineLearningSplitSmoothed = splitter.splitRawSamplesRandomForOnline(extractor.rawSamplesPerSelectSmoothed, x);
-            //List<List<SampleExtractor.rawSample>> onlineLearningSplitMerged = extractor.rawSampleOnlinePartsMerger(onlineLearningSplit);
-            //List<List<SampleExtractor.rawSample>> onlineLearningSplitMergedSmoothed = extractor.rawSampleOnlinePartsMerger(onlineLearningSplitSmoothed);
-           
-            //for (int i = 0; i < onlineLearningSplitMerged.Count; i++)
-            //{
-            //    extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "Online\\All", onlineLearningSplitMerged[i], "All" + i);
-            //    extractor.calculateAndWriteWallProjectionSamples(collector, "Online\\All", onlineLearningSplitMerged[i], "All" + i);
-            //    extractor.writeNormalSamplesFromRawSamples("Online\\All", onlineLearningSplitMerged[i], "All" + i);
-
-            //    List<List<SampleExtractor.rawSample>> onlineFrontToBack = splitter.splitRoomFrontAndBack(onlineLearningSplitMerged[i], 0.5);
-            //    List<List<SampleExtractor.rawSample>> onlineRightToLeft = splitter.splitRoomRightAndLeft(onlineLearningSplitMerged[i], 0.5);
-
-            //    extractor.calculateAndWriteWallProjectionSamples(collector, "Online\\frontToBackBack", onlineFrontToBack[0], "frontToBackBack" + i);
-            //    extractor.calculateAndWriteWallProjectionSamples(collector, "Online\\frontToBackFront", onlineFrontToBack[1],"frontToBackFront" + i );
-
-            //    extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "Online\\frontToBackBack", onlineFrontToBack[0], "frontToBackBack" + i);
-            //    extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "Online\\frontToBackFront", onlineFrontToBack[1], "frontToBackFront" + i);
-
-            //    extractor.writeNormalSamplesFromRawSamples("Online\\frontToBackBack", onlineFrontToBack[0], "frontToBackBack" + i);
-            //    extractor.writeNormalSamplesFromRawSamples("Online\\frontToBackFront", onlineFrontToBack[1], "frontToBackFront" + i);
-
-            //    extractor.calculateAndWriteWallProjectionSamples(collector, "Online\\rightToLeftRight", onlineRightToLeft[0], "rightToLeftRight" + i);
-            //    extractor.calculateAndWriteWallProjectionSamples(collector, "Online\\rightToLeftLeft", onlineRightToLeft[1], "rightToLeftLeft" + i);
-
-            //    extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "Online\\rightToLeftRight", onlineRightToLeft[0], "rightToLeftRight" + i);
-            //    extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "Online\\rightToLeftLeft", onlineRightToLeft[1], "rightToLeftLeft" + i);
-
-            //    extractor.writeNormalSamplesFromRawSamples("Online\\rightToLeftRight", onlineRightToLeft[0], "rightToLeftRight" + i);
-            //    extractor.writeNormalSamplesFromRawSamples("Online\\rightToLeftLeft", onlineRightToLeft[1], "rightToLeftLeft" + i);
-            //}
-
-            //for (int i = 0; i < onlineLearningSplitMergedSmoothed.Count; i++)
-            //{
-            //    extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "Online\\AllSmoothed", onlineLearningSplitMergedSmoothed[i], "All" + i  );
-            //    extractor.calculateAndWriteWallProjectionSamples(collector, "Online\\AllSmoothed", onlineLearningSplitMergedSmoothed[i], "All" + i);
-            //    extractor.writeNormalSamplesFromRawSamples("Online\\AllSmoothed", onlineLearningSplitMergedSmoothed[i], "All" + i);
-
-            //    List<List<SampleExtractor.rawSample>> onlineFrontToBack = splitter.splitRoomFrontAndBack(onlineLearningSplitMergedSmoothed[i], 0.5);
-            //    List<List<SampleExtractor.rawSample>> onlineRightToLeft = splitter.splitRoomRightAndLeft(onlineLearningSplitMergedSmoothed[i], 0.5);
-
-            //    extractor.calculateAndWriteWallProjectionSamples(collector, "Online\\frontToBackSmoothedBack", onlineFrontToBack[0], "frontToBackBack" + i);
-            //    extractor.calculateAndWriteWallProjectionSamples(collector, "Online\\frontToBackSmoothedFront", onlineFrontToBack[1], "frontToBackFront" + i );
-
-            //    extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "Online\\frontToBackSmoothedBack", onlineFrontToBack[0], "frontToBackBack" + i);
-            //    extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "Online\\frontToBackSmoothedFront", onlineFrontToBack[1], "frontToBackFront" + i);
-
-            //    extractor.writeNormalSamplesFromRawSamples("Online\\frontToBackSmoothedBack", onlineFrontToBack[0], "frontToBackBack" + i);
-            //    extractor.writeNormalSamplesFromRawSamples("Online\\frontToBackSmoothedFront", onlineFrontToBack[1], "frontToBackFront" + i);
-
-            //    extractor.calculateAndWriteWallProjectionSamples(collector, "Online\\rightToLeftSmoothedRight", onlineRightToLeft[0], "rightToLeftRight" + i);
-            //    extractor.calculateAndWriteWallProjectionSamples(collector, "Online\\rightToLeftSmoothedLeft", onlineRightToLeft[1], "rightToLeftLeft" + i);
-
-            //    extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "Online\\rightToLeftSmoothedRight", onlineRightToLeft[0], "rightToLeftRight" + i);
-            //    extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "Online\\rightToLeftSmoothedLeft", onlineRightToLeft[1], "rightToLeftLeft" + i);
-
-            //    extractor.writeNormalSamplesFromRawSamples("Online\\rightToLeftSmoothedRight", onlineRightToLeft[0], "rightToLeftRight" + i);
-            //    extractor.writeNormalSamplesFromRawSamples("Online\\rightToLeftSmoothedLeft", onlineRightToLeft[1], "rightToLeftLeft" + i);
-            //}
 
         }
 
@@ -407,14 +338,6 @@ namespace IGS.KNN
             }
 
         }
-
-        public void createSampleFolders()
-        {
-            Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "NormalSamples" + "\\" + "Online" + "\\" + "All");
-            
-        }
-
-
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using IGS.Server.IGS;
+﻿using IGS.Server.Devices;
+using IGS.Server.IGS;
 using IGS.Server.Kinect;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace IGS.IGS
     {
 
         
-        public override List<Server.Devices.Device> chooseDevice(String wlanAdr, CoordTransform Transformer, UserTracker Tracker, DataHolder Data)
+        public override List<Device> chooseDevice(String wlanAdr, CoordTransform Transformer, UserTracker Tracker, DataHolder Data)
         {
             User tempUser = Data.GetUserByIp(wlanAdr);
             return tempUser != null ? CollisionDetection.Calculate(Data.Devices, Transformer.transformJointCoords(Tracker.GetCoordinates(tempUser.SkeletonId))) : null;

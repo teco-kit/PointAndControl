@@ -7,65 +7,258 @@ using Excel = Microsoft.Office.Interop.Excel;
 using IGS.Helperclasses;
 using System.Windows;
 using Microsoft.Office.Interop.Excel;
+using IGS.Server.Location;
+using System.Windows.Media.Media3D;
+using IGS.Server.IGS;
 
 namespace IGS.KNN
 {
     class Crossvalidator
     {
         public List<WallProjectionSample> WPSlist { get; set; }
+        public List<collisionPackage> collisionPacksList { get; set; }
+        public Locator locator { get; set; }
+
+        public List<List<collisionPackage>> lineFolds { get; set; }
         public List<List<WallProjectionSample>> folds { get; set;  }
+
 
         public ClassificationHandler classHandler { get; set; }
         public Microsoft.Office.Interop.Excel.Application xlApp  {get;set;}
 
         public List<String> labels { get; set; }
+        public List<String> lineLabels { get; set; }
         public int[,] cfMatrix { get; set; }
-        
-        
+
+        public int[,] cfMatrixCollision { get; set; }
+
+        public String[] dropOutNames { get; set; }
+        public struct collisionPackage
+        {
+           public Vector3D[] vecs;
+           public String devName;
+        }
 
 
-        public Crossvalidator(ClassificationHandler classhandler)
+        public Crossvalidator(ClassificationHandler classhandler, DataHolder data, CoordTransform transformer )
         {
             WPSlist = new List<WallProjectionSample>();
             folds = new List<List<WallProjectionSample>>();
             labels = new List<string>();
+            dropOutNames = new String[]{};
+
+            collisionPacksList = new List<collisionPackage>();
+            lineFolds = new List<List<collisionPackage>>();
+            lineLabels = new List<string>();
+          
             xlApp = new Microsoft.Office.Interop.Excel.Application();
             xlApp.Visible = false;
             classHandler = classhandler;
+            locator = new Locator(data, null, transformer);
 
+            //set up for classification
             foreach (KNNClassifier.deviceRep devRep in classHandler.knnClassifier.devicesRepresentation)
             {
                 String label = devRep.deviceName;
-                labels.Add(label);
+                if (dropOutNames.Contains(label))
+                {
+                    continue;
+                }
+                else
+                {
+                    labels.Add(label);
+                }
+                
             }
-            cfMatrix = new int[labels.Count , labels.Count];
+            cfMatrix = new int[labels.Count, labels.Count];
 
             WPSlist = XMLComponentHandler.readWallProjectionSamplesFromXML();
+
+            List<WallProjectionSample> tmpWPSList = new List<WallProjectionSample>();
+            
+                foreach (WallProjectionSample wps in WPSlist)
+                {
+
+                    if (!(dropOutNames.Contains(wps.sampleDeviceName)))
+                    {
+                        tmpWPSList.Add(wps);
+                    }
+                }
+
+            WPSlist = tmpWPSList;
 
             int k = 10;
             int foldsize = WPSlist.Count() / k;
 
             folds = splitWallProjectionSamplelRandomForOnline(foldsize);
-            if(folds.Count > 10){
-                int iterator = 0;
-            foreach(WallProjectionSample wps in folds[10])
+            if (folds.Count > 10)
             {
-                folds[iterator].Add(wps);
-                folds[10].Remove(wps);
-                iterator++;
-                if(iterator == 10){
-                    iterator = 0;
+                int iterator = 0;
+                foreach (WallProjectionSample wps in folds[10])
+                {
+                    folds[iterator].Add(wps);
+                    folds[10].Remove(wps);
+                    iterator++;
+                    if (iterator == 10)
+                    {
+                        iterator = 0;
+                    }
                 }
             }
+
+
+            
+            // setup for colldet
+
+            collisionPacksList = XMLComponentHandler.readSkeletonsPerSelectFromXMLCollision(locator.Transformer);
+
+            List<collisionPackage> tmpColPackList = new List<collisionPackage>();
+
+            
+                foreach (collisionPackage p in collisionPacksList)
+                {
+                    if (!(dropOutNames.Contains(p.devName)))
+                    {
+                        tmpColPackList.Add(p);
+                    }
+                }
+            
+
+            collisionPacksList = tmpColPackList;
+
+                foreach (collisionPackage p in collisionPacksList)
+                {
+                    if (!(lineLabels.Contains(p.devName)))
+                    {
+                        lineLabels.Add(p.devName);
+                    }
+                }
+
+            cfMatrixCollision = new int[lineLabels.Count, lineLabels.Count];
+
+            foldsize = collisionPacksList.Count / k;
+
+
+            lineFolds = splitLineVectorsRandom(foldsize);
+            if (lineFolds.Count > 10)
+            {
+                int iterator = 0;
+                foreach (collisionPackage package in lineFolds[10])
+                {
+                    lineFolds[iterator].Add(package);
+                    lineFolds[10].Remove(package);
+                    iterator++;
+                    if (iterator == 10)
+                    {
+                        iterator = 0;
+                    }
+                }
             }
+            
+
         }
 
-        public void crossValidate()
+
+
+        public void crossValidateCollision()
         {
-            String path = AppDomain.CurrentDomain.BaseDirectory + "Crossval.xls";
+            String path = AppDomain.CurrentDomain.BaseDirectory + "CrossvalCollision.xls";
             object misValue = System.Reflection.Missing.Value;
             Workbook wb = xlApp.Workbooks.Add(misValue);
-            _Worksheet ws = (Worksheet)wb.Sheets.get_Item("Tabelle1");
+            _Worksheet ws = (Worksheet)wb.Sheets.get_Item(1);
+
+            int error = 0;
+            double totalAVGError = 0;
+            int sampleSum = 0;
+            int correct = 0;
+            int actualDevPos = -1;
+            int predictedPos = -1;
+
+            for (int i = 0; i < lineFolds.Count; i++)
+            {
+
+                List<collisionPackage> trainingSet = mergeTrainSetLine(i);
+
+                foreach (String label in lineLabels)
+                {
+                    List<Vector3D[]> trainVecs = getVectorsForDevice(trainingSet, label);
+                    locator.ChangeDeviceLocation(trainVecs, label);
+                }
+
+                foreach (collisionPackage pack in lineFolds[i])
+                {
+
+                    for (int k = 0; k < lineLabels.Count; k++)
+                    {
+                        if (pack.devName.Equals(lineLabels[k]))
+                        {
+                            actualDevPos = k;
+                            break;
+                        }
+                    }
+                    
+                    String collisionDev = CollisionDetection.getNameOfDeviceWithMinDist(locator.Data.Devices, pack.vecs);
+
+                    for (int j = 0; j < lineLabels.Count; j++)
+                    {
+                        if (collisionDev.Equals(lineLabels[j]))
+                        {
+                            predictedPos = j;
+                            break;
+                        }
+                    }
+
+                    cfMatrixCollision[actualDevPos, predictedPos]++;
+
+                    if (pack.devName.Equals(collisionDev))
+                    {
+                        correct += 1;
+                    }
+                    else
+                    {
+                        error += 1;
+                    }
+
+                }
+
+
+            }
+
+            for (int m = 0; m < cfMatrixCollision.GetLength(0); m++)
+            {
+                for (int n = 0; n < cfMatrixCollision.GetLength(1); n++)
+                {
+
+                    ws.Cells[m + 2, n + 2] = cfMatrixCollision[m, n];
+                }
+            }
+            for (int r = 0; r < lineLabels.Count; r++)
+            {
+                ws.Cells[1, r + 2] = lineLabels[r];
+                ws.Cells[r + 2, 1] = lineLabels[r];
+            }
+
+            foreach (List<collisionPackage> lineFold in lineFolds)
+            {
+                sampleSum += lineFold.Count();
+            }
+
+            totalAVGError = error / sampleSum;
+
+            wb.SaveAs(path, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+            wb.Close(true, misValue, misValue);
+            xlApp.Quit();
+
+
+
+        }
+
+        public void crossValidateClassifier()
+        {
+            String path = AppDomain.CurrentDomain.BaseDirectory + "CrossvalClassifier.xls";
+            object misValue = System.Reflection.Missing.Value;
+            Workbook wb = xlApp.Workbooks.Add(misValue);
+            _Worksheet ws = (Worksheet)wb.Sheets.get_Item(1);
             int error = 0;
             double totalAVGError = 0;
             int sampleSum = 0;
@@ -187,6 +380,53 @@ namespace IGS.KNN
             return trainSet;
         }
 
+        public List<collisionPackage> mergeTrainSetLine(int testPlace)
+        {
+
+            List<collisionPackage> trainSet = new List<collisionPackage>();
+
+
+            for (int i = 0; i < lineFolds.Count; i++)
+            {
+                if (testPlace == i)
+                {
+                    continue;
+                }
+                else
+                {
+                    foreach (collisionPackage package in lineFolds[i])
+                    {
+                        trainSet.Add(package);
+                    }
+                }
+            }
+
+            return trainSet;
+        }
+
+
+        public List<Vector3D[]> getVectorsForDevice(List<collisionPackage> set, String name)
+        {
+            List<Vector3D[]> result = new List<Vector3D[]>();
+            List<collisionPackage> searchedPackages = new List<collisionPackage>();
+
+            foreach (collisionPackage package in set)
+            {
+                if (name.Equals(package.devName))
+                {
+                    searchedPackages.Add(package);
+                }
+            }
+
+            foreach (collisionPackage package in searchedPackages)
+            {
+                result.Add(package.vecs);
+            }
+
+            return result;
+        }
+
+
         public List<List<WallProjectionSample>> splitWallProjectionSamplelRandomForOnline(int packageSize)
         {
             List<List<WallProjectionSample>> result = new List<List<WallProjectionSample>>();
@@ -217,6 +457,51 @@ namespace IGS.KNN
 
             return result;
         }
+
+        public List<List<collisionPackage>> splitLineVectorsRandom(int packageSize)
+        {
+            int chosenPlace = 0;
+            Random rand = new Random();
+            List<List<collisionPackage>> result = new List<List<collisionPackage>>();
+            while (collisionPacksList.Count >= packageSize) 
+            {
+
+                List<collisionPackage> package = new List<collisionPackage>();
+
+                for (int i = 0; i < packageSize; i++)
+                {
+                    chosenPlace = rand.Next(0, collisionPacksList.Count);
+                    package.Add(collisionPacksList[chosenPlace]);
+                    collisionPacksList.RemoveAt(chosenPlace);
+                }
+
+                result.Add(package);
+                
+           }
+
+            return result;
+        }
+
+        public List<Vector3D[]> getVectorSamplesPerDevice(List<Vector3D[]> set,List<String> setLabels,  String name)
+        {
+
+            List<Vector3D[]> result = new List<Vector3D[]>();
+            
+            for (int i = 0; i < set.Count; i++)
+            {
+                if (setLabels[i].Equals(name))
+                {
+                    result.Add(set[i]);
+                }
+            }
+
+            return result;
+
+        }
+
+        
+
+      
     }
 }
  static class ExcelKonstanten

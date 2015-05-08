@@ -1055,7 +1055,90 @@ namespace IGS.Helperclasses
             docConfig.Save(path);
         }
 
-     
+        public static  List<Crossvalidator.collisionPackage> readSkeletonsPerSelectFromXMLCollision(CoordTransform transformer)
+        {
+            List<Crossvalidator.collisionPackage> result = new List<Crossvalidator.collisionPackage>();
+            String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelect.xml";
+
+            XmlDocument docConfig = new XmlDocument();
+            docConfig.Load(path);
+            XmlNode rootNode = docConfig.SelectSingleNode("/data");
+
+            XmlNodeList selects = rootNode.ChildNodes;
+
+            bool foundWristRight = false;
+            bool foundShoulderRight = false;
+            bool foundWristLeft = false;
+            bool foundShoulderLeft = false;
+
+
+            foreach (XmlNode select in selects)
+            {
+                String deviceName = select.Attributes[3].Value;
+                Vector3D WristRight = new Vector3D();
+                Vector3D ShoulderRight = new Vector3D();
+                Vector3D WristLeft = new Vector3D();
+                Vector3D ShoulderLeft = new Vector3D();
+                Vector3D[] smoothed = new Vector3D[4];
+
+                foreach (XmlNode joint in select.FirstChild)
+                {
+                    if (joint.Attributes[0].Name.ToString().Equals("type") && joint.Attributes[0].Value.ToString().Equals("WristRight"))
+                    {
+                        WristRight.X = Double.Parse(joint.Attributes[1].Value);
+                        WristRight.Y = Double.Parse(joint.Attributes[2].Value);
+                        WristRight.Z = Double.Parse(joint.Attributes[3].Value);
+                        foundWristRight = true;
+                    }
+                    else if (joint.Attributes[0].Name.ToString().Equals("type") && joint.Attributes[0].Value.ToString().Equals("ShoulderRight"))
+                    {
+                        ShoulderRight.X = Double.Parse(joint.Attributes[1].Value);
+                        ShoulderRight.Y = Double.Parse(joint.Attributes[2].Value);
+                        ShoulderRight.Z = Double.Parse(joint.Attributes[3].Value);
+                        foundShoulderRight = true;
+                    }
+                    else if (joint.Attributes[0].Name.ToString().Equals("type") && joint.Attributes[0].Value.ToString().Equals("WristLeft"))
+                    {
+                        WristLeft.X = Double.Parse(joint.Attributes[1].Value);
+                        WristLeft.Y = Double.Parse(joint.Attributes[2].Value);
+                        WristLeft.Z = Double.Parse(joint.Attributes[3].Value);
+                        foundWristLeft = true;
+                    }
+                    else if (joint.Attributes[0].Name.ToString().Equals("type") && joint.Attributes[0].Value.ToString().Equals("ShoulderLeft"))
+                    {
+                        ShoulderLeft.X = Double.Parse(joint.Attributes[1].Value);
+                        ShoulderLeft.Y = Double.Parse(joint.Attributes[2].Value);
+                        ShoulderLeft.Z = Double.Parse(joint.Attributes[3].Value);
+                        foundShoulderLeft = true;
+                    }
+                    if (foundWristRight == true && foundShoulderRight == true && foundWristLeft == true && foundShoulderLeft)
+                    {
+
+                        foundWristRight = false;
+                        foundShoulderRight = false;
+                        foundWristLeft = false;
+                        foundShoulderLeft = false;
+
+                        Vector3D[] tmpVecs = new Vector3D[] {
+                                ShoulderLeft, WristLeft, ShoulderRight, WristRight
+                            };
+
+                        tmpVecs = transformer.transformJointCoords(tmpVecs);
+
+                        Crossvalidator.collisionPackage package = new Crossvalidator.collisionPackage();
+
+                        package.devName = deviceName;
+                        package.vecs = tmpVecs;
+
+                        result.Add(package);
+                       
+                        break;
+                    }
+                }
+            }
+
+            return result;
+        }
 
         
        

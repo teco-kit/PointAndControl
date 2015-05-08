@@ -4,7 +4,9 @@
     <device type="Boxee">
       <name>SensorTable</name>
       <id>Boxee_1</id>
-      <form count="0" />
+      <form count="1">
+        <ball radius="0,4" centerX="2,68752094178013" centerY="2,11274908532615" centerZ="3,40792960203882" />
+      </form>
       <address>129.13.169.169</address>
       <port>5050</port>
     </device>
@@ -39,6 +41,13 @@
     <device type="Boxee">
       <name>Hifi</name>
       <id>Boxee_3</id>
+      <form count="0" />
+      <address>129.13.169.169</address>
+      <port>5050</port>
+    </device>
+	<device type="Boxee">
+      <name>PC</name>
+      <id>Boxee_4</id>
       <form count="0" />
       <address>129.13.169.169</address>
       <port>5050</port>

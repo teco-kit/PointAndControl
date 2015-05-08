@@ -24,7 +24,7 @@ namespace IGS.IGS
         }
 
         
-        public override List<Server.Devices.Device> chooseDevice(String wlanAdr, CoordTransform Transformer, UserTracker Tracker, DataHolder Data)
+        public override List<Device> chooseDevice(String wlanAdr, CoordTransform Transformer, UserTracker Tracker, DataHolder Data)
         {
             
             

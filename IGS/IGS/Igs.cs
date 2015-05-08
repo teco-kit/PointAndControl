@@ -501,7 +501,7 @@ namespace IGS.Server.IGS
                 
                 Vector3D[] vectors = Transformer.transformJointCoords(Tracker.getMedianFilteredCoordinates(tmpUser.SkeletonId));
                 //Vector3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(tmpUser.SkeletonId));
-             
+                
                 if (classification.calculateWallProjectionSampleAndLearn(vectors, dev.Name) == true)
                 {
                     //XMLComponentHandler.writeUserJointsToXmlFile(tmpUser, dev, body);

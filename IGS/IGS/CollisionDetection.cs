@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Media.Media3D;
 using IGS.Server.Devices;
 using System.Diagnostics;
+using IGS.Helperclasses;
 
 namespace IGS.Server.IGS
 {
@@ -16,6 +17,11 @@ namespace IGS.Server.IGS
         private static double _maxY;
         private static double _maxZ;
 
+        public struct minDistForDev
+        {
+            public Device dev;
+            public double minDist;
+        }
         /// <summary>
         ///    The Methode does the collision detection
         ///    First the pointing vector of the underarm is calculated.
@@ -65,6 +71,11 @@ namespace IGS.Server.IGS
             curr = vectors[1];
             foreach (Device dev in devices)
             {
+                minDistForDev tmpEntry = new minDistForDev();
+                tmpEntry.dev = dev;
+
+
+
                 foreach (Ball ball in dev.Form)
                 {
                     while ((Math.Abs(curr.X) < _maxX) && (Math.Abs(curr.Y) < _maxY) && (Math.Abs(curr.Z) < _maxZ))
@@ -81,6 +92,58 @@ namespace IGS.Server.IGS
                 }
             }
             return found;
+        }
+
+
+
+        internal static List<minDistForDev> CalculateMinDist(List<Device> devices, Vector3D[] vectors)
+        {
+            GetMax(devices, vectors);
+            //double stepSize = 1.0;
+            List<minDistForDev> distances = new List<minDistForDev>();
+
+            if (vectors == null)
+                return distances;
+
+            //Wrist - ellbow (direction vector of the line)
+            Vector3D leftForearm = Vector3D.Subtract(vectors[1], vectors[0]);
+            Vector3D rightForearm = Vector3D.Subtract(vectors[3], vectors[2]);
+
+            Debug.WriteLine(vectors[3].ToString());
+
+            Vector3D curr;
+
+
+            foreach (Device dev in devices)
+            {
+
+                minDistForDev entry = new minDistForDev();
+                entry.dev = dev;
+                entry.minDist = double.MaxValue;
+                foreach (Ball ball in dev.Form)
+                {
+                   // int iterator = 1;
+                    curr = vectors[3];
+                    while ((Math.Abs(curr.X) <= _maxX) && (Math.Abs(curr.Y) <= _maxY) && (Math.Abs(curr.Z) <= _maxZ))
+                    {
+                        //curr = Vector3D.Add(rightForearm, Vector3D.Multiply(iterator, Vector3D.Multiply(stepSize, rightForearm)));
+                        curr = Vector3D.Add(rightForearm, curr);
+                        double tmpDist = igsMath.l2Norm(curr, ball.Centre);
+                        //double tmpDist = Vector3D.Subtract(curr, ball.Centre).Length;
+                        if (tmpDist <= entry.minDist)
+                        {
+                            entry.minDist = tmpDist;
+
+                        }
+                    }
+                }
+
+                distances.Add(entry);
+
+            }
+
+
+            return distances;
         }
 
         /// <summary>
@@ -102,6 +165,24 @@ namespace IGS.Server.IGS
                     }
                 }
             }
+        }
+
+
+        public static String getNameOfDeviceWithMinDist(List<Device> devices, Vector3D[] vectors)
+        {
+            List<minDistForDev> distances = CalculateMinDist(devices, vectors);
+            minDistForDev min = new minDistForDev();
+            min.minDist = double.MaxValue;
+
+            foreach (minDistForDev mdd in distances)
+            {
+                if (min.minDist > mdd.minDist)
+                {
+                    min = mdd;
+                }
+            }
+
+            return min.dev.Name;
         }
     }
 }
