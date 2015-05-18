@@ -4,14 +4,21 @@
 The Point-and-Control application makes use of the Microsoft Kinect to enable Point&Click interaction for the control of appliances in smart environments. A backend server determines through collision detection which device the user is pointing at and sends the respective control interface to the user’s smartphone. Any commands the user issues are then sent back to the server which in turn controls the appliance.
 
 ## Requirements for use
-- Windows 8/8.1 or higher
-- Kinect 4 Windows v2,  SDK/Runtime Environment. SDK Version >= Public Preview Version 1409
+- 64 bit (x64) processor
+- Physical dual-core 3.1-GHz (2 logical cores per physical) or faster processor
+- USB 3.0 controller dedicated to the Kinect sensor
+- at least 4 GB RAM
+- Graphics card that supports DirectX 11
+- Windows 8, Windows 8.1, or Windows Embedded 8
+- Kinect 4 Windows v2,  SDK/Runtime Environment
 - .Net Framework 4.5
 - Smartphone with Android OS >= 2.3
 
+You can check your system configuration for the Kinect v2 with the Configuration Verifier Tool: http://go.microsoft.com/fwlink/?LinkID=513889
+
 ## Running the IGS
 1. Make sure Requirements are met and everything is installed.
-1. Install the IGS Android app via the IGS.apk in the IGS directory.
+1. Install the IGS Android app via the IGS.apk in the IGS/Resources directory.
 1. Start IGS server
 1. Start android App
 1. Click on the wrench icon
