@@ -1,6 +1,7 @@
 ﻿using IGS.Server.Location;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 
 namespace IGS.Server.Devices
 {
@@ -64,5 +65,7 @@ namespace IGS.Server.Devices
         public abstract String Transmit(String cmdId, String value);
 
         public List<Line3D> PositionVectors { get; set; }
+
+        public Color color { get; set; }
     }
 }

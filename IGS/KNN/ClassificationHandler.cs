@@ -8,6 +8,7 @@ using System.Windows.Media.Media3D;
 using IGS.Server.IGS;
 using System.Threading;
 using System.IO;
+using System.Diagnostics;
 
 namespace IGS.KNN
 {
@@ -15,6 +16,7 @@ namespace IGS.KNN
     {
 
         public KNNClassifier knnClassifier { get; set; }
+        
         public SampleCollector collector { get; set; }
 
         public SampleExtractor extractor { get; set; }
@@ -57,11 +59,40 @@ namespace IGS.KNN
             return predictedSample;
         }
 
+        public List<WallProjectionSample> getSamples()
+        {
+            return knnClassifier.samples;
+        }
+
         public void retrainClassifier(List<WallProjectionSample> samples)
         {
             knnClassifier.learnBatch(samples);
         }
 
+        public void retrainClassifierWithPending()
+        {
+            knnClassifier.learnBatch(knnClassifier.pendingSamples);
+        }
+
+
+        public void calculateWallDeviceAreas(DataHolder data)
+        {
+            collector.calcRoomModel.calculateDeviceAreas(knnClassifier, data);
+        }
+
+        public void doCrossVal(DataHolder data, CoordTransform transformer)
+        {
+            Crossvalidator crossval = new Crossvalidator(this, knnClassifier,data, transformer);
+            crossval.crossValidateClassifier();
+
+            Thread.Sleep(1000);
+            crossval.crossValidateCollision();
+
+            XMLComponentHandler.writeTimesForCrossvalidation(crossval.timeForPreprocessingCollision, crossval.timeForTrainingCollsion, crossval.timeForClassifikationCollision,
+                                                             crossval.timeForPreprocessingClassification, crossval.timeForTrainingClassification, crossval.timeForClassifikationClassification);
+
+            timeTaking();
+        }
         /// <summary>
         /// Calculates a WallProjection Sample and adds it to the Pending samples to learn.
         /// </summary>
@@ -325,7 +356,7 @@ namespace IGS.KNN
 
             List<List<SampleExtractor.rawSample>> onlineLearningByDevices = splitter.splitInOnePerDeviceSplits(extractor.rawSamplesPerSelect);
             List<List<SampleExtractor.rawSample>> onlineLearningByDevicesSmoothed = splitter.splitInOnePerDeviceSplits(extractor.rawSamplesPerSelectSmoothed);
-     
+
             for (int i = 0; i < onlineLearningByDevices.Count; i++)
             {
                 extractor.calculateAndWriteWallProjectionAndPositionSamples(collector, "Online\\OnePerDevice", onlineLearningByDevices[i], "OnePerDevice" + i);
@@ -336,8 +367,40 @@ namespace IGS.KNN
                 extractor.calculateAndWriteWallProjectionSamples(collector, "Online\\OnePerDeviceSmoothed", onlineLearningByDevicesSmoothed[i], "OnePerDevice" + i);
                 extractor.writeNormalSamplesFromRawSamples("Online\\OnePerDeviceSmoothed", onlineLearningByDevicesSmoothed[i], "OnePerDevice" + i);
             }
-
         }
 
+
+        public void timeTaking()
+        {
+            List<float> timeList = new List<float>();
+
+            Stopwatch s = new Stopwatch();
+
+            s.Start();
+            knnClassifier.trainClassifier(1);
+            s.Stop();
+            timeList.Add(s.ElapsedMilliseconds);
+            
+
+            for (int i = 1; i <= 10; i++)
+            {
+                s.Restart();
+                knnClassifier.trainClassifier(i * 50);
+                s.Stop();
+                timeList.Add(s.ElapsedMilliseconds);
+            }
+
+            s.Reset();
+            s.Start();
+            classify(knnClassifier.samples[0]);
+            s.Stop();
+
+            float classtime = s.ElapsedMilliseconds;
+
+
+            XMLComponentHandler.writeTimeForElapsedTime(timeList, classtime);
+
+
+        }
     }
 }

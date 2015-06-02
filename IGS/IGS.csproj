@@ -144,12 +144,9 @@
     <Compile Include="Helperclasses\SampleSplitter.cs" />
     <Compile Include="Helperclasses\XMLComponentHandler.cs" />
     <Compile Include="Helperclasses\XMLSkeletonJointRecords.cs" />
-    <Compile Include="IGS\ChooseDeviceMethod.cs" />
-    <Compile Include="IGS\DevChooseMethodCollDet.cs" />
-    <Compile Include="IGS\DevChooseMethodKNN.cs" />
-    <Compile Include="IGS\DeviceTrainer.cs" />
-    <Compile Include="IGS\DeviceTrainerClassifier.cs" />
-    <Compile Include="IGS\DeviceTrainerCollision.cs" />
+    <Compile Include="IGS\CollisionMethod.cs" />
+    <Compile Include="IGS\CoreMethods.cs" />
+    <Compile Include="IGS\ClassifierMethod.cs" />
     <Compile Include="Kinect\MedianJointFilter.cs" />
     <Compile Include="Kinect\SkeletonJointFilter.cs" />
     <Compile Include="Kinect\TrackingStateEventArgs.cs" />
@@ -225,6 +222,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <None Include="IGS_Enhancements.cd" />
     <None Include="Images\Thumbs.db" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

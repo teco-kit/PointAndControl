@@ -3,7 +3,6 @@ using IGS.KNN;
 using IGS.Server.Devices;
 using IGS.Server.IGS;
 using IGS.Server.Kinect;
-using Microsoft.Kinect;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,23 +12,31 @@ using System.Windows.Media.Media3D;
 
 namespace IGS.IGS
 {
-    public class DevChooseMethodKNN : ChooseDeviceMethod
+    class ClassifierMethod : CoreMethods
     {
         public  ClassificationHandler classificationHandler { get; set; }
-        
+        public DataHolder data { get; set; }
 
-        public DevChooseMethodKNN(ClassificationHandler handler)
+
+        public ClassifierMethod(ClassificationHandler handler, DataHolder Data)
         {
             classificationHandler = handler;
+            this.data = Data;
         }
 
+        public override void train(List<Vector3D[]> vectorList, Device dev, String value)
+        {
+
+            classificationHandler.calculateWallProjectionSampleAndLearn(vectorList, dev.Name);
+
+        }
         
-        public override List<Device> chooseDevice(String wlanAdr, CoordTransform Transformer, UserTracker Tracker, DataHolder Data)
+        public override List<Device> chooseDevice(String wlanAdr, CoordTransform Transformer, UserTracker Tracker)
         {
             
             
             List<Device> dev = new List<Device>();
-            User tempUser = Data.GetUserByIp(wlanAdr);
+            User tempUser = data.GetUserByIp(wlanAdr);
             Vector3D[] vecs = Transformer.transformJointCoords(Tracker.getMedianFilteredCoordinates(tempUser.SkeletonId));
      
             //Vector3D[] vecs = Transformer.transformJointCoords(Tracker.GetCoordinates(tempUser.SkeletonId));
@@ -49,14 +56,14 @@ namespace IGS.IGS
                 //XMLComponentHandler.writeUserJointsPerSelectClick(body);
                 classificationHandler.deviceClassificationCount++;
 
-                Device device = Data.GetDeviceByName(sample.sampleDeviceName);
+                Device device = data.GetDeviceByName(sample.sampleDeviceName);
                 sample.sampleDeviceName = device.Name;
 
 
 
                 if (sample != null)
                 {
-                    foreach (Device d in Data.Devices)
+                    foreach (Device d in data.Devices)
                     {
                         if (d.Name.ToLower() == sample.sampleDeviceName.ToLower())
                         {
@@ -76,5 +83,6 @@ namespace IGS.IGS
             }
             return dev;
         }
+
     }
 }

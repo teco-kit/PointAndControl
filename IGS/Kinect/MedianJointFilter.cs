@@ -50,14 +50,7 @@ namespace IGS.Kinect
                 
             }
 
-
-            //for (int i = 0; i < 4; i++)
-            //{
-            //    Console.Write(filtered[i].ToString() + " , ");
-            //}
-            //Console.WriteLine("");
-
-                return filtered;
+            return filtered;
         }
 
       

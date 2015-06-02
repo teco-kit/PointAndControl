@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="IGS.Server.IGS.Igs">
+    <Position X="6.5" Y="1.25" Width="1.5" />
+    <Members>
+      <Method Name="DelUser" Hidden="true" />
+      <Method Name="SkeletonIdToUser" Hidden="true" />
+      <Method Name="SwitchTrackingState" Hidden="true" />
+      <Method Name="UserLeft" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAwQAABAAAAjBAAAAAYAUEAQAAAACBEgAAAAAhCQAAA=</HashCode>
+      <FileName>IGS\Igs.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="coreMethods" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="IGS.IGS.CoreMethods">
+    <Position X="3" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>IGS\CoreMethods.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IGS.IGS.ClassifierMethod">
+    <Position X="1.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAFAAAAAA=</HashCode>
+      <FileName>IGS\ClassifierMethod.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IGS.IGS.CollisionMethod">
+    <Position X="4" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAEAAAAAAAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>IGS\CollisionMethod.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -7,6 +7,7 @@ using HelixToolkit.Wpf;
 using System.Windows.Media.Media3D;
 using System.Drawing;
 using IGS.Helperclasses;
+using IGS.Server.IGS;
 
 namespace IGS.KNN
 {
@@ -106,7 +107,7 @@ namespace IGS.KNN
             this.height = height;
         }
 
-        public void calculateDeviceAreas(KNNClassifier knn)
+        public void calculateDeviceAreas(KNNClassifier knn, DataHolder data)
         {
             
             //a List of Lists containing vectors for devices to retrieve the classificationboxes for 
@@ -231,7 +232,7 @@ namespace IGS.KNN
                             WallProjectionSample sample = new WallProjectionSample(newPoint);
                             sample = knn.classify(sample);
                           
-                            Color c = knn.deviceColorLookupByName(sample.sampleDeviceName);
+                            Color c = data.deviceColorLookupByName(sample.sampleDeviceName);
                            
                             bitmap.SetPixel(stepCounterVirtualWidth, stepCounterVirtualHeight, c);
                             Console.Write(".");

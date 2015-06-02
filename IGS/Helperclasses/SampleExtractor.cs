@@ -80,6 +80,22 @@ namespace IGS.Helperclasses
             return wallProjectionSamples;
         }
 
+        public List<WallProjectionSample> calculateWallProjectionSamples(SampleCollector collector, List<rawSample> sampleList)
+        {
+            List<WallProjectionSample> wpsList = new List<WallProjectionSample>();
+
+            foreach (SampleExtractor.rawSample rawSample in sampleList)
+            {
+                WallProjectionSample sample = collector.calculateWallProjectionSample(rawSample.joints, rawSample.label);
+                if (!sample.sampleDeviceName.Equals("nullSample"))
+                {
+                   wpsList.Add(sample);
+                }
+            }
+            return wpsList;
+
+        }
+
         public List<WallProjectionAndPositionSample> calculateAndWriteWallProjectionAndPositionSamples(SampleCollector collector, String DirectoryPath, List<rawSample> sampleList, String Filename)
         {
             List<WallProjectionAndPositionSample> wallProjectionSamplesAndPositionSamples = new List<WallProjectionAndPositionSample>();

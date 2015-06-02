@@ -18,15 +18,8 @@ namespace IGS.KNN
         public SampleCollector(KNNClassifier handler)
         {
             String[] roomComps = XMLComponentHandler.readRoomComponents();
-            calcRoomModel = new Room(float.Parse(roomComps[0]),  float.Parse(roomComps[1]) , float.Parse(roomComps[2]));
+            calcRoomModel = new Room(float.Parse(roomComps[0]), float.Parse(roomComps[1]), float.Parse(roomComps[2]));
 
-            //if (handler.samples.Count != 0)
-            //{
-            //    new Thread(delegate()
-            //    {
-            //        calcRoomModel.calculateDeviceAreas(handler);
-            //    }).Start();
-            //}
         }
 
         public WallProjectionSample calculateWallProjectionSample(Vector3D[] vectors, String devName)

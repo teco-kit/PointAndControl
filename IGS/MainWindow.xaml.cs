@@ -617,7 +617,7 @@ public partial class MainWindow
     private void _3DViewButton_Click(object sender, RoutedEventArgs e)
     {
 
-        _3Dview = new Room3DView(_igs.classification.knnClassifier.samples, _igs.classification.knnClassifier.devicesRepresentation, _igs.Transformer);
+        _3Dview = new Room3DView(_igs.classification.getSamples(), _igs.Data.Devices, _igs.Transformer);
         _3Dview.SetKinectCamera(_igs.IGSKinect);
         _3Dview.ClipToBounds = false;
         _3Dview.mainViewport.Effect = null;
@@ -838,16 +838,16 @@ public partial class MainWindow
 
     private void trainBatch_Button_Click(object sender, RoutedEventArgs e)
     {
-        _igs.classification.retrainClassifier(_igs.classification.knnClassifier.pendingSamples);
+        _igs.classification.retrainClassifierWithPending();
         XMLComponentHandler.writeLogEntry("Batch training executed manually");
     }
 
 
     private void WCBMP_Button_Click(object sender, RoutedEventArgs e)
     {
-        if (_igs.classification.knnClassifier.samples.Count != 0)
+        if (_igs.classification.getSamples().Count != 0)
         {
-            _igs.classification.collector.calcRoomModel.calculateDeviceAreas(_igs.classification.knnClassifier);
+            _igs.classification.calculateWallDeviceAreas(_igs.Data);
             XMLComponentHandler.writeLogEntry("Devices BMP calculated manually");
         }
     }
@@ -913,9 +913,7 @@ public partial class MainWindow
     
     private void CrossVal_Button_Click(object sender, RoutedEventArgs e)
     {
-        Crossvalidator crossval = new Crossvalidator(_igs.classification, _igs.Data, _igs.Transformer);
-        crossval.crossValidateClassifier();
-        crossval.crossValidateCollision();
+        _igs.classification.doCrossVal(_igs.Data, _igs.Transformer);
     }
 
    

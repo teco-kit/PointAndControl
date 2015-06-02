@@ -10,6 +10,8 @@ using Microsoft.Office.Interop.Excel;
 using IGS.Server.Location;
 using System.Windows.Media.Media3D;
 using IGS.Server.IGS;
+using IGS.Server.Devices;
+using System.Diagnostics;
 
 namespace IGS.KNN
 {
@@ -22,12 +24,12 @@ namespace IGS.KNN
         public List<List<collisionPackage>> lineFolds { get; set; }
         public List<List<WallProjectionSample>> folds { get; set;  }
 
-
-        public ClassificationHandler classHandler { get; set; }
+        public List<List<int>> foldNumbers { get; set; }
         public Microsoft.Office.Interop.Excel.Application xlApp  {get;set;}
 
         public List<String> labels { get; set; }
         public List<String> lineLabels { get; set; }
+        public KNNClassifier knnClass { get; set; }
         public int[,] cfMatrix { get; set; }
 
         public int[,] cfMatrixCollision { get; set; }
@@ -39,8 +41,15 @@ namespace IGS.KNN
            public String devName;
         }
 
+        public long timeForPreprocessingClassification { get; set; }
+        public long timeForTrainingClassification { get; set; }
+        public long timeForClassifikationClassification { get; set; }
 
-        public Crossvalidator(ClassificationHandler classhandler, DataHolder data, CoordTransform transformer )
+        public long timeForTrainingCollsion { get; set; }
+        public long timeForClassifikationCollision { get; set; }
+        public long timeForPreprocessingCollision = 0;
+
+        public Crossvalidator(ClassificationHandler handler, KNNClassifier classifier, DataHolder data, CoordTransform transformer )
         {
             WPSlist = new List<WallProjectionSample>();
             folds = new List<List<WallProjectionSample>>();
@@ -53,13 +62,12 @@ namespace IGS.KNN
           
             xlApp = new Microsoft.Office.Interop.Excel.Application();
             xlApp.Visible = false;
-            classHandler = classhandler;
             locator = new Locator(data, null, transformer);
-
+            knnClass = classifier;
             //set up for classification
-            foreach (KNNClassifier.deviceRep devRep in classHandler.knnClassifier.devicesRepresentation)
+            foreach (Device d in data.Devices)
             {
-                String label = devRep.deviceName;
+                String label = d.Name;
                 if (dropOutNames.Contains(label))
                 {
                     continue;
@@ -72,7 +80,9 @@ namespace IGS.KNN
             }
             cfMatrix = new int[labels.Count, labels.Count];
 
-            WPSlist = XMLComponentHandler.readWallProjectionSamplesFromXML();
+            var watch = Stopwatch.StartNew();
+            WPSlist = handler.extractor.calculateWallProjectionSamples(handler.collector, handler.extractor.rawSamplesPerSelect);
+            timeForPreprocessingClassification = watch.ElapsedMilliseconds;
 
             List<WallProjectionSample> tmpWPSList = new List<WallProjectionSample>();
             
@@ -90,27 +100,23 @@ namespace IGS.KNN
             int k = 10;
             int foldsize = WPSlist.Count() / k;
 
-            folds = splitWallProjectionSamplelRandomForOnline(foldsize);
-            if (folds.Count > 10)
-            {
-                int iterator = 0;
-                foreach (WallProjectionSample wps in folds[10])
-                {
-                    folds[iterator].Add(wps);
-                    folds[10].Remove(wps);
-                    iterator++;
-                    if (iterator == 10)
-                    {
-                        iterator = 0;
-                    }
-                }
-            }
+            foldNumbers = createCrossvalidation(WPSlist.Count, k);
+
+            folds = splitWallProjectionSamplelRandomForOnline(foldNumbers);
+           
+            
 
 
             
             // setup for colldet
 
-            collisionPacksList = XMLComponentHandler.readSkeletonsPerSelectFromXMLCollision(locator.Transformer);
+            foreach (SampleExtractor.rawSample rs in handler.extractor.rawSamplesPerSelect)
+            {
+                collisionPackage package = new collisionPackage();
+                package.devName = rs.label;
+                package.vecs = rs.joints;
+                collisionPacksList.Add(package);
+            }
 
             List<collisionPackage> tmpColPackList = new List<collisionPackage>();
 
@@ -136,24 +142,7 @@ namespace IGS.KNN
 
             cfMatrixCollision = new int[lineLabels.Count, lineLabels.Count];
 
-            foldsize = collisionPacksList.Count / k;
-
-
-            lineFolds = splitLineVectorsRandom(foldsize);
-            if (lineFolds.Count > 10)
-            {
-                int iterator = 0;
-                foreach (collisionPackage package in lineFolds[10])
-                {
-                    lineFolds[iterator].Add(package);
-                    lineFolds[10].Remove(package);
-                    iterator++;
-                    if (iterator == 10)
-                    {
-                        iterator = 0;
-                    }
-                }
-            }
+            lineFolds = splitLineVectorsRandom(foldNumbers);
             
 
         }
@@ -166,7 +155,9 @@ namespace IGS.KNN
             object misValue = System.Reflection.Missing.Value;
             Workbook wb = xlApp.Workbooks.Add(misValue);
             _Worksheet ws = (Worksheet)wb.Sheets.get_Item(1);
-
+            Stopwatch trainingsWatch = new Stopwatch();
+            Stopwatch classificationWatch = new Stopwatch();
+            
             int error = 0;
             double totalAVGError = 0;
             int sampleSum = 0;
@@ -182,7 +173,10 @@ namespace IGS.KNN
                 foreach (String label in lineLabels)
                 {
                     List<Vector3D[]> trainVecs = getVectorsForDevice(trainingSet, label);
+                    trainingsWatch.Start();
                     locator.ChangeDeviceLocation(trainVecs, label);
+                    trainingsWatch.Stop();
+                    
                 }
 
                 foreach (collisionPackage pack in lineFolds[i])
@@ -196,8 +190,10 @@ namespace IGS.KNN
                             break;
                         }
                     }
-                    
+
+                    classificationWatch.Start();
                     String collisionDev = CollisionDetection.getNameOfDeviceWithMinDist(locator.Data.Devices, pack.vecs);
+                    classificationWatch.Stop();
 
                     for (int j = 0; j < lineLabels.Count; j++)
                     {
@@ -244,7 +240,11 @@ namespace IGS.KNN
             }
 
             totalAVGError = error / sampleSum;
+            timeForTrainingCollsion = trainingsWatch.ElapsedMilliseconds;
+            timeForClassifikationCollision = classificationWatch.ElapsedMilliseconds;
 
+            timeForClassifikationCollision = timeForClassifikationCollision / sampleSum;
+            timeForTrainingCollsion = timeForTrainingCollsion / sampleSum;
             wb.SaveAs(path, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
             wb.Close(true, misValue, misValue);
             xlApp.Quit();
@@ -259,6 +259,8 @@ namespace IGS.KNN
             object misValue = System.Reflection.Missing.Value;
             Workbook wb = xlApp.Workbooks.Add(misValue);
             _Worksheet ws = (Worksheet)wb.Sheets.get_Item(1);
+            Stopwatch trainingsWatch = new Stopwatch();
+            Stopwatch classificationWatch = new Stopwatch();
             int error = 0;
             double totalAVGError = 0;
             int sampleSum = 0;
@@ -268,7 +270,10 @@ namespace IGS.KNN
             for (int i = 0; i < folds.Count; i++)
             {
                 List<WallProjectionSample> trainingSet = mergeTrainingSet(i);
-                classHandler.knnClassifier.trainClassifier(trainingSet);
+
+                trainingsWatch.Start();
+                knnClass.trainClassifier(trainingSet);
+                trainingsWatch.Stop();
 
                 foreach (WallProjectionSample wps in folds[i])
                 {
@@ -283,8 +288,9 @@ namespace IGS.KNN
                         }
                     }
 
-                    classHandler.knnClassifier.classify(newSample);
-
+                    classificationWatch.Start();
+                   knnClass.classify(newSample);
+                   classificationWatch.Stop();
                    for (int j = 0; j < labels.Count; j++)
                    {
                        if (newSample.sampleDeviceName.ToLower() == labels[j].ToLower())
@@ -328,7 +334,8 @@ namespace IGS.KNN
             }
 
             totalAVGError = error / sampleSum;
-
+            timeForClassifikationClassification = classificationWatch.ElapsedMilliseconds;
+            timeForTrainingClassification = trainingsWatch.ElapsedMilliseconds;
             wb.SaveAs(path, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
             wb.Close(true, misValue, misValue);
             xlApp.Quit();
@@ -426,60 +433,79 @@ namespace IGS.KNN
             return result;
         }
 
+        public List<List<int>> createCrossvalidation(int sampleCount, int k)
+        {
+            Random rand = new Random();
+            List<List<int>> resultList = new List<List<int>>();
+            List<int> usedInts = new List<int>();
+            int counter = 0;
+            int pos = -1;
+            int packageSize = (int)Math.Floor((double)sampleCount / k);
+            bool allowedPos = false;
+            for (int i = 0; i < k; i++)
+            {
+                List<int> fold = new List<int>();
+                for (int j = 0; j < packageSize; j++)
+                {
+                    while (allowedPos == false)
+                    {
+                        pos = rand.Next(sampleCount);
 
-        public List<List<WallProjectionSample>> splitWallProjectionSamplelRandomForOnline(int packageSize)
+                        if (usedInts.Contains(pos) == false)
+                        {
+                            usedInts.Add(pos);
+                            fold.Add(pos);
+                            allowedPos = true;
+                        }
+
+
+                    }
+                    allowedPos = false;
+                }
+                resultList.Add(fold);
+            }
+
+            return resultList;
+
+        }
+
+        public List<List<WallProjectionSample>> splitWallProjectionSamplelRandomForOnline(List<List<int>> crossVal)
         {
             List<List<WallProjectionSample>> result = new List<List<WallProjectionSample>>();
             int chosenPlace = 0;
             Random rand = new Random();
 
-            while (WPSlist.Count >= packageSize)
+            foreach (List<int> l in crossVal)
             {
-                List<WallProjectionSample> package = new List<WallProjectionSample>();
-                for (int i = 0; i < packageSize; i++)
+                List<WallProjectionSample> fold = new List<WallProjectionSample>();
+                foreach (int i in l)
                 {
-                    chosenPlace = rand.Next(0, WPSlist.Count());
-                    package.Add(WPSlist[chosenPlace]);
-                    WPSlist.RemoveAt(chosenPlace);
+                    fold.Add(WPSlist[i]);
                 }
-                result.Add(package);
-            }
-            //if (WPSlist.Count > 0)
-            //{
-            //    List<WallProjectionSample> endSamples = new List<WallProjectionSample>();
-            //    foreach (WallProjectionSample wps in WPSlist)
-            //    {
-            //        endSamples.Add(wps);
-            //    }
 
-            //    result.Add(endSamples);
-            //}
+                result.Add(fold);
+            }
 
             return result;
         }
 
-        public List<List<collisionPackage>> splitLineVectorsRandom(int packageSize)
+        public List<List<collisionPackage>> splitLineVectorsRandom(List<List<int>> crossVal)
         {
-            int chosenPlace = 0;
-            Random rand = new Random();
+            
             List<List<collisionPackage>> result = new List<List<collisionPackage>>();
-            while (collisionPacksList.Count >= packageSize) 
+
+             foreach (List<int> l in crossVal)
             {
-
-                List<collisionPackage> package = new List<collisionPackage>();
-
-                for (int i = 0; i < packageSize; i++)
+                List<collisionPackage> fold = new List<collisionPackage>();
+                foreach (int i in l)
                 {
-                    chosenPlace = rand.Next(0, collisionPacksList.Count);
-                    package.Add(collisionPacksList[chosenPlace]);
-                    collisionPacksList.RemoveAt(chosenPlace);
+                    fold.Add(collisionPacksList[i]);
                 }
 
-                result.Add(package);
-                
-           }
+                result.Add(fold);
+            }
 
-            return result;
+             return result;
         }
 
         public List<Vector3D[]> getVectorSamplesPerDevice(List<Vector3D[]> set,List<String> setLabels,  String name)

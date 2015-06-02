@@ -90,7 +90,7 @@ namespace IGS
         /// </summary>
         /// <param name="list">The locally stored device list</param>
         /// <param name="transformator">The transformator used for transforming the coordinates from camera to world coordinates</param>
-        public Room3DView(List<WallProjectionSample> list, List<KNN.KNNClassifier.deviceRep> devColors, CoordTransform transformator)
+        public Room3DView(List<WallProjectionSample> list, List<Device> devices , CoordTransform transformator)
         {
             this.transformator = transformator;
             skelList = new List<ModelVisual3D>();
@@ -117,7 +117,7 @@ namespace IGS
             kinect = new ModelVisual3D();
            
             InitializeComponent();
-            fillRoomWithColoredSamples(list, devColors);
+            fillRoomWithColoredSamples(list, devices);
             //FillRoom();
         }
 
@@ -470,15 +470,15 @@ namespace IGS
             return sphereList;
         }
         
-        private void fillRoomWithColoredSamples(List<WallProjectionSample> samples, List<KNNClassifier.deviceRep> devColors)
+        private void fillRoomWithColoredSamples(List<WallProjectionSample> samples, List<Device> devs)
         {
             foreach (WallProjectionSample sample in samples)
             {
-                foreach (KNNClassifier.deviceRep devColor in devColors)
+                foreach (Device dev in devs)
                 {
-                    if (sample.sampleDeviceName == devColor.deviceName)
+                    if (sample.sampleDeviceName == dev.Name)
                     {
-                        Color c = Color.FromArgb(devColor.color.A, devColor.color.R, devColor.color.G, devColor.color.B);
+                        Color c = Color.FromArgb(dev.color.A, dev.color.R, dev.color.G, dev.color.B);
                         Material mat = new DiffuseMaterial(new SolidColorBrush(c));
                         addSampleView(new Point3D(sample.x, sample.y, sample.z), mat);
                         break;

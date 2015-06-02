@@ -1140,6 +1140,78 @@ namespace IGS.Helperclasses
             return result;
         }
 
+
+        public static void writeTimesForCrossvalidation(long preproCol, long trainingCol, long classCol, long preproClass, long trainingClas, long classClas)
+        {
+
+            String path = AppDomain.CurrentDomain.BaseDirectory + "\\crossvalTimes.xml";
+
+
+            XElement rootElement = new XElement("times",
+                new XElement("collision",
+                    new XElement("Preprocessing", ((Double)preproCol/1000).ToString()),
+                    new XElement("Training", ((Double)trainingCol/ 1000).ToString()),
+                    new XElement("Classification", ((Double)classCol/ 1000).ToString())),
+                new XElement("classification",
+                    new XElement("Preprocessing", ((Double)preproClass/ 1000).ToString()),
+                    new XElement("Training", ((Double)trainingClas/ 1000).ToString()),
+                    new XElement("Classicfication", ((Double)classClas/ 1000).ToString()))
+                    );
+
+            rootElement.Save(path);
+            
+
+        }
+
+        public static void writeTimeForElapsedTime(List<float> training, float classification)
+        {
+
+
+            XmlDocument docConfig = new XmlDocument();
+            String path = AppDomain.CurrentDomain.BaseDirectory + "\\trainingAndClassTime.xml";
+            if (!File.Exists(path))
+            {
+                XElement root = new XElement("Times");
+                root.Save(path);
+            }
+
+            docConfig.Load(path);
+
+            XmlNode rootNode = docConfig.SelectSingleNode("/Times");
+
+
+            XmlNode trainTimes = docConfig.CreateElement("trainingTimes");
+
+
+            int i = 1;
+
+            XmlElement first = docConfig.CreateElement("1");
+            first.SetAttribute("Time", training[0].ToString());
+
+            trainTimes.AppendChild(first);
+            training.RemoveAt(0);
+
+            foreach (float train in training)
+            {
+                XmlElement entry = docConfig.CreateElement((i * 50).ToString());
+                entry.SetAttribute("Time", train.ToString());
+
+                trainTimes.AppendChild(entry);
+            }
+
+            XmlElement ClassTime = docConfig.CreateElement("ClassTime");
+            ClassTime.SetAttribute("Speed", classification.ToString());
+
+
+            rootNode.AppendChild(trainTimes);
+            rootNode.AppendChild(ClassTime);
+
+
+
+            docConfig.Save(path);
+
+        }
+
         
        
 

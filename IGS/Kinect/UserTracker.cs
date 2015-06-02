@@ -118,7 +118,7 @@ namespace IGS.Server.Kinect
             Sensor = KinectSensor.GetDefault();
             _bodiesLastFrame = new Body[6];
             this.reader = Sensor.BodyFrameSource.OpenReader();
-
+            
             if (Sensor == null) return;
 
             // Start den Sensor!
@@ -266,25 +266,7 @@ namespace IGS.Server.Kinect
           
             List<Vector3D[]> returnList = new List<Vector3D[]>();
             workingOnWindow = true;
-            if (movingWindowCollect == false)
-            {
-                if (collectAfterClick == false)
-                {
-                    collectAfterClick = true;
-                    while (lastBodies.Count != 15)
-                    {
-
-                    }
-
-                    if (checkIfAllBodysAreSame() == false)
-                    {
-                        return Get30Coordinates(id);
-                    }
-                    collectAfterClick = false;
-                }
-                else return null;
-            }
-          
+        
             int searchForLastBody = 1;
             foreach (TrackedSkeleton sTracked in Bodies.Where(sTracked => sTracked.Id == id))
             {

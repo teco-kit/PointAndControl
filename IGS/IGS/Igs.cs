@@ -24,7 +24,7 @@ namespace IGS.Server.IGS
     ///     Contains the observer for the HttpEvents as well as KinectEvents.
     ///     @author Sven Ochs, Frederik Reiche
     /// </summary>
-    public class Igs
+    public class Igs 
     {
 
 
@@ -53,9 +53,7 @@ namespace IGS.Server.IGS
 
             this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Centre);
             this.classification = new ClassificationHandler(Transformer);
-            this.chooseDeviceMethod = new DevChooseMethodKNN(classification);
-           
-            
+            this.coreMethods = new ClassifierMethod(classification, data);
         }
 
 
@@ -98,7 +96,9 @@ namespace IGS.Server.IGS
 
         public ClassificationHandler classification { get; set; }
 
-        public ChooseDeviceMethod chooseDeviceMethod { get; set; }
+        public CoreMethods coreMethods { get; set; }
+     
+        
 
         /// <summary>
         /// 
@@ -235,7 +235,7 @@ namespace IGS.Server.IGS
                     case "selectDevice":
                         if (Data.GetUserByIp(wlanAdr).TrackingState)
                         {
-                            retStr = MakeDeviceString(chooseDeviceMethod.chooseDevice(wlanAdr, Transformer, Tracker, Data));
+                            retStr = MakeDeviceString(coreMethods.chooseDevice(wlanAdr, Transformer, Tracker));
                             
                             XMLComponentHandler.writeLogEntry("Response to 'selectDevice': " + retStr);
                             return retStr;
