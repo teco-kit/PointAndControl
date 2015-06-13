@@ -17,7 +17,8 @@ using IGS.Server.Devices;
 using System.Windows.Media.Animation;
 using Microsoft.Kinect;
 using IGS.Server.IGS;
-using IGS.KNN;
+using IGS.Classifier;
+using IGS.Helperclasses;
 
 namespace IGS
 {
@@ -26,6 +27,7 @@ namespace IGS
     /// as well as the users with activated gesture control. Also it does the building and 
     /// and positioning of the 3D elements.
     /// </summary>
+    ///
     public partial class Room3DView : Window
     {
         /// <summary>
@@ -118,6 +120,7 @@ namespace IGS
            
             InitializeComponent();
             fillRoomWithColoredSamples(list, devices);
+            createRoomDevs();
             //FillRoom();
         }
 
@@ -129,7 +132,7 @@ namespace IGS
         /// <param name="p1">second point of the triangle</param>
         /// <param name="p2">third point of the triangle</param>
         /// <returns>a trianglemodel for the room</returns>
-        private ModelVisual3D creatTriangleModelRoom(Point3D p0, Point3D p1, Point3D p2)
+        private ModelVisual3D creatTriangleModelRoom(Point3D p0, Point3D p1, Point3D p2, bool site)
         {
             ModelVisual3D group = new ModelVisual3D();
             MeshGeometry3D triangleMesh = new MeshGeometry3D();
@@ -145,14 +148,21 @@ namespace IGS
 
             normal = calcNormal(p0, p1, p2);
 
-
-            triangleMesh.Normals.Add(-normal);
-            triangleMesh.Normals.Add(-normal);
-            triangleMesh.Normals.Add(-normal);
-
+            if (site == true)
+            {
+                triangleMesh.Normals.Add(-normal);
+                triangleMesh.Normals.Add(-normal);
+                triangleMesh.Normals.Add(-normal);
+            }
+            else
+            {
+                triangleMesh.Normals.Add(normal);
+                triangleMesh.Normals.Add(normal);
+                triangleMesh.Normals.Add(normal);
+            }
             Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.AliceBlue));
             GeometryModel3D model = new GeometryModel3D(triangleMesh, mat);
-
+           
             group.Content = model;
 
             return group;
@@ -178,24 +188,24 @@ namespace IGS
             Point3D p6 = new Point3D(width, height, depth);
             Point3D p7 = new Point3D(0, height, depth);
 
-            //front
-            room.Children.Add(creatTriangleModelRoom(p3, p2, p6));
-            room.Children.Add(creatTriangleModelRoom(p3, p6, p7));
+            ////front
+            room.Children.Add(creatTriangleModelRoom(p3, p2, p6, true));
+            room.Children.Add(creatTriangleModelRoom(p3, p6, p7, true));
             //right
-            room.Children.Add(creatTriangleModelRoom(p2, p1, p5));
-            room.Children.Add(creatTriangleModelRoom(p2, p5, p6));
+            room.Children.Add(creatTriangleModelRoom(p2, p1, p5, true));
+            room.Children.Add(creatTriangleModelRoom(p2, p5, p6, true));
             //back
-            room.Children.Add(creatTriangleModelRoom(p1, p0, p4));
-            room.Children.Add(creatTriangleModelRoom(p1, p4, p5));
+            room.Children.Add(creatTriangleModelRoom(p1, p0, p4, true));
+            room.Children.Add(creatTriangleModelRoom(p1, p4, p5, true));
             //left
-            room.Children.Add(creatTriangleModelRoom(p0, p3, p7));
-            room.Children.Add(creatTriangleModelRoom(p0, p7, p4));
+            room.Children.Add(creatTriangleModelRoom(p0, p3, p7, true));
+            room.Children.Add(creatTriangleModelRoom(p0, p7, p4, true));
             //top
-            room.Children.Add(creatTriangleModelRoom(p7, p6, p5));
-            room.Children.Add(creatTriangleModelRoom(p7, p5, p4));
+            room.Children.Add(creatTriangleModelRoom(p7, p6, p5, true));
+            room.Children.Add(creatTriangleModelRoom(p7, p5, p4, true));
             //bottom
-            room.Children.Add(creatTriangleModelRoom(p2, p3, p0));
-            room.Children.Add(creatTriangleModelRoom(p2, p0, p1));
+            room.Children.Add(creatTriangleModelRoom(p2, p3, p0, true));
+            room.Children.Add(creatTriangleModelRoom(p2, p0, p1, true));
 
             this.mainViewport.Children.Remove(room);
             this.mainViewport.Children.Add(room);
@@ -711,6 +721,120 @@ namespace IGS
             sample.Radius = 0.05;
             sample.ThetaDiv = 10;
             this.mainViewport.Children.Add(sample);
+        }
+
+        public void createRoomDevs()
+        {
+            String[] roomMes = XMLComponentHandler.readRoomComponents();
+
+            Double width = Double.Parse(roomMes[0]);
+            Double height = Double.Parse(roomMes[1]);
+            Double depth = Double.Parse(roomMes[2]);
+
+            
+
+            BoxVisual3D TV = new BoxVisual3D();
+            TV.Center = new Point3D(width - 2.47, 1.44, 0.26);
+            TV.Height = 0.09;
+            TV.Width = 0.61;
+            TV.Length = 1.02;
+            Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.Gray));
+            TV.BackMaterial = mat;
+            TV.Material = mat;
+            this.mainViewport.Children.Add(TV);
+
+
+            BoxVisual3D HifiRechts = new BoxVisual3D();
+            HifiRechts.Center = new Point3D(width - 1.44, 1.93, 0.26);
+            HifiRechts.Height = 0.09; //Z
+            HifiRechts.Width = 0.18; //Y
+            HifiRechts.Length = 0.07; //X
+            Material matHR = new DiffuseMaterial(new SolidColorBrush(Colors.Aquamarine));
+            HifiRechts.BackMaterial = matHR;
+            HifiRechts.Material = matHR;
+            this.mainViewport.Children.Add(HifiRechts);
+
+            BoxVisual3D HifiLinks = new BoxVisual3D();
+            HifiLinks.Center = new Point3D(width - 3.86, 1.93, 0.26);
+            HifiLinks.Height = 0.09; //Z
+            HifiLinks.Width = 0.18; //Y
+            HifiLinks.Length = 0.07; //X
+            Material matHL = new DiffuseMaterial(new SolidColorBrush(Colors.Aquamarine));
+            HifiLinks.BackMaterial = matHL;
+            HifiLinks.Material = matHL;
+            this.mainViewport.Children.Add(HifiLinks);
+
+            BoxVisual3D Steckdose = new BoxVisual3D();
+            Steckdose.Center = new Point3D(width - 0.01, 0.74, 1.30);
+            Steckdose.Height = 0.14; //Z
+            Steckdose.Width = 0.12; //Y
+            Steckdose.Length = 0.08; //X
+            Material matSteck = new DiffuseMaterial(new SolidColorBrush(Colors.DarkViolet));
+            Steckdose.BackMaterial = matSteck;
+            Steckdose.Material = matSteck;
+            this.mainViewport.Children.Add(Steckdose);
+
+            BoxVisual3D Deckenläuchte = new BoxVisual3D();
+            Deckenläuchte.Center = new Point3D(width - 3.03, 2.69, 2.22);
+            Deckenläuchte.Height = 0.31; //Z
+            Deckenläuchte.Width = 0.10; //Y
+            Deckenläuchte.Length = 3.09; //X
+            Material matDleucht = new DiffuseMaterial(new SolidColorBrush(Colors.Yellow));
+            Deckenläuchte.BackMaterial = matDleucht;
+            Deckenläuchte.Material = matDleucht;
+            this.mainViewport.Children.Add(Deckenläuchte);
+
+            BoxVisual3D Schalter = new BoxVisual3D();
+            Schalter.Center = new Point3D(width - 5.09, 1.09, 0.01);
+            Schalter.Height = 0.08; //Z
+            Schalter.Width = 0.08; //Y
+            Schalter.Length = 0.08; //X
+            Material matSchalter = new DiffuseMaterial(new SolidColorBrush(Colors.Yellow));
+            Schalter.BackMaterial = matSchalter;
+            Schalter.Material = matSchalter;
+            this.mainViewport.Children.Add(Schalter);
+
+            
+            BoxVisual3D XBox = new BoxVisual3D();
+            XBox.Center = new Point3D(width - 2.79, 0.22, 0.25);
+            XBox.Height = 0.26; //Z
+            XBox.Width = 0.08; //Y
+            XBox.Length = 0.27; //X
+            Material  matXBox = new DiffuseMaterial(new SolidColorBrush(Colors.Green));
+            XBox.BackMaterial = matXBox;
+            XBox.Material = matXBox;
+            this.mainViewport.Children.Add(XBox);
+
+            BoxVisual3D PC = new BoxVisual3D();
+            PC.Center = new Point3D(width - 2.34, 0.22, 0.30);
+            PC.Height = 0.33; //Z
+            PC.Width = 0.10; //Y
+            PC.Length = 0.435; //X
+            Material  matPC = new DiffuseMaterial(new SolidColorBrush(Colors.Brown));
+            PC.BackMaterial = matPC;
+            PC.Material = matPC;
+            this.mainViewport.Children.Add(PC);
+
+            BoxVisual3D LeseLampe = new BoxVisual3D();
+            LeseLampe.Center = new Point3D(width - 1.45, 0.90, 3.30);
+            LeseLampe.Height = 0.14; //Z
+            LeseLampe.Width = 0.32; //Y
+            LeseLampe.Length = 0.13; //X
+            Material  matLeseLampe = new DiffuseMaterial(new SolidColorBrush(Colors.DarkOrange));
+            LeseLampe.BackMaterial = matLeseLampe;
+            LeseLampe.Material = matLeseLampe;
+            this.mainViewport.Children.Add(LeseLampe);
+
+            BoxVisual3D SensorTable = new BoxVisual3D();
+            SensorTable.Center = new Point3D(width - 0.86, 1.60, 5.48);
+            SensorTable.Height = 0.22;
+            SensorTable.Width = 0.50;
+            SensorTable.Length = 0.69;
+            Material  matSensorTable = new DiffuseMaterial(new SolidColorBrush(Colors.Red));
+            SensorTable.BackMaterial = matSensorTable;
+            SensorTable.Material = matSensorTable;
+            this.mainViewport.Children.Add(SensorTable);
+
         }
 
     }

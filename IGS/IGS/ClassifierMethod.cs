@@ -1,5 +1,5 @@
 ﻿using IGS.Helperclasses;
-using IGS.KNN;
+using IGS.Classifier;
 using IGS.Server.Devices;
 using IGS.Server.IGS;
 using IGS.Server.Kinect;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 
-namespace IGS.IGS
+namespace IGS.Server.IGS
 {
     class ClassifierMethod : CoreMethods
     {
@@ -43,7 +43,7 @@ namespace IGS.IGS
             if (tempUser != null)
             {
                 
-                WallProjectionSample sample = classificationHandler.collector.calculateWallProjectionSample(vecs, "");
+                WallProjectionSample sample = classificationHandler.sCalculator.calculateWallProjectionSample(vecs, "");
 
 
                
@@ -54,8 +54,7 @@ namespace IGS.IGS
                 //Body body = Tracker.GetBodyById(tempUser.SkeletonId);
                 //XMLSkeletonJointRecords.writeUserJointsToXmlFile(tempUser, Data.GetDeviceByName(sample.sampleDeviceName), body);
                 //XMLComponentHandler.writeUserJointsPerSelectClick(body);
-                classificationHandler.deviceClassificationCount++;
-
+               
                 Device device = data.GetDeviceByName(sample.sampleDeviceName);
                 sample.sampleDeviceName = device.Name;
 

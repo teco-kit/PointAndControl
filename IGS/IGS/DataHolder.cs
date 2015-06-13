@@ -34,10 +34,53 @@ namespace IGS.Server.IGS
         {
             _devices = devices;
 
+
             foreach (Device d in _devices)
             {
-                d.color = pickRandomColor();
+                //d.color = pickRandomColor();
+
+                if (d.Name == "TV")
+                {
+                    d.color = Color.Gray;
+                }
+
+                else if (d.Name == "SensorTable")
+                {
+                    d.color = Color.Red;
+                }
+                else if (d.Name == "Steckdose")
+                {
+                    d.color = Color.DarkViolet;
+                }
+                else if (d.Name == "Leselampe")
+                {
+                    d.color = Color.DarkOrange;
+                }
+                else if (d.Name == "XBox")
+                {
+                    d.color = Color.Green;
+                }
+                else if (d.Name == "Hifi")
+                {
+                    d.color = Color.Aquamarine;
+                }
+                else if (d.Name == "PC")
+                {
+                    d.color = Color.Brown;
+                }
+                else if (d.Name == "Raumbeleuchtung")
+                {
+                    d.color = Color.Yellow;
+                }
+
+
+
+
             }
+
+            
+
+
 
             _users = new List<User>();
         }

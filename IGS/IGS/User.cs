@@ -1,4 +1,4 @@
-﻿using IGS.KNN;
+﻿using IGS.Classifier;
 using System;
 namespace IGS.Server.IGS
 {

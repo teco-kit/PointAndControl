@@ -20,7 +20,7 @@ using System.Windows.Media.Media3D;
 using System.Xml;
 using System.ComponentModel;
 using System.Xml.Linq;
-using IGS.KNN;
+using IGS.Classifier;
 using IGS.Kinect;
 
 
@@ -718,7 +718,7 @@ public partial class MainWindow
         roomWidth = width;
         roomDepth = depth;
         XMLComponentHandler.saveRoomPosition(roomData);
-        _igs.classification.collector.calcRoomModel.setRoomMeasures(width, depth, height);
+        _igs.classification.sCalculator.calcRoomModel.setRoomMeasures(width, depth, height);
         if (_3Dview != null)
         {
             _3Dview.createRoom(width, depth, height);
@@ -838,18 +838,23 @@ public partial class MainWindow
 
     private void trainBatch_Button_Click(object sender, RoutedEventArgs e)
     {
-        _igs.classification.retrainClassifierWithPending();
+        _igs.classification.retrainClassifier();
         XMLComponentHandler.writeLogEntry("Batch training executed manually");
     }
 
 
     private void WCBMP_Button_Click(object sender, RoutedEventArgs e)
     {
-        if (_igs.classification.getSamples().Count != 0)
-        {
-            _igs.classification.calculateWallDeviceAreas(_igs.Data);
-            XMLComponentHandler.writeLogEntry("Devices BMP calculated manually");
-        }
+        
+        
+
+        //if (_igs.classification.getSamples().Count != 0)
+        //{
+        //    //_igs.classification.calculateWallDeviceAreas(_igs.Data);
+        //    XMLComponentHandler.writeLogEntry("Devices BMP calculated manually");
+        //}
+
+
     }
 
     private void xmlFilesControl()

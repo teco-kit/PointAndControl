@@ -10,22 +10,20 @@ using IGS.Helperclasses;
 using System.Drawing;
 
 
-namespace IGS.KNN
+namespace IGS.Classifier
 {
     public class KNNClassifier
     {
         public List<WallProjectionSample> samples { get; set; }
-        public List<WallProjectionSample> pendingSamples { get; set; }
         KNNGenerator generator { get; set; }
         LearningModel learned { get; set; }
+
+        public int trainingsSampleCount { get; set; }
        
 
-        public KNNClassifier(List<WallProjectionSample> list)
+        public KNNClassifier(List<WallProjectionSample> list, int trainingsSampleCount)
         {
         
-            
-
-            pendingSamples = new List<WallProjectionSample>();
             samples = new List<WallProjectionSample>();
  
             var descriptor = Descriptor.Create<WallProjectionSample>();
@@ -85,23 +83,29 @@ namespace IGS.KNN
         public void learnBatch(List<WallProjectionSample> trainingSamples)
         {
             if (trainingSamples == null || trainingSamples.Count == 0) { return; }
-            
-          
+
+           
+
                 foreach (WallProjectionSample s in trainingSamples)
                 {
                     samples.Add(s);
-                    
+
+                    if (trainingsSampleCount > 0 && samples.Count > trainingsSampleCount)
+                    {
+                        int diff = Math.Abs(samples.Count - trainingsSampleCount);
+
+                        while (diff >= 0)
+                        {
+                            samples.RemoveAt(0);
+
+                            diff--;
+                        }
+
+                    }
                 }
                 Console.WriteLine("Going into trainClassifier");
-            trainClassifier();
-            
-        }
-
-        public void learnOnline(WallProjectionSample s)
-        {
-            samples.Add(s);
-            trainClassifier();
+                trainClassifier();
+              
         }    
-        
     }
 }

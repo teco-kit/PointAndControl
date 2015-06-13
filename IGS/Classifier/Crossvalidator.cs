@@ -13,26 +13,35 @@ using IGS.Server.IGS;
 using IGS.Server.Devices;
 using System.Diagnostics;
 
-namespace IGS.KNN
+namespace IGS.Classifier
 {
     class Crossvalidator
     {
         public List<WallProjectionSample> WPSlist { get; set; }
         public List<collisionPackage> collisionPacksList { get; set; }
+        public List<collisionPackage> hoppColPackList { get; set; }
         public Locator locator { get; set; }
 
         public List<List<collisionPackage>> lineFolds { get; set; }
         public List<List<WallProjectionSample>> folds { get; set;  }
 
+        public List<List<collisionPackage>> hoppFolds { get; set; }
+
         public List<List<int>> foldNumbers { get; set; }
+        public List<List<int>> foldNumbersHopp { get; set; }
+        
         public Microsoft.Office.Interop.Excel.Application xlApp  {get;set;}
 
         public List<String> labels { get; set; }
         public List<String> lineLabels { get; set; }
+
+        public List<String> hoppLabels { get; set; }
         public KNNClassifier knnClass { get; set; }
         public int[,] cfMatrix { get; set; }
 
         public int[,] cfMatrixCollision { get; set; }
+
+        public int[,] cfMatrixHopp { get; set; }
 
         public String[] dropOutNames { get; set; }
         public struct collisionPackage
@@ -41,29 +50,35 @@ namespace IGS.KNN
            public String devName;
         }
 
-        public long timeForPreprocessingClassification { get; set; }
-        public long timeForTrainingClassification { get; set; }
-        public long timeForClassifikationClassification { get; set; }
+        public double timeForPreprocessingClassification { get; set; }
+        public double timeForTrainingClassification { get; set; }
+        public double timeForClassifikationClassification { get; set; }
 
-        public long timeForTrainingCollsion { get; set; }
-        public long timeForClassifikationCollision { get; set; }
-        public long timeForPreprocessingCollision = 0;
+        public double timeForTrainingCollsion { get; set; }
+        public double timeForClassifikationCollision { get; set; }
+        public double timeForPreprocessingCollision = 0;
 
         public Crossvalidator(ClassificationHandler handler, KNNClassifier classifier, DataHolder data, CoordTransform transformer )
         {
             WPSlist = new List<WallProjectionSample>();
             folds = new List<List<WallProjectionSample>>();
             labels = new List<string>();
-            dropOutNames = new String[]{};
+            dropOutNames = new String[] {};
 
             collisionPacksList = new List<collisionPackage>();
             lineFolds = new List<List<collisionPackage>>();
             lineLabels = new List<string>();
+
+            hoppColPackList = new List<collisionPackage>();
+            hoppFolds = new List<List<collisionPackage>>();
+            hoppLabels = new List<string>();
           
             xlApp = new Microsoft.Office.Interop.Excel.Application();
             xlApp.Visible = false;
             locator = new Locator(data, null, transformer);
             knnClass = classifier;
+
+
             //set up for classification
             foreach (Device d in data.Devices)
             {
@@ -81,8 +96,10 @@ namespace IGS.KNN
             cfMatrix = new int[labels.Count, labels.Count];
 
             var watch = Stopwatch.StartNew();
-            WPSlist = handler.extractor.calculateWallProjectionSamples(handler.collector, handler.extractor.rawSamplesPerSelect);
-            timeForPreprocessingClassification = watch.ElapsedMilliseconds;
+            watch.Start();
+            WPSlist = handler.extractor.calculateWallProjectionSamples(handler.sCalculator, handler.extractor.rawSamplesPerSelect);
+            watch.Stop();
+            timeForPreprocessingClassification = (double)(watch.ElapsedMilliseconds);
 
             List<WallProjectionSample> tmpWPSList = new List<WallProjectionSample>();
             
@@ -144,7 +161,45 @@ namespace IGS.KNN
 
             lineFolds = splitLineVectorsRandom(foldNumbers);
             
+            //setup for colldet mit hoppe files 
 
+
+            foreach (SampleExtractor.rawSample rs in handler.extractor.hoppRS)
+            {
+                collisionPackage package = new collisionPackage();
+                package.devName = rs.label;
+                package.vecs = rs.joints;
+                hoppColPackList.Add(package);
+            }
+
+            List<collisionPackage> tmpColPackListHopp = new List<collisionPackage>();
+
+
+            foreach (collisionPackage p in hoppColPackList)
+            {
+                if (!(dropOutNames.Contains(p.devName)))
+                {
+                    tmpColPackListHopp.Add(p);
+                }
+            }
+
+
+            hoppColPackList = tmpColPackListHopp;
+
+            foreach (collisionPackage p in hoppColPackList)
+            {
+                if (!(hoppLabels.Contains(p.devName)))
+                {
+                    hoppLabels.Add(p.devName);
+                }
+            }
+
+             cfMatrixHopp = new int[hoppLabels.Count, hoppLabels.Count];
+                
+        
+             int foldsizeHopp = hoppColPackList.Count() / k;
+             foldNumbersHopp = createCrossvalidation(hoppColPackList.Count, k);
+             hoppFolds = splitLineVectorsRandomHopp(foldNumbersHopp);
         }
 
 
@@ -157,7 +212,8 @@ namespace IGS.KNN
             _Worksheet ws = (Worksheet)wb.Sheets.get_Item(1);
             Stopwatch trainingsWatch = new Stopwatch();
             Stopwatch classificationWatch = new Stopwatch();
-            
+            int nrClass = 0;
+            int nrTrain = 0;
             int error = 0;
             double totalAVGError = 0;
             int sampleSum = 0;
@@ -176,7 +232,7 @@ namespace IGS.KNN
                     trainingsWatch.Start();
                     locator.ChangeDeviceLocation(trainVecs, label);
                     trainingsWatch.Stop();
-                    
+                    nrTrain++;
                 }
 
                 foreach (collisionPackage pack in lineFolds[i])
@@ -194,7 +250,7 @@ namespace IGS.KNN
                     classificationWatch.Start();
                     String collisionDev = CollisionDetection.getNameOfDeviceWithMinDist(locator.Data.Devices, pack.vecs);
                     classificationWatch.Stop();
-
+                    nrClass++;
                     for (int j = 0; j < lineLabels.Count; j++)
                     {
                         if (collisionDev.Equals(lineLabels[j]))
@@ -243,8 +299,8 @@ namespace IGS.KNN
             timeForTrainingCollsion = trainingsWatch.ElapsedMilliseconds;
             timeForClassifikationCollision = classificationWatch.ElapsedMilliseconds;
 
-            timeForClassifikationCollision = timeForClassifikationCollision / sampleSum;
-            timeForTrainingCollsion = timeForTrainingCollsion / sampleSum;
+            timeForClassifikationCollision = ((double)(timeForClassifikationCollision) / nrClass);
+            timeForTrainingCollsion = ((double)(timeForTrainingCollsion) / nrTrain);
             wb.SaveAs(path, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
             wb.Close(true, misValue, misValue);
             xlApp.Quit();
@@ -253,15 +309,125 @@ namespace IGS.KNN
 
         }
 
+
+        public void crossValidateCollisionHopp()
+        {
+            String path = AppDomain.CurrentDomain.BaseDirectory + "CrossvalCollisionHopp.xls";
+            object misValue = System.Reflection.Missing.Value;
+            Workbook wb = xlApp.Workbooks.Add(misValue);
+            _Worksheet ws = (Worksheet)wb.Sheets.get_Item(1);
+            Stopwatch trainingsWatch = new Stopwatch();
+            Stopwatch classificationWatch = new Stopwatch();
+            int nrClass = 0;
+            int nrTrain = 0;
+            int error = 0;
+            double totalAVGError = 0;
+            int sampleSum = 0;
+            int correct = 0;
+            int actualDevPos = -1;
+            int predictedPos = -1;
+
+            for (int i = 0; i < hoppFolds.Count; i++)
+            {
+
+                List<collisionPackage> trainingSet = mergeTrainSetHopp(i);
+
+                foreach (String label in hoppLabels)
+                {
+                    List<Vector3D[]> trainVecs = getVectorsForDevice(trainingSet, label);
+                    trainingsWatch.Start();
+                    locator.ChangeDeviceLocation(trainVecs, label);
+                    trainingsWatch.Stop();
+                    nrTrain++;
+                }
+
+                foreach (collisionPackage pack in hoppFolds[i])
+                {
+
+                    for (int k = 0; k < hoppLabels.Count; k++)
+                    {
+                        if (pack.devName.Equals(hoppLabels[k]))
+                        {
+                            actualDevPos = k;
+                            break;
+                        }
+                    }
+
+                    classificationWatch.Start();
+                    String collisionDev = CollisionDetection.getNameOfDeviceWithMinDist(locator.Data.Devices, pack.vecs);
+                    classificationWatch.Stop();
+                    nrClass++;
+                    for (int j = 0; j < hoppLabels.Count; j++)
+                    {
+                        if (collisionDev.Equals(hoppLabels[j]))
+                        {
+                            predictedPos = j;
+                            break;
+                        }
+                    }
+
+                    cfMatrixHopp[actualDevPos, predictedPos]++;
+
+                    if (pack.devName.Equals(collisionDev))
+                    {
+                        correct += 1;
+                    }
+                    else
+                    {
+                        error += 1;
+                    }
+
+                }
+
+
+            }
+
+            for (int m = 0; m < cfMatrixHopp.GetLength(0); m++)
+            {
+                for (int n = 0; n < cfMatrixHopp.GetLength(1); n++)
+                {
+
+                    ws.Cells[m + 2, n + 2] = cfMatrixHopp[m, n];
+                }
+            }
+            for (int r = 0; r < hoppLabels.Count; r++)
+            {
+                ws.Cells[1, r + 2] = hoppLabels[r];
+                ws.Cells[r + 2, 1] = hoppLabels[r];
+            }
+
+            foreach (List<collisionPackage> hoppFold in hoppFolds)
+            {
+                sampleSum += hoppFold.Count();
+            }
+
+            totalAVGError = error / sampleSum;
+            //timeForTrainingCollsion = trainingsWatch.ElapsedMilliseconds;
+            //timeForClassifikationCollision = classificationWatch.ElapsedMilliseconds;
+
+            //timeForClassifikationCollision = (timeForClassifikationCollision /nrClass)*1000;
+            //timeForTrainingCollsion = (timeForTrainingCollsion / nrTrain)*1000;
+            wb.SaveAs(path, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+            wb.Close(true, misValue, misValue);
+            xlApp.Quit();
+
+
+
+        }
+
+
         public void crossValidateClassifier()
         {
             String path = AppDomain.CurrentDomain.BaseDirectory + "CrossvalClassifier.xls";
+            int nrClass = 0;
+            int nrTrain = 0;
             object misValue = System.Reflection.Missing.Value;
             Workbook wb = xlApp.Workbooks.Add(misValue);
             _Worksheet ws = (Worksheet)wb.Sheets.get_Item(1);
             Stopwatch trainingsWatch = new Stopwatch();
             Stopwatch classificationWatch = new Stopwatch();
             int error = 0;
+            long test = 0;
             double totalAVGError = 0;
             int sampleSum = 0;
             int correct = 0;
@@ -274,7 +440,7 @@ namespace IGS.KNN
                 trainingsWatch.Start();
                 knnClass.trainClassifier(trainingSet);
                 trainingsWatch.Stop();
-
+                nrTrain++;
                 foreach (WallProjectionSample wps in folds[i])
                 {
                     WallProjectionSample newSample = new WallProjectionSample(wps);
@@ -288,9 +454,10 @@ namespace IGS.KNN
                         }
                     }
 
-                    classificationWatch.Start();
+                   classificationWatch.Start();
                    knnClass.classify(newSample);
                    classificationWatch.Stop();
+                    nrClass++;
                    for (int j = 0; j < labels.Count; j++)
                    {
                        if (newSample.sampleDeviceName.ToLower() == labels[j].ToLower())
@@ -334,8 +501,8 @@ namespace IGS.KNN
             }
 
             totalAVGError = error / sampleSum;
-            timeForClassifikationClassification = classificationWatch.ElapsedMilliseconds;
-            timeForTrainingClassification = trainingsWatch.ElapsedMilliseconds;
+            timeForClassifikationClassification = ((double)(classificationWatch.ElapsedMilliseconds) / nrClass) ;
+            timeForTrainingClassification = ((double)(trainingsWatch.ElapsedMilliseconds)/nrTrain);
             wb.SaveAs(path, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
             wb.Close(true, misValue, misValue);
             xlApp.Quit();
@@ -411,6 +578,29 @@ namespace IGS.KNN
             return trainSet;
         }
 
+        public List<collisionPackage> mergeTrainSetHopp(int testPlace)
+        {
+
+            List<collisionPackage> trainSet = new List<collisionPackage>();
+
+
+            for (int i = 0; i < hoppFolds.Count; i++)
+            {
+                if (testPlace == i)
+                {
+                    continue;
+                }
+                else
+                {
+                    foreach (collisionPackage package in hoppFolds[i])
+                    {
+                        trainSet.Add(package);
+                    }
+                }
+            }
+
+            return trainSet;
+        }
 
         public List<Vector3D[]> getVectorsForDevice(List<collisionPackage> set, String name)
         {
@@ -441,6 +631,7 @@ namespace IGS.KNN
             int counter = 0;
             int pos = -1;
             int packageSize = (int)Math.Floor((double)sampleCount / k);
+            int leftoversamples = sampleCount - packageSize * 10;
             bool allowedPos = false;
             for (int i = 0; i < k; i++)
             {
@@ -465,7 +656,42 @@ namespace IGS.KNN
                 resultList.Add(fold);
             }
 
-            return resultList;
+            List<int> missingInts = new List<int>();
+            int foldChoose = -1;
+            for (int i = 0; i < sampleCount; i++)
+            {
+                if (usedInts.Contains(i) == false)
+                {
+                    usedInts.Add(i);
+                    foldChoose = rand.Next(k);
+                    resultList[foldChoose].Add(i);
+                }
+            }
+
+            //test if all numers are traded and non is double
+            bool allDifferen = false;
+            int foundICount = 0;
+            for (int i = 0; i < sampleCount; i++)
+            {
+                foreach (List<int> fold in resultList)
+                {
+                    if (fold.Contains(i))
+                    {
+                        foundICount++;
+                    }
+                }
+
+                if (foundICount != 1)
+                {
+                    Console.WriteLine("EINE POS ÖFTERS VERGEBEN!!");
+                }
+                else
+                {
+                    foundICount = 0;
+                }
+            }
+
+                return resultList;
 
         }
 
@@ -506,6 +732,25 @@ namespace IGS.KNN
             }
 
              return result;
+        }
+
+        public List<List<collisionPackage>> splitLineVectorsRandomHopp(List<List<int>> crossVal)
+        {
+
+            List<List<collisionPackage>> result = new List<List<collisionPackage>>();
+
+            foreach (List<int> l in crossVal)
+            {
+                List<collisionPackage> fold = new List<collisionPackage>();
+                foreach (int i in l)
+                {
+                    fold.Add(hoppColPackList[i]);
+                }
+
+                result.Add(fold);
+            }
+
+            return result;
         }
 
         public List<Vector3D[]> getVectorSamplesPerDevice(List<Vector3D[]> set,List<String> setLabels,  String name)

@@ -9,15 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 
-namespace IGS.IGS
+namespace IGS.Server.IGS
 {
     class CollisionMethod : CoreMethods
     {
 
          public Locator locator { get; set; }
-   
-
-
+    
         public CollisionMethod(DataHolder data, UserTracker tracker, CoordTransform transformer)
         {
             this.locator = new Locator(data, tracker, transformer);

@@ -41,6 +41,7 @@ namespace IGS.Server.Kinect
         public Body tmpBody { get; set; }
         public List<Body[]> lastBodiesPuffer { get; set; }
 
+        public int windowSize { get; set; }
         /// <summary>
         ///     Constructor of a Usertracker.
         ///     <param name='filter'>
@@ -61,6 +62,7 @@ namespace IGS.Server.Kinect
             this.skeletonJointFilter = new MedianJointFilter();
             lastBodiesPuffer = new List<Body[]>();
             workingOnWindow = false;
+            windowSize = 15;
         }
 
         /// <summary>
@@ -424,7 +426,7 @@ namespace IGS.Server.Kinect
                     }
                     if (workingOnWindow == false)
                     {
-                        if (movingWindowCollect == true && lastBodies.Count == 15)
+                        if (movingWindowCollect == true && lastBodies.Count == windowSize)
                         {
                             lastBodies.RemoveAt(0);
                         }

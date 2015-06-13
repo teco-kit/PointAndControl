@@ -45,7 +45,7 @@
       <address>129.13.169.169</address>
       <port>5050</port>
     </device>
-	<device type="Boxee">
+    <device type="Boxee">
       <name>PC</name>
       <id>Boxee_4</id>
       <form count="0" />
@@ -67,10 +67,10 @@
       <depth>5,58</depth>
     </Roomsize>
     <KinectConfiguration>
-      <X>2,40</X>
+      <X>3,95</X>
       <Y>1,80</Y>
       <Z>0,30</Z>
-      <tiltingAngle>0.0</tiltingAngle>
+      <tiltingAngle>3,0</tiltingAngle>
       <HorizontalOrientationAngle>0.0</HorizontalOrientationAngle>
     </KinectConfiguration>
     <PlugwiseAdress>

@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 
-namespace IGS.KNN
+namespace IGS.Classifier
 {
-    class NormalSample
+    class PointingSample
     {
 
         [Feature]
@@ -27,7 +27,7 @@ namespace IGS.KNN
         [Label]
         public String sampleDeviceName { get; set; }
 
-        public NormalSample(Point3D shoulder, Vector3D direction)
+        public PointingSample(Point3D shoulder, Vector3D direction)
         {
             directionX = direction.X;
             directionY = direction.Y;
@@ -40,7 +40,7 @@ namespace IGS.KNN
             sampleDeviceName = "";
         }
 
-        public NormalSample(Point3D shoulder, Vector3D direction, String sampleDeviceName)
+        public PointingSample(Point3D shoulder, Vector3D direction, String sampleDeviceName)
         {
             directionX = direction.X;
             directionY = direction.Y;

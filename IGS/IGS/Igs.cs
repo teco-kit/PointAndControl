@@ -11,10 +11,10 @@ using System.IO;
 using IGS.Helperclasses;
 using System.Net;
 using System.Text;
-using IGS.KNN;
+using IGS.Classifier;
 using Microsoft.Kinect;
 using System.Threading;
-using IGS.IGS;
+
 
 namespace IGS.Server.IGS
 {
@@ -262,6 +262,9 @@ namespace IGS.Server.IGS
                         retStr = "Kein Gerät hinzugefügt. Paramter Anzahl nicht Korrekt";
 
                         return retStr;
+                    
+
+
                     case "collectDeviceSample":
                         Console.WriteLine("collect kam an!" + "Value:" + value);
                         retStr = collectSample(wlanAdr, value);
@@ -360,7 +363,7 @@ namespace IGS.Server.IGS
             if (tempUser != null)
             {
 
-                WallProjectionSample sample = classification.collector.calculateWallProjectionSample(vecs, "");
+                WallProjectionSample sample = classification.sCalculator.calculateWallProjectionSample(vecs, "");
 
                 sample = classification.classify(sample);
 
@@ -369,7 +372,7 @@ namespace IGS.Server.IGS
                 Body body = Tracker.GetBodyById(tempUser.SkeletonId);
                 //XMLSkeletonJointRecords.writeUserJointsToXmlFile(tempUser, Data.GetDeviceByName(sample.sampleDeviceName), body);
                 //XMLComponentHandler.writeUserJointsPerSelectClick(body);
-                classification.deviceClassificationCount++;
+            
 
                 Device device = Data.GetDeviceByName(sample.sampleDeviceName);
                 sample.sampleDeviceName = device.Name;

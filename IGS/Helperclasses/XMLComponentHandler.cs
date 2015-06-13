@@ -1,4 +1,4 @@
-﻿using IGS.KNN;
+﻿using IGS.Classifier;
 using IGS.Server.Devices;
 using IGS.Server.IGS;
 using Microsoft.Kinect;
@@ -549,8 +549,7 @@ namespace IGS.Helperclasses
         public static void writeWallProjectionSampleToXML(WallProjectionSample sample, String fileName)
         {
             String p = AppDomain.CurrentDomain.BaseDirectory + "\\" + fileName + ".xml";
-
-          
+                      
             XmlDocument docConfig = new XmlDocument();
             docConfig.Load(p);
             XmlNode node = docConfig.SelectSingleNode("/devices");
@@ -985,9 +984,9 @@ namespace IGS.Helperclasses
 
 
 
-        public static List<NormalSample> readWNormalSamplesFromXML()
+        public static List<PointingSample> readWNormalSamplesFromXML()
         {
-            List<NormalSample> sampleList = new List<NormalSample>();
+            List<PointingSample> sampleList = new List<PointingSample>();
 
             XmlDocument docConfig = new XmlDocument();
             docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\Samples.xml");
@@ -1007,7 +1006,7 @@ namespace IGS.Helperclasses
                     {
                         foreach (XmlNode sample in prop.ChildNodes)
                         {
-                            NormalSample s = new NormalSample(new Point3D(
+                            PointingSample s = new PointingSample(new Point3D(
                                 double.Parse(sample.FirstChild.ChildNodes[0].InnerText),
                                 double.Parse(sample.FirstChild.ChildNodes[1].InnerText),
                                 double.Parse(sample.FirstChild.ChildNodes[2].InnerText)),
@@ -1141,7 +1140,7 @@ namespace IGS.Helperclasses
         }
 
 
-        public static void writeTimesForCrossvalidation(long preproCol, long trainingCol, long classCol, long preproClass, long trainingClas, long classClas)
+        public static void writeTimesForCrossvalidation(double preproCol, double trainingCol, double classCol, double preproClass, double trainingClas, double classClas)
         {
 
             String path = AppDomain.CurrentDomain.BaseDirectory + "\\crossvalTimes.xml";
@@ -1149,13 +1148,13 @@ namespace IGS.Helperclasses
 
             XElement rootElement = new XElement("times",
                 new XElement("collision",
-                    new XElement("Preprocessing", ((Double)preproCol/1000).ToString()),
-                    new XElement("Training", ((Double)trainingCol/ 1000).ToString()),
-                    new XElement("Classification", ((Double)classCol/ 1000).ToString())),
+                    new XElement("Preprocessing", (preproCol).ToString()),
+                    new XElement("Training", (trainingCol).ToString()),
+                    new XElement("Classification", (classCol).ToString())),
                 new XElement("classification",
-                    new XElement("Preprocessing", ((Double)preproClass/ 1000).ToString()),
-                    new XElement("Training", ((Double)trainingClas/ 1000).ToString()),
-                    new XElement("Classicfication", ((Double)classClas/ 1000).ToString()))
+                    new XElement("Preprocessing", (preproClass).ToString()),
+                    new XElement("Training", (trainingClas).ToString()),
+                    new XElement("Classicfication", (classClas).ToString()))
                     );
 
             rootElement.Save(path);
@@ -1163,12 +1162,15 @@ namespace IGS.Helperclasses
 
         }
 
-        public static void writeTimeForElapsedTime(List<float> training, float classification)
+
+
+
+        public static void writeTimeForElapsedTime(List<double> training, List<double> trainingIncrease, List<double> classIncreased, String dest)
         {
 
 
             XmlDocument docConfig = new XmlDocument();
-            String path = AppDomain.CurrentDomain.BaseDirectory + "\\trainingAndClassTime.xml";
+            String path = AppDomain.CurrentDomain.BaseDirectory + "\\trainingAndClassTime"+dest+".xml";
             if (!File.Exists(path))
             {
                 XElement root = new XElement("Times");
@@ -1180,32 +1182,51 @@ namespace IGS.Helperclasses
             XmlNode rootNode = docConfig.SelectSingleNode("/Times");
 
 
-            XmlNode trainTimes = docConfig.CreateElement("trainingTimes");
+            XmlNode trainTimes = docConfig.CreateElement("trainingTimesIteration");
 
 
             int i = 1;
-
-            XmlElement first = docConfig.CreateElement("1");
-            first.SetAttribute("Time", training[0].ToString());
-
-            trainTimes.AppendChild(first);
-            training.RemoveAt(0);
-
+           
             foreach (float train in training)
             {
-                XmlElement entry = docConfig.CreateElement((i * 50).ToString());
+                
+                XmlElement entry = docConfig.CreateElement(i.ToString());
+                
                 entry.SetAttribute("Time", train.ToString());
 
                 trainTimes.AppendChild(entry);
+                i += 50;
             }
 
-            XmlElement ClassTime = docConfig.CreateElement("ClassTime");
-            ClassTime.SetAttribute("Speed", classification.ToString());
+            XmlNode trainTimeInc = docConfig.CreateElement("trainingTimesIncrease");
+
+            int j = 50;
+            foreach (float trainInc in trainingIncrease)
+            {
+                XmlElement entry = docConfig.CreateElement("Size_" + j);
+                entry.SetAttribute("Time", trainInc.ToString());
+
+                trainTimeInc.AppendChild(entry);
+                j++;
+            }
+
+            XmlNode classTimeInc = docConfig.CreateElement("classificationTime");
+
+            int k = 50;
+            foreach (float trainInc in classIncreased)
+            {
+                XmlElement entry = docConfig.CreateElement("Size_" + k);
+                entry.SetAttribute("Time", trainInc.ToString());
+
+                classTimeInc.AppendChild(entry);
+k               ++;
+            }
+
 
 
             rootNode.AppendChild(trainTimes);
-            rootNode.AppendChild(ClassTime);
-
+            rootNode.AppendChild(trainTimeInc);
+            rootNode.AppendChild(classTimeInc);
 
 
             docConfig.Save(path);

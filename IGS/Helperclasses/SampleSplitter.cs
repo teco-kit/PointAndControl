@@ -1,4 +1,4 @@
-﻿using IGS.KNN;
+﻿using IGS.Classifier;
 using System;
 using System.Collections.Generic;
 using System.Linq;

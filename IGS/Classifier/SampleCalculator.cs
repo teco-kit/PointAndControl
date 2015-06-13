@@ -9,13 +9,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 
-namespace IGS.KNN
+namespace IGS.Classifier
 {
-    public class SampleCollector
+    public class SampleCalculator
     {
         public Room calcRoomModel { get; set; }
         
-        public SampleCollector(KNNClassifier handler)
+        public SampleCalculator(KNNClassifier handler)
         {
             String[] roomComps = XMLComponentHandler.readRoomComponents();
             calcRoomModel = new Room(float.Parse(roomComps[0]), float.Parse(roomComps[1]), float.Parse(roomComps[2]));
@@ -23,7 +23,8 @@ namespace IGS.KNN
         }
 
         public WallProjectionSample calculateWallProjectionSample(Vector3D[] vectors, String devName)
-        {   
+        {
+            
             Vector3D direction = Vector3D.Subtract(vectors[3], vectors[2]);
             Ray3D ray = new Ray3D(vectors[2].ToPoint3D(), direction);
             Point3D samplePoint = calcRoomModel.intersectAndTestAllWalls(ray);
@@ -33,15 +34,19 @@ namespace IGS.KNN
             {
                 if (devName.Equals(""))
                 {
-                    sample = new WallProjectionSample(samplePoint);   
+                    sample = new WallProjectionSample(samplePoint);
+                  
                 }
                 else
                 {
                     sample = new WallProjectionSample(samplePoint, devName);
+                    
                 }
                 return sample;
             }
+            
             return sample;
+            
         }
 
         public WallProjectionSample calculateWallProjectionSample(Vector3D direction, Vector3D position, String devName)

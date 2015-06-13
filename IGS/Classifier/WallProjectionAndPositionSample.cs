@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 
-namespace IGS.KNN
+namespace IGS.Classifier
 {
     public class WallProjectionAndPositionSample 
     {

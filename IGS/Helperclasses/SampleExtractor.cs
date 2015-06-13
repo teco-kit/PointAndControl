@@ -1,5 +1,5 @@
 ﻿using IGS.Kinect;
-using IGS.KNN;
+using IGS.Classifier;
 using IGS.Server.IGS;
 using System;
 using System.Collections.Generic;
@@ -23,6 +23,8 @@ namespace IGS.Helperclasses
         List<Vector3D[]> arr { get; set; }
         public List<rawSample> rawSamplesPerSelectSmoothed { get; set; }
         public List<rawSample> rawSamplesPerSelect { get; set; }
+
+        public List<rawSample> hoppRS { get; set; }
  
         SkeletonJointFilter jointFilter { get; set; }
 
@@ -30,12 +32,15 @@ namespace IGS.Helperclasses
         {
             rawSamplesPerSelectSmoothed = new List<rawSample>();
             jointFilter = new MedianJointFilter();
+            hoppRS = new List<rawSample>();
             rawSamplesPerSelect = new List<rawSample>();
             arr = new List<Vector3D[]>();
 
-            readSkeletonsPerSelectFromXMLAndCreateRawSamples(transform);
+            readSkelSelectsToRS(transform);
 
-            readSkeletonsPerSelectSmoothedFromXMLAndCreateRawSamples(transform);
+            readSkelSelectsSmoothedToRS(transform);
+
+            //readHoppeFiles(transform);
        } 
 
 
@@ -55,7 +60,7 @@ namespace IGS.Helperclasses
         }
 
 
-        public List<WallProjectionSample> calculateAndWriteWallProjectionSamples(SampleCollector collector, String DirectoryPath, List<rawSample> sampleList, String Filename)
+        public List<WallProjectionSample> calculateAndWriteWallProjectionSamples(SampleCalculator collector, String DirectoryPath, List<rawSample> sampleList, String Filename)
         {
             List<WallProjectionSample> wallProjectionSamples = new List<WallProjectionSample>();
             foreach (SampleExtractor.rawSample rawSample in sampleList)
@@ -80,7 +85,7 @@ namespace IGS.Helperclasses
             return wallProjectionSamples;
         }
 
-        public List<WallProjectionSample> calculateWallProjectionSamples(SampleCollector collector, List<rawSample> sampleList)
+        public List<WallProjectionSample> calculateWallProjectionSamples(SampleCalculator collector, List<rawSample> sampleList)
         {
             List<WallProjectionSample> wpsList = new List<WallProjectionSample>();
 
@@ -96,7 +101,7 @@ namespace IGS.Helperclasses
 
         }
 
-        public List<WallProjectionAndPositionSample> calculateAndWriteWallProjectionAndPositionSamples(SampleCollector collector, String DirectoryPath, List<rawSample> sampleList, String Filename)
+        public List<WallProjectionAndPositionSample> calculateAndWriteWallProjectionAndPositionSamples(SampleCalculator collector, String DirectoryPath, List<rawSample> sampleList, String Filename)
         {
             List<WallProjectionAndPositionSample> wallProjectionSamplesAndPositionSamples = new List<WallProjectionAndPositionSample>();
             WallProjectionSample tmpSample = new WallProjectionSample();
@@ -127,7 +132,7 @@ namespace IGS.Helperclasses
         }
 
 
-        public void readSkeletonsPerSelectFromXMLAndCreateRawSamples(CoordTransform transformer)
+        public void readSkelSelectsToRS(CoordTransform transformer)
         {
             String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelect.xml";
 
@@ -207,9 +212,101 @@ namespace IGS.Helperclasses
             }
         }
 
+        public void readHoppeFiles(CoordTransform transformer)
+        {
+             XmlDocument docConfig = new XmlDocument();
+        
+            for (int i = 1 ; i < 10; i++)
+            {
+                String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_HOPPE_UserLogFile_Kinect2_User" + i + ".xml";
+                docConfig.Load(path);
+                XmlNode rootNode = docConfig.SelectSingleNode("/data");
+                XmlNodeList devices = rootNode.ChildNodes;
 
 
-        public void readSkeletonsPerSelectSmoothedFromXMLAndCreateRawSamples(CoordTransform transformer)
+                bool foundWristRight = false;
+                bool foundShoulderRight = false;
+                bool foundWristLeft = false;
+                bool foundShoulderLeft = false;
+
+
+                foreach (XmlNode device in devices)
+                {
+                    String deviceName = device.Attributes[1].Value;
+
+                    foreach (XmlNode skeleton in device.ChildNodes)
+                    {
+                        Vector3D WristRight = new Vector3D();
+                        Vector3D ShoulderRight = new Vector3D();
+                        Vector3D WristLeft = new Vector3D();
+                        Vector3D ShoulderLeft = new Vector3D();
+
+
+                        foreach (XmlNode joint in skeleton.ChildNodes)
+                        {
+                            if (joint.Attributes[0].Name.ToString().Equals("type") && joint.Attributes[0].Value.ToString().Equals("WristRight"))
+                            {
+                                WristRight.X = Double.Parse(joint.Attributes[1].Value);
+                                WristRight.Y = Double.Parse(joint.Attributes[2].Value);
+                                WristRight.Z = Double.Parse(joint.Attributes[3].Value);
+                                foundWristRight = true;
+                            }
+                            else if (joint.Attributes[0].Name.ToString().Equals("type") && joint.Attributes[0].Value.ToString().Equals("ShoulderRight"))
+                            {
+                                ShoulderRight.X = Double.Parse(joint.Attributes[1].Value);
+                                ShoulderRight.Y = Double.Parse(joint.Attributes[2].Value);
+                                ShoulderRight.Z = Double.Parse(joint.Attributes[3].Value);
+                                foundShoulderRight = true;
+                            }
+                            else if (joint.Attributes[0].Name.ToString().Equals("type") && joint.Attributes[0].Value.ToString().Equals("WristLeft"))
+                            {
+                                WristLeft.X = Double.Parse(joint.Attributes[1].Value);
+                                WristLeft.Y = Double.Parse(joint.Attributes[2].Value);
+                                WristLeft.Z = Double.Parse(joint.Attributes[3].Value);
+                                foundWristLeft = true;
+                            }
+                            else if (joint.Attributes[0].Name.ToString().Equals("type") && joint.Attributes[0].Value.ToString().Equals("ShoulderLeft"))
+                            {
+                                ShoulderLeft.X = Double.Parse(joint.Attributes[1].Value);
+                                ShoulderLeft.Y = Double.Parse(joint.Attributes[2].Value);
+                                ShoulderLeft.Z = Double.Parse(joint.Attributes[3].Value);
+                                foundShoulderLeft = true;
+                            }
+                            if (foundWristRight == true && foundShoulderRight == true && foundWristLeft == true && foundShoulderLeft)
+                            {
+
+                                foundWristRight = false;
+                                foundShoulderRight = false;
+                                foundWristLeft = false;
+                                foundShoulderLeft = false;
+
+                                Vector3D[] tmpVecs = new Vector3D[] {
+                                ShoulderLeft, WristLeft, ShoulderRight, WristRight
+                            };
+
+
+
+                                rawSample sample = new rawSample();
+                                sample.joints = tmpVecs;
+                                sample.label = deviceName;
+                                hoppRS.Add(sample);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+    
+
+           
+           
+           
+
+           
+
+        }
+
+        public void readSkelSelectsSmoothedToRS(CoordTransform transformer)
         {
             List<Vector3D[]> selectVectorsToSmooth = new List<Vector3D[]>();
             String path = AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelectSmoothed.xml";

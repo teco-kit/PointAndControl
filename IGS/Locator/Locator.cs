@@ -550,7 +550,7 @@ namespace IGS.Server.Location
         /// <summary>
         ///     Stores UserTracker to be able to acces its data or functions.\n
         /// </summary>
-        private UserTracker Tracker { get; set; }
+        public UserTracker Tracker { get; set; }
         /// <summary>
         ///     Stores CoordTransform to be able to acces its data or functions.\n
         /// </summary>
