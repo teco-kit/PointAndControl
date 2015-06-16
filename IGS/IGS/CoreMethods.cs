@@ -10,12 +10,12 @@ using System.Windows.Media.Media3D;
 
 namespace IGS.Server.IGS
 {
-    public abstract class CoreMethods
+    interface ICoreMethods
     {
 
-        public abstract List<Device> chooseDevice(String wlanAdr, CoordTransform Transformer, UserTracker Tracker);
+        List<Device> chooseDevice(String wlanAdr);
 
-        public abstract void train(List<Vector3D[]> vectorList, Device dev, String value);
+        String train(String wlanAdr, String devID);
      
 
     }

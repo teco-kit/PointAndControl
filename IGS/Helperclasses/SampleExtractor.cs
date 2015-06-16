@@ -26,7 +26,7 @@ namespace IGS.Helperclasses
 
         public List<rawSample> hoppRS { get; set; }
  
-        SkeletonJointFilter jointFilter { get; set; }
+        ISkeletonJointFilter jointFilter { get; set; }
 
         public SampleExtractor(CoordTransform transform)
         {
@@ -44,18 +44,18 @@ namespace IGS.Helperclasses
        } 
 
 
-        public void writeNormalSamplesFromRawSamples(String DirectoryPath, List<rawSample> sampleList, String Filename)
+        public void writePointingFromRawSamples(String DirectoryPath, List<rawSample> sampleList, String Filename)
         {
-            if (!Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "NormalSamples" + "\\" + DirectoryPath))
+            if (!Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "Pointing" + "\\" + DirectoryPath))
             {
-                Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "NormalSamples" + "\\" + DirectoryPath);
+                Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "Pointing" + "\\" + DirectoryPath);
             }
-            XMLComponentHandler.testAndCreateSampleXML("NormalSamples" + "\\" + DirectoryPath + "\\" + Filename);
+            XMLComponentHandler.testAndCreateSampleXML("Pointing" + "\\" + DirectoryPath + "\\" + Filename);
 
             foreach (rawSample rs in sampleList)
             {
                 Vector3D direction = Vector3D.Subtract(rs.joints[3], rs.joints[2]);
-                XMLComponentHandler.writeSampleToXML(rs.joints[2], direction, rs.label, "NormalSamples" + "\\" + DirectoryPath + "\\" + Filename);
+                XMLComponentHandler.writeSampleToXML(rs.joints[2], direction, rs.label, "Pointing" + "\\" + DirectoryPath + "\\" + Filename);
             }
         }
 
@@ -66,20 +66,20 @@ namespace IGS.Helperclasses
             foreach (SampleExtractor.rawSample rawSample in sampleList)
             {
                 WallProjectionSample sample = collector.calculateWallProjectionSample(rawSample.joints, rawSample.label);
-                if (!sample.sampleDeviceName.Equals("nullSample"))
+                if (!sample.sampledeviceIdentifier.Equals("nullSample"))
                 {
                     wallProjectionSamples.Add(sample);
                 }
             }
 
-            if (!Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "WallProjectionSamples" + "\\" + DirectoryPath))
+            if (!Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "WallProjection" + "\\" + DirectoryPath))
             {
-                Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "WallProjectionSamples" + "\\" + DirectoryPath);
+                Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "WallProjection" + "\\" + DirectoryPath);
             }
-            XMLComponentHandler.testAndCreateSampleXML("WallProjectionSamples" + "\\" + DirectoryPath + "\\" + Filename);
+            XMLComponentHandler.testAndCreateSampleXML("WallProjection" + "\\" + DirectoryPath + "\\" + Filename);
             foreach (WallProjectionSample wps in wallProjectionSamples)
             {
-                XMLComponentHandler.writeWallProjectionSampleToXML(wps, "WallProjectionSamples" + "\\" + DirectoryPath + "\\" + Filename);
+                XMLComponentHandler.writeWallProjectionSampleToXML(wps, "WallProjection" + "\\" + DirectoryPath + "\\" + Filename);
             }
 
             return wallProjectionSamples;
@@ -92,7 +92,7 @@ namespace IGS.Helperclasses
             foreach (SampleExtractor.rawSample rawSample in sampleList)
             {
                 WallProjectionSample sample = collector.calculateWallProjectionSample(rawSample.joints, rawSample.label);
-                if (!sample.sampleDeviceName.Equals("nullSample"))
+                if (!sample.sampledeviceIdentifier.Equals("nullSample"))
                 {
                    wpsList.Add(sample);
                 }
@@ -111,21 +111,21 @@ namespace IGS.Helperclasses
 
                 WallProjectionAndPositionSample sample = new WallProjectionAndPositionSample(tmpSample, new Point3D(rawSample.joints[2].X, rawSample.joints[2].Y, rawSample.joints[2].Z), rawSample.label);
 
-                if (!sample.sampleDeviceName.Equals("NullSample"))
+                if (!sample.sampledeviceIdentifier.Equals("NullSample"))
                 {
                     wallProjectionSamplesAndPositionSamples.Add(sample);
                 }
                 
             }
 
-            if (!Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "WallProjectionAndPositionSamples" + "\\" + DirectoryPath))
+            if (!Directory.Exists(AppDomain.CurrentDomain.BaseDirectory + "WallProjectionAndPosition" + "\\" + DirectoryPath))
             {
-                Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "WallProjectionAndPositionSamples"+"\\" + DirectoryPath);
+                Directory.CreateDirectory(AppDomain.CurrentDomain.BaseDirectory + "WallProjectionAndPosition" + "\\" + DirectoryPath);
             }
-            XMLComponentHandler.testAndCreateSampleXML("WallProjectionAndPositionSamples"+"\\" + DirectoryPath + "\\" + Filename);
+            XMLComponentHandler.testAndCreateSampleXML("WallProjectionAndPosition" + "\\" + DirectoryPath + "\\" + Filename);
             foreach (WallProjectionAndPositionSample wpps in wallProjectionSamplesAndPositionSamples)
             {
-                XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(wpps, "WallProjectionAndPositionSamples" + "\\" + DirectoryPath + "\\" + Filename);
+                XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(wpps, "WallProjectionAndPosition" + "\\" + DirectoryPath + "\\" + Filename);
             }
 
             return wallProjectionSamplesAndPositionSamples;
@@ -150,7 +150,7 @@ namespace IGS.Helperclasses
 
             foreach (XmlNode select in selects)
             {
-                String deviceName = select.Attributes[3].Value;
+                String deviceIdentifier = select.Attributes[2].Value;
 
                 Vector3D WristRight = new Vector3D();
                 Vector3D ShoulderRight = new Vector3D();
@@ -204,7 +204,7 @@ namespace IGS.Helperclasses
                         
                         rawSample sample = new rawSample();
                         sample.joints = vecs;
-                        sample.label = deviceName;
+                        sample.label = deviceIdentifier;
                         rawSamplesPerSelect.Add(sample);
                         break;
                     }
@@ -232,7 +232,7 @@ namespace IGS.Helperclasses
 
                 foreach (XmlNode device in devices)
                 {
-                    String deviceName = device.Attributes[1].Value;
+                    String deviceIdentifier = device.Attributes[1].Value;
 
                     foreach (XmlNode skeleton in device.ChildNodes)
                     {
@@ -288,7 +288,7 @@ namespace IGS.Helperclasses
 
                                 rawSample sample = new rawSample();
                                 sample.joints = tmpVecs;
-                                sample.label = deviceName;
+                                sample.label = deviceIdentifier;
                                 hoppRS.Add(sample);
                                 break;
                             }
@@ -328,7 +328,7 @@ namespace IGS.Helperclasses
             {
                 i++;
                 Vector3D[] smoothed = new Vector3D[4];
-                String deviceName = select.Attributes[3].Value;
+                String deviceIdentifier = select.Attributes[2].Value;
                 
                 foreach (XmlNode skeleton in select.ChildNodes)
                 {
@@ -394,7 +394,7 @@ namespace IGS.Helperclasses
                 smoothed = transformer.transformJointCoords(smoothed);
                 rawSample sample = new rawSample();
                 sample.joints = smoothed;
-                sample.label = deviceName;
+                sample.label = deviceIdentifier;
 
                 rawSamplesPerSelectSmoothed.Add(sample);
             }
@@ -442,7 +442,7 @@ namespace IGS.Helperclasses
 
             foreach (XmlNode select in selects)
             {
-                String deviceName = select.Attributes[3].Value;
+                String deviceIdentifier = select.Attributes[3].Value;
 
                 Vector3D WristRight = new Vector3D();
                 Vector3D ShoulderRight = new Vector3D();
@@ -496,7 +496,7 @@ namespace IGS.Helperclasses
 
                         rawSample sample = new rawSample();
                         sample.joints = vecs;
-                        sample.label = deviceName;
+                        sample.label = deviceIdentifier;
                         rawSamplesPerSelect.Add(sample);
                         break;
                     }
@@ -528,7 +528,7 @@ namespace IGS.Helperclasses
             {
                 i++;
                 Vector3D[] smoothed = new Vector3D[4];
-                String deviceName = select.Attributes[3].Value;
+                String deviceIdentifier = select.Attributes[3].Value;
 
                 foreach (XmlNode skeleton in select.ChildNodes)
                 {
@@ -594,7 +594,7 @@ namespace IGS.Helperclasses
                 smoothed = transformer.transformJointCoords(smoothed);
                 rawSample sample = new rawSample();
                 sample.joints = smoothed;
-                sample.label = deviceName;
+                sample.label = deviceIdentifier;
 
                 rawSamplesPerSelectSmoothed.Add(sample);
             }

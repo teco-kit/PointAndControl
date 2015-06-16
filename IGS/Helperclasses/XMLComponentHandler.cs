@@ -120,6 +120,14 @@ namespace IGS.Helperclasses
             deviceNodes[deviceNodes.Count - 1].AppendChild(port);
 
             docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");
+
+            docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionSamples.xml");
+          
+        }
+
+        public static void addDeviceToSampleXML(String[] parameter, int id_number)
+        {
+
         }
 
         /// <summary>
@@ -317,7 +325,7 @@ namespace IGS.Helperclasses
             foreach (XmlNode deviceNode in node.ChildNodes)
             {
 
-                if (deviceNode.FirstChild.InnerText == sample.sampleDeviceName && deviceNode.FirstChild.Name == "deviceName")
+                if (deviceNode.FirstChild.InnerText == sample.sampledeviceIdentifier && deviceNode.FirstChild.Name == "deviceIdentifier")
                 {
                     if (deviceNode.ChildNodes[1].Name == "samples")
                     {
@@ -359,8 +367,8 @@ namespace IGS.Helperclasses
             }
 
             XmlElement newDev = docConfig.CreateElement("device");
-            XmlElement deviceName = docConfig.CreateElement("deviceName");
-            deviceName.InnerText = sample.sampleDeviceName;
+            XmlElement deviceIdentifier = docConfig.CreateElement("deviceIdentifier");
+            deviceIdentifier.InnerText = sample.sampledeviceIdentifier;
             XmlElement samplePositions = docConfig.CreateElement("samples");
             XmlElement newSample = docConfig.CreateElement("sample");
             XmlElement samplePosition = docConfig.CreateElement("wallPosition");
@@ -388,7 +396,7 @@ namespace IGS.Helperclasses
             newSample.AppendChild(samplePosition);
             newSample.AppendChild(personPosition);
             samplePositions.AppendChild(newSample);
-            newDev.AppendChild(deviceName);
+            newDev.AppendChild(deviceIdentifier);
             newDev.AppendChild(samplePositions);
 
             node.AppendChild(newDev);
@@ -411,7 +419,7 @@ namespace IGS.Helperclasses
             foreach (XmlNode deviceNode in node.ChildNodes)
             {
 
-                if (deviceNode.FirstChild.InnerText == sample.sampleDeviceName && deviceNode.FirstChild.Name == "deviceName")
+                if (deviceNode.FirstChild.InnerText == sample.sampledeviceIdentifier && deviceNode.FirstChild.Name == "deviceIdentifier")
                 {
                     if (deviceNode.ChildNodes[1].Name == "samples")
                     {
@@ -450,8 +458,8 @@ namespace IGS.Helperclasses
             }
 
             XmlElement newDev = docConfig.CreateElement("device");
-            XmlElement deviceName = docConfig.CreateElement("deviceName");
-            deviceName.InnerText = sample.sampleDeviceName;
+            XmlElement deviceIdentifier = docConfig.CreateElement("deviceIdentifier");
+            deviceIdentifier.InnerText = sample.sampledeviceIdentifier;
             XmlElement samplePositions = docConfig.CreateElement("samples");
             XmlElement newSample = docConfig.CreateElement("sample");
             XmlElement samplePosition = docConfig.CreateElement("wallPosition");
@@ -480,7 +488,7 @@ namespace IGS.Helperclasses
             newSample.AppendChild(samplePosition);
             newSample.AppendChild(personPosition);
             samplePositions.AppendChild(newSample);
-            newDev.AppendChild(deviceName);
+            newDev.AppendChild(deviceIdentifier);
             newDev.AppendChild(samplePositions);
 
             node.AppendChild(newDev);
@@ -499,7 +507,7 @@ namespace IGS.Helperclasses
             foreach (XmlNode deviceNode in node.ChildNodes)
             {
 
-                if (deviceNode.FirstChild.InnerText == sample.sampleDeviceName && deviceNode.FirstChild.Name == "deviceName")
+                if (deviceNode.FirstChild.InnerText == sample.sampledeviceIdentifier && deviceNode.FirstChild.Name == "deviceIdentifier")
                 {
                     if (deviceNode.ChildNodes[1].Name == "samplePositions")
                     {
@@ -524,8 +532,8 @@ namespace IGS.Helperclasses
             }
 
             XmlElement newDev = docConfig.CreateElement("device");
-            XmlElement deviceName = docConfig.CreateElement("deviceName");
-            deviceName.InnerText = sample.sampleDeviceName;
+            XmlElement deviceIdentifier = docConfig.CreateElement("deviceIdentifier");
+            deviceIdentifier.InnerText = sample.sampledeviceIdentifier;
             XmlElement samplePositions = docConfig.CreateElement("samplePositions");
             XmlElement position = docConfig.CreateElement("position");
             XmlElement X = docConfig.CreateElement("X");
@@ -539,7 +547,65 @@ namespace IGS.Helperclasses
             position.AppendChild(Z);
 
             samplePositions.AppendChild(position);
-            newDev.AppendChild(deviceName);
+            newDev.AppendChild(deviceIdentifier);
+            newDev.AppendChild(samplePositions);
+
+            node.AppendChild(newDev);
+            docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionSamples.xml");
+            return;
+        }
+
+
+        public static void writeWallProjectionSampleToConfig(WallProjectionSample sample)
+        {
+            XmlDocument docConfig = new XmlDocument();
+            docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");
+            XmlNode node = docConfig.SelectSingleNode("/config");
+
+            foreach (XmlNode deviceNode in node.ChildNodes)
+            {
+
+                if (deviceNode.FirstChild.InnerText == sample.sampledeviceIdentifier && deviceNode.FirstChild.Name == "deviceIdentifier")
+                {
+                    if (deviceNode.ChildNodes[1].Name == "samplePositions")
+                    {
+                        XmlElement xmlPosition = docConfig.CreateElement("position");
+                        XmlElement posX = docConfig.CreateElement("X");
+                        posX.InnerText = sample.x.ToString();
+                        xmlPosition.AppendChild(posX);
+                        XmlElement posY = docConfig.CreateElement("Y");
+                        posY.InnerText = sample.y.ToString();
+                        xmlPosition.AppendChild(posY);
+                        XmlElement posZ = docConfig.CreateElement("Z");
+                        posZ.InnerText = sample.z.ToString();
+                        xmlPosition.AppendChild(posZ);
+                        //xmlPosition.SetAttribute("X:", sample.x.ToString());
+                        //xmlPosition.SetAttribute("Y:", sample.y.ToString());
+                        //xmlPosition.SetAttribute("Z:", sample.z.ToString());
+                        deviceNode.ChildNodes[1].AppendChild(xmlPosition);
+                        docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionSamples.xml");
+                        return;
+                    }
+                }
+            }
+
+            XmlElement newDev = docConfig.CreateElement("device");
+            XmlElement deviceIdentifier = docConfig.CreateElement("deviceIdentifier");
+            deviceIdentifier.InnerText = sample.sampledeviceIdentifier;
+            XmlElement samplePositions = docConfig.CreateElement("samplePositions");
+            XmlElement position = docConfig.CreateElement("position");
+            XmlElement X = docConfig.CreateElement("X");
+            X.InnerText = sample.x.ToString();
+            position.AppendChild(X);
+            XmlElement Y = docConfig.CreateElement("Y");
+            Y.InnerText = sample.y.ToString();
+            position.AppendChild(Y);
+            XmlElement Z = docConfig.CreateElement("Z");
+            Z.InnerText = sample.z.ToString();
+            position.AppendChild(Z);
+
+            samplePositions.AppendChild(position);
+            newDev.AppendChild(deviceIdentifier);
             newDev.AppendChild(samplePositions);
 
             node.AppendChild(newDev);
@@ -557,7 +623,7 @@ namespace IGS.Helperclasses
             foreach (XmlNode deviceNode in node.ChildNodes)
             {
 
-                if (deviceNode.FirstChild.InnerText == sample.sampleDeviceName && deviceNode.FirstChild.Name == "deviceName")
+                if (deviceNode.FirstChild.InnerText == sample.sampledeviceIdentifier && deviceNode.FirstChild.Name == "deviceIdentifier")
                 {
                     if (deviceNode.ChildNodes[1].Name == "samplePositions")
                     {
@@ -582,8 +648,8 @@ namespace IGS.Helperclasses
             }
 
             XmlElement newDev = docConfig.CreateElement("device");
-            XmlElement deviceName = docConfig.CreateElement("deviceName");
-            deviceName.InnerText = sample.sampleDeviceName;
+            XmlElement deviceIdentifier = docConfig.CreateElement("deviceIdentifier");
+            deviceIdentifier.InnerText = sample.sampledeviceIdentifier;
             XmlElement samplePositions = docConfig.CreateElement("samplePositions");
             XmlElement position = docConfig.CreateElement("position");
             XmlElement X = docConfig.CreateElement("X");
@@ -597,7 +663,7 @@ namespace IGS.Helperclasses
             position.AppendChild(Z);
 
             samplePositions.AppendChild(position);
-            newDev.AppendChild(deviceName);
+            newDev.AppendChild(deviceIdentifier);
             newDev.AppendChild(samplePositions);
 
             node.AppendChild(newDev);
@@ -616,12 +682,12 @@ namespace IGS.Helperclasses
 
             foreach (XmlNode device in devices)
             {
-                String knnDeviceName = "";
+                String knndeviceIdentifier = "";
                 foreach (XmlNode prop in device)
                 {
-                    if (prop.Name.Equals("deviceName"))
+                    if (prop.Name.Equals("deviceIdentifier"))
                     {
-                        knnDeviceName = prop.InnerText;
+                        knndeviceIdentifier = prop.InnerText;
                     }
                     else if (prop.Name.Equals("samples"))
                     {
@@ -636,7 +702,7 @@ namespace IGS.Helperclasses
                                 double.Parse(sample.ChildNodes[1].ChildNodes[0].InnerText),
                                 double.Parse(sample.ChildNodes[1].ChildNodes[1].InnerText),
                                 double.Parse(sample.ChildNodes[1].ChildNodes[2].InnerText)
-                            ), knnDeviceName);
+                            ), knndeviceIdentifier);
                             
                             sampleList.Add(s);
                         }
@@ -659,12 +725,12 @@ namespace IGS.Helperclasses
 
             foreach (XmlNode sample in devices)
             {
-                String knnDeviceName = "";
+                String knndeviceIdentifier = "";
                 foreach (XmlNode prop in sample)
                 {
-                    if (prop.Name.Equals("deviceName"))
+                    if (prop.Name.Equals("deviceIdentifier"))
                     {
-                        knnDeviceName = prop.InnerText;
+                        knndeviceIdentifier = prop.InnerText;
                     }
                     else if (prop.Name.Equals("samplePositions"))
                     {
@@ -673,7 +739,7 @@ namespace IGS.Helperclasses
                             WallProjectionSample s = new WallProjectionSample(new Point3D(
                                 double.Parse(position.ChildNodes[0].InnerText),
                                 double.Parse(position.ChildNodes[1].InnerText),
-                                double.Parse(position.ChildNodes[2].InnerText)), knnDeviceName);
+                                double.Parse(position.ChildNodes[2].InnerText)), knndeviceIdentifier);
 
                             sampleList.Add(s);
                         }
@@ -685,7 +751,7 @@ namespace IGS.Helperclasses
             return sampleList;
         }
 
-        public static void writeSampleToXML(Vector3D[] positions, String deviceName)
+        public static void writeSampleToXML(Vector3D[] positions, String deviceIdentifier)
         {
             XmlDocument docConfig = new XmlDocument();
             docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\samples.xml");
@@ -693,8 +759,8 @@ namespace IGS.Helperclasses
             Vector3D dir = Vector3D.Subtract(positions[3], positions[2]);
             foreach (XmlNode deviceNode in node.ChildNodes)
             {
-                if (deviceNode.FirstChild.InnerText == deviceName 
-                    && deviceNode.FirstChild.Name == "deviceName"
+                if (deviceNode.FirstChild.InnerText == deviceIdentifier 
+                    && deviceNode.FirstChild.Name == "deviceIdentifier"
                     && deviceNode.ChildNodes[1].Name == "samples")
                 {
                    
@@ -741,8 +807,8 @@ namespace IGS.Helperclasses
             }
 
             XmlElement newDev = docConfig.CreateElement("device");
-            XmlElement devName = docConfig.CreateElement("deviceName");
-            devName.InnerText = deviceName;
+            XmlElement devName = docConfig.CreateElement("deviceIdentifier");
+            devName.InnerText = deviceIdentifier;
             XmlElement samplePositions = docConfig.CreateElement("samples");
             XmlElement newSample = docConfig.CreateElement("sample");
 
@@ -781,7 +847,7 @@ namespace IGS.Helperclasses
             return;
         }
 
-        public static void writeSampleToXML(Vector3D upPoint, Vector3D direction, String deviceName, String path)
+        public static void writeSampleToXML(Vector3D upPoint, Vector3D direction, String deviceIdentifier, String path)
         {
             XmlDocument docConfig = new XmlDocument();
             
@@ -790,8 +856,8 @@ namespace IGS.Helperclasses
             
             foreach (XmlNode deviceNode in node.ChildNodes)
             {
-                if (deviceNode.FirstChild.InnerText == deviceName
-                    && deviceNode.FirstChild.Name == "deviceName"
+                if (deviceNode.FirstChild.InnerText == deviceIdentifier
+                    && deviceNode.FirstChild.Name == "identifier"
                     && deviceNode.ChildNodes[1].Name == "samples")
                 {
 
@@ -838,8 +904,8 @@ namespace IGS.Helperclasses
             }
 
             XmlElement newDev = docConfig.CreateElement("device");
-            XmlElement devName = docConfig.CreateElement("deviceName");
-            devName.InnerText = deviceName;
+            XmlElement devName = docConfig.CreateElement("deviceIdentifier");
+            devName.InnerText = deviceIdentifier;
             XmlElement samplePositions = docConfig.CreateElement("samples");
             XmlElement newSample = docConfig.CreateElement("sample");
 
@@ -995,12 +1061,12 @@ namespace IGS.Helperclasses
 
             foreach (XmlNode device in devices)
             {
-                String knnDeviceName = "";
+                String knndeviceIdentifier = "";
                 foreach (XmlNode prop in device)
                 {
-                    if (prop.Name.Equals("deviceName"))
+                    if (prop.Name.Equals("deviceIdentifier"))
                     {
-                        knnDeviceName = prop.InnerText;
+                        knndeviceIdentifier = prop.InnerText;
                     }
                     else if (prop.Name.Equals("samples"))
                     {
@@ -1015,7 +1081,7 @@ namespace IGS.Helperclasses
                                 double.Parse(sample.ChildNodes[1].ChildNodes[0].InnerText),
                                 double.Parse(sample.ChildNodes[1].ChildNodes[1].InnerText),
                                 double.Parse(sample.ChildNodes[1].ChildNodes[2].InnerText)
-                            ), knnDeviceName);
+                            ), knndeviceIdentifier);
 
                             sampleList.Add(s);
                         }
@@ -1073,7 +1139,7 @@ namespace IGS.Helperclasses
 
             foreach (XmlNode select in selects)
             {
-                String deviceName = select.Attributes[3].Value;
+                String deviceIdentifier = select.Attributes[2].Value;
                 Vector3D WristRight = new Vector3D();
                 Vector3D ShoulderRight = new Vector3D();
                 Vector3D WristLeft = new Vector3D();
@@ -1126,7 +1192,7 @@ namespace IGS.Helperclasses
 
                         Crossvalidator.collisionPackage package = new Crossvalidator.collisionPackage();
 
-                        package.devName = deviceName;
+                        package.devName = deviceIdentifier;
                         package.vecs = tmpVecs;
 
                         result.Add(package);

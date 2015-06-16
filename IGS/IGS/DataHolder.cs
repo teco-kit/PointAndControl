@@ -4,6 +4,8 @@ using IGS.Server.Devices;
 using System;
 using System.Xml;
 using System.Drawing;
+using IGS.Classifier;
+using IGS.Helperclasses;
 
 
 namespace IGS.Server.IGS
@@ -24,6 +26,7 @@ namespace IGS.Server.IGS
         /// </summary>
         private List<User> _users { get; set; }
 
+        public Room _roomModel { get; set; }
 
 
         /// <summary>
@@ -33,6 +36,14 @@ namespace IGS.Server.IGS
         public DataHolder(List<Device> devices)
         {
             _devices = devices;
+
+            String[] roomComps = XMLComponentHandler.readRoomComponents();
+            float roomWidth = float.Parse(roomComps[0]);
+            float roomHeight = float.Parse(roomComps[1]);
+            float roomDepth = float.Parse(roomComps[2]);
+            _roomModel = new Room(roomWidth, roomHeight, roomDepth);
+
+
 
 
             foreach (Device d in _devices)
@@ -376,7 +387,7 @@ namespace IGS.Server.IGS
             }
             
             dev.color = pickRandomColor();
-            Console.WriteLine("DeviceName: " + dev.Name + " Color: " + dev.color);
+            Console.WriteLine("deviceIdentifier: " + dev.Name + " Color: " + dev.color);
             
             return;
 
@@ -397,8 +408,25 @@ namespace IGS.Server.IGS
             return Color.White;
         }
 
+        public List<WallProjectionSample> returnAllSamples()
+        {
 
-        
+            List<WallProjectionSample> result = new List<WallProjectionSample>();
+            foreach (Device dev in _devices)
+            {
+                foreach (WallProjectionSample sample in dev.deviceSamples)
+                {
+                    result.Add(sample);
+                }
+            }
+
+            return result;
+        }
+
+        public void changeRoomModel(float width, float height, float depth)
+        {
+            _roomModel.setRoomMeasures(width, depth, height);
+        }    
     }
 
 }

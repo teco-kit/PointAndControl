@@ -16,6 +16,7 @@ using Microsoft.Kinect;
 using System.Threading;
 
 
+
 namespace IGS.Server.IGS
 {
     /// <summary>
@@ -46,14 +47,14 @@ namespace IGS.Server.IGS
             Tracker.KinectEvents += UserLeft;
             Tracker.Strategy.TrackingStateEvents += SwitchTrackingState;
 
-            
 
             createIGSKinect();
 
-
             this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Centre);
-            this.classification = new ClassificationHandler(Transformer);
-            this.coreMethods = new ClassifierMethod(classification, data);
+            this.classification = new ClassificationHandler(Transformer, data);
+            this.coreMethods = new ClassifierMethod(classification, tracker, data, Transformer);
+
+            
         }
 
 
@@ -96,8 +97,9 @@ namespace IGS.Server.IGS
 
         public ClassificationHandler classification { get; set; }
 
-        public CoreMethods coreMethods { get; set; }
-     
+        ICoreMethods coreMethods { get; set; }
+
+      
         
 
         /// <summary>
@@ -235,7 +237,7 @@ namespace IGS.Server.IGS
                     case "selectDevice":
                         if (Data.GetUserByIp(wlanAdr).TrackingState)
                         {
-                            retStr = MakeDeviceString(coreMethods.chooseDevice(wlanAdr, Transformer, Tracker));
+                            retStr = MakeDeviceString(coreMethods.chooseDevice(wlanAdr));
                             
                             XMLComponentHandler.writeLogEntry("Response to 'selectDevice': " + retStr);
                             return retStr;
@@ -272,6 +274,12 @@ namespace IGS.Server.IGS
 
                         return retStr;
 
+                    case "StartTraining":
+                        classification.retrainClassifier();
+                        retStr = "Trained";
+                        return retStr;
+                       
+                    
                     case "popup":
                         String msg = "";
                         if (Data.GetUserByIp(wlanAdr) != null)
@@ -290,15 +298,26 @@ namespace IGS.Server.IGS
             }
             else
             {
-                //if (cmdId == "addDeviceCoord")
-                //{
+                if (cmdId == "addDeviceCoord")
+                {
 
-                //    retStr = AddDeviceCoord(devId, wlanAdr, value);
-                //    XMLComponentHandler.writeLogEntry("Response to 'addDeviceCoord': " + retStr);
+                    retStr = AddDeviceCoord(devId, wlanAdr, value);
+                    XMLComponentHandler.writeLogEntry("Response to 'addDeviceCoord': " + retStr);
 
-                //    return retStr;
+                   return retStr;
 
-                //}
+                }
+
+                //Addition by Hoppe
+                if (cmdId == "changePosition")
+                {
+                    retStr = coreMethods.train(wlanAdr, devId);
+                       
+           
+                    //writeInLog(logEntry);
+
+                    return retStr;
+                }
                 if (devId != null && cmdId == "getControlPath" && Data.getDeviceByID(devId) != null)
                 {
                     //onlineNotSucces(devId, wlanAdr);
@@ -367,15 +386,15 @@ namespace IGS.Server.IGS
 
                 sample = classification.classify(sample);
 
-                Console.WriteLine("Classified: " + sample.sampleDeviceName);
-                XMLComponentHandler.writeLogEntry("Device classified to" + sample.sampleDeviceName);
+                Console.WriteLine("Classified: " + sample.sampledeviceIdentifier);
+                XMLComponentHandler.writeLogEntry("Device classified to" + sample.sampledeviceIdentifier);
                 Body body = Tracker.GetBodyById(tempUser.SkeletonId);
-                //XMLSkeletonJointRecords.writeUserJointsToXmlFile(tempUser, Data.GetDeviceByName(sample.sampleDeviceName), body);
+                //XMLSkeletonJointRecords.writeUserJointsToXmlFile(tempUser, Data.GetDeviceByName(sample.sampledeviceIdentifier), body);
                 //XMLComponentHandler.writeUserJointsPerSelectClick(body);
             
 
-                Device device = Data.GetDeviceByName(sample.sampleDeviceName);
-                sample.sampleDeviceName = device.Name;
+                Device device = Data.GetDeviceByName(sample.sampledeviceIdentifier);
+                sample.sampledeviceIdentifier = device.Name;
 
 
 
@@ -383,12 +402,12 @@ namespace IGS.Server.IGS
                 {
                     foreach (Device d in Data.Devices)
                     {
-                        if (d.Name.ToLower() == sample.sampleDeviceName.ToLower())
+                        if (d.Name.ToLower() == sample.sampledeviceIdentifier.ToLower())
                         {
                             //XMLComponentHandler.writeWallProjectionSampleToXML(sample);
                             Point3D p = new Point3D(vecs[2].X, vecs[2].Y, vecs[2].Z);
                             //XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
-                            //XMLComponentHandler.writeSampleToXML(vecs, sample.sampleDeviceName);
+                            //XMLComponentHandler.writeSampleToXML(vecs, sample.sampledeviceIdentifier);
                             //XMLSkeletonJointRecords.writeClassifiedDeviceToLastSelect(d);
                             dev.Add(d);
                             //tempUser.lastChosenDeviceID = d.Id;
@@ -504,8 +523,8 @@ namespace IGS.Server.IGS
                 
                 Vector3D[] vectors = Transformer.transformJointCoords(Tracker.getMedianFilteredCoordinates(tmpUser.SkeletonId));
                 //Vector3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(tmpUser.SkeletonId));
-                
-                if (classification.calculateWallProjectionSampleAndLearn(vectors, dev.Name) == true)
+
+                if (classification.calculateWallProjectionSampleAndLearn(vectors, dev.Id) != "Es ist ein Fehler beim Erstellen des Samples aufgetreten, bitte versuchen sie es erneut!")
                 {
                     //XMLComponentHandler.writeUserJointsToXmlFile(tmpUser, dev, body);
                     //XMLComponentHandler.writeUserJointsPerSelectClick(body);
@@ -532,60 +551,7 @@ namespace IGS.Server.IGS
             return controlPath;
         }
 
-        //public void executeOnlineLearning(String devId, String wLanAdr)
-        //{
-        //    User tmpUser = Data.GetUserByIp(wLanAdr);
-
-        //    if (devId == tmpUser.lastChosenDeviceID)
-        //    {
-        //        if (tmpUser.deviceIDChecked == false && tmpUser.lastClassDevSample != null)
-        //        {
-        //            Device dev = Data.getDeviceByID(devId);
-        //            classification.onlineLearn(tmpUser);
-        //            XMLSkeletonJointRecords.writeClassifiedDeviceToLastSelect(dev);
-        //            XMLComponentHandler.writeLogEntry("Executed OnlineLearning: Result: Device was classified correctly");
-        //            return;
-        //        }
-        //        return;
-        //    }
-        //    //onlineNotSucces(devId, wLanAdr);
-
-        //}
-
-        //public void onlineNotSucces(String devId, String wLanAdr)
-        //{
-        //    User tmpUser = Data.GetUserByIp(wLanAdr);
-
-
-        //    if (tmpUser != null && tmpUser.deviceIDChecked == false && tmpUser.lastClassDevSample != null)
-        //    {
-
-        //        Device userDev = Data.getDeviceByID(tmpUser.lastChosenDeviceID);
-        //        if (devId != userDev.Id)
-        //        {
-        //            classification.deviceClassificationErrorCount++;
-        //            XMLSkeletonJointRecords.deleteLastUserSkeletonFromLogXML(userDev);
-        //            XMLComponentHandler.deleteLastSampleFromSampleLogs(userDev);
-        //            XMLSkeletonJointRecords.deleteLastUserSkeletonSelected();
-        //            tmpUser.deviceIDChecked = true;
-        //            tmpUser.lastClassDevSample = null;
-        //            tmpUser.lastChosenDeviceID = "";
-
-
-        //            Console.WriteLine("Wrong Device!");
-        //            XMLComponentHandler.writeLogEntry("Executed OnlineLearning: Result: Device was classified wrong");
-                    
-        //            return;
-        //        }
-        //    }
-        //}
-
-
-
-
-
-
-
+      
 
 
     }

@@ -25,7 +25,7 @@ namespace IGS.Classifier
         [Feature]
         public double shoulderZ { get; set; }
         [Label]
-        public String sampleDeviceName { get; set; }
+        public String sampledeviceIdentifier { get; set; }
 
         public PointingSample(Point3D shoulder, Vector3D direction)
         {
@@ -37,10 +37,10 @@ namespace IGS.Classifier
             shoulderY = shoulder.Y;
             shoulderZ = shoulder.Z;
 
-            sampleDeviceName = "";
+            sampledeviceIdentifier = "";
         }
 
-        public PointingSample(Point3D shoulder, Vector3D direction, String sampleDeviceName)
+        public PointingSample(Point3D shoulder, Vector3D direction, String sampledeviceIdentifier)
         {
             directionX = direction.X;
             directionY = direction.Y;
@@ -50,7 +50,7 @@ namespace IGS.Classifier
             shoulderY = shoulder.Y;
             shoulderZ = shoulder.Z;
 
-            this.sampleDeviceName = sampleDeviceName;
+            this.sampledeviceIdentifier = sampledeviceIdentifier;
         }
     }
 }

@@ -8,10 +8,8 @@ using System.Windows.Media.Media3D;
 
 namespace IGS.Kinect
 {
-    public abstract class SkeletonJointFilter
+    interface ISkeletonJointFilter
     {
-        public abstract Vector3D[] jointFilter(List<Vector3D[]> jointLists);
-
-        
+        Vector3D[] jointFilter(List<Vector3D[]> jointLists);
     }
 }

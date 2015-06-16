@@ -64,7 +64,7 @@ namespace IGS.Helperclasses
         /// 1  |  0
         ///    |    .origin
         /// 
-        /// area number:arrayindice |  1: 0; 2:1;
+        /// area number:arrayindice |  first area: 0; second area:1;
         /// 
         /// </summary>
         /// <param name="rawSampleList"></param>

@@ -14,12 +14,11 @@ namespace IGS.Classifier
     public class SampleCalculator
     {
         public Room calcRoomModel { get; set; }
-        
-        public SampleCalculator(KNNClassifier handler)
-        {
-            String[] roomComps = XMLComponentHandler.readRoomComponents();
-            calcRoomModel = new Room(float.Parse(roomComps[0]), float.Parse(roomComps[1]), float.Parse(roomComps[2]));
 
+        
+        public SampleCalculator(Room room)
+        {
+            this.calcRoomModel = room;
         }
 
         public WallProjectionSample calculateWallProjectionSample(Vector3D[] vectors, String devName)
@@ -27,7 +26,7 @@ namespace IGS.Classifier
             
             Vector3D direction = Vector3D.Subtract(vectors[3], vectors[2]);
             Ray3D ray = new Ray3D(vectors[2].ToPoint3D(), direction);
-            Point3D samplePoint = calcRoomModel.intersectAndTestAllWalls(ray);
+            Point3D samplePoint = intersectAndTestAllWalls(ray);
             WallProjectionSample sample = new WallProjectionSample(new Point3D(), "nullSample");
 
             if ((samplePoint.X.Equals(float.NaN) == false))
@@ -49,11 +48,42 @@ namespace IGS.Classifier
             
         }
 
+        public Point3D intersectAndTestAllWalls(Ray3D ray)
+        {
+            Point3D wallPoint = new Point3D();
+            foreach (Plane3D wall in calcRoomModel.wallList)
+            {
+
+                if (
+                    (ray.PlaneIntersection(wall.Position, wall.Normal)) != null
+                   )
+                {
+                    wallPoint = (Point3D)ray.PlaneIntersection(wall);
+                    wallPoint.X = Math.Round(wallPoint.X, 7);
+                    wallPoint.Y = Math.Round(wallPoint.Y, 7);
+                    wallPoint.Z = Math.Round(wallPoint.Z, 7);
+                    if ((calcRoomModel.width >= wallPoint.X && wallPoint.X >= 0
+                        &&
+                        calcRoomModel.height >= wallPoint.Y && wallPoint.Y >= 0
+                        &&
+                        calcRoomModel.depth >= wallPoint.Z && wallPoint.Z >= 0) == true)
+                    {
+                        return wallPoint;
+                    }
+                }
+            }
+            wallPoint.X = float.NaN;
+            wallPoint.Y = float.NaN;
+            wallPoint.Z = float.NaN;
+
+            return wallPoint;
+        }
+
         public WallProjectionSample calculateWallProjectionSample(Vector3D direction, Vector3D position, String devName)
         {
             
             Ray3D ray = new Ray3D(position.ToPoint3D(), direction);
-            Point3D samplePoint = calcRoomModel.intersectAndTestAllWalls(ray);
+            Point3D samplePoint = intersectAndTestAllWalls(ray);
             WallProjectionSample sample = new WallProjectionSample(new Point3D(), "nullSample");
 
             if ((samplePoint.X.Equals(float.NaN) == false))

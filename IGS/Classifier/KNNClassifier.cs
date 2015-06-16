@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using numl;
+using numl.Supervised;
 using numl.Supervised.KNN;
 using numl.Model;
 using IGS.Helperclasses;
@@ -14,22 +15,24 @@ namespace IGS.Classifier
 {
     public class KNNClassifier
     {
-        public List<WallProjectionSample> samples { get; set; }
+        public List<WallProjectionSample> trainingSamples { get; set; }
         KNNGenerator generator { get; set; }
         LearningModel learned { get; set; }
 
-        public int trainingsSampleCount { get; set; }
+
+            
+        public int trainingSetSize { get; set; }
        
 
         public KNNClassifier(List<WallProjectionSample> list, int trainingsSampleCount)
         {
         
-            samples = new List<WallProjectionSample>();
+            trainingSamples = new List<WallProjectionSample>();
  
             var descriptor = Descriptor.Create<WallProjectionSample>();
             generator = new KNNGenerator();
             generator.Descriptor = descriptor;
-            
+            trainingSetSize = trainingsSampleCount;
             
             if (list != null && list.Count != 0)
             {
@@ -44,10 +47,10 @@ namespace IGS.Classifier
         public void trainClassifier()
         {
            
-            if (samples.Count > 0)
+            if (trainingSamples.Count > 0)
             {
-                generator.K = (int)Math.Sqrt(samples.Count);
-                learned = Learner.Learn(samples, 0.99, 1, generator);
+                generator.K = (int)Math.Sqrt(trainingSamples.Count);
+                learned = Learner.Learn(trainingSamples, 0.99, 1, generator);
             }
             else Console.WriteLine("Please create samples first!");
 
@@ -65,10 +68,10 @@ namespace IGS.Classifier
 
         public void trainClassifier(int iterations)
         {
-            if (samples.Count > 0)
+            if (trainingSamples.Count > 0)
             {
-                generator.K = (int)Math.Sqrt(samples.Count);
-                learned = Learner.Learn(samples, 0.99, iterations, generator);
+                generator.K = (int)Math.Sqrt(trainingSamples.Count);
+                learned = Learner.Learn(trainingSamples, 0.99, iterations, generator);
             }
         }
         public WallProjectionSample classify(WallProjectionSample sample)
@@ -88,15 +91,15 @@ namespace IGS.Classifier
 
                 foreach (WallProjectionSample s in trainingSamples)
                 {
-                    samples.Add(s);
+                    trainingSamples.Add(s);
 
-                    if (trainingsSampleCount > 0 && samples.Count > trainingsSampleCount)
+                    if (trainingSetSize > 0 && trainingSamples.Count > trainingSetSize)
                     {
-                        int diff = Math.Abs(samples.Count - trainingsSampleCount);
+                        int diff = Math.Abs(trainingSamples.Count - trainingSetSize);
 
                         while (diff >= 0)
                         {
-                            samples.RemoveAt(0);
+                            trainingSamples.RemoveAt(0);
 
                             diff--;
                         }

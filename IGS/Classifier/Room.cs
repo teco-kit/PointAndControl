@@ -14,9 +14,9 @@ namespace IGS.Classifier
     public class Room
     {
        
-        float width { get; set; }
-        float depth { get; set; }
-        float height { get; set; }
+        public float width { get; set; }
+        public float depth { get; set; }
+        public float height { get; set; }
        
         Plane3D ceiling { get; set; }
         Plane3D floor { get; set; }
@@ -24,7 +24,7 @@ namespace IGS.Classifier
         Plane3D leftWall { get; set; }
         Plane3D frontWall { get; set; }
         Plane3D backWall { get; set; }
-        List<Plane3D> wallList { get; set; }
+        public List<Plane3D> wallList { get; set; }
 
        
         public Room(float width,  float height, float depth)
@@ -32,6 +32,7 @@ namespace IGS.Classifier
             this.width = width;
             this.depth = depth;
             this.height = height;
+            wallList = new List<Plane3D>();
             createRoomWalls();
         }
 
@@ -43,8 +44,8 @@ namespace IGS.Classifier
         }
         public void createRoomWalls ()
         {
-                 
-             wallList = new List<Plane3D>();
+
+            wallList.Clear();
 
              floor = new Plane3D(new Point3D(width, 0, depth), new Vector3D(0, 1, 0));
              wallList.Add(floor);
@@ -69,42 +70,15 @@ namespace IGS.Classifier
 
        
 
-        public Point3D intersectAndTestAllWalls(Ray3D ray)
-        {
-            Point3D wallPoint = new Point3D();
-            foreach (Plane3D wall in wallList)
-            {
-              
-                if (
-                    (ray.PlaneIntersection(wall.Position, wall.Normal)) != null
-                   )
-                {
-                    wallPoint = (Point3D)ray.PlaneIntersection(wall);
-                    wallPoint.X = Math.Round(wallPoint.X, 7);
-                    wallPoint.Y = Math.Round(wallPoint.Y, 7);
-                    wallPoint.Z = Math.Round(wallPoint.Z, 7);
-                    if ((width >= wallPoint.X && wallPoint.X >= 0
-                        &&
-                        height >= wallPoint.Y && wallPoint.Y >= 0
-                        &&
-                        depth >= wallPoint.Z && wallPoint.Z >= 0) == true)
-                    {
-                        return wallPoint;
-                    }
-                }
-            }
-            wallPoint.X = float.NaN;
-            wallPoint.Y = float.NaN;
-            wallPoint.Z = float.NaN;
-
-            return wallPoint;
-        }
+  
 
         public void setRoomMeasures(float width, float depth, float height)
         {
             this.width = width;
             this.depth = depth;
             this.height = height;
+
+            createRoomWalls();
         }
 
         //public void calculateDeviceAreas(KNNClassifier knn, DataHolder data)
@@ -232,7 +206,7 @@ namespace IGS.Classifier
         //                    WallProjectionSample sample = new WallProjectionSample(newPoint);
         //                    sample = knn.classify(sample);
                           
-        //                    Color c = data.deviceColorLookupByName(sample.sampleDeviceName);
+        //                    Color c = data.deviceColorLookupByName(sample.sampledeviceIdentifier);
                            
         //                    bitmap.SetPixel(stepCounterVirtualWidth, stepCounterVirtualHeight, c);
         //                    Console.Write(".");

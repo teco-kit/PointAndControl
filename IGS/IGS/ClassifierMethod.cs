@@ -12,32 +12,40 @@ using System.Windows.Media.Media3D;
 
 namespace IGS.Server.IGS
 {
-    class ClassifierMethod : CoreMethods
+    class ClassifierMethod : ICoreMethods
     {
         public  ClassificationHandler classificationHandler { get; set; }
         public DataHolder data { get; set; }
 
+        public UserTracker tracker { get; set; }
+        public CoordTransform transformer { get; set; }
 
-        public ClassifierMethod(ClassificationHandler handler, DataHolder Data)
+
+        public ClassifierMethod(ClassificationHandler handler, UserTracker tracker, DataHolder data, CoordTransform transform)
         {
-            classificationHandler = handler;
-            this.data = Data;
+            this.classificationHandler = handler;
+            this.data = data;
+            this.tracker = tracker;
+            this.transformer = transformer;
         }
 
-        public override void train(List<Vector3D[]> vectorList, Device dev, String value)
+        public String train( String wlanAdr ,String devID)
         {
 
-            classificationHandler.calculateWallProjectionSampleAndLearn(vectorList, dev.Name);
+            Device dev = data.GetDeviceByName(devID);
+            User tmp = data.GetUserByIp(wlanAdr);
+            Vector3D[] vecs = transformer.transformJointCoords(tracker.getMedianFilteredCoordinates(tmp.SkeletonId));
+            return classificationHandler.calculateWallProjectionSampleAndLearn(vecs, dev.Id);
 
         }
         
-        public override List<Device> chooseDevice(String wlanAdr, CoordTransform Transformer, UserTracker Tracker)
+        public List<Device> chooseDevice(String wlanAdr)
         {
             
             
             List<Device> dev = new List<Device>();
             User tempUser = data.GetUserByIp(wlanAdr);
-            Vector3D[] vecs = Transformer.transformJointCoords(Tracker.getMedianFilteredCoordinates(tempUser.SkeletonId));
+            Vector3D[] vecs = transformer.transformJointCoords(tracker.getMedianFilteredCoordinates(tempUser.SkeletonId));
      
             //Vector3D[] vecs = Transformer.transformJointCoords(Tracker.GetCoordinates(tempUser.SkeletonId));
             if (tempUser != null)
@@ -49,14 +57,14 @@ namespace IGS.Server.IGS
                
                 sample = classificationHandler.classify(sample);
 
-                Console.WriteLine("Classified: " + sample.sampleDeviceName);
-                XMLComponentHandler.writeLogEntry("Device classified to" + sample.sampleDeviceName);
+                Console.WriteLine("Classified: " + sample.sampledeviceIdentifier);
+                XMLComponentHandler.writeLogEntry("Device classified to" + sample.sampledeviceIdentifier);
                 //Body body = Tracker.GetBodyById(tempUser.SkeletonId);
-                //XMLSkeletonJointRecords.writeUserJointsToXmlFile(tempUser, Data.GetDeviceByName(sample.sampleDeviceName), body);
+                //XMLSkeletonJointRecords.writeUserJointsToXmlFile(tempUser, Data.GetDeviceByName(sample.sampledeviceIdentifier), body);
                 //XMLComponentHandler.writeUserJointsPerSelectClick(body);
                
-                Device device = data.GetDeviceByName(sample.sampleDeviceName);
-                sample.sampleDeviceName = device.Name;
+                Device device = data.GetDeviceByName(sample.sampledeviceIdentifier);
+                sample.sampledeviceIdentifier = device.Name;
 
 
 
@@ -64,12 +72,12 @@ namespace IGS.Server.IGS
                 {
                     foreach (Device d in data.Devices)
                     {
-                        if (d.Name.ToLower() == sample.sampleDeviceName.ToLower())
+                        if (d.Name.ToLower() == sample.sampledeviceIdentifier.ToLower())
                         {
                             XMLComponentHandler.writeWallProjectionSampleToXML(sample);
                             Point3D p = new Point3D(vecs[2].X, vecs[2].Y, vecs[2].Z);
                             XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
-                            XMLComponentHandler.writeSampleToXML(vecs, sample.sampleDeviceName);
+                            XMLComponentHandler.writeSampleToXML(vecs, sample.sampledeviceIdentifier);
                             XMLSkeletonJointRecords.writeClassifiedDeviceToLastSelect(d);
                             dev.Add(d);
                             //tempUser.lastChosenDeviceID = d.Id;
@@ -82,6 +90,5 @@ namespace IGS.Server.IGS
             }
             return dev;
         }
-
     }
 }

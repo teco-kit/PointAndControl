@@ -63,7 +63,7 @@ namespace IGS.Classifier
             WPSlist = new List<WallProjectionSample>();
             folds = new List<List<WallProjectionSample>>();
             labels = new List<string>();
-            dropOutNames = new String[] {};
+            dropOutNames = new String[] {"Raumbeleuchtung", "Hifi"};
 
             collisionPacksList = new List<collisionPackage>();
             lineFolds = new List<List<collisionPackage>>();
@@ -106,7 +106,7 @@ namespace IGS.Classifier
                 foreach (WallProjectionSample wps in WPSlist)
                 {
 
-                    if (!(dropOutNames.Contains(wps.sampleDeviceName)))
+                    if (!(dropOutNames.Contains(wps.sampledeviceIdentifier)))
                     {
                         tmpWPSList.Add(wps);
                     }
@@ -447,7 +447,7 @@ namespace IGS.Classifier
 
                     for (int k = 0; k < labels.Count; k++)
                     {
-                        if (wps.sampleDeviceName.Equals(labels[k]))
+                        if (wps.sampledeviceIdentifier.Equals(labels[k]))
                         {
                             actualDevPos = k;
                             break;
@@ -460,7 +460,7 @@ namespace IGS.Classifier
                     nrClass++;
                    for (int j = 0; j < labels.Count; j++)
                    {
-                       if (newSample.sampleDeviceName.ToLower() == labels[j].ToLower())
+                       if (newSample.sampledeviceIdentifier.ToLower() == labels[j].ToLower())
                        {
                            predictedPos = j;
                            break;
@@ -469,7 +469,7 @@ namespace IGS.Classifier
 
                    cfMatrix[actualDevPos,predictedPos]++;
 
-                   if (wps.sampleDeviceName.ToLower() == newSample.sampleDeviceName.ToLower())
+                   if (wps.sampledeviceIdentifier.ToLower() == newSample.sampledeviceIdentifier.ToLower())
                    {
                        correct += 1;
                    }

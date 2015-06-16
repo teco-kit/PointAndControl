@@ -34,7 +34,7 @@ namespace IGS.Server.Kinect
 
         public bool movingWindowCollect { get; set; }
 
-        public SkeletonJointFilter skeletonJointFilter { get; set; }
+        ISkeletonJointFilter jointFilter { get; set; }
 
         public bool workingOnWindow { get; set; }
 
@@ -59,7 +59,7 @@ namespace IGS.Server.Kinect
             movingWindowCollect = movingWindow;
             collectAfterClick = true;
             lastBodies = new List<Body[]>();
-            this.skeletonJointFilter = new MedianJointFilter();
+            this.jointFilter = new MedianJointFilter();
             lastBodiesPuffer = new List<Body[]>();
             workingOnWindow = false;
             windowSize = 15;
@@ -328,7 +328,7 @@ namespace IGS.Server.Kinect
             List<Vector3D[]> coords = this.Get30Coordinates(id);
 
           
-            Vector3D[] smoothed = skeletonJointFilter.jointFilter(coords);
+            Vector3D[] smoothed = jointFilter.jointFilter(coords);
            
             DifferenceCalculator.calculateBodyDifference(smoothed, DifferenceCalculator.calulateVecArray(tmpBody));
 

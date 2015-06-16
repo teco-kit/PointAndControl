@@ -16,7 +16,7 @@ namespace IGS.Helperclasses
 
         private struct SortMarker
         {
-            public string deviceName { get; set; }
+            public string deviceIdentifier { get; set; }
             public string deviceID { get; set; }
             public List<XmlNode> nodes { get; set; }
         }
@@ -40,13 +40,13 @@ namespace IGS.Helperclasses
 
             foreach (XmlNode select in rootNode.ChildNodes)
             {
-                String deviceName = select.Attributes[3].Value;
+                String deviceIdentifier = select.Attributes[3].Value;
                 String deviceID = select.Attributes[2].Value;
                 
 
                 foreach (SortMarker marker in deviceMarkers)
                 {
-                    if (marker.deviceName.Equals(deviceName))
+                    if (marker.deviceIdentifier.Equals(deviceIdentifier))
                     {
                         marker.nodes.Add(select);
                         selectAdded = true;
@@ -56,7 +56,7 @@ namespace IGS.Helperclasses
                 if (selectAdded == false)
                 {
                     SortMarker marker = new SortMarker();
-                    marker.deviceName = deviceName;
+                    marker.deviceIdentifier = deviceIdentifier;
                     marker.deviceID = deviceID;
                     marker.nodes = new List<XmlNode>();
                     marker.nodes.Add(select);
@@ -79,7 +79,7 @@ namespace IGS.Helperclasses
                 
                 XmlElement xmlDevice = docConfig.CreateElement("device");
                 xmlDevice.SetAttribute("id", marker.deviceID);
-                xmlDevice.SetAttribute("name", marker.deviceName);
+                xmlDevice.SetAttribute("name", marker.deviceIdentifier);
                 foreach (XmlNode node in marker.nodes)
                 {
                     xmlDevice.AppendChild(node);

@@ -100,7 +100,7 @@
                    UseLayoutRounding="False" HorizontalContentAlignment="Center" Margin="0,0,0,603" Grid.Row="1" />
             <TextBox x:Name="DeviceType" Margin="26,65,124,544" Grid.Row="1"
                      TextWrapping="Wrap" Height="30" />
-            <TextBox x:Name="DeviceName" Margin="26,100,124,509" Grid.Row="1"
+            <TextBox x:Name="deviceIdentifier" Margin="26,100,124,509" Grid.Row="1"
                      TextWrapping="Wrap" Height="30" />
             <TextBox x:Name="DeviceAdress" Margin="26,135,124,474" Grid.Row="1"
                      TextWrapping="Wrap" Height="30" />

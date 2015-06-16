@@ -21,17 +21,21 @@ namespace IGS.Classifier
 
         public SampleExtractor extractor { get; set; }
         public SampleSplitter splitter { get; set; }
+        public DataHolder data { get; set; }
 
-        public ClassificationHandler(CoordTransform transformer)
+        public ClassificationHandler(CoordTransform transformer, DataHolder data)
         {
+
             knnClassifier = new KNNClassifier(XMLComponentHandler.readWallProjectionSamplesFromXML(), -1);
             extractor = new SampleExtractor(transformer);
         
             splitter = new SampleSplitter();
-            sCalculator = new SampleCalculator(knnClassifier);
-            Console.WriteLine("After collector config");
+            sCalculator = new SampleCalculator(data._roomModel);
+           
         }
 
+
+        
 
 
         //public void onlineLearn(User u)
@@ -56,7 +60,7 @@ namespace IGS.Classifier
 
         public List<WallProjectionSample> getSamples()
         {
-            return knnClassifier.samples;
+            return knnClassifier.trainingSamples;
         }
 
         public void retrainClassifier(List<WallProjectionSample> samples)
@@ -80,22 +84,22 @@ namespace IGS.Classifier
             Crossvalidator crossval = new Crossvalidator(this, knnClassifier,data, transformer);
             crossval.crossValidateClassifier();
 
-            //Thread.Sleep(1000);
+            Thread.Sleep(1000);
             
-            //crossval.crossValidateCollision();
+            crossval.crossValidateCollision();
 
-            //XMLComponentHandler.writeTimesForCrossvalidation(crossval.timeForPreprocessingCollision, crossval.timeForTrainingCollsion, crossval.timeForClassifikationCollision,
-            //                                               crossval.timeForPreprocessingClassification, crossval.timeForTrainingClassification, crossval.timeForClassifikationClassification);
+            XMLComponentHandler.writeTimesForCrossvalidation(crossval.timeForPreprocessingCollision, crossval.timeForTrainingCollsion, crossval.timeForClassifikationCollision,
+                                                           crossval.timeForPreprocessingClassification, crossval.timeForTrainingClassification, crossval.timeForClassifikationClassification);
             //crossval.crossValidateCollisionHopp();
-            //timeTaking();
+            timeTaking();
         }
         /// <summary>
         /// Calculates a WallProjection Sample and adds it to the Pending samples to learn.
         /// </summary>
         /// <param name="vectors"></param>
-        /// <param name="deviceName"></param>
+        /// <param name="deviceIdentifier"></param>
         /// <returns></returns>
-        public bool calculateWallProjectionSampleAndLearn(List<Vector3D[]> vectorsList, String deviceName)
+        public bool calculateWallProjectionSampleAndLearn(List<Vector3D[]> vectorsList, String deviceIdentifier)
         {
             
             bool success = false;
@@ -103,15 +107,15 @@ namespace IGS.Classifier
             List<WallProjectionSample> sampleList = new List<WallProjectionSample>();
             foreach (Vector3D[] vectors in vectorsList)
             {
-                WallProjectionSample sample = sCalculator.calculateWallProjectionSample(vectors, deviceName);
+                WallProjectionSample sample = sCalculator.calculateWallProjectionSample(vectors, deviceIdentifier);
 
-                if (sample.sampleDeviceName.Equals("nullSample") == false)
+                if (sample.sampledeviceIdentifier.Equals("nullSample") == false)
                 {
 
                     XMLComponentHandler.writeWallProjectionSampleToXML(sample);
                     Point3D p = new Point3D(vectors[2].X, vectors[2].Y, vectors[2].Z);
                     XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
-                    XMLComponentHandler.writeSampleToXML(vectors, sample.sampleDeviceName);
+                    XMLComponentHandler.writeSampleToXML(vectors, sample.sampledeviceIdentifier);
 
                     sampleList.Add(sample);
 
@@ -126,33 +130,35 @@ namespace IGS.Classifier
             return success;
         }
 
-        public bool calculateWallProjectionSampleAndLearn(Vector3D[] vectors, String deviceName)
+        public String calculateWallProjectionSampleAndLearn(Vector3D[] vectors, String deviceIdentifier)
         {
 
-            bool success = false;
+           
 
             
             
-                WallProjectionSample sample = sCalculator.calculateWallProjectionSample(vectors, deviceName);
+                WallProjectionSample sample = sCalculator.calculateWallProjectionSample(vectors, deviceIdentifier);
 
-                if (sample.sampleDeviceName.Equals("nullSample") == false)
+                if (sample.sampledeviceIdentifier.Equals("nullSample") == false)
                 {
 
                     XMLComponentHandler.writeWallProjectionSampleToXML(sample);
                     Point3D p = new Point3D(vectors[2].X, vectors[2].Y, vectors[2].Z);
                     XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
-                    XMLComponentHandler.writeSampleToXML(vectors, sample.sampleDeviceName);
+                    XMLComponentHandler.writeSampleToXML(vectors, sample.sampledeviceIdentifier);
 
-                    knnClassifier.samples.Add(sample);
+                    knnClassifier.trainingSamples.Add(sample);
 
-                    success = true;
+                    knnClassifier.trainClassifier();
+
+                    return "Sample gesammelt und Klassifikator trainiert";
 
                 }
 
+
+                return "Es ist ein Fehler beim Erstellen des Samples aufgetreten, bitte versuchen sie es erneut!";
+
             
-
-
-            return success;
         }
 
 
@@ -212,8 +218,8 @@ namespace IGS.Classifier
                     extractor.calculateAndWriteWallProjectionAndPositionSamples(sCalculator, "\\" + j, extractor.rawSamplesPerSelect, "AllRest");
                     extractor.calculateAndWriteWallProjectionAndPositionSamples(sCalculator, "\\" + j, extractor.rawSamplesPerSelectSmoothed, "AllRestSmoothed");
 
-                    extractor.writeNormalSamplesFromRawSamples("\\" + j, extractor.rawSamplesPerSelect, "AllRest");
-                    extractor.writeNormalSamplesFromRawSamples("\\" + j, extractor.rawSamplesPerSelectSmoothed, "AllRestSmoothed");
+                    extractor.writePointingFromRawSamples("\\" + j, extractor.rawSamplesPerSelect, "AllRest");
+                    extractor.writePointingFromRawSamples("\\" + j, extractor.rawSamplesPerSelectSmoothed, "AllRestSmoothed");
 
                     j++;
                 }
@@ -266,8 +272,8 @@ namespace IGS.Classifier
                 extractor.calculateAndWriteWallProjectionAndPositionSamples(sCalculator, "\\" + j, extractor.rawSamplesPerSelect, "AllOne");
                 extractor.calculateAndWriteWallProjectionAndPositionSamples(sCalculator, "\\" + j, extractor.rawSamplesPerSelectSmoothed, "AllOneSmoothed");
 
-                extractor.writeNormalSamplesFromRawSamples("\\" + j , extractor.rawSamplesPerSelect, "AllOne");
-                extractor.writeNormalSamplesFromRawSamples("\\" + j , extractor.rawSamplesPerSelectSmoothed, "AllOneSmoothed");
+                extractor.writePointingFromRawSamples("\\" + j , extractor.rawSamplesPerSelect, "AllOne");
+                extractor.writePointingFromRawSamples("\\" + j , extractor.rawSamplesPerSelectSmoothed, "AllOneSmoothed");
 
                 j++;
             }
@@ -326,16 +332,16 @@ namespace IGS.Classifier
             extractor.calculateAndWriteWallProjectionAndPositionSamples(sCalculator, "", extractor.rawSamplesPerSelectSmoothed,"AllSmoothed");
 
            
-            extractor.writeNormalSamplesFromRawSamples("", splittedFrontToBack[0], "frontToBackBack");
-            extractor.writeNormalSamplesFromRawSamples("", splittedFrontToBack[1],"frontToBackFront");
-            extractor.writeNormalSamplesFromRawSamples("", splittedFrontToBackSmoothed[0],"frontToBackSmoothedBack");
-            extractor.writeNormalSamplesFromRawSamples("", splittedFrontToBackSmoothed[1],"frontToBackSmoothedFront");
-            extractor.writeNormalSamplesFromRawSamples("", splittedRightToLeft[0],"rightToLeftRight");
-            extractor.writeNormalSamplesFromRawSamples("", splittedRightToLeft[1],"rightToLeftLeft");
-            extractor.writeNormalSamplesFromRawSamples("", splittedRightToLeftSmoothed[0],"rightToLeftSmoothedRight");
-            extractor.writeNormalSamplesFromRawSamples("", splittedRightToLeftSmoothed[1],"rightToLeftSmoothedLeft");
-            extractor.writeNormalSamplesFromRawSamples("", extractor.rawSamplesPerSelect,"All");
-            extractor.writeNormalSamplesFromRawSamples("", extractor.rawSamplesPerSelectSmoothed,"AllSmoothed");
+            extractor.writePointingFromRawSamples("", splittedFrontToBack[0], "frontToBackBack");
+            extractor.writePointingFromRawSamples("", splittedFrontToBack[1],"frontToBackFront");
+            extractor.writePointingFromRawSamples("", splittedFrontToBackSmoothed[0],"frontToBackSmoothedBack");
+            extractor.writePointingFromRawSamples("", splittedFrontToBackSmoothed[1],"frontToBackSmoothedFront");
+            extractor.writePointingFromRawSamples("", splittedRightToLeft[0],"rightToLeftRight");
+            extractor.writePointingFromRawSamples("", splittedRightToLeft[1],"rightToLeftLeft");
+            extractor.writePointingFromRawSamples("", splittedRightToLeftSmoothed[0],"rightToLeftSmoothedRight");
+            extractor.writePointingFromRawSamples("", splittedRightToLeftSmoothed[1],"rightToLeftSmoothedLeft");
+            extractor.writePointingFromRawSamples("", extractor.rawSamplesPerSelect,"All");
+            extractor.writePointingFromRawSamples("", extractor.rawSamplesPerSelectSmoothed,"AllSmoothed");
 
 
 
@@ -357,11 +363,11 @@ namespace IGS.Classifier
             {
                 extractor.calculateAndWriteWallProjectionAndPositionSamples(sCalculator, "Online\\OnePerDevice", onlineLearningByDevices[i], "OnePerDevice" + i);
                 extractor.calculateAndWriteWallProjectionSamples(sCalculator, "Online\\OnePerDevice", onlineLearningByDevices[i], "OnePerDevice" + i);
-                extractor.writeNormalSamplesFromRawSamples("Online\\OnePerDevice", onlineLearningByDevices[i], "OnePerDevice" + i);
+                extractor.writePointingFromRawSamples("Online\\OnePerDevice", onlineLearningByDevices[i], "OnePerDevice" + i);
 
                 extractor.calculateAndWriteWallProjectionAndPositionSamples(sCalculator, "Online\\OnePerDeviceSmoothed", onlineLearningByDevicesSmoothed[i], "OnePerDevice" + i);
                 extractor.calculateAndWriteWallProjectionSamples(sCalculator, "Online\\OnePerDeviceSmoothed", onlineLearningByDevicesSmoothed[i], "OnePerDevice" + i);
-                extractor.writeNormalSamplesFromRawSamples("Online\\OnePerDeviceSmoothed", onlineLearningByDevicesSmoothed[i], "OnePerDevice" + i);
+                extractor.writePointingFromRawSamples("Online\\OnePerDeviceSmoothed", onlineLearningByDevicesSmoothed[i], "OnePerDevice" + i);
             }
         }
 
@@ -376,12 +382,12 @@ namespace IGS.Classifier
                 List<WallProjectionSample> testList = new List<WallProjectionSample>();
                 for (int i = 0; i < 50; i++)
                 {
-                    testList.Add(knnClassifier.samples[i]);
+                    testList.Add(knnClassifier.trainingSamples[i]);
                 }
-                for (int j = 50; j < knnClassifier.samples.Count(); j++)
+                for (int j = 50; j < knnClassifier.trainingSamples.Count(); j++)
                 {
                    
-                        testList.Add(knnClassifier.samples[j]);
+                        testList.Add(knnClassifier.trainingSamples[j]);
 
                     s.Start();
                     knnClassifier.trainClassifier(testList);
@@ -389,9 +395,9 @@ namespace IGS.Classifier
                     trainClassMoreSamples.Add((double)s.ElapsedMilliseconds);
                     s.Reset();
 
-                    WallProjectionSample wps = new WallProjectionSample(new Point3D(knnClassifier.samples[knnClassifier.samples.Count - 1].x,
-                                                                        knnClassifier.samples[knnClassifier.samples.Count - 1].y,
-                                                                        knnClassifier.samples[knnClassifier.samples.Count - 1].z)
+                    WallProjectionSample wps = new WallProjectionSample(new Point3D(knnClassifier.trainingSamples[knnClassifier.trainingSamples.Count - 1].x,
+                                                                        knnClassifier.trainingSamples[knnClassifier.trainingSamples.Count - 1].y,
+                                                                        knnClassifier.trainingSamples[knnClassifier.trainingSamples.Count - 1].z)
                         );
 
                     s.Start();
@@ -423,7 +429,7 @@ namespace IGS.Classifier
 
             s.Reset();
             s.Start();
-            classify(knnClassifier.samples[0]);
+            classify(knnClassifier.trainingSamples[0]);
             s.Stop();
 
             float classtime = s.ElapsedMilliseconds;

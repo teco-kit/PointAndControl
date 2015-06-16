@@ -719,6 +719,7 @@ public partial class MainWindow
         roomDepth = depth;
         XMLComponentHandler.saveRoomPosition(roomData);
         _igs.classification.sCalculator.calcRoomModel.setRoomMeasures(width, depth, height);
+        _igs.Data.changeRoomModel(width, height, depth);
         if (_3Dview != null)
         {
             _3Dview.createRoom(width, depth, height);
@@ -829,7 +830,7 @@ public partial class MainWindow
         String[] parameter = new String[4];
 
         parameter[0] = DeviceType.Text;
-        parameter[1] = DeviceName.Text;
+        parameter[1] = deviceIdentifier.Text;
         parameter[2] = DeviceAdress.Text;
         parameter[3] = DevicePort.Text;
 

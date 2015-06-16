@@ -11,7 +11,7 @@ using System.Windows.Media.Media3D;
 
 namespace IGS.Server.IGS
 {
-    class CollisionMethod : CoreMethods
+    class CollisionMethod : ICoreMethods
     {
 
          public Locator locator { get; set; }
@@ -21,15 +21,15 @@ namespace IGS.Server.IGS
             this.locator = new Locator(data, tracker, transformer);
         }
 
-        public override List<Device> chooseDevice(String wlanAdr, CoordTransform Transformer, UserTracker Tracker)
+        public List<Device> chooseDevice(String wlanAdr)
         {
             User tempUser = locator.Data.GetUserByIp(wlanAdr);
-            return tempUser != null ? CollisionDetection.Calculate(locator.Data.Devices, Transformer.transformJointCoords(Tracker.GetCoordinates(tempUser.SkeletonId))) : null;
+            return tempUser != null ? CollisionDetection.Calculate(locator.Data.Devices, locator.Transformer.transformJointCoords(locator.Tracker.GetCoordinates(tempUser.SkeletonId))) : null;
         }
 
-        public override void train(List<Vector3D[]> vectorList, Device dev, String value)
+        public String train(String wlanAdr, String devId)
         {
-            locator.ChangeDeviceLocation(dev.Id, value);
+            return locator.ChangeDeviceLocation(devId, wlanAdr);
         }
     }
 }

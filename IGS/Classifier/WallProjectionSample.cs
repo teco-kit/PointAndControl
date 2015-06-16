@@ -18,7 +18,7 @@ namespace IGS.Classifier
         [Feature]
         public double z { get; set; }
         [Label]
-        public String sampleDeviceName { get; set; }
+        public String sampledeviceIdentifier { get; set; }
 
         public WallProjectionSample(Point3D position)
         {
@@ -34,12 +34,12 @@ namespace IGS.Classifier
             this.z = 0;
         }
 
-        public WallProjectionSample(Point3D position, string deviceName)
+        public WallProjectionSample(Point3D position, string deviceIdentifier)
         {
             this.x = position.X;
             this.y = position.Y;
             this.z = position.Z;
-            sampleDeviceName = deviceName;
+            sampledeviceIdentifier = deviceIdentifier;
         }
 
         public WallProjectionSample(WallProjectionAndPositionSample wpaps)
@@ -47,7 +47,7 @@ namespace IGS.Classifier
             this.x = wpaps.wallPositionX;
             this.y = wpaps.wallPositionY;
             this.z = wpaps.wallPositionZ;
-            this.sampleDeviceName = wpaps.sampleDeviceName;
+            this.sampledeviceIdentifier = wpaps.sampledeviceIdentifier;
         }
 
         public WallProjectionSample(WallProjectionSample wps)
@@ -56,7 +56,7 @@ namespace IGS.Classifier
             this.y = wps.y;
             this.z = wps.z;
 
-            this.sampleDeviceName = "";
+            this.sampledeviceIdentifier = "";
         }
 
     }

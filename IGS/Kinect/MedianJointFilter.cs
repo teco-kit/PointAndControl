@@ -9,12 +9,12 @@ using System.Windows.Media.Media3D;
 
 namespace IGS.Kinect
 {
-    public class MedianJointFilter : SkeletonJointFilter
+    public class MedianJointFilter : ISkeletonJointFilter
     {
    
 
         //Median vector filterting Paper: Noise reduction by vector median filtering by Yike Liu
-        public override Vector3D[] jointFilter(List<Vector3D[]> jointLists)
+        public Vector3D[] jointFilter(List<Vector3D[]> jointLists)
         {
            
             Vector3D[] filtered = new Vector3D[4];
