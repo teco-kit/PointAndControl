@@ -156,7 +156,7 @@
     <Compile Include="Classifier\Ray3D.cs" />
     <Compile Include="Classifier\Room.cs" />
     <Compile Include="Classifier\ClassificationHandler.cs" />
-    <Compile Include="Classifier\SampleCalculator.cs" />
+    <Compile Include="Classifier\WPSampleCalculator.cs" />
     <Compile Include="Classifier\WallProjectionAndPositionSample.cs" />
     <Compile Include="Classifier\WallProjectionSample.cs" />
     <Compile Include="Locator\Bobyqa.cs" />
@@ -222,8 +222,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="ClassDiagram_Classifier.cd" />
-    <None Include="ClassDiagram_FilterInclude.cd" />
-    <None Include="ClassDiagram_TrainChooseInterface.cd" />
     <None Include="Images\Thumbs.db" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

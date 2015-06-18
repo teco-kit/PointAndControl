@@ -273,12 +273,6 @@ namespace IGS.Server.IGS
                         XMLComponentHandler.writeLogEntry("Response to 'collectDeviceSample': " + retStr);
 
                         return retStr;
-
-                    case "StartTraining":
-                        classification.retrainClassifier();
-                        retStr = "Trained";
-                        return retStr;
-                       
                     
                     case "popup":
                         String msg = "";
@@ -382,7 +376,7 @@ namespace IGS.Server.IGS
             if (tempUser != null)
             {
 
-                WallProjectionSample sample = classification.sCalculator.calculateWallProjectionSample(vecs, "");
+                WallProjectionSample sample = classification.sCalculator.calculateSample(vecs, "");
 
                 sample = classification.classify(sample);
 

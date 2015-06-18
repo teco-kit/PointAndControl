@@ -11,17 +11,17 @@ using System.Windows.Media.Media3D;
 
 namespace IGS.Classifier
 {
-    public class SampleCalculator
+    public class WPSampleCalculator
     {
         public Room calcRoomModel { get; set; }
 
         
-        public SampleCalculator(Room room)
+        public WPSampleCalculator(Room room)
         {
             this.calcRoomModel = room;
         }
 
-        public WallProjectionSample calculateWallProjectionSample(Vector3D[] vectors, String devName)
+        public WallProjectionSample calculateSample(Vector3D[] vectors, String label)
         {
             
             Vector3D direction = Vector3D.Subtract(vectors[3], vectors[2]);
@@ -31,14 +31,14 @@ namespace IGS.Classifier
 
             if ((samplePoint.X.Equals(float.NaN) == false))
             {
-                if (devName.Equals(""))
+                if (label.Equals(""))
                 {
                     sample = new WallProjectionSample(samplePoint);
                   
                 }
                 else
                 {
-                    sample = new WallProjectionSample(samplePoint, devName);
+                    sample = new WallProjectionSample(samplePoint, label);
                     
                 }
                 return sample;
@@ -77,31 +77,6 @@ namespace IGS.Classifier
             wallPoint.Z = float.NaN;
 
             return wallPoint;
-        }
-
-        public WallProjectionSample calculateWallProjectionSample(Vector3D direction, Vector3D position, String devName)
-        {
-            
-            Ray3D ray = new Ray3D(position.ToPoint3D(), direction);
-            Point3D samplePoint = intersectAndTestAllWalls(ray);
-            WallProjectionSample sample = new WallProjectionSample(new Point3D(), "nullSample");
-
-            if ((samplePoint.X.Equals(float.NaN) == false))
-            {
-                if (devName.Equals(""))
-                {
-                    sample = new WallProjectionSample(samplePoint);
-                }
-                else
-                {
-                    sample = new WallProjectionSample(samplePoint, devName);
-                }
-                return sample;
-            }
-            else {
-                Console.WriteLine("Sample didn't hit the wall");
-            }
-            return sample;
         }
     }
 }

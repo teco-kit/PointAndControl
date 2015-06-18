@@ -12,16 +12,16 @@ using System.Diagnostics;
 
 namespace IGS.Classifier
 {
-    public class ClassificationHandler
+    public class ClassificationHandler 
     {
 
         public KNNClassifier knnClassifier { get; set; }
         
-        public SampleCalculator sCalculator { get; set; }
+        public WPSampleCalculator sCalculator { get; set; }
 
         public SampleExtractor extractor { get; set; }
         public SampleSplitter splitter { get; set; }
-        public DataHolder data { get; set; }
+      
 
         public ClassificationHandler(CoordTransform transformer, DataHolder data)
         {
@@ -30,7 +30,7 @@ namespace IGS.Classifier
             extractor = new SampleExtractor(transformer);
         
             splitter = new SampleSplitter();
-            sCalculator = new SampleCalculator(data._roomModel);
+            sCalculator = new WPSampleCalculator(data._roomModel);
            
         }
 
@@ -93,51 +93,11 @@ namespace IGS.Classifier
             //crossval.crossValidateCollisionHopp();
             timeTaking();
         }
-        /// <summary>
-        /// Calculates a WallProjection Sample and adds it to the Pending samples to learn.
-        /// </summary>
-        /// <param name="vectors"></param>
-        /// <param name="deviceIdentifier"></param>
-        /// <returns></returns>
-        public bool calculateWallProjectionSampleAndLearn(List<Vector3D[]> vectorsList, String deviceIdentifier)
-        {
-            
-            bool success = false;
-           
-            List<WallProjectionSample> sampleList = new List<WallProjectionSample>();
-            foreach (Vector3D[] vectors in vectorsList)
-            {
-                WallProjectionSample sample = sCalculator.calculateWallProjectionSample(vectors, deviceIdentifier);
 
-                if (sample.sampledeviceIdentifier.Equals("nullSample") == false)
-                {
-
-                    XMLComponentHandler.writeWallProjectionSampleToXML(sample);
-                    Point3D p = new Point3D(vectors[2].X, vectors[2].Y, vectors[2].Z);
-                    XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
-                    XMLComponentHandler.writeSampleToXML(vectors, sample.sampledeviceIdentifier);
-
-                    sampleList.Add(sample);
-
-                    success = true;
-
-                }
-
-            }
-
-            knnClassifier.learnBatch(sampleList);
-
-            return success;
-        }
 
         public String calculateWallProjectionSampleAndLearn(Vector3D[] vectors, String deviceIdentifier)
-        {
-
-           
-
-            
-            
-                WallProjectionSample sample = sCalculator.calculateWallProjectionSample(vectors, deviceIdentifier);
+        {   
+                WallProjectionSample sample = sCalculator.calculateSample(vectors, deviceIdentifier);
 
                 if (sample.sampledeviceIdentifier.Equals("nullSample") == false)
                 {

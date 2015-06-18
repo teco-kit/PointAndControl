@@ -408,20 +408,7 @@ namespace IGS.Server.IGS
             return Color.White;
         }
 
-        public List<WallProjectionSample> returnAllSamples()
-        {
 
-            List<WallProjectionSample> result = new List<WallProjectionSample>();
-            foreach (Device dev in _devices)
-            {
-                foreach (WallProjectionSample sample in dev.deviceSamples)
-                {
-                    result.Add(sample);
-                }
-            }
-
-            return result;
-        }
 
         public void changeRoomModel(float width, float height, float depth)
         {

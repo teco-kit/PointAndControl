@@ -60,12 +60,12 @@ namespace IGS.Helperclasses
         }
 
 
-        public List<WallProjectionSample> calculateAndWriteWallProjectionSamples(SampleCalculator collector, String DirectoryPath, List<rawSample> sampleList, String Filename)
+        public List<WallProjectionSample> calculateAndWriteWallProjectionSamples(WPSampleCalculator calculator, String DirectoryPath, List<rawSample> sampleList, String Filename)
         {
             List<WallProjectionSample> wallProjectionSamples = new List<WallProjectionSample>();
             foreach (SampleExtractor.rawSample rawSample in sampleList)
             {
-                WallProjectionSample sample = collector.calculateWallProjectionSample(rawSample.joints, rawSample.label);
+                WallProjectionSample sample = calculator.calculateSample(rawSample.joints, rawSample.label);
                 if (!sample.sampledeviceIdentifier.Equals("nullSample"))
                 {
                     wallProjectionSamples.Add(sample);
@@ -85,13 +85,13 @@ namespace IGS.Helperclasses
             return wallProjectionSamples;
         }
 
-        public List<WallProjectionSample> calculateWallProjectionSamples(SampleCalculator collector, List<rawSample> sampleList)
+        public List<WallProjectionSample> calculateWallProjectionSamples(WPSampleCalculator collector, List<rawSample> sampleList)
         {
             List<WallProjectionSample> wpsList = new List<WallProjectionSample>();
 
             foreach (SampleExtractor.rawSample rawSample in sampleList)
             {
-                WallProjectionSample sample = collector.calculateWallProjectionSample(rawSample.joints, rawSample.label);
+                WallProjectionSample sample = collector.calculateSample(rawSample.joints, rawSample.label);
                 if (!sample.sampledeviceIdentifier.Equals("nullSample"))
                 {
                    wpsList.Add(sample);
@@ -101,13 +101,13 @@ namespace IGS.Helperclasses
 
         }
 
-        public List<WallProjectionAndPositionSample> calculateAndWriteWallProjectionAndPositionSamples(SampleCalculator collector, String DirectoryPath, List<rawSample> sampleList, String Filename)
+        public List<WallProjectionAndPositionSample> calculateAndWriteWallProjectionAndPositionSamples(WPSampleCalculator collector, String DirectoryPath, List<rawSample> sampleList, String Filename)
         {
             List<WallProjectionAndPositionSample> wallProjectionSamplesAndPositionSamples = new List<WallProjectionAndPositionSample>();
             WallProjectionSample tmpSample = new WallProjectionSample();
             foreach (SampleExtractor.rawSample rawSample in sampleList)
             {
-                tmpSample = collector.calculateWallProjectionSample(rawSample.joints, rawSample.label);
+                tmpSample = collector.calculateSample(rawSample.joints, rawSample.label);
 
                 WallProjectionAndPositionSample sample = new WallProjectionAndPositionSample(tmpSample, new Point3D(rawSample.joints[2].X, rawSample.joints[2].Y, rawSample.joints[2].Z), rawSample.label);
 

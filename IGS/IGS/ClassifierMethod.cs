@@ -35,7 +35,10 @@ namespace IGS.Server.IGS
             Device dev = data.GetDeviceByName(devID);
             User tmp = data.GetUserByIp(wlanAdr);
             Vector3D[] vecs = transformer.transformJointCoords(tracker.getMedianFilteredCoordinates(tmp.SkeletonId));
-            return classificationHandler.calculateWallProjectionSampleAndLearn(vecs, dev.Id);
+            String s = classificationHandler.calculateWallProjectionSampleAndLearn(vecs, dev.Id);
+            XMLSkeletonJointRecords.writeClassifiedDeviceToLastSelect(dev);
+
+            return s;
 
         }
         
@@ -51,7 +54,7 @@ namespace IGS.Server.IGS
             if (tempUser != null)
             {
                 
-                WallProjectionSample sample = classificationHandler.sCalculator.calculateWallProjectionSample(vecs, "");
+                WallProjectionSample sample = classificationHandler.sCalculator.calculateSample(vecs, "");
 
 
                
