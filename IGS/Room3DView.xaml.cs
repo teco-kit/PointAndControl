@@ -486,7 +486,7 @@ namespace IGS
             {
                 foreach (Device dev in devs)
                 {
-                    if (sample.sampledeviceIdentifier == dev.Name && (dev.Name == "SensorTable"))
+                    if (sample.sampledeviceIdentifier == dev.Id)
                     {
                         Color c = Color.FromArgb(dev.color.A, dev.color.R, dev.color.G, dev.color.B);
                         Material mat = new DiffuseMaterial(new SolidColorBrush(c));

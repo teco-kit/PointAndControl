@@ -9,12 +9,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
+using Microsoft.Kinect;
 
 namespace IGS.Server.IGS
 {
     class ClassifierMethod : ICoreMethods
     {
-        public  ClassificationHandler classificationHandler { get; set; }
+        public ClassificationHandler classificationHandler { get; set; }
         public DataHolder data { get; set; }
 
         public UserTracker tracker { get; set; }
@@ -26,14 +27,15 @@ namespace IGS.Server.IGS
             this.classificationHandler = handler;
             this.data = data;
             this.tracker = tracker;
-            this.transformer = transformer;
+            this.transformer = transform;
         }
 
-        public String train( String wlanAdr ,String devID)
+        public String train(String wlanAdr, String devID)
         {
 
-            Device dev = data.GetDeviceByName(devID);
+            Device dev = data.getDeviceByID(devID);
             User tmp = data.GetUserByIp(wlanAdr);
+
             Vector3D[] vecs = transformer.transformJointCoords(tracker.getMedianFilteredCoordinates(tmp.SkeletonId));
             String s = classificationHandler.calculateWallProjectionSampleAndLearn(vecs, dev.Id);
             XMLSkeletonJointRecords.writeClassifiedDeviceToLastSelect(dev);
@@ -41,33 +43,38 @@ namespace IGS.Server.IGS
             return s;
 
         }
-        
+
         public List<Device> chooseDevice(String wlanAdr)
         {
-            
-            
             List<Device> dev = new List<Device>();
             User tempUser = data.GetUserByIp(wlanAdr);
             Vector3D[] vecs = transformer.transformJointCoords(tracker.getMedianFilteredCoordinates(tempUser.SkeletonId));
-     
             //Vector3D[] vecs = Transformer.transformJointCoords(Tracker.GetCoordinates(tempUser.SkeletonId));
             if (tempUser != null)
             {
-                
+
                 WallProjectionSample sample = classificationHandler.sCalculator.calculateSample(vecs, "");
 
-
-               
                 sample = classificationHandler.classify(sample);
 
                 Console.WriteLine("Classified: " + sample.sampledeviceIdentifier);
                 XMLComponentHandler.writeLogEntry("Device classified to" + sample.sampledeviceIdentifier);
-                //Body body = Tracker.GetBodyById(tempUser.SkeletonId);
+                Body body = tracker.GetBodyById(tempUser.SkeletonId);
                 //XMLSkeletonJointRecords.writeUserJointsToXmlFile(tempUser, Data.GetDeviceByName(sample.sampledeviceIdentifier), body);
                 //XMLComponentHandler.writeUserJointsPerSelectClick(body);
-               
-                Device device = data.GetDeviceByName(sample.sampledeviceIdentifier);
-                sample.sampledeviceIdentifier = device.Name;
+
+                String decapsulate = "";
+                Device device = null;
+
+                foreach (Device d in data.Devices)
+                {
+                    decapsulate = d.Id.Replace("_", "");
+                    if (sample.sampledeviceIdentifier.ToLower() == decapsulate.ToLower())
+                    {
+                        device = d;
+                    }
+                }
+                sample.sampledeviceIdentifier = device.Id;
 
 
 
@@ -75,13 +82,13 @@ namespace IGS.Server.IGS
                 {
                     foreach (Device d in data.Devices)
                     {
-                        if (d.Name.ToLower() == sample.sampledeviceIdentifier.ToLower())
+                        if (d.Id.ToLower() == sample.sampledeviceIdentifier.ToLower())
                         {
-                            XMLComponentHandler.writeWallProjectionSampleToXML(sample);
+                            //XMLComponentHandler.writeWallProjectionSampleToXML(sample);
                             Point3D p = new Point3D(vecs[2].X, vecs[2].Y, vecs[2].Z);
-                            XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
-                            XMLComponentHandler.writeSampleToXML(vecs, sample.sampledeviceIdentifier);
-                            XMLSkeletonJointRecords.writeClassifiedDeviceToLastSelect(d);
+                            //XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
+                            //XMLComponentHandler.writeSampleToXML(vecs, sample.sampledeviceIdentifier);
+                            //XMLSkeletonJointRecords.writeClassifiedDeviceToLastSelect(d);
                             dev.Add(d);
                             //tempUser.lastChosenDeviceID = d.Id;
                             //tempUser.lastClassDevSample = sample;

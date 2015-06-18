@@ -28,7 +28,7 @@ namespace IGS.Server.Kinect
 
         private Body[] _bodiesLastFrame = new Body[0];
 
-        private List<Body[]> lastBodies { get; set; }
+        public List<Body[]> lastBodies { get; set; }
         public bool collectAfterClick { get; set; }
 
 
@@ -330,7 +330,7 @@ namespace IGS.Server.Kinect
           
             Vector3D[] smoothed = jointFilter.jointFilter(coords);
            
-            DifferenceCalculator.calculateBodyDifference(smoothed, DifferenceCalculator.calulateVecArray(tmpBody));
+            //DifferenceCalculator.calculateBodyDifference(smoothed, DifferenceCalculator.calulateVecArray(tmpBody));
 
             return smoothed;
         }

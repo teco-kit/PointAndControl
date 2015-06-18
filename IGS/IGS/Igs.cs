@@ -52,7 +52,7 @@ namespace IGS.Server.IGS
 
             this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Centre);
             this.classification = new ClassificationHandler(Transformer, data);
-            this.coreMethods = new ClassifierMethod(classification, tracker, data, Transformer);
+            this.coreMethods = new ClassifierMethod(classification, Tracker, Data, Transformer);
 
             
         }
@@ -237,6 +237,7 @@ namespace IGS.Server.IGS
                     case "selectDevice":
                         if (Data.GetUserByIp(wlanAdr).TrackingState)
                         {
+
                             retStr = MakeDeviceString(coreMethods.chooseDevice(wlanAdr));
                             
                             XMLComponentHandler.writeLogEntry("Response to 'selectDevice': " + retStr);
@@ -306,7 +307,7 @@ namespace IGS.Server.IGS
                 if (cmdId == "changePosition")
                 {
                     retStr = coreMethods.train(wlanAdr, devId);
-                       
+                  
            
                     //writeInLog(logEntry);
 
@@ -385,10 +386,19 @@ namespace IGS.Server.IGS
                 Body body = Tracker.GetBodyById(tempUser.SkeletonId);
                 //XMLSkeletonJointRecords.writeUserJointsToXmlFile(tempUser, Data.GetDeviceByName(sample.sampledeviceIdentifier), body);
                 //XMLComponentHandler.writeUserJointsPerSelectClick(body);
-            
 
-                Device device = Data.GetDeviceByName(sample.sampledeviceIdentifier);
-                sample.sampledeviceIdentifier = device.Name;
+                String decapsulate = ""; 
+                Device device = null;
+
+                foreach (Device d in Data.Devices)
+                {
+                    decapsulate = d.Id.Replace("_", "");
+                    if (sample.sampledeviceIdentifier.ToLower() == decapsulate.ToLower())
+                    {
+                        device = d;
+                    }
+                }
+                sample.sampledeviceIdentifier = device.Id;
 
 
 
@@ -396,7 +406,7 @@ namespace IGS.Server.IGS
                 {
                     foreach (Device d in Data.Devices)
                     {
-                        if (d.Name.ToLower() == sample.sampledeviceIdentifier.ToLower())
+                        if (d.Id.ToLower() == sample.sampledeviceIdentifier.ToLower())
                         {
                             //XMLComponentHandler.writeWallProjectionSampleToXML(sample);
                             Point3D p = new Point3D(vecs[2].X, vecs[2].Y, vecs[2].Z);

@@ -47,7 +47,7 @@ namespace IGS.Classifier
         public void trainClassifier()
         {
            
-            if (trainingSamples.Count > 0)
+            if (trainingSamples.Count > 10)
             {
                 int k = (int)(Math.Floor(Math.Sqrt(trainingSamples.Count)));
                 if (k == 0)
@@ -57,7 +57,7 @@ namespace IGS.Classifier
 
                 generator.K = k;
                 
-                learned = Learner.Learn(trainingSamples, 0.99, 1, generator);
+                learned = Learner.Learn(trainingSamples, 0.90, 1, generator);
             }
             else Console.WriteLine("Please create samples first!");
 
@@ -90,19 +90,19 @@ namespace IGS.Classifier
             else return null;
         }
 
-        public void learnBatch(List<WallProjectionSample> trainingSamples)
+        public void learnBatch(List<WallProjectionSample> trainingsSamples)
         {
-            if (trainingSamples == null || trainingSamples.Count == 0) { return; }
+            if (trainingsSamples == null || trainingsSamples.Count == 0) { return; }
 
-           
+            int diff = Math.Abs(trainingSamples.Count - trainingSetSize);
 
-                foreach (WallProjectionSample s in trainingSamples)
+                foreach (WallProjectionSample s in trainingsSamples)
                 {
                     trainingSamples.Add(s);
 
                     if (trainingSetSize > 0 && trainingSamples.Count > trainingSetSize)
                     {
-                        int diff = Math.Abs(trainingSamples.Count - trainingSetSize);
+                        
 
                         while (diff >= 0)
                         {
