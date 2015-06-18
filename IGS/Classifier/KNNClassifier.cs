@@ -49,7 +49,14 @@ namespace IGS.Classifier
            
             if (trainingSamples.Count > 0)
             {
-                generator.K = (int)Math.Sqrt(trainingSamples.Count);
+                int k = (int)(Math.Floor(Math.Sqrt(trainingSamples.Count)));
+                if (k == 0)
+                {
+                    k = 1;
+                }
+
+                generator.K = k;
+                
                 learned = Learner.Learn(trainingSamples, 0.99, 1, generator);
             }
             else Console.WriteLine("Please create samples first!");
