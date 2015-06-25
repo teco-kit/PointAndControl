@@ -34,22 +34,6 @@ namespace IGS.Classifier
            
         }
 
-
-        
-
-
-        //public void onlineLearn(User u)
-        //{
-            
-        //        knnClassifier.learnOnline(u.lastClassDevSample);
-
-                
-        //        u.deviceIDChecked = true;
-               
-        //        u.lastClassDevSample = null;
-        //        u.lastChosenDeviceID = "";
-        //}
-
        
         public WallProjectionSample classify(WallProjectionSample sample)
         {
@@ -73,12 +57,6 @@ namespace IGS.Classifier
             knnClassifier.trainClassifier();
         }
 
-
-        //public void calculateWallDeviceAreas(DataHolder data)
-        //{
-        //    collector.calcRoomModel.calculateDeviceAreas(knnClassifier, data);
-        //}
-
         public void doCrossVal(DataHolder data, CoordTransform transformer)
         {
             Crossvalidator crossval = new Crossvalidator(this, knnClassifier,data, transformer);
@@ -90,8 +68,7 @@ namespace IGS.Classifier
 
             XMLComponentHandler.writeTimesForCrossvalidation(crossval.timeForPreprocessingCollision, crossval.timeForTrainingCollsion, crossval.timeForClassifikationCollision,
                                                            crossval.timeForPreprocessingClassification, crossval.timeForTrainingClassification, crossval.timeForClassifikationClassification);
-            //crossval.crossValidateCollisionHopp();
-            timeTaking();
+    
         }
 
 
@@ -107,9 +84,7 @@ namespace IGS.Classifier
                     XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
                     XMLComponentHandler.writeSampleToXML(vectors, sample.sampledeviceIdentifier);
 
-                    knnClassifier.trainingSamples.Add(sample);
-
-                    knnClassifier.trainClassifier();
+                    knnClassifier.addSampleAndLearn(sample);
 
                     return "Sample gesammelt und Klassifikator trainiert";
 
@@ -332,72 +307,6 @@ namespace IGS.Classifier
         }
 
 
-        public void timeTaking()
-        {
-            List<double> timeList = new List<double>();
-            List<double> trainClassMoreSamples = new List<double>();
-            List<double> classificationTimes = new List<double>();
-
-                Stopwatch s = new Stopwatch();
-                List<WallProjectionSample> testList = new List<WallProjectionSample>();
-                for (int i = 0; i < 50; i++)
-                {
-                    testList.Add(knnClassifier.trainingSamples[i]);
-                }
-                for (int j = 50; j < knnClassifier.trainingSamples.Count(); j++)
-                {
-                   
-                        testList.Add(knnClassifier.trainingSamples[j]);
-
-                    s.Start();
-                    knnClassifier.trainClassifier(testList);
-                    s.Stop();
-                    trainClassMoreSamples.Add((double)s.ElapsedMilliseconds);
-                    s.Reset();
-
-                    WallProjectionSample wps = new WallProjectionSample(new Point3D(knnClassifier.trainingSamples[knnClassifier.trainingSamples.Count - 1].x,
-                                                                        knnClassifier.trainingSamples[knnClassifier.trainingSamples.Count - 1].y,
-                                                                        knnClassifier.trainingSamples[knnClassifier.trainingSamples.Count - 1].z)
-                        );
-
-                    s.Start();
-                    knnClassifier.classify(wps);
-                    s.Stop();
-
-                    classificationTimes.Add((double)s.ElapsedMilliseconds);
-                    s.Reset();
-                }
-
-            
-
-
-            
-
-            s.Start();
-            knnClassifier.trainClassifier(1);
-            s.Stop();
-            timeList.Add(s.ElapsedMilliseconds);
-            
-
-            for (int i = 1; i <= 10; i++)
-            {
-                s.Restart();
-                knnClassifier.trainClassifier(i * 50);
-                s.Stop();
-                timeList.Add((double)s.ElapsedMilliseconds);
-            }
-
-            s.Reset();
-            s.Start();
-            classify(knnClassifier.trainingSamples[0]);
-            s.Stop();
-
-            float classtime = s.ElapsedMilliseconds;
-
-
-            XMLComponentHandler.writeTimeForElapsedTime(timeList, trainClassMoreSamples, classificationTimes, "Classifier");
-
-
-        }
+     
     }
 }

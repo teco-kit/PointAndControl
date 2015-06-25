@@ -13,11 +13,11 @@ namespace IGS.Classifier
 {
     public class Room
     {
-       
+
         public float width { get; set; }
         public float depth { get; set; }
         public float height { get; set; }
-       
+
         Plane3D ceiling { get; set; }
         Plane3D floor { get; set; }
         Plane3D rightWall { get; set; }
@@ -26,8 +26,8 @@ namespace IGS.Classifier
         Plane3D backWall { get; set; }
         public List<Plane3D> wallList { get; set; }
 
-       
-        public Room(float width,  float height, float depth)
+
+        public Room(float width, float height, float depth)
         {
             this.width = width;
             this.depth = depth;
@@ -42,35 +42,35 @@ namespace IGS.Classifier
             this.depth = 0;
             this.height = 0;
         }
-        public void createRoomWalls ()
+        public void createRoomWalls()
         {
 
             wallList.Clear();
 
-             floor = new Plane3D(new Point3D(width, 0, depth), new Vector3D(0, 1, 0));
-             wallList.Add(floor);
+            floor = new Plane3D(new Point3D(width, 0, depth), new Vector3D(0, 1, 0));
+            wallList.Add(floor);
 
-             rightWall = new Plane3D(new Point3D(0, height, depth), new Vector3D(1,0,0));
-             wallList.Add(rightWall);
+            rightWall = new Plane3D(new Point3D(0, height, depth), new Vector3D(1, 0, 0));
+            wallList.Add(rightWall);
 
-             backWall = new Plane3D(new Point3D(width, height, 0), new Vector3D(0, 0, 1));
-             wallList.Add(backWall);
+            backWall = new Plane3D(new Point3D(width, height, 0), new Vector3D(0, 0, 1));
+            wallList.Add(backWall);
 
-             frontWall = new Plane3D(new Point3D(width, height, depth), new Vector3D(0,0,-1));
-             wallList.Add(frontWall);
-             
-             leftWall = new Plane3D(new Point3D(width, height, depth), new Vector3D(-1,0,0));
-             wallList.Add(leftWall);
+            frontWall = new Plane3D(new Point3D(width, height, depth), new Vector3D(0, 0, -1));
+            wallList.Add(frontWall);
 
-             ceiling = new Plane3D(new Point3D(width, height, depth), new Vector3D(0, -1, 0));   
-             wallList.Add(ceiling);
-          
-            
+            leftWall = new Plane3D(new Point3D(width, height, depth), new Vector3D(-1, 0, 0));
+            wallList.Add(leftWall);
+
+            ceiling = new Plane3D(new Point3D(width, height, depth), new Vector3D(0, -1, 0));
+            wallList.Add(ceiling);
+
+
         }
 
-       
 
-  
+
+
 
         public void setRoomMeasures(float width, float depth, float height)
         {
@@ -81,29 +81,27 @@ namespace IGS.Classifier
             createRoomWalls();
         }
 
-        //public void calculateDeviceAreas(KNNClassifier knn, DataHolder data)
-        //{
-            
-        //    //a List of Lists containing vectors for devices to retrieve the classificationboxes for 
-        //    //every device
-
-        //    float step = 0.001f;
-        //    int virtualWidthReducer = 1;
-        //    int virtualHeightReducer = 1;
-
-        //    int wallIndikator = -1; // 0 for Sidewall, 1 for floor/bottom, 2 for front/backwall
-        //    float normalWallPoint = 0;
-       
-        //    int maxStepVirtualWidth = 0;
-        //    int maxStepVirtualHeight = 0;
-        
-
-
-        //    foreach (RoomPlane wall in wallList)
+        //    public void calculateDeviceAreas(KNNClassifier knn, DataHolder data)
         //    {
-                
-        //            Console.WriteLine(wall.name);
-        //            Console.WriteLine("w:" + wall.width + " h:" + wall.heigth + " d:" + wall.depth);
+
+        //        //a List of Lists containing vectors for devices to retrieve the classificationboxes for 
+        //        //every device
+
+        //        float step = 0.001f;
+        //        int virtualWidthReducer = 1;
+        //        int virtualHeightReducer = 1;
+
+        //        int wallIndikator = -1; // 0 for Sidewall, 1 for floor/bottom, 2 for front/backwall
+        //        float normalWallPoint = 0;
+
+        //        int maxStepVirtualWidth = 0;
+        //        int maxStepVirtualHeight = 0;
+
+
+
+        //        foreach (Plane3D wall in wallList)
+        //        {
+
         //            Point3D point = new Point3D(wall.width, wall.heigth, wall.depth);
         //            virtualWidthReducer = 1;
         //            virtualHeightReducer = 1;
@@ -113,14 +111,14 @@ namespace IGS.Classifier
         //            maxStepVirtualHeight = 0;
         //            Bitmap bitmap = null;
 
-        //            if (wall.plane.Normal.X != 0)
+        //            if (wall.Normal.X != 0)
         //            {
         //                maxStepVirtualWidth = (int)Math.Ceiling(depth / step);
         //                maxStepVirtualHeight = (int)Math.Ceiling(height / step);
 
         //                bitmap = new Bitmap(maxStepVirtualWidth, maxStepVirtualHeight);
         //                wallIndikator = 0;
-        //                if (wall.plane.Normal.X < 0)
+        //                if (wall.Normal.X < 0)
         //                {
         //                    normalWallPoint = width;
         //                }
@@ -129,7 +127,7 @@ namespace IGS.Classifier
         //                Console.WriteLine("StepsHight:" + maxStepVirtualHeight);
 
         //            }
-        //            else if (wall.plane.Normal.Y != 0)
+        //            else if (wall.Normal.Y != 0)
         //            {
         //                maxStepVirtualWidth = (int)Math.Ceiling(width / step);
         //                maxStepVirtualHeight = (int)Math.Ceiling(depth / step);
@@ -144,13 +142,13 @@ namespace IGS.Classifier
         //                Console.WriteLine("StepsHight:" + maxStepVirtualHeight);
 
         //            }
-        //            else if (wall.plane.Normal.Z != 0)
+        //            else if (wall.Normal.Z != 0)
         //            {
         //                maxStepVirtualWidth = (int)Math.Ceiling(width / step);
         //                maxStepVirtualHeight = (int)Math.Ceiling(height / step);
         //                bitmap = new Bitmap(maxStepVirtualWidth, maxStepVirtualHeight);
         //                wallIndikator = 2;
-        //                if (wall.plane.Normal.Z < 0)
+        //                if (wall.Normal.Z < 0)
         //                {
         //                    normalWallPoint = depth;
         //                }
@@ -159,7 +157,7 @@ namespace IGS.Classifier
         //                Console.WriteLine("StepsHight:" + maxStepVirtualHeight);
         //            }
 
-                    
+
         //            for (int stepCounterVirtualHeight = 0; stepCounterVirtualHeight < maxStepVirtualHeight; stepCounterVirtualHeight++)
         //            {
         //                float virtualHightReduce = (virtualHeightReducer * step);
@@ -202,12 +200,12 @@ namespace IGS.Classifier
 
         //                    }
         //                    virtualWidthReducer++;
-                         
+
         //                    WallProjectionSample sample = new WallProjectionSample(newPoint);
         //                    sample = knn.classify(sample);
-                          
+
         //                    Color c = data.deviceColorLookupByName(sample.sampledeviceIdentifier);
-                           
+
         //                    bitmap.SetPixel(stepCounterVirtualWidth, stepCounterVirtualHeight, c);
         //                    Console.Write(".");
         //                }
@@ -221,16 +219,17 @@ namespace IGS.Classifier
         //            bitmap.Save(AppDomain.CurrentDomain.BaseDirectory + wall.name + ".bmp");
         //            Console.WriteLine("");
 
-                
+
+        //        }
+
+        //        XMLComponentHandler.writeLogEntry("Calculated Device BMP");
         //    }
 
-        //    XMLComponentHandler.writeLogEntry("Calculated Device BMP");
+
+
+
         //}
-              
-    
 
-        
+
     }
-
-
 }

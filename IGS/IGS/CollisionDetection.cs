@@ -182,7 +182,7 @@ namespace IGS.Server.IGS
                 }
             }
 
-            return min.dev.Name;
+            return min.dev.Id;
         }
     }
 }

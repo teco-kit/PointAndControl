@@ -49,7 +49,6 @@ namespace IGS.Server.IGS
             List<Device> dev = new List<Device>();
             User tempUser = data.GetUserByIp(wlanAdr);
             Vector3D[] vecs = transformer.transformJointCoords(tracker.getMedianFilteredCoordinates(tempUser.SkeletonId));
-            //Vector3D[] vecs = Transformer.transformJointCoords(Tracker.GetCoordinates(tempUser.SkeletonId));
             if (tempUser != null)
             {
 
@@ -84,15 +83,11 @@ namespace IGS.Server.IGS
                     {
                         if (d.Id.ToLower() == sample.sampledeviceIdentifier.ToLower())
                         {
-                            //XMLComponentHandler.writeWallProjectionSampleToXML(sample);
+
                             Point3D p = new Point3D(vecs[2].X, vecs[2].Y, vecs[2].Z);
-                            //XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
-                            //XMLComponentHandler.writeSampleToXML(vecs, sample.sampledeviceIdentifier);
-                            //XMLSkeletonJointRecords.writeClassifiedDeviceToLastSelect(d);
+
                             dev.Add(d);
-                            //tempUser.lastChosenDeviceID = d.Id;
-                            //tempUser.lastClassDevSample = sample;
-                            //tempUser.deviceIDChecked = false;
+
                             return dev;
                         }
                     }

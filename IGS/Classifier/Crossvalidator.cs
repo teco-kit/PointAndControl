@@ -35,6 +35,9 @@ namespace IGS.Classifier
         public List<String> labels { get; set; }
         public List<String> lineLabels { get; set; }
 
+        public List<String> labelsTrue { get; set; }
+        public List<String> lineLabelsTrue { get; set; }
+
         public List<String> hoppLabels { get; set; }
         public KNNClassifier knnClass { get; set; }
         public int[,] cfMatrix { get; set; }
@@ -63,7 +66,8 @@ namespace IGS.Classifier
             WPSlist = new List<WallProjectionSample>();
             folds = new List<List<WallProjectionSample>>();
             labels = new List<string>();
-            dropOutNames = new String[] {"Raumbeleuchtung", "Hifi"};
+            labelsTrue = new List<string>();
+            dropOutNames = new String[] { "Boxee_3", "Plugwise_3" };
 
             collisionPacksList = new List<collisionPackage>();
             lineFolds = new List<List<collisionPackage>>();
@@ -82,16 +86,22 @@ namespace IGS.Classifier
             //set up for classification
             foreach (Device d in data.Devices)
             {
-                String label = d.Name;
+                String label = d.Id;
                 if (dropOutNames.Contains(label))
                 {
                     continue;
                 }
                 else
                 {
-                    labels.Add(label);
+                    labelsTrue.Add(label);
                 }
                 
+            }
+
+            for (int i = 0; i < labelsTrue.Count;i++ ) 
+            {
+                String del = labelsTrue[i].Replace("_", "");
+                labels.Add(del);
             }
             cfMatrix = new int[labels.Count, labels.Count];
 
@@ -99,7 +109,8 @@ namespace IGS.Classifier
             watch.Start();
             WPSlist = handler.extractor.calculateWallProjectionSamples(handler.sCalculator, handler.extractor.rawSamplesPerSelect);
             watch.Stop();
-            timeForPreprocessingClassification = (double)(watch.ElapsedMilliseconds);
+            timeForPreprocessingClassification = (double)(watch.ElapsedMilliseconds) / WPSlist.Count;
+            
 
             List<WallProjectionSample> tmpWPSList = new List<WallProjectionSample>();
             
@@ -113,7 +124,7 @@ namespace IGS.Classifier
                 }
 
             WPSlist = tmpWPSList;
-
+            
             int k = 10;
             int foldsize = WPSlist.Count() / k;
 
@@ -225,14 +236,14 @@ namespace IGS.Classifier
             {
 
                 List<collisionPackage> trainingSet = mergeTrainSetLine(i);
-
+                nrTrain++;
                 foreach (String label in lineLabels)
                 {
                     List<Vector3D[]> trainVecs = getVectorsForDevice(trainingSet, label);
                     trainingsWatch.Start();
                     locator.ChangeDeviceLocation(trainVecs, label);
                     trainingsWatch.Stop();
-                    nrTrain++;
+                   
                 }
 
                 foreach (collisionPackage pack in lineFolds[i])
@@ -310,111 +321,7 @@ namespace IGS.Classifier
         }
 
 
-        public void crossValidateCollisionHopp()
-        {
-            String path = AppDomain.CurrentDomain.BaseDirectory + "CrossvalCollisionHopp.xls";
-            object misValue = System.Reflection.Missing.Value;
-            Workbook wb = xlApp.Workbooks.Add(misValue);
-            _Worksheet ws = (Worksheet)wb.Sheets.get_Item(1);
-            Stopwatch trainingsWatch = new Stopwatch();
-            Stopwatch classificationWatch = new Stopwatch();
-            int nrClass = 0;
-            int nrTrain = 0;
-            int error = 0;
-            double totalAVGError = 0;
-            int sampleSum = 0;
-            int correct = 0;
-            int actualDevPos = -1;
-            int predictedPos = -1;
-
-            for (int i = 0; i < hoppFolds.Count; i++)
-            {
-
-                List<collisionPackage> trainingSet = mergeTrainSetHopp(i);
-
-                foreach (String label in hoppLabels)
-                {
-                    List<Vector3D[]> trainVecs = getVectorsForDevice(trainingSet, label);
-                    trainingsWatch.Start();
-                    locator.ChangeDeviceLocation(trainVecs, label);
-                    trainingsWatch.Stop();
-                    nrTrain++;
-                }
-
-                foreach (collisionPackage pack in hoppFolds[i])
-                {
-
-                    for (int k = 0; k < hoppLabels.Count; k++)
-                    {
-                        if (pack.devName.Equals(hoppLabels[k]))
-                        {
-                            actualDevPos = k;
-                            break;
-                        }
-                    }
-
-                    classificationWatch.Start();
-                    String collisionDev = CollisionDetection.getNameOfDeviceWithMinDist(locator.Data.Devices, pack.vecs);
-                    classificationWatch.Stop();
-                    nrClass++;
-                    for (int j = 0; j < hoppLabels.Count; j++)
-                    {
-                        if (collisionDev.Equals(hoppLabels[j]))
-                        {
-                            predictedPos = j;
-                            break;
-                        }
-                    }
-
-                    cfMatrixHopp[actualDevPos, predictedPos]++;
-
-                    if (pack.devName.Equals(collisionDev))
-                    {
-                        correct += 1;
-                    }
-                    else
-                    {
-                        error += 1;
-                    }
-
-                }
-
-
-            }
-
-            for (int m = 0; m < cfMatrixHopp.GetLength(0); m++)
-            {
-                for (int n = 0; n < cfMatrixHopp.GetLength(1); n++)
-                {
-
-                    ws.Cells[m + 2, n + 2] = cfMatrixHopp[m, n];
-                }
-            }
-            for (int r = 0; r < hoppLabels.Count; r++)
-            {
-                ws.Cells[1, r + 2] = hoppLabels[r];
-                ws.Cells[r + 2, 1] = hoppLabels[r];
-            }
-
-            foreach (List<collisionPackage> hoppFold in hoppFolds)
-            {
-                sampleSum += hoppFold.Count();
-            }
-
-            totalAVGError = error / sampleSum;
-            //timeForTrainingCollsion = trainingsWatch.ElapsedMilliseconds;
-            //timeForClassifikationCollision = classificationWatch.ElapsedMilliseconds;
-
-            //timeForClassifikationCollision = (timeForClassifikationCollision /nrClass)*1000;
-            //timeForTrainingCollsion = (timeForTrainingCollsion / nrTrain)*1000;
-            wb.SaveAs(path, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
-            wb.Close(true, misValue, misValue);
-            xlApp.Quit();
-
-
-
-        }
-
+       
 
         public void crossValidateClassifier()
         {
@@ -447,7 +354,7 @@ namespace IGS.Classifier
 
                     for (int k = 0; k < labels.Count; k++)
                     {
-                        if (wps.sampledeviceIdentifier.Equals(labels[k]))
+                        if (wps.sampledeviceIdentifier.Equals(labelsTrue[k]))
                         {
                             actualDevPos = k;
                             break;

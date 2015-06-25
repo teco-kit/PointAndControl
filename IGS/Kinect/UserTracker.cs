@@ -39,7 +39,6 @@ namespace IGS.Server.Kinect
         public bool workingOnWindow { get; set; }
 
         public Body tmpBody { get; set; }
-        public List<Body[]> lastBodiesPuffer { get; set; }
 
         public int windowSize { get; set; }
         /// <summary>
@@ -60,7 +59,6 @@ namespace IGS.Server.Kinect
             collectAfterClick = true;
             lastBodies = new List<Body[]>();
             this.jointFilter = new MedianJointFilter();
-            lastBodiesPuffer = new List<Body[]>();
             workingOnWindow = false;
             windowSize = 15;
         }
@@ -314,7 +312,7 @@ namespace IGS.Server.Kinect
             {
                 lastBodies.Clear();
             }
-            //this.copyFromBodiesPufferToBodyArray();
+
             
             workingOnWindow = false;
             return returnList;
@@ -330,7 +328,7 @@ namespace IGS.Server.Kinect
           
             Vector3D[] smoothed = jointFilter.jointFilter(coords);
            
-            //DifferenceCalculator.calculateBodyDifference(smoothed, DifferenceCalculator.calulateVecArray(tmpBody));
+          
 
             return smoothed;
         }
@@ -432,36 +430,12 @@ namespace IGS.Server.Kinect
                         }
                         lastBodies.Add(bodiesToSave);
                     }
-                    //else
-                    //{
-                    //    if (movingWindowCollect == true && lastBodiesPuffer.Count == 15)
-                    //    {
-                    //        lastBodiesPuffer.RemoveAt(0);
-                    //    }
-                    //    lastBodiesPuffer.Add(bodiesToSave);
-                    //}
+
                 }
             }
 
         }
 
-        //private void copyFromBodiesPufferToBodyArray()
-        //{
-        //    if (lastBodiesPuffer.Count == 0) return;
-        //    else if(lastBodiesPuffer.Count == 15)
-        //    {
-        //        lastBodies = lastBodiesPuffer;
-        //        lastBodiesPuffer.Clear();
-        //        return;
-        //    }
-        //    else
-        //    {
-        //        lastBodies.RemoveRange(0, lastBodiesPuffer.Count);
-        //        lastBodies = (List<Body[]>)lastBodiesPuffer.Concat(lastBodies);
-        //        lastBodiesPuffer.Clear();
-        //        Console.WriteLine("lastBodies COunt: " + lastBodies.Count);
-        //        return;
-        //    }
-        //}
+
     }
 }

@@ -67,7 +67,7 @@ namespace IGS.Classifier
         {
             if (trainingSet.Count > 0)
             {
-                generator.K = (int)Math.Sqrt(trainingSet.Count);
+                generator.K = (int)Math.Sqrt(trainingSamples.Count);
                 learned = Learner.Learn(trainingSet, 0.99, 1, generator);
             }
         }
@@ -92,6 +92,7 @@ namespace IGS.Classifier
 
         public void learnBatch(List<WallProjectionSample> trainingsSamples)
         {
+            
             if (trainingsSamples == null || trainingsSamples.Count == 0) { return; }
 
             int diff = Math.Abs(trainingSamples.Count - trainingSetSize);
@@ -115,7 +116,25 @@ namespace IGS.Classifier
                 }
                 Console.WriteLine("Going into trainClassifier");
                 trainClassifier();
-              
+        }
+
+        public void addSampleAndLearn(WallProjectionSample sample)
+        {
+
+            if (sample == null) { return; }
+
+            
+
+            trainingSamples.Add(sample);
+
+            if (trainingSetSize > 0 && trainingSamples.Count > trainingSetSize)
+            {
+                Random r = new Random();
+                int half = (int)Math.Floor((double)(trainingSamples.Count / 2));
+                int pos = r.Next(half);
+                trainingSamples.RemoveAt(pos);
+            }
+            trainClassifier();
         }    
     }
 }
