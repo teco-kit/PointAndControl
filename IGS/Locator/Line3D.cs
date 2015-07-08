@@ -4,9 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
-using Microsoft.SolverFoundation.Services;
-using Microsoft.SolverFoundation.Common;
-using Microsoft.SolverFoundation.Solvers;
 
 namespace IGS.Server.Location
 {
