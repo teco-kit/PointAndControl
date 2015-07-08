@@ -139,6 +139,24 @@ namespace HelixToolkit.Wpf
         /// <summary>
         /// Finds the intersection with a plane.
         /// </summary>
+        /// <param name="plane">
+        /// The Plane which should be intersect
+        /// </param>
+        /// <returns></returns>
+        public Point3D? PlaneIntersection(Plane3D plane)
+        {
+            Point3D intersection;
+            if (this.PlaneIntersection(plane.Position, plane.Normal, out intersection))
+            {
+                return intersection;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Finds the intersection with a plane.
+        /// </summary>
         /// <param name="position">A point on the plane.</param>
         /// <param name="normal">The normal of the plane.</param>
         /// <param name="intersection">The intersection point.</param>

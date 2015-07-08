@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 
-namespace IGS.KNN
+namespace IGS.Classifier
 {
     public class WallProjectionSample
     {
@@ -18,7 +18,7 @@ namespace IGS.KNN
         [Feature]
         public double z { get; set; }
         [Label]
-        public String sampleDeviceName { get; set; }
+        public String sampledeviceIdentifier { get; set; }
 
         public WallProjectionSample(Point3D position)
         {
@@ -34,12 +34,29 @@ namespace IGS.KNN
             this.z = 0;
         }
 
-        public WallProjectionSample(Point3D position, string deviceName)
+        public WallProjectionSample(Point3D position, string deviceIdentifier)
         {
             this.x = position.X;
             this.y = position.Y;
             this.z = position.Z;
-            sampleDeviceName = deviceName;
+            sampledeviceIdentifier = deviceIdentifier;
+        }
+
+        public WallProjectionSample(WallProjectionAndPositionSample wpaps)
+        {
+            this.x = wpaps.wallPositionX;
+            this.y = wpaps.wallPositionY;
+            this.z = wpaps.wallPositionZ;
+            this.sampledeviceIdentifier = wpaps.sampledeviceIdentifier;
+        }
+
+        public WallProjectionSample(WallProjectionSample wps)
+        {
+            this.x = wps.x;
+            this.y = wps.y;
+            this.z = wps.z;
+
+            this.sampledeviceIdentifier = "";
         }
 
     }

@@ -1,0 +1,82 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="IGS.Server.IGS.Igs">
+    <Position X="6.75" Y="1" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Properties" Collapsed="true" />
+      <Compartment Name="Methods" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAwQAABAAAAjBAAAAAYAUEAQAAAACBEgAAAAAhCQAAA=</HashCode>
+      <FileName>IGS\Igs.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="coreMethods" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="IGS.Server.IGS.ClassifierMethod">
+    <Position X="4" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAABAAAAACAAAAAAAAAAAQFAAAAAA=</HashCode>
+      <FileName>IGS\ClassifierMethod.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="classificationHandler" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="IGS.Server.IGS.CollisionMethod" Collapsed="true">
+    <Position X="0.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAEAAAAAAAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>IGS\CollisionMethod.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="IGS.Classifier.ClassificationHandler">
+    <Position X="4" Y="4.25" Width="1.5" />
+    <Members>
+      <Method Name="ClassificationHandler" Hidden="true" />
+      <Method Name="createTestLists" Hidden="true" />
+      <Method Name="createTestListsOAAOne" Hidden="true" />
+      <Method Name="createTestListsOAARest" Hidden="true" />
+      <Method Name="createTestSamplesOnePerDevice" Hidden="true" />
+      <Method Name="doCrossVal" Hidden="true" />
+      <Method Name="extractAndCreateLists" Hidden="true" />
+      <Property Name="extractor" Hidden="true" />
+      <Method Name="getSamples" Hidden="true" />
+      <Property Name="splitter" Hidden="true" />
+      <Method Name="timeTaking" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACIAQBgCAACAAAIAAAAggCABAAgAQAAAAAAA=</HashCode>
+      <FileName>Classifier\ClassificationHandler.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="knnClassifier" />
+      <Property Name="sCalculator" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="IGS.Classifier.KNNClassifier">
+    <Position X="7" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAABAAAAAAAEAAAAAAAAAAAAAAQABIAAAAAAACAAA=</HashCode>
+      <FileName>Classifier\KNNClassifier.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IGS.Classifier.WPSampleCalculator">
+    <Position X="1" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAQAAAAEAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Classifier\WPSampleCalculator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="IGS.Server.IGS.ICoreMethods">
+    <Position X="7" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>IGS\CoreMethods.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

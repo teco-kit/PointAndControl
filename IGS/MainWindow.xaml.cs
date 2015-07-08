@@ -20,7 +20,7 @@ using System.Windows.Media.Media3D;
 using System.Xml;
 using System.ComponentModel;
 using System.Xml.Linq;
-using IGS.KNN;
+using IGS.Classifier;
 using IGS.Kinect;
 
 
@@ -291,6 +291,10 @@ public partial class MainWindow
         this.displayHeight = depthFrameDescription.Width;
 
         this.imageSourceSkeleton = new DrawingImage(this._drawingGroup);
+
+        
+
+      
     }
 
     /// <summary>
@@ -375,7 +379,7 @@ public partial class MainWindow
                     {
                         foreach (Body body in bodies)
                         {
-
+                           
                             foreach (TrackedSkeleton ts in _igs.Tracker.Bodies)
                             {
                                 if ((int)body.TrackingId == ts.Id)
@@ -613,7 +617,7 @@ public partial class MainWindow
     private void _3DViewButton_Click(object sender, RoutedEventArgs e)
     {
 
-        _3Dview = new Room3DView(_igs.classification.knnClassifier.samples, _igs.classification.knnClassifier.devicesRepresentation, _igs.Transformer);
+        _3Dview = new Room3DView(_igs.classification.getSamples(), _igs.Data.Devices, _igs.Transformer);
         _3Dview.SetKinectCamera(_igs.IGSKinect);
         _3Dview.ClipToBounds = false;
         _3Dview.mainViewport.Effect = null;
@@ -714,14 +718,12 @@ public partial class MainWindow
         roomWidth = width;
         roomDepth = depth;
         XMLComponentHandler.saveRoomPosition(roomData);
-        _igs.classification.collector.calcRoomModel.setRoomMeasures(width, depth, height);
+        _igs.classification.sCalculator.calcRoomModel.setRoomMeasures(width, depth, height);
+        _igs.Data.changeRoomModel(width, height, depth);
         if (_3Dview != null)
         {
             _3Dview.createRoom(width, depth, height);
-            foreach(WallProjectionSample s in _igs.classification.knnClassifier.samples)
-            {
-                _3Dview.addSampleView(new Point3D(s.x, s.y, s.z));
-            }
+           
         }
 
     }
@@ -828,7 +830,7 @@ public partial class MainWindow
         String[] parameter = new String[4];
 
         parameter[0] = DeviceType.Text;
-        parameter[1] = DeviceName.Text;
+        parameter[1] = deviceIdentifier.Text;
         parameter[2] = DeviceAdress.Text;
         parameter[3] = DevicePort.Text;
 
@@ -837,18 +839,23 @@ public partial class MainWindow
 
     private void trainBatch_Button_Click(object sender, RoutedEventArgs e)
     {
-        _igs.classification.retrainClassifier(_igs.classification.knnClassifier.pendingSamples);
+        _igs.classification.retrainClassifier();
         XMLComponentHandler.writeLogEntry("Batch training executed manually");
     }
 
 
     private void WCBMP_Button_Click(object sender, RoutedEventArgs e)
     {
-        if (_igs.classification.knnClassifier.samples.Count != 0)
-        {
-            _igs.classification.collector.calcRoomModel.calculateDeviceAreas(_igs.classification.knnClassifier);
-            XMLComponentHandler.writeLogEntry("Devices BMP calculated manually");
-        }
+        
+        
+
+        //if (_igs.classification.getSamples().Count != 0)
+        //{
+        //    //_igs.classification.calculateWallDeviceAreas(_igs.Data);
+        //    XMLComponentHandler.writeLogEntry("Devices BMP calculated manually");
+        //}
+
+
     }
 
     private void xmlFilesControl()
@@ -901,6 +908,18 @@ public partial class MainWindow
         }
 
         return l;
+    }
+
+    private void CreateTestFiles_Button_Click(object sender, RoutedEventArgs e)
+    {
+        _igs.classification.extractAndCreateLists(_igs.Transformer);
+    
+    }
+
+    
+    private void CrossVal_Button_Click(object sender, RoutedEventArgs e)
+    {
+        _igs.classification.doCrossVal(_igs.Data, _igs.Transformer);
     }
 
    

@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 
-namespace IGS.KNN
+namespace IGS.Classifier
 {
-    class WallProjectionAndPositionSample 
+    public class WallProjectionAndPositionSample 
     {
         [Feature]
         public double wallPositionX { get; set; }
@@ -24,7 +24,7 @@ namespace IGS.KNN
         [Feature]
         public double personPositionZ { get; set; }
         [Label]
-        public String sampleDeviceName { get; set; }
+        public String sampledeviceIdentifier { get; set; }
 
         public WallProjectionAndPositionSample (Point3D wallPosition, Point3D personPosition)
         {
@@ -45,7 +45,7 @@ namespace IGS.KNN
             this.personPositionY = 0;
             this.personPositionZ = 0;
         }
-        public WallProjectionAndPositionSample(Point3D wallPosition, Point3D personPosition, string deviceName)
+        public WallProjectionAndPositionSample(Point3D wallPosition, Point3D personPosition, string deviceIdentifier)
         {
             this.wallPositionX = wallPosition.X;
             this.wallPositionY = wallPosition.Y;
@@ -53,10 +53,10 @@ namespace IGS.KNN
             this.personPositionX = personPosition.X;
             this.personPositionY = personPosition.Y;
             this.personPositionZ = personPosition.Z;
-            sampleDeviceName = deviceName;
+            sampledeviceIdentifier = deviceIdentifier;
         }
 
-        public WallProjectionAndPositionSample(WallProjectionSample wps, Point3D personPosition, string deviceName)
+        public WallProjectionAndPositionSample(WallProjectionSample wps, Point3D personPosition, string deviceIdentifier)
         {
             this.wallPositionX = wps.x;
             this.wallPositionY = wps.y;
@@ -64,7 +64,7 @@ namespace IGS.KNN
             this.personPositionX = personPosition.X;
             this.personPositionY = personPosition.Y;
             this.personPositionZ = personPosition.Z;
-            sampleDeviceName = deviceName;
+            sampledeviceIdentifier = deviceIdentifier;
         }
 
         public WallProjectionAndPositionSample(WallProjectionSample wps, Point3D personPosition)
@@ -75,6 +75,7 @@ namespace IGS.KNN
             this.personPositionX = personPosition.X;
             this.personPositionY = personPosition.Y;
             this.personPositionZ = personPosition.Z;
+            this.sampledeviceIdentifier = wps.sampledeviceIdentifier;
         }
 
     }

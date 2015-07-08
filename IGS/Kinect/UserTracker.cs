@@ -28,19 +28,19 @@ namespace IGS.Server.Kinect
 
         private Body[] _bodiesLastFrame = new Body[0];
 
-        private List<Body[]> lastBodies { get; set; }
+        public List<Body[]> lastBodies { get; set; }
         public bool collectAfterClick { get; set; }
 
 
         public bool movingWindowCollect { get; set; }
 
-        public SkeletonJointFilter skeletonJointFilter { get; set; }
+        ISkeletonJointFilter jointFilter { get; set; }
 
         public bool workingOnWindow { get; set; }
 
+        public Body tmpBody { get; set; }
 
-        public List<Body[]> lastBodiesPuffer { get; set; }
-
+        public int windowSize { get; set; }
         /// <summary>
         ///     Constructor of a Usertracker.
         ///     <param name='filter'>
@@ -55,11 +55,12 @@ namespace IGS.Server.Kinect
             Filter = filter;
             Strategy = replace;
             Bodies = new List<TrackedSkeleton>();
-            collectAfterClick = false;
-            lastBodies = new List<Body[]>();
             movingWindowCollect = movingWindow;
-            this.skeletonJointFilter = new MedianJointFilter();
-            lastBodiesPuffer = new List<Body[]>();
+            collectAfterClick = true;
+            lastBodies = new List<Body[]>();
+            this.jointFilter = new MedianJointFilter();
+            workingOnWindow = false;
+            windowSize = 15;
         }
 
         /// <summary>
@@ -117,7 +118,7 @@ namespace IGS.Server.Kinect
             Sensor = KinectSensor.GetDefault();
             _bodiesLastFrame = new Body[6];
             this.reader = Sensor.BodyFrameSource.OpenReader();
-
+            
             if (Sensor == null) return;
 
             // Start den Sensor!
@@ -171,7 +172,7 @@ namespace IGS.Server.Kinect
         {
             bool same = true;
 
-            for(int i = 0; i < lastBodies[0].Length; i++)
+            for (int i = 0; i < lastBodies[0].Length; i++)
             {
                 ulong bodyID = lastBodies[0][i].TrackingId;
                 foreach (Body[] bodies in lastBodies)
@@ -194,7 +195,7 @@ namespace IGS.Server.Kinect
         /// </summary>
         public int GetSkeletonId(int igsSkelId)
         {
-          
+
             if (Bodies.Any(s => s.Id == igsSkelId))
             {
                 return igsSkelId;
@@ -216,13 +217,13 @@ namespace IGS.Server.Kinect
             {
                 return s.Id;
             }
-           
+
             return -1;
         }
 
 
-        
-        
+
+
 
         /// <summary>
         ///     Interface to the IGS where the koordinates of ellbow/wrist of both arms regarding the kinect coordinate system of the kinect will be requested.
@@ -262,35 +263,25 @@ namespace IGS.Server.Kinect
 
         public List<Vector3D[]> Get30Coordinates(int id)
         {
+          
             List<Vector3D[]> returnList = new List<Vector3D[]>();
             workingOnWindow = true;
-            if(movingWindowCollect == false){
-            if (collectAfterClick == false)
+        
+            int searchForLastBody = 1;
+            foreach (TrackedSkeleton sTracked in Bodies.Where(sTracked => sTracked.Id == id))
             {
-                collectAfterClick = true;
-                while (lastBodies.Count != 15)
+                sTracked.Actions = sTracked.Actions + 1;
+                foreach (Body[] bodies in lastBodies)
                 {
-
-                }
-                
-                if (checkIfAllBodysAreSame() == false) { 
-                    
-                    return Get30Coordinates(id); 
-                }
-                collectAfterClick = false;
-            }
-            else return null;
-            }
-
-
-                foreach (TrackedSkeleton sTracked in Bodies.Where(sTracked => sTracked.Id == id))
-                {
-                    sTracked.Actions = sTracked.Actions + 1;
-                    foreach (Body[] bodies in lastBodies)
-                    { 
                     foreach (Body s in bodies)
+
                     {
                         if ((int)s.TrackingId != id) continue;
+                        if (searchForLastBody == lastBodies.Count)
+                        {
+                            XMLSkeletonJointRecords.writeUserJointsPerSelectClick(s);
+                            tmpBody = s;
+                        }
                         Vector3D[] result = new Vector3D[4];
                         result[0] = new Vector3D(s.Joints[JointType.ShoulderLeft].Position.X,
                                                  s.Joints[JointType.ShoulderLeft].Position.Y,
@@ -305,38 +296,39 @@ namespace IGS.Server.Kinect
                                                  s.Joints[JointType.WristRight].Position.Y,
                                                  s.Joints[JointType.WristRight].Position.Z);
                         returnList.Add(result);
-                        
+
                     }
+                    searchForLastBody++;
                 }
             }
-                
 
-                  
-                        XMLComponentHandler.writeUserjointsPerSelectSmoothed(id, lastBodies);
-                    
-                
-                
 
-              
-                
-                if (movingWindowCollect == false)
-                {
-                    lastBodies.Clear();
-                }
-                this.copyFromBodiesPufferToBodyArray();
-                workingOnWindow = false;
-               return returnList;
+
+            XMLSkeletonJointRecords.writeUserjointsPerSelectSmoothed(id, lastBodies);
+            
+
+
+            if (movingWindowCollect == false)
+            {
+                lastBodies.Clear();
+            }
+
+            
+            workingOnWindow = false;
+            return returnList;
         }
 
 
         public Vector3D[] getMedianFilteredCoordinates(int id)
         {
-            
-            
+
+
             List<Vector3D[]> coords = this.Get30Coordinates(id);
-         
-             
-            Vector3D[] smoothed = skeletonJointFilter.jointFilter(coords);
+
+          
+            Vector3D[] smoothed = jointFilter.jointFilter(coords);
+           
+          
 
             return smoothed;
         }
@@ -412,7 +404,7 @@ namespace IGS.Server.Kinect
                 {
                     //checks if a skeleton doesnt exist anymore.
                     foreach (Body s in _bodiesLastFrame.Where(s => s != null && !idsSeen.Contains((int)s.TrackingId) && s.TrackingId != 0))
-                    {  
+                    {
                         this.OnUserLeft(this, new KinectUserEventArgs((int)s.TrackingId));
                         for (int i = 0; i < Bodies.Count; i++)
                         {
@@ -422,7 +414,7 @@ namespace IGS.Server.Kinect
                     }
                 }
                 _bodiesLastFrame = bodies;
-                
+
                 if (collectAfterClick == true || movingWindowCollect == true)
                 {
                     Body[] bodiesToSave = new Body[bodies.Length];
@@ -432,40 +424,18 @@ namespace IGS.Server.Kinect
                     }
                     if (workingOnWindow == false)
                     {
-                        if (movingWindowCollect == true && lastBodies.Count == 15)
+                        if (movingWindowCollect == true && lastBodies.Count == windowSize)
                         {
                             lastBodies.RemoveAt(0);
                         }
                         lastBodies.Add(bodiesToSave);
                     }
-                    else
-                    {
-                        if (movingWindowCollect == true && lastBodiesPuffer.Count == 15)
-                        {
-                            lastBodiesPuffer.RemoveAt(0);
-                        }
-                        lastBodiesPuffer.Add(bodiesToSave);
-                    }
+
                 }
             }
 
         }
 
-        private void copyFromBodiesPufferToBodyArray()
-        {
-            if (lastBodiesPuffer.Count == 0) return;
-            else if (lastBodiesPuffer.Count == 15)
-            {
-                lastBodies = lastBodiesPuffer;
-                lastBodiesPuffer.Clear();
-                return;
-            }
-            else
-            {
-                lastBodies.RemoveRange(0, lastBodiesPuffer.Count);
-                lastBodiesPuffer.Concat(lastBodies);
-                return;
-            }
-        }
+
     }
 }
