@@ -25,7 +25,7 @@ namespace IGS.Server.IGS
         /// <summary>
         ///    The Methode does the collision detection
         ///    First the pointing vector of the underarm is calculated.
-        ///    This vector will be "extendet" to a straight line. Following it will be calculated if this line hits a sphere of a device.
+        ///    This vector will be "extended" to a straight line. Following it will be calculated if this line hits a sphere of a device.
         ///    Hit devices will be saved in a list.
         /// </summary>
         /// <param name="devices">Devices which are available in the system</param>

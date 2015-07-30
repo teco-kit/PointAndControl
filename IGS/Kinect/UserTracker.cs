@@ -26,6 +26,9 @@ namespace IGS.Server.Kinect
         /// </summary>
         public delegate void KinectUserHandler(object sender, KinectUserEventArgs args);
 
+        public const int NO_BODIES_IN_FRAME = -2;
+        public const int NO_GESTURE_FOUND = -1;
+
         private Body[] _bodiesLastFrame = new Body[0];
 
         public List<Body[]> lastBodies { get; set; }
@@ -123,11 +126,12 @@ namespace IGS.Server.Kinect
             
             if (Sensor == null) return;
 
-            if (!Sensor.IsAvailable)
-            {
-                this.kinectAvailable = false;
-                return;
-            }
+            // it seems the sensor will never report to be available
+            //if (!Sensor.IsAvailable)
+            //{
+            //    this.kinectAvailable = false;
+            //    return;
+            //}
 
             this.kinectAvailable = true;
 
@@ -199,7 +203,7 @@ namespace IGS.Server.Kinect
 
         }
         /// <summary>
-        ///     This method provides the skeletonID of the skeleton perfoming the definded gesture or which should be reaktivated.
+        ///     This method provides the skeletonID of the skeleton perfoming the defined gesture or which should be reactivated.
         ///     
         ///     Returns the skeletonID of the user
         ///     <param name="igsSkelId">SkeletonID stored in the IGS</param>
@@ -207,11 +211,11 @@ namespace IGS.Server.Kinect
         /// </summary>
         public int GetSkeletonId(int igsSkelId)
         {
-
             if (Bodies.Any(s => s.Id == igsSkelId))
-            {
                 return igsSkelId;
-            }
+
+            if (!_bodiesLastFrame.Any(s => s.TrackingId != 0))
+                return NO_BODIES_IN_FRAME;
 
             Bodies = Strategy.Replace(Bodies);
 
@@ -230,7 +234,7 @@ namespace IGS.Server.Kinect
                 return s.Id;
             }
 
-            return -1;
+            return NO_GESTURE_FOUND;
         }
 
 

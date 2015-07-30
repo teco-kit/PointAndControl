@@ -170,21 +170,23 @@ namespace IGS.Server.IGS
         ///     If this procedure is finished successfully, the gesture control is for the user active and can be used.
         ///     <param name="wlanAdr">WLAN-Adress of the user wanting to activate gesture control</param>
         /// </summary>
-        public bool SkeletonIdToUser(String wlanAdr)
+        public int SkeletonIdToUser(String wlanAdr)
         {
             User tempUser = Data.GetUserByIp(wlanAdr);
             int id = -1;
+
             if (tempUser != null)
             {
-                int sklId = tempUser.SkeletonId;
+                id = Tracker.GetSkeletonId(tempUser.SkeletonId);
 
-                id = Tracker.GetSkeletonId(sklId);
-
-                if (id != -1)
+                if (id >= 0) 
+                {
                     tempUser.TrackingState = true;
+                    Data.SetTrackedSkeleton(wlanAdr, id);
+                }
             }
 
-            return id >= 0 && Data.SetTrackedSkeleton(wlanAdr, id);
+            return id;
         }
 
         /// <summary>
@@ -236,11 +238,20 @@ namespace IGS.Server.IGS
 
                         if (Data.GetUserByIp(wlanAdr) != null)
                         {
-                            success = SkeletonIdToUser(wlanAdr);
+                            int id = SkeletonIdToUser(wlanAdr);
+
+                            if (id >= 0)
+                                success = true;
+                            else if (id == UserTracker.NO_GESTURE_FOUND)
+                                msg = "Kein Nutzer mit Geste identifiziert.";
+                            else if (id == UserTracker.NO_BODIES_IN_FRAME)
+                                msg = "Keine Nutzer im Bild.";
+
+                            break;
                         }
 
                         if (!success)
-                            msg = "Aktivierung der Gestenerkennung fehlgeschlagen. Bitte Kinect überprüfen.";
+                            msg = "Aktivierung der Gestenerkennung fehlgeschlagen.";
 
                         break;
 
