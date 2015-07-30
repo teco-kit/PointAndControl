@@ -51,8 +51,8 @@ namespace IGS.Server.IGS
             createIGSKinect();
             
             this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Centre);
-            this.classification = new ClassificationHandler(Transformer, data);
-            this.coreMethods = new ClassifierMethod(classification, Tracker, Data, Transformer);
+            this.classification = new ClassificationHandler(Transformer, Data);
+            this.coreMethods = new CollisionMethod(Data, Tracker, Transformer);
 
             
         }

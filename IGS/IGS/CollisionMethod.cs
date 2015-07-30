@@ -14,7 +14,7 @@ namespace IGS.Server.IGS
     class CollisionMethod : ICoreMethods
     {
 
-         public Locator locator { get; set; }
+        public Locator locator { get; set; }
     
         public CollisionMethod(DataHolder data, UserTracker tracker, CoordTransform transformer)
         {
