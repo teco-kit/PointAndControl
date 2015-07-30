@@ -322,9 +322,9 @@ namespace IGS.Server.WebServer
             // we hand him needs to let him see the "end of the stream" at this content 
             // length, because otherwise he won't know when he's seen it all! 
 
-            Console.WriteLine("get post data start");
             int content_len = 0;
             MemoryStream ms = new MemoryStream();
+
             if (HttpHeaders.ContainsKey("Content-Length"))
             {
                 content_len = Convert.ToInt32(this.HttpHeaders["Content-Length"]);
@@ -358,7 +358,6 @@ namespace IGS.Server.WebServer
                 }
                 ms.Seek(0, SeekOrigin.Begin);
             }
-            Console.WriteLine("get post data end");
             Srv.HandlePostRequest(this, new StreamReader(ms));
         }
 

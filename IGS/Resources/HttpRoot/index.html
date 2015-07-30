@@ -14,12 +14,12 @@
   <body>
     <div data-role="page" id="register">
       <div data-role="header" data-position="fixed" data-tap-toggle="false">
-        <h1>Please Register</h1>
+        <h1>Bitte registrieren</h1>
       </div>
       <!-- /header -->
 
       <div role="main" class="ui-content fullscreen">
-        <div id="activate">Raise your arm and touch the screen</div>
+        <div id="activate">Bitte Arm heben und Bildschirm berühren!</div>
       </div>
       <!-- /content -->
 
@@ -27,7 +27,7 @@
         <div data-role="navbar" data-iconpos="right">
           <ul>
             <li>
-              <a href="#listdevices" class="btn-skip ui-title" data-icon="carat-r">Skip to list</a>
+              <a href="#listdevices" class="btn-skip ui-title" data-icon="carat-r">Zur Liste</a>
             </li>
           </ul>
         </div>
@@ -37,13 +37,13 @@
 
     <div data-role="page" id="point">
       <div data-role="header" data-position="fixed" data-tap-toggle="false">
-        <h1>Select Device</h1>
-        <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Back</a>
+        <h1>Gerät auswählen</h1>
+        <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Zurück</a>
       </div>
       <!-- /header -->
 
       <div role="main" class="ui-content fullscreen">
-        <div id="pointdevice">Point and touch the screen</div>
+        <div id="pointdevice">Auf das Gerät zeigen und Bildschirm berühren!</div>
       </div>
       <!-- /content -->
 
@@ -51,7 +51,7 @@
         <div data-role="navbar" data-iconpos="right">
           <ul>
             <li>
-              <a href="#listdevices" class="btn-skip" data-icon="carat-r">Skip to list</a>
+              <a href="#listdevices" class="btn-skip" data-icon="carat-r">Zur Liste</a>
             </li>
           </ul>
         </div>
@@ -61,15 +61,15 @@
 
     <div data-role="page" id="listdevices">
       <div data-role="header" data-position="fixed" data-tap-toggle="false">
-        <h1>Select Device</h1>
-        <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Back</a>
-        <!--<a href="#adddevice" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all ui-btn-icon-right ui-icon-plus">New</a>-->
+        <h1>Gerät auswählen</h1>
+        <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Zurück</a>
+        <a href="#adddevice" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all ui-btn-icon-right ui-icon-plus">Neu</a>
       </div>
       <!-- /header -->
 
       <div role="main" class="ui-content">
         <ul id="devicelist" data-role="listview">
-          <li>No devices in list</li>
+          <li>Keine Geräte in der Liste</li>
           <li><a href="/?dev=&cmd=getControlPath" data-ajax="false">Test1</a><a data-icon="location" href="#edit">edit</a></li>
           <li><a href="/?dev=&cmd=getControlPath" data-ajax="false">Test2</a></li>
         </ul>
@@ -80,21 +80,21 @@
 
     <div data-role="page" id="locate">
         <div data-role="header" data-position="fixed" data-tap-toggle="false">
-            <h1>Add new device location</h1>
-            <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Back</a>
+            <h1>Neue Position hinzufügen</h1>
+            <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Zurück</a>
         </div>
         <!-- /header -->
 
         <div role="main" class="ui-content fullscreen">
-            <div id="locatedevice">Locate by pointing</div>
+            <div id="locatedevice">Position durch zeigen bestimmen</div>
         </div>
         <!-- /content -->
 
         <div data-role="footer" data-position="fixed" data-tap-toggle="false" style="text-align: center;">
             <form style="width:100%">
-                <label for="select-device" class="select" style=" display:none">Device:</label>
+                <label for="select-device" class="select" style=" display:none">Gerät:</label>
                 <select name="select-device" id="select-device" data-mini="true">
-                    <option value="">Choose Device...</option>
+                    <option value="">Gerät auswählen...</option>
                     <option value="dev1">The 1st Option</option>
                     <option value="dev2">The 2nd Option</option>
                     <option value="dev3">The 3rd Option</option>
@@ -106,22 +106,22 @@
 
     <div data-role="page" data-dialog="true" id="adddevice">
       <div data-role="header">
-        <h1>Add New Device</h1>
+        <h1>Neues Gerät hinzufügen</h1>
       </div>
       <!-- /header -->
 
       <div role="main" class="ui-content">
         <form>
           <div class="ui-field-contain">
-            <label for="text-name">Device name:</label>
+            <label for="text-name">Geräte name:</label>
             <input type="text" name="text-name" id="text-name" value="" />
         </div>
           <div class="ui-field-contain">
-            <label for="text-type">Type:</label>
+            <label for="text-type">Typ:</label>
             <input type="text" name="text-type" id="text-type" value="" />
         </div>
           <div class="ui-field-contain">
-            <label for="text-id">Address:</label>
+            <label for="text-id">Addresse:</label>
             <input type="text" name="text-address" id="text-address" value="" />
         </div>
           <div class="ui-field-contain">

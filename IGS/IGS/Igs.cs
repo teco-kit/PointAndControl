@@ -149,7 +149,7 @@ namespace IGS.Server.IGS
             User user = Data.GetUserBySkeleton(args.SkeletonId);
             if (user != null)
             {
-                user.AddError("You left the room!");
+                user.AddError("Sie haben den Raum verlassen");
                 user.TrackingState = false;
             }
             Data.DelTrackedSkeleton(args.SkeletonId);
@@ -228,32 +228,40 @@ namespace IGS.Server.IGS
                         break;
 
                     case "activateGestureCtrl":
+                        if (!Tracker.kinectAvailable)
+                        {
+                            msg = "Keine Kinect am System angeschlossen.";
+                            break;
+                        }
+
                         if (Data.GetUserByIp(wlanAdr) != null)
                         {
                             success = SkeletonIdToUser(wlanAdr);
                         }
 
                         if (!success)
-                            msg = "Activation of gesture control failed. Please check camera and restart application.";
+                            msg = "Aktivierung der Gestenerkennung fehlgeschlagen. Bitte Kinect überprüfen.";
 
                         break;
 
                     case "selectDevice":
-                        if (Data.GetUserByIp(wlanAdr) == null)
+                        if (!Tracker.kinectAvailable)
                         {
-                            msg = "Please register first";
+                            msg = "Keine Kinect am System angeschlossen.";
                             break;
                         }
 
-                        if (Data.GetUserByIp(wlanAdr).TrackingState)
+                        if (Data.GetUserByIp(wlanAdr) == null || !Data.GetUserByIp(wlanAdr).TrackingState)
+                        {
+                            msg = "Bitte erst registrieren";
+                            break;
+                        } 
+                        else 
                         {
                             success = true;
                             retStr += "," + MakeDeviceString(coreMethods.chooseDevice(wlanAdr));
                             break;
-                        }
-                            
-                        msg = "No device found. Please try again.";
-                        break;
+                        }  
 
                     case "list":
                         success = true;
@@ -269,18 +277,10 @@ namespace IGS.Server.IGS
                           break;
                         }
 
-                        retStr = "Failed to add device. Incorrect number of parameters";
+                        msg = "Hinzufügen fehlgeschlagen. Falsche Anzahl von Parametern";
 
                         break;
                     
-
-
-                    case "collectDeviceSample":
-                        retStr = collectSample(wlanAdr, value);
-                        XMLComponentHandler.writeLogEntry("Response to 'collectDeviceSample': " + retStr);
-
-                        break;
-
                     case "popup":
                         if (Data.GetUserByIp(wlanAdr) != null)
                         {
@@ -296,12 +296,13 @@ namespace IGS.Server.IGS
                 Console.WriteLine(retStr);
 
                 if (cmd != "popup" || msg != "")
-                        {
+                {
                     XMLComponentHandler.writeLogEntry("Response to '" + cmd + "': " + retStr);
-                        }
-
-                        return retStr;
                 }
+
+                return retStr;
+
+            }
             else if (devId != null && Data.getDeviceByID(devId) != null && cmd != null)
             {
                 switch (cmd)
@@ -313,20 +314,18 @@ namespace IGS.Server.IGS
                         args.P.WriteRedirect(retStr);
                     
                         break;
+
                     case "addDeviceCoord":
                         retStr = AddDeviceCoord(devId, wlanAdr, value);
-    
                         break;
 
                     case "changePosition":
                         retStr = coreMethods.train(wlanAdr, devId);
-
                         break;
 
                     case "addDeviceLocation":
                         retStr = collectSample(devId, wlanAdr);
                         // retStr = AddDeviceCoord(devId, wlanAdr, value);
-
                         break;
 
                     default:
@@ -343,7 +342,7 @@ namespace IGS.Server.IGS
             else
                 {
                 // TODO: JSON response
-                retStr = "Invalid command";
+                retStr = "Unbekannter Befehl.";
                     return retStr;
                 }
         }
@@ -436,13 +435,13 @@ namespace IGS.Server.IGS
                 object instance = Activator.CreateInstance(typeObject, parameter[1], idparams, new List<Ball>(),
                                                            parameter[2], parameter[3]);
                 Data.Devices.Add((Device)instance);
-                retStr = "Device added to deviceConfiguration.xml and devices list";
+                retStr = "Gerät wurde in Konfiguration und Liste hinzugefügt";
 
                 Console.WriteLine(retStr);
                 return retStr;
             }
 
-            retStr = "Device added to deviceConfiguration but not to devices list";
+            retStr = "Gerätetyp unbekannt.";
 
             return retStr;
         }
@@ -476,7 +475,7 @@ namespace IGS.Server.IGS
             {
                 if (Tracker.Bodies.Count == 0)
                 {
-                    return "No bodys found by kinect";
+                    return "Keine Personen von der Kinect Kamera gefunden";
                 }
                 
                 Vector3D[] vectors = Transformer.transformJointCoords(Tracker.getMedianFilteredCoordinates(tmpUser.SkeletonId));
@@ -487,15 +486,15 @@ namespace IGS.Server.IGS
                     //XMLComponentHandler.writeUserJointsToXmlFile(tmpUser, dev, body);
                     //XMLComponentHandler.writeUserJointsPerSelectClick(body);
                     XMLSkeletonJointRecords.writeClassifiedDeviceToLastSelect(dev);
-                    return "sample added";
+                    return "Sample hinzugefügt.";
                 }
                 else
                 {
                     XMLSkeletonJointRecords.deleteLastUserSkeletonSelected();
-                    return "direction didn't hit a wall";
+                    return "Keine Wand getroffen.";
                 }
             }
-            return "Sample not added, deviceID not found";
+            return "Gerät ist unbekannt.";
         }
 
         public String getControlPagePathHttp(String id)

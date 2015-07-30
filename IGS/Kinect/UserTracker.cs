@@ -31,6 +31,7 @@ namespace IGS.Server.Kinect
         public List<Body[]> lastBodies { get; set; }
         public bool collectAfterClick { get; set; }
 
+        public bool kinectAvailable { get; set; }
 
         public bool movingWindowCollect { get; set; }
 
@@ -61,6 +62,7 @@ namespace IGS.Server.Kinect
             this.jointFilter = new MedianJointFilter();
             workingOnWindow = false;
             windowSize = 15;
+            kinectAvailable = false;
         }
 
         /// <summary>
@@ -121,6 +123,15 @@ namespace IGS.Server.Kinect
             
             if (Sensor == null) return;
 
+            if (!Sensor.IsAvailable)
+            {
+                this.kinectAvailable = false;
+                return;
+            }
+
+            this.kinectAvailable = true;
+
+
             // Start den Sensor!
             try
             {
@@ -130,6 +141,7 @@ namespace IGS.Server.Kinect
             {
                 Sensor = null;
             }
+
             if (this.reader != null)
             {
                 this.reader.FrameArrived += this.reader_FramesReady;
