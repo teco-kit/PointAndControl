@@ -50,6 +50,11 @@ namespace IGS.Server.Devices
 
         public String CommandString { get; set; }
 
+        public String address { get; set; }
+
+        public String port { get; set; }
+
+
         /// <summary>
         ///     The Transmit method is responsible for the correct invocation of a function of the device
         ///     which is implicated by the "commandID"

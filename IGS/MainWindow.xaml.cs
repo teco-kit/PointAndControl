@@ -827,14 +827,7 @@ public partial class MainWindow
     /// <param name="e">The MouseButtonEventArgs</param>
     private void CreateDeviceButton_Click(object sender, RoutedEventArgs e)
     {
-        String[] parameter = new String[4];
-
-        parameter[0] = DeviceType.Text;
-        parameter[1] = deviceIdentifier.Text;
-        parameter[2] = DeviceAdress.Text;
-        parameter[3] = DevicePort.Text;
-
-        _igs.AddDevice(parameter);
+        _igs.AddDevice(DeviceType.Text, deviceIdentifier.Text, DeviceAdress.Text, DevicePort.Text);
     }
 
     private void trainBatch_Button_Click(object sender, RoutedEventArgs e)

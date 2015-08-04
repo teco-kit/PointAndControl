@@ -603,15 +603,13 @@ namespace IGS.Server.WebServer
             {
                 NameValueCollection col = HttpUtility.ParseQueryString(querystring);
                 String device = col["dev"];
-                String temp = col["cmd"];
-                if (device != null && temp != null)
+                String command = col["cmd"];
+                if (device != null && command != null)
                 {
                     // TODO: clean this mess up
-                    String[] cmdval = temp.Split('_');
-                    String command = cmdval[0];
                     String value = "";
-                    if (cmdval.Length > 1) 
-                        value = cmdval[1].Trim();
+                    if (col["val"] != null)
+                        value = col["val"];
                     String clientIp = ((IPEndPoint)p.Socket.Client.RemoteEndPoint).Address.ToString();
                     OnRequest(new HttpEventArgs(clientIp, device, command, value, p));
 

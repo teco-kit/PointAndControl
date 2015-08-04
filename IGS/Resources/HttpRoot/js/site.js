@@ -19,6 +19,57 @@ var toast = function (msg) {
     }
 }
 
+var updateNewDeviceDialogue = function () {
+    var selected = $('#newdevicedd').find(":selected");
+
+    $('#newdevicename').val(selected.text());
+}
+
+
+var addDeviceFromList = function () {
+    $.getJSON('/?dev=server&cmd=addDeviceFromList&val=' + $('#newdevicedd').val() + ':' + $('#newdevicename').val(), function (data) {
+
+        if (!data) {
+            return;
+        }
+
+        if (data.success) {
+            toast("Gerät hinzugefügt")
+
+            // close dialogue
+            $(':mobile-pagecontainer').pagecontainer('change', '#listdevices');
+        }
+
+        //TODO: check response          
+    });
+}
+
+var updateNewDeviceDD = function (event) {
+    $('#newdevicename').val('');
+
+    $.getJSON('/?dev=server&cmd=discoverDevices', function (data) {
+        var optionItems = [];
+
+        if (!data || !data.devices || data.devices.length == 0) {
+            $('#newdevicedd').html('<option>Keine Geräte gefunden</option>');
+            $('#newdevicedd').selectmenu('disable');
+            $('#newdevicedd').selectmenu('refresh');
+
+            return;
+        }
+
+        optionItems.push('<option>Gerät wählen...</option>')
+
+        for (var i = 0; i < data.devices.length; i++) {
+            var device = data.devices[i];
+            optionItems.push('<option value="' + device.id + '">' + device.name + '</option>');
+        }
+
+        $('#newdevicedd').html(optionItems.join(''));
+        $('#newdevicedd').selectmenu('enable');
+        $('#newdevicedd').selectmenu('refresh');
+    });
+}
 
 // TODO: abstract commands into single function
 var updateDeviceList = function (event) {
@@ -162,10 +213,25 @@ $(function (event) {
         locateDevice();
     });
 
+    // update new device dialogue
+    $('#newdevicedd').on('change', function (event) {
+        updateNewDeviceDialogue();
+    });
+
+    // add device from dialogue
+    $('#adddevicebutton').on('click', function (event) {
+        addDeviceFromList();
+    });
+
+
     $(document).on('pagecontainerbeforetransition', function (event, ui) {
         hash = ui.absUrl ? $.mobile.path.parseUrl(ui.absUrl).hash : "";
         if (hash == '#listdevices' || hash == '#locate') {
             updateDeviceList(event);
+        }
+
+        if (hash == '#adddevice') {
+            updateNewDeviceDD(event);
         }
     });
 });

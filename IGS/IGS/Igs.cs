@@ -81,7 +81,7 @@ namespace IGS.Server.IGS
         ///     With the "get"-method the IGSKinect can be returned.
         /// </summary>
         public devKinect IGSKinect { get; set; }
-
+         
         /// <summary>
         /// Marks if the devices are initialized or not.
         /// With the "set"-method the devInit can be set.
@@ -199,6 +199,7 @@ namespace IGS.Server.IGS
             String devId = args.Dev;
             String cmd = args.Cmd;
             String value = args.Val;
+            String[] parameters = value.Split(':');
             String wlanAdr = args.ClientIp;
             String retStr = "";
             String msg = "";
@@ -279,19 +280,40 @@ namespace IGS.Server.IGS
                         retStr += "," + MakeDeviceString(Data.Devices);
                         break;
 
+                    case "discoverDevices":
+                        success = true;
+                        // Data.newDevices = discoverDevices();
+                        retStr += "," + MakeDeviceString(Data.newDevices);
+                        break;
+
                     case "addDevice":
-                        string[] parameter = value.Split(':');
-                        if (parameter.Length == 4)
+                        if (parameters.Length == 4)
                         {
                           success = true;
-                          msg = AddDevice(parameter);
+                          msg = AddDevice(parameters[0], parameters[1], parameters[2], parameters[3]);
                           break;
                         }
 
                         msg = "Hinzufügen fehlgeschlagen. Falsche Anzahl von Parametern";
 
                         break;
-                    
+
+                    case "addDeviceFromList":
+                        // find device in newDevices list
+                        Device newDevice = Data.newDevices.Find(d => d.Id.Equals(parameters[0]));
+
+                        if (newDevice != null){
+                            success = true;
+
+                            String[] type = newDevice.Id.Split('_');
+                            msg = AddDevice(type[0], parameters[1], newDevice.address, newDevice.port);
+
+                            // remove from list
+                            Data.newDevices.Remove(newDevice);
+                        }
+
+                        break;
+
                     case "popup":
                         if (Data.GetUserByIp(wlanAdr) != null)
                         {
@@ -425,7 +447,7 @@ namespace IGS.Server.IGS
         ///     </param>
         ///     <returns>returns a response string what result the process had</returns>
         /// </summary>
-        public String AddDevice(String[] parameter)
+        public String AddDevice(String type, String name, String address, String port)
         {
             String retStr = "";
 
@@ -433,18 +455,19 @@ namespace IGS.Server.IGS
             for (int i = 0; i < Data.Devices.Count; i++)
             {
                 String[] devId = Data.Devices[i].Id.Split('_');
-                if (devId[0] == parameter[0])
+                if (devId[0] == type)
                     count++;
             }
-            string idparams = parameter[0] + "_" + count;
+            string idparams = type + "_" + count;
 
-            XMLComponentHandler.addDeviceToXML(parameter, count);
+            // TODO: for testing we do not wand to add the device to XML
+            // XMLComponentHandler.addDeviceToXML(parameter, count);
 
-            Type typeObject = Type.GetType("IGS.Server.Devices." + parameter[0]);
+            Type typeObject = Type.GetType("IGS.Server.Devices." + type);
             if (typeObject != null)
             {
-                object instance = Activator.CreateInstance(typeObject, parameter[1], idparams, new List<Ball>(),
-                                                           parameter[2], parameter[3]);
+                object instance = Activator.CreateInstance(typeObject, name, idparams, new List<Ball>(),
+                                                           address, port);
                 Data.Devices.Add((Device)instance);
                 retStr = "Gerät wurde in Konfiguration und Liste hinzugefügt";
 
@@ -452,7 +475,7 @@ namespace IGS.Server.IGS
                 return retStr;
             }
 
-            retStr = "Gerätetyp unbekannt.";
+            retStr = "Gerätetyp unbekannt";
 
             return retStr;
         }

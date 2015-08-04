@@ -21,6 +21,8 @@ namespace IGS.Server.IGS
         /// </summary>
         private List<Device> _devices { get; set; }
 
+        private List<Device> _newDevices { get; set; }
+
         /// <summary>
         ///     List of the users
         /// </summary>
@@ -36,6 +38,7 @@ namespace IGS.Server.IGS
         public DataHolder(List<Device> devices)
         {
             _devices = devices;
+            _newDevices = new List<Device>();
 
             String[] roomComps = XMLComponentHandler.readRoomComponents();
             float roomWidth = float.Parse(roomComps[0]);
@@ -43,17 +46,19 @@ namespace IGS.Server.IGS
             float roomDepth = float.Parse(roomComps[2]);
             _roomModel = new Room(roomWidth, roomHeight, roomDepth);
 
-
-
-
             foreach (Device d in _devices)
             {
                 d.color = pickRandomColor();
             }
 
-            
 
-
+            // create a list of devices to add to the system (testing only)
+            _newDevices.Add(new Boxee("My new Boxee", "Boxee_0", null, "127.0.0.1", "8080"));
+            _newDevices.Add(new Plugwise("Ceiling Lamp", "Plugwise_0", null, "127.0.0.1", "8080"));
+            _newDevices.Add(new Plugwise("Moodlight", "Plugwise_1", null, "127.0.0.1", "8080"));
+            _newDevices.Add(new Plugwise("Disco Light", "Plugwise_2", null, "127.0.0.1", "8080"));
+            _newDevices.Add(new Plugwise("Other Moodlight", "Plugwise_3", null, "127.0.0.1", "8080"));
+            _newDevices.Add(new Plugwise("Some Hue", "Plugwise_4", null, "127.0.0.1", "8080"));
 
             _users = new List<User>();
         }
@@ -67,6 +72,17 @@ namespace IGS.Server.IGS
         {
             get { return _devices; }
             set { _devices = value; }
+        }
+
+        /// <summary>
+        ///     With the "set"-method the device list can be set
+        ///     With the "get"-method, the device list can be returned
+        ///     <returns>Returns the list of devices</returns>
+        /// </summary>
+        public List<Device> newDevices
+        {
+            get { return _newDevices; }
+            set { _newDevices = value; }
         }
 
         /// <summary>
@@ -247,6 +263,12 @@ namespace IGS.Server.IGS
             return tempDevice;
         }
 
+        public void delNewDevice(String id)
+        {
+            _newDevices.RemoveAll(d => d.Id.Equals(id));
+
+            return;
+        }
 
         /// <summary>
         ///     Deletes the associated bodyID from the through ID implicated user.

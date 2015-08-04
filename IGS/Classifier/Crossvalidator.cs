@@ -334,7 +334,6 @@ namespace IGS.Classifier
             Stopwatch trainingsWatch = new Stopwatch();
             Stopwatch classificationWatch = new Stopwatch();
             int error = 0;
-            long test = 0;
             double totalAVGError = 0;
             int sampleSum = 0;
             int correct = 0;
@@ -605,7 +604,6 @@ namespace IGS.Classifier
         public List<List<WallProjectionSample>> splitWallProjectionSamplelRandomForOnline(List<List<int>> crossVal)
         {
             List<List<WallProjectionSample>> result = new List<List<WallProjectionSample>>();
-            int chosenPlace = 0;
             Random rand = new Random();
 
             foreach (List<int> l in crossVal)

@@ -92,14 +92,7 @@
 
         <div data-role="footer" data-position="fixed" data-tap-toggle="false" style="text-align: center;">
             <form style="width:100%">
-                <label for="select-device" class="select" style=" display:none">Gerät:</label>
-                <select name="select-device" id="select-device" data-mini="true">
-                    <option value="">Gerät auswählen...</option>
-                    <option value="dev1">The 1st Option</option>
-                    <option value="dev2">The 2nd Option</option>
-                    <option value="dev3">The 3rd Option</option>
-                    <option value="dev4">The 4th Option</option>
-                </select>
+
             </form>
         </div> <!-- /footer -->
     </div>
@@ -112,23 +105,18 @@
 
       <div role="main" class="ui-content">
         <form>
+            <select name="newdevicedd" id="newdevicedd" data-mini="true">
+                <option value="">Gerät auswählen...</option>
+                <option value="dev1">The 1st Option</option>
+                <option value="dev2">The 2nd Option</option>
+                <option value="dev3">The 3rd Option</option>
+                <option value="dev4">The 4th Option</option>
+            </select>
           <div class="ui-field-contain">
-            <label for="text-name">Geräte name:</label>
-            <input type="text" name="text-name" id="text-name" value="" />
-        </div>
-          <div class="ui-field-contain">
-            <label for="text-type">Typ:</label>
-            <input type="text" name="text-type" id="text-type" value="" />
-        </div>
-          <div class="ui-field-contain">
-            <label for="text-id">Addresse:</label>
-            <input type="text" name="text-address" id="text-address" value="" />
-        </div>
-          <div class="ui-field-contain">
-            <label for="text-port">Port:</label>
-            <input type="text" name="text-port" id="text-port" value="" />
-        </div>
-          <input type="button" href="#" value="Add Device" />
+              <label for="newdevicename">Name:</label>
+              <input type="text" name="newdevicename" id="newdevicename" value="" />
+          </div>
+            <input type="button" href="#" id="adddevicebutton" value="Add Device" />
       </form>
       </div>
       <!-- /content -->
