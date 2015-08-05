@@ -10,6 +10,14 @@
       <address>129.13.169.169</address>
       <port>5050</port>
     </device>
+    <device type="Kodi">
+      <name>ExampleKodi</name>
+      <id>Kodi_1</id>
+      <form count="0">
+      </form>
+      <address>127.0.0.1</address>
+      <port>8081</port>
+    </device>
     <device type="Plugwise">
       <name>Steckdose</name>
       <id>Plugwise_1</id>
