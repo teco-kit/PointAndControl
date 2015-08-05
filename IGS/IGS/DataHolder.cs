@@ -249,6 +249,9 @@ namespace IGS.Server.IGS
         /// </summary>
         public Device getDeviceByID(String id)
         {
+            if (id == null || id == "")
+                return null;
+
             Device tempDevice = null;
             bool found = false;
 

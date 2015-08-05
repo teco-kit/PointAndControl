@@ -13,9 +13,11 @@ namespace IGS.Server.IGS
     interface ICoreMethods
     {
 
-        List<Device> chooseDevice(String wlanAdr);
+        List<Device> chooseDevice(User usr);
 
-        String train(String wlanAdr, String devID);
+        String train(Device dev);
+
+        int getMinVectorsPerDevice();
      
 
     }

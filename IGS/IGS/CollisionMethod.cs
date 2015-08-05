@@ -21,15 +21,19 @@ namespace IGS.Server.IGS
             this.locator = new Locator(data, tracker, transformer);
         }
 
-        public List<Device> chooseDevice(String wlanAdr)
+        public List<Device> chooseDevice(User usr)
         {
-            User tempUser = locator.Data.GetUserByIp(wlanAdr);
-            return tempUser != null ? CollisionDetection.Calculate(locator.Data.Devices, locator.Transformer.transformJointCoords(locator.Tracker.GetCoordinates(tempUser.SkeletonId))) : null;
+            return usr != null ? CollisionDetection.Calculate(locator.Data.Devices, locator.Transformer.transformJointCoords(locator.Tracker.GetCoordinates(usr.SkeletonId))) : null;
         }
 
-        public String train(String wlanAdr, String devId)
+        public String train(Device dev)
         {
-            return locator.ChangeDeviceLocation(devId, wlanAdr);
+            return locator.setDeviceLocation(dev);
+        }
+
+        public int getMinVectorsPerDevice()
+        {
+            return 3;
         }
     }
 }

@@ -241,7 +241,7 @@ namespace IGS.Classifier
                 {
                     List<Vector3D[]> trainVecs = getVectorsForDevice(trainingSet, label);
                     trainingsWatch.Start();
-                    locator.ChangeDeviceLocation(trainVecs, label);
+                    locator.ChangeDeviceLocation(label, trainVecs);
                     trainingsWatch.Stop();
                    
                 }

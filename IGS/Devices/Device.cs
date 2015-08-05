@@ -3,6 +3,7 @@ using IGS.Server.Location;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Media.Media3D;
 
 namespace IGS.Server.Devices
 {
@@ -24,7 +25,7 @@ namespace IGS.Server.Devices
             Name = name;
             Id = id;
             Form = form;
-            PositionVectors = new List<Line3D>();
+            PositionVectors = new List<Vector3D[]>();
         }
 
         ///     Name of the device.
@@ -70,7 +71,7 @@ namespace IGS.Server.Devices
         ///     </returns>
         public abstract String Transmit(String cmdId, String value);
 
-        public List<Line3D> PositionVectors { get; set; }
+        public List<Vector3D[]> PositionVectors { get; set; }
 
         public Color color { get; set; }
 

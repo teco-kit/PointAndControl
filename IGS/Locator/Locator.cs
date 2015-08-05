@@ -147,16 +147,7 @@ namespace IGS.Server.Location
 
             Vector3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(tempUser.SkeletonId));
 
-            //calculate right [and left] forearm direction vectors, wrist - shoulder
-            //Vector3D leftDir = Vector3D.Subtract(vectors[1], vectors[0]);    //only right
-            Vector3D rightDir = Vector3D.Subtract(vectors[3], vectors[2]);
-
-            Vector3D rightWrist = vectors[3];
-
-            Line3D line = new Line3D(rightWrist, rightDir);
-            //Line3D line = new Line3D(new Vector3D(0, 0, 0), new Vector3D(1, 0, 0));
-            
-            tempDevice.PositionVectors.Add(line);
+            tempDevice.PositionVectors.Add(vectors);
 
             //log current body (evaluation)
             //writeToXmlFile(tempUser, tempDevice);
@@ -164,105 +155,71 @@ namespace IGS.Server.Location
 
             Console.Out.WriteLine("CurrentList length:" + tempDevice.PositionVectors.Count);
             //set new Position
-            if (tempDevice.PositionVectors.Count >= 3) // if enough vectors in list to calculate Position
-            {
-                //Line3D.updateWeight(tempDevice.PositionVectors);
-
-                Vector3D position = Locator.cobylaCentralPoint(tempDevice.PositionVectors.ToArray());
-
-                if (position.Equals(new Vector3D(Double.NaN, Double.NaN, Double.NaN)))
-                {
-                    //error: clear list and advise user to try again
-                    tempDevice.PositionVectors.Clear();
-                    return "Error: Please locate device again.";
-                }
-
-                //change position of device in dataHolder
-                List<Ball> balls = new List<Ball>();
-                balls.Add(new Ball(position, 0.3f));
-                tempDevice.Form = balls;
-
-                //add new location to xml
-                String result = xmlChangeDeviceLocation(tempDevice, position);
-
-                if (result.Equals(""))
-                {
-                    return "New Position added for Device " + tempDevice.Name;
-                }
-                else
-                {
-                    return result;
-                }
-            }
-            else {
-                return "More Vectors needed to calculate Position of " + tempDevice.ToString();
-            }
-
+            return setDeviceLocation(tempDevice);
         }
 
-        public String ChangeDeviceLocation(List<Vector3D[]> vectorsLists, String devId)
+        public String ChangeDeviceLocation(String devId, List<Vector3D[]> vectorsList)
         {
             //receive Device from DataHolder Data
             Device tempDevice = Data.GetDeviceByName(devId);
             if (tempDevice == null) return "Device with ID [" + devId + "] not found";
             //get pointing vector of user
-          
-            //calculate right [and left] forearm direction vectors, wrist - shoulder
-            //Vector3D leftDir = Vector3D.Subtract(vectors[1], vectors[0]);    //only right
 
-            foreach (Vector3D[] vectors in vectorsLists)
-            {
-                
-
-                Vector3D rightDir = Vector3D.Subtract(vectors[3], vectors[2]);
-
-                Vector3D rightWrist = vectors[3];
-
-                Line3D line = new Line3D(rightWrist, rightDir);
-                //Line3D line = new Line3D(new Vector3D(0, 0, 0), new Vector3D(1, 0, 0));
-
-                tempDevice.PositionVectors.Add(line);
-            }
-            //log current body (evaluation)
-            //writeToXmlFile(tempUser, tempDevice);
-
+            tempDevice.PositionVectors = vectorsList;
 
             Console.Out.WriteLine("CurrentList length:" + tempDevice.PositionVectors.Count);
             //set new Position
-            if (tempDevice.PositionVectors.Count >= 3) // if enough vectors in list to calculate Position
-            {
-                //Line3D.updateWeight(tempDevice.PositionVectors);
+            return setDeviceLocation(tempDevice);
+        }
 
-                Vector3D position = Locator.cobylaCentralPoint(tempDevice.PositionVectors.ToArray());
+
+        public String setDeviceLocation(Device dev)
+        {
+            if (dev == null) return "Gerät nicht gefunden";
+
+            Console.Out.WriteLine("CurrentList length:" + dev.PositionVectors.Count);
+
+            //set new Position
+            // TODO: set number of vectors as constant
+            if (dev.PositionVectors.Count >= 3) // if enough vectors in list to calculate Position
+            {
+                List<Line3D> lines = new List<Line3D>();
+
+                foreach (Vector3D[] v in dev.PositionVectors)
+                {
+                    Vector3D rightDir = Vector3D.Subtract(v[3], v[2]);
+                    Vector3D rightWrist = v[3];
+
+                    Line3D line = new Line3D(rightWrist, rightDir);
+
+                    lines.Add(line);
+                }
+                //Line3D.updateWeight(lines);
+
+                Vector3D position = Locator.cobylaCentralPoint(lines.ToArray());
+
+                // vectors were used for calculation, clear list
+                dev.PositionVectors.Clear();
 
                 if (position.Equals(new Vector3D(Double.NaN, Double.NaN, Double.NaN)))
                 {
-                    //error: clear list and advise user to try again
-                    tempDevice.PositionVectors.Clear();
-                    return "Error: Please locate device again.";
+                    //error: advise user to try again
+                    return "Berechnungsfehler. Bitte erneut versuchen.";
                 }
-                tempDevice.PositionVectors.Clear();
+
                 //change position of device in dataHolder
                 List<Ball> balls = new List<Ball>();
                 balls.Add(new Ball(position, 0.3f));
-                tempDevice.Form = balls;
+                dev.Form = balls;
 
                 //add new location to xml
-                String result = xmlChangeDeviceLocation(tempDevice, position);
+                //TODO: disabled for testing, should be handled in dataHolder
+                //String result = xmlChangeDeviceLocation(tempDevice, position);
+                return "Gerät " + dev.Name + " wurde neu plaziert";
 
-                if (result.Equals(""))
-                {
-                    return "New Position added for Device " + tempDevice.Name;
-                }
-                else
-                {
-                    return result;
-                }
             }
-            else
-            {
-                return "More Vectors needed to calculate Position of " + tempDevice.ToString();
-            }
+
+            return "Mehr Vektoren für die Berechnung benötigt";
 
         }
 

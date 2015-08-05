@@ -30,26 +30,28 @@ namespace IGS.Server.IGS
             this.transformer = transform;
         }
 
-        public String train(String wlanAdr, String devID)
+        public String train(Device dev)
         {
+            String s = "";
 
-            Device dev = data.getDeviceByID(devID);
-            User tmp = data.GetUserByIp(wlanAdr);
+            //TODO: validate that this function still works as intended
 
-            Vector3D[] vecs = transformer.transformJointCoords(tracker.getMedianFilteredCoordinates(tmp.SkeletonId));
-            String s = classificationHandler.calculateWallProjectionSampleAndLearn(vecs, dev.Id);
-            XMLSkeletonJointRecords.writeClassifiedDeviceToLastSelect(dev);
+            //Vector3D[] vecs = transformer.transformJointCoords(tracker.getMedianFilteredCoordinates(usr.SkeletonId));
+            foreach (Vector3D[] vecs in dev.PositionVectors)
+            {
+                s += classificationHandler.calculateWallProjectionSampleAndLearn(vecs, dev.Id);
+                XMLSkeletonJointRecords.writeClassifiedDeviceToLastSelect(dev);
+            }
 
             return s;
 
         }
 
-        public List<Device> chooseDevice(String wlanAdr)
+        public List<Device> chooseDevice(User usr)
         {
             List<Device> dev = new List<Device>();
-            User tempUser = data.GetUserByIp(wlanAdr);
-            Vector3D[] vecs = transformer.transformJointCoords(tracker.getMedianFilteredCoordinates(tempUser.SkeletonId));
-            if (tempUser != null)
+            Vector3D[] vecs = transformer.transformJointCoords(tracker.getMedianFilteredCoordinates(usr.SkeletonId));
+            if (usr != null)
             {
 
                 WallProjectionSample sample = classificationHandler.sCalculator.calculateSample(vecs, "");
@@ -58,7 +60,7 @@ namespace IGS.Server.IGS
 
                 Console.WriteLine("Classified: " + sample.sampledeviceIdentifier);
                 XMLComponentHandler.writeLogEntry("Device classified to" + sample.sampledeviceIdentifier);
-                Body body = tracker.GetBodyById(tempUser.SkeletonId);
+                Body body = tracker.GetBodyById(usr.SkeletonId);
                 //XMLSkeletonJointRecords.writeUserJointsToXmlFile(tempUser, Data.GetDeviceByName(sample.sampledeviceIdentifier), body);
                 //XMLComponentHandler.writeUserJointsPerSelectClick(body);
 
@@ -95,5 +97,11 @@ namespace IGS.Server.IGS
             }
             return dev;
         }
+
+        public int getMinVectorsPerDevice()
+        {
+            return 10;
+        }
+
     }
 }

@@ -49,12 +49,12 @@ namespace IGS.Server.IGS
 
 
             createIGSKinect();
-            
+
             this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Centre);
             this.classification = new ClassificationHandler(Transformer, Data);
             this.coreMethods = new CollisionMethod(Data, Tracker, Transformer);
 
-            
+
         }
 
 
@@ -81,7 +81,7 @@ namespace IGS.Server.IGS
         ///     With the "get"-method the IGSKinect can be returned.
         /// </summary>
         public devKinect IGSKinect { get; set; }
-         
+
         /// <summary>
         /// Marks if the devices are initialized or not.
         /// With the "set"-method the devInit can be set.
@@ -99,8 +99,8 @@ namespace IGS.Server.IGS
 
         ICoreMethods coreMethods { get; set; }
 
-      
-        
+
+
 
         /// <summary>
         /// 
@@ -132,7 +132,7 @@ namespace IGS.Server.IGS
         {
             Debug.WriteLine("server_Request");
             String str = InterpretCommand(sender, e);
-           
+
             Server.SendResponse(e.P, str);
         }
 
@@ -179,7 +179,7 @@ namespace IGS.Server.IGS
             {
                 id = Tracker.GetSkeletonId(tempUser.SkeletonId);
 
-                if (id >= 0) 
+                if (id >= 0)
                 {
                     tempUser.TrackingState = true;
                     Data.SetTrackedSkeleton(wlanAdr, id);
@@ -203,19 +203,20 @@ namespace IGS.Server.IGS
             String wlanAdr = args.ClientIp;
 
             User user = Data.GetUserByIp(wlanAdr);
+            Device device = null;
             String retStr = "";
             String msg = "";
             Boolean success = false;
 
-            if(cmd != "popup")
-                XMLComponentHandler.writeLogEntry("Command arrived! devID: " + devId + " cmdID: " + cmd + " value: " + value + " wlanAdr: " + wlanAdr);           
-           
+            if (cmd != "popup")
+                XMLComponentHandler.writeLogEntry("Command arrived! devID: " + devId + " cmdID: " + cmd + " value: " + value + " wlanAdr: " + wlanAdr);
+
             if (devId == "server")
             {
                 // return JSON formatted message
                 args.P.WriteSuccess("application/json");
                 retStr = "{\"cmd\":\"" + cmd + "\"";
-                
+
                 if (cmd != "addUser" && cmd != "popup")
                 {
                     // notify online learner that no control command was sent
@@ -269,13 +270,12 @@ namespace IGS.Server.IGS
                         {
                             msg = "Bitte erst registrieren";
                             break;
-                        } 
-                        else 
-                        {
-                            success = true;
-                            retStr += "," + MakeDeviceString(coreMethods.chooseDevice(wlanAdr));
-                            break;
-                        }  
+                        }
+
+                        success = true;
+                        retStr += "," + MakeDeviceString(coreMethods.chooseDevice(user));
+                        break;
+
 
                     case "list":
                         success = true;
@@ -291,9 +291,9 @@ namespace IGS.Server.IGS
                     case "addDevice":
                         if (parameters.Length == 4)
                         {
-                          success = true;
-                          msg = AddDevice(parameters[0], parameters[1], parameters[2], parameters[3]);
-                          break;
+                            success = true;
+                            msg = AddDevice(parameters[0], parameters[1], parameters[2], parameters[3]);
+                            break;
                         }
 
                         msg = "Hinzufügen fehlgeschlagen. Falsche Anzahl von Parametern";
@@ -302,16 +302,50 @@ namespace IGS.Server.IGS
 
                     case "addDeviceFromList":
                         // find device in newDevices list
-                        Device newDevice = Data.newDevices.Find(d => d.Id.Equals(parameters[0]));
+                        device = Data.newDevices.Find(d => d.Id.Equals(parameters[0]));
 
-                        if (newDevice != null){
+                        if (device != null)
+                        {
                             success = true;
 
-                            String[] type = newDevice.Id.Split('_');
-                            msg = AddDevice(type[0], parameters[1], newDevice.address, newDevice.port);
+                            String[] type = device.Id.Split('_');
+                            msg = AddDevice(type[0], parameters[1], device.address, device.port);
 
                             // remove from list
-                            Data.newDevices.Remove(newDevice);
+                            Data.newDevices.Remove(device);
+                        }
+
+                        break;
+
+                    case "resetDeviceVectorList":
+                        device = Data.getDeviceByID(parameters[0]);
+
+                        if (device != null)
+                        {
+                            success = true;
+                            device.PositionVectors = new List<Vector3D[]>();
+                        }
+
+                        break;
+
+                    case "addDeviceVector":
+                        device = Data.getDeviceByID(parameters[0]);
+
+                        if (device != null && user != null)
+                        {
+                            success = true;
+                            retStr = addDeviceVector(device, user);
+                        }
+
+                        break;
+
+                    case "setDeviceLocation":
+                        device = Data.getDeviceByID(parameters[0]);
+
+                        if (device != null)
+                        {
+                            success = true;
+                            retStr = coreMethods.train(device);
                         }
 
                         break;
@@ -319,7 +353,7 @@ namespace IGS.Server.IGS
                     case "popup":
                         if (user != null)
                         {
-                            success = true;   
+                            success = true;
                             msg = user.Errors;
                             user.ClearErrors();
 
@@ -328,9 +362,9 @@ namespace IGS.Server.IGS
                         }
                         break;
                 }
-                    
+
                 // finalize JSON response
-                retStr += ",\"success\":" + success.ToString().ToLower() +",\"msg\":\"" + msg + "\"}";
+                retStr += ",\"success\":" + success.ToString().ToLower() + ",\"msg\":\"" + msg + "\"}";
                 Console.WriteLine(retStr);
 
                 if (cmd != "popup" || msg != "")
@@ -341,29 +375,15 @@ namespace IGS.Server.IGS
                 return retStr;
 
             }
-            else if (devId != null && Data.getDeviceByID(devId) != null && cmd != null)
+            else if (Data.getDeviceByID(devId) != null && cmd != null)
             {
                 switch (cmd)
                 {
-                    case  "getControlPath":
+                    case "getControlPath":
                         //onlineNoSucces(devId, wlanAdr);
                         retStr = getControlPagePathHttp(devId);
                         // redirect to device control path
                         args.P.WriteRedirect(retStr);
-                    
-                        break;
-
-                    case "addDeviceCoord":
-                        retStr = AddDeviceCoord(devId, wlanAdr, value);
-                        break;
-
-                    case "changePosition":
-                        retStr = coreMethods.train(wlanAdr, devId);
-                        break;
-
-                    case "addDeviceLocation":
-                        retStr = collectSample(devId, wlanAdr);
-                        // retStr = AddDeviceCoord(devId, wlanAdr, value);
                         break;
 
                     default:
@@ -375,21 +395,21 @@ namespace IGS.Server.IGS
                 }
 
                 XMLComponentHandler.writeLogEntry("Response to '" + cmd + "': " + retStr);
-                    return retStr;
-                }
+                return retStr;
+            }
             else
-                {
+            {
                 // TODO: JSON response
                 retStr = "Unbekannter Befehl.";
-                    return retStr;
-                }
+                return retStr;
+            }
         }
 
 
         private String MakeDeviceString(IEnumerable<Device> devices)
         {
             String result = "\"devices\":[";
-                
+
             if (devices != null)
             {
                 Device[] deviceList = devices.ToArray<Device>();
@@ -487,7 +507,7 @@ namespace IGS.Server.IGS
 
 
         /// <summary>
-        /// this method intiializes the representation of the kinect camera used for positioning and 
+        /// this method intializes the representation of the kinect camera used for positioning and 
         /// visualization by reading the information out of the config.xml
         /// </summary>
         public void createIGSKinect()
@@ -504,21 +524,39 @@ namespace IGS.Server.IGS
             IGSKinect = new devKinect("devKinect", kinectBall, tiltingDegree, roomOrientation);
         }
 
-        public String collectSample(String devID, String wlan)
-        {
-          
-            User tmpUser = Data.GetUserByIp(wlan);
 
-            Device dev = Data.getDeviceByID(devID);
+        public String addDeviceVector(Device dev, User user)
+        {
+            if (dev == null)
+                return "Gerät ist unbekannt.";
+
+            if (Tracker.Bodies.Count == 0)
+                return "Keine Personen von der Kinect gefunden";
+
+            if (user.SkeletonId < 0)
+                return "Bitte erst registrieren";
+
+            Vector3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(user.SkeletonId));
+            dev.PositionVectors.Add(vectors);
+
+            return "Position hinzugefügt";
+
+        }
+
+        public String collectSample(Device dev, String wlanAddr)
+        {
+
+            User tmpUser = Data.GetUserByIp(wlanAddr);
+
             if (dev != null)
             {
                 if (Tracker.Bodies.Count == 0)
                 {
                     return "Keine Personen von der Kinect Kamera gefunden";
                 }
-                
-                Vector3D[] vectors = Transformer.transformJointCoords(Tracker.getMedianFilteredCoordinates(tmpUser.SkeletonId));
-                //Vector3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(tmpUser.SkeletonId));
+
+                //Vector3D[] vectors = Transformer.transformJointCoords(Tracker.getMedianFilteredCoordinates(tmpUser.SkeletonId));
+                Vector3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(tmpUser.SkeletonId));
 
                 if (classification.calculateWallProjectionSampleAndLearn(vectors, dev.Id) != "Es ist ein Fehler beim Erstellen des Samples aufgetreten, bitte versuchen sie es erneut!")
                 {
@@ -542,13 +580,10 @@ namespace IGS.Server.IGS
 
             Type t = Data.getDeviceByID(id).GetType();
 
-            controlPath = "http://" + Server.LocalIP + ":8080" + "/"+ t.Name + "/" +"index.html?dev=" + id;
+            controlPath = "http://" + Server.LocalIP + ":8080" + "/" + t.Name + "/" + "index.html?dev=" + id;
 
             return controlPath;
         }
-
-        
-
-
     }
+
 }
