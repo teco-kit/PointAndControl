@@ -201,6 +201,8 @@ namespace IGS.Server.IGS
             String value = args.Val;
             String[] parameters = value.Split(':');
             String wlanAdr = args.ClientIp;
+
+            User user = Data.GetUserByIp(wlanAdr);
             String retStr = "";
             String msg = "";
             Boolean success = false;
@@ -237,7 +239,7 @@ namespace IGS.Server.IGS
                             break;
                         }
 
-                        if (Data.GetUserByIp(wlanAdr) != null)
+                        if (user != null)
                         {
                             int id = SkeletonIdToUser(wlanAdr);
 
@@ -263,7 +265,7 @@ namespace IGS.Server.IGS
                             break;
                         }
 
-                        if (Data.GetUserByIp(wlanAdr) == null || !Data.GetUserByIp(wlanAdr).TrackingState)
+                        if (user == null || !user.TrackingState)
                         {
                             msg = "Bitte erst registrieren";
                             break;
@@ -315,11 +317,14 @@ namespace IGS.Server.IGS
                         break;
 
                     case "popup":
-                        if (Data.GetUserByIp(wlanAdr) != null)
+                        if (user != null)
                         {
                             success = true;   
-                            msg = Data.GetUserByIp(wlanAdr).Errors;
-                            Data.GetUserByIp(wlanAdr).ClearErrors();
+                            msg = user.Errors;
+                            user.ClearErrors();
+
+                            // attach tracking state
+                            retStr += ",\"trackingId\":\"" + user.SkeletonId + "\"";
                         }
                         break;
                 }

@@ -1,5 +1,6 @@
 ﻿// check if vibration is supported
 var supportsVibrate = "vibrate" in navigator;
+var trackingId = -1;
 
 var toast = function (msg) {
     $("<div class='ui-loader ui-overlay-shadow ui-body-e ui-corner-all toast'>" + msg + "</div>")
@@ -185,6 +186,19 @@ var pollStatus = function () {
             toast(data.msg);
         }
 
+        if (data.trackingId != '') {
+            trackingId = data.trackingId;
+
+            if (trackingId == -1) {
+                // redirect users on pages where tracking is required
+                var hash = ui.absUrl ? $.mobile.path.parseUrl(ui.absUrl).hash : "";
+
+                if (hash == '#point') {
+                    $(':mobile-pagecontainer').pagecontainer('change', '#register');
+                }
+            }
+        }
+
         //TODO: react properly on content/status
         if (data.success) {
             setTimeout(pollStatus, 1000);
@@ -225,7 +239,7 @@ $(function (event) {
 
 
     $(document).on('pagecontainerbeforetransition', function (event, ui) {
-        hash = ui.absUrl ? $.mobile.path.parseUrl(ui.absUrl).hash : "";
+        var hash = ui.absUrl ? $.mobile.path.parseUrl(ui.absUrl).hash : "";
         if (hash == '#listdevices' || hash == '#locate') {
             updateDeviceList(event);
         }
