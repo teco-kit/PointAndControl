@@ -191,7 +191,7 @@ var pollStatus = function () {
 
             if (trackingId == -1) {
                 // redirect users on pages where tracking is required
-                var hash = ui.absUrl ? $.mobile.path.parseUrl(ui.absUrl).hash : "";
+                var hash = $.mobile.path.parseLocation().hash;
 
                 if (hash == '#point') {
                     $(':mobile-pagecontainer').pagecontainer('change', '#register');
