@@ -31,7 +31,9 @@ namespace IGS.Server.Location
 
         /// <summary>
         ///     A new Device is created.\n
-        ///     If possible the device is added to the running program.
+        ///     If possible the device is added to the running program. \n\n
+        ///     
+        ///     This function is not used anymore.
         ///     <param name="cmd"> cmd from IGS. Format shall be: createNewDevice$<type>$<name>$<address>$<port>  </param>
         ///     <returns>Returns message that is displayed at user device</returns>
         /// </summary>
