@@ -239,6 +239,9 @@ var registerUser = function () {
             return;
         }
 
+        if (data.trackingId != '')
+            trackingId = data.trackingId;
+
         if (data.success) {
             // start polling server
             setTimeout(pollStatus, 1000);

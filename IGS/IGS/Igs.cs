@@ -227,6 +227,13 @@ namespace IGS.Server.IGS
                 {
                     case "addUser":
                         success = AddUser(wlanAdr);
+
+                        if (Data.GetUserByIp(wlanAdr) != null)
+                        {
+                            // attach tracking state
+                            retStr += ",\"trackingId\":" + SkeletonIdToUser(wlanAdr);
+                        }
+
                         break;
 
                     case "close":
