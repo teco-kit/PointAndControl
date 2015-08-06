@@ -53,13 +53,11 @@ namespace IGS.Server.IGS
 
 
             // create a list of devices to add to the system (testing only)
-            _newDevices.Add(new Boxee("My new Boxee", "Boxee_0", null, "127.0.0.1", "8080"));
-            _newDevices.Add(new Plugwise("Ceiling Lamp", "Plugwise_0", null, "127.0.0.1", "8080"));
-            _newDevices.Add(new Plugwise("Moodlight", "Plugwise_1", null, "127.0.0.1", "8080"));
-            _newDevices.Add(new Plugwise("Disco Light", "Plugwise_2", null, "127.0.0.1", "8080"));
-            _newDevices.Add(new Plugwise("Other Moodlight", "Plugwise_3", null, "127.0.0.1", "8080"));
-            _newDevices.Add(new Plugwise("Some Hue", "Plugwise_4", null, "127.0.0.1", "8080"));
-
+            _newDevices.Add(new Kodi("MediaCenter", "Kodi_0", null, "127.0.0.1", "8081"));
+            _newDevices.Add(new Plugwise("Ventilator", "Plugwise_0", null, "127.0.0.1", "8080"));
+            _newDevices.Add(new Plugwise("Stehlampe", "Plugwise_1", null, "127.0.0.1", "8080"));
+            _newDevices.Add(new Boxee("XBox", "Boxee_0", null, "127.0.0.1", "8080"));
+            
             _users = new List<User>();
         }
 

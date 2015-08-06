@@ -274,8 +274,10 @@ namespace IGS.Server.IGS
                             break;
                         }
 
-                        success = true;
-                        retStr += "," + MakeDeviceString(coreMethods.chooseDevice(user));
+                        List<Device> foundDevices = coreMethods.chooseDevice(user);
+                        if (foundDevices.Count > 0)
+                            success = true;
+                        retStr += "," + MakeDeviceString(foundDevices);
                         break;
 
                         
