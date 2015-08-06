@@ -64,6 +64,7 @@
         <h1>Gerät auswählen</h1>
         <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Zurück</a>
         <a href="#adddevice" class="ui-btn-right ui-btn ui-btn-inline ui-corner-all ui-btn-icon-right ui-icon-plus">Neu</a>
+        <a href="#locate" class="ui-btn ui-btn-inline ui-corner-all ui-btn-icon-right ui-icon-edit">Position</a>
       </div>
       <!-- /header -->
 
@@ -80,7 +81,7 @@
 
     <div data-role="page" id="locate">
         <div data-role="header" data-position="fixed" data-tap-toggle="false">
-            <h1>Neue Position hinzufügen</h1>
+            <h1>Gerät positionieren</h1>
             <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Zurück</a>
         </div>
         <!-- /header -->
@@ -92,7 +93,14 @@
 
         <div data-role="footer" data-position="fixed" data-tap-toggle="false" style="text-align: center;">
             <form style="width:100%">
-
+                <select name="devicedd" id="devicedd" data-mini="true">
+                    <option value="">Gerät auswählen...</option>
+                    <option value="dev1">The 1st Option</option>
+                    <option value="dev2">The 2nd Option</option>
+                    <option value="dev3">The 3rd Option</option>
+                    <option value="dev4">The 4th Option</option>
+                </select>
+                <input id="positiondevicebutton" type="button" value="Position speichern" data-enhanced="true" class="ui-state-disabled ui-btn-right ui-btn ui-btn-inline ui-corner-all ui-icon-right ui-icon-carat-r" />
             </form>
         </div> <!-- /footer -->
     </div>

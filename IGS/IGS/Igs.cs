@@ -276,7 +276,7 @@ namespace IGS.Server.IGS
                         retStr += "," + MakeDeviceString(coreMethods.chooseDevice(user));
                         break;
 
-
+                        
                     case "list":
                         success = true;
                         retStr += "," + MakeDeviceString(Data.Devices);
@@ -311,7 +311,7 @@ namespace IGS.Server.IGS
                             String[] type = device.Id.Split('_');
                             msg = AddDevice(type[0], parameters[1], device.address, device.port);
 
-                            // remove from list
+                            // remove from new devices list
                             Data.newDevices.Remove(device);
                         }
 
@@ -320,34 +320,52 @@ namespace IGS.Server.IGS
                     case "resetDeviceVectorList":
                         device = Data.getDeviceByID(parameters[0]);
 
-                        if (device != null)
+                        if (device == null)
                         {
-                            success = true;
-                            device.PositionVectors = new List<Vector3D[]>();
+                            msg = "Kein Gerät gefunden";
+                            break;
                         }
 
+                        success = true;
+                        device.PositionVectors = new List<Vector3D[]>();
+
+                        //attach vector numbers
+                        retStr += ",\"vectorCount\":" + device.PositionVectors.Count + ",\"vectorMin\":" + coreMethods.getMinVectorsPerDevice();
                         break;
 
                     case "addDeviceVector":
                         device = Data.getDeviceByID(parameters[0]);
 
-                        if (device != null && user != null)
+                        if (device == null)
                         {
-                            success = true;
-                            retStr = addDeviceVector(device, user);
+                            msg = "Kein Gerät gefunden";
+                            break;
                         }
 
-                        break;
+                        if (user == null || !user.TrackingState)
+                        {
+                            msg = "Bitte erst registrieren";
+                            break;
+                        }
 
+                        success = true;
+                        msg = addDeviceVector(device, user);
+
+                        //attach vector numbers
+                        retStr += ",\"vectorCount\":" + device.PositionVectors.Count + ",\"vectorMin\":" + coreMethods.getMinVectorsPerDevice();
+                        break;
+                     
                     case "setDeviceLocation":
                         device = Data.getDeviceByID(parameters[0]);
 
-                        if (device != null)
+                        if (device == null)
                         {
-                            success = true;
-                            retStr = coreMethods.train(device);
+                            msg = "Kein Gerät gefunden";
+                            break;
                         }
 
+                        success = true;
+                        msg = coreMethods.train(device);
                         break;
 
                     case "popup":
@@ -358,7 +376,7 @@ namespace IGS.Server.IGS
                             user.ClearErrors();
 
                             // attach tracking state
-                            retStr += ",\"trackingId\":\"" + user.SkeletonId + "\"";
+                            retStr += ",\"trackingId\":" + user.SkeletonId;
                         }
                         break;
                 }
@@ -539,13 +557,13 @@ namespace IGS.Server.IGS
             Vector3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(user.SkeletonId));
             dev.PositionVectors.Add(vectors);
 
-            return "Position hinzugefügt";
+            return dev.PositionVectors.Count + " von " + coreMethods.getMinVectorsPerDevice() + " Positionen hinzugefügt";
 
         }
 
         public String collectSample(Device dev, String wlanAddr)
         {
-
+            
             User tmpUser = Data.GetUserByIp(wlanAddr);
 
             if (dev != null)
