@@ -313,8 +313,9 @@ var pollStatus = function () {
                 // redirect users on pages where tracking is required
                 var hash = $.mobile.path.parseLocation().hash;
 
-                if (hash == '#point' || hash == '#locate') {
-                    $(':mobile-pagecontainer').pagecontainer('change', '#register');
+                //if (hash == '#point' || hash == '#locate') {
+                if (hash == '#point') {
+                        $(':mobile-pagecontainer').pagecontainer('change', '#register');
                 }
             }
         }
@@ -394,7 +395,8 @@ $(function (event) {
             beforeRegister = ui.fromPage;
         }
 
-        if (hash == '#point' || hash == '#locate') {
+        //if (hash == '#point' || hash == '#locate') {
+        if (hash == '#point') {
             // redirect to register site if not registered
             if (trackingId < 0) {
                 event.preventDefault();

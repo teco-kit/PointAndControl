@@ -354,7 +354,7 @@ namespace IGS.Server.IGS
                             msg = "Bitte erst registrieren";
                             break;
                         }
-
+                        
                         success = true;
                         msg = addDeviceVector(device, user);
 
