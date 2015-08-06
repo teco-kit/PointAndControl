@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Excel = Microsoft.Office.Interop.Excel; 
+//using Excel = Microsoft.Office.Interop.Excel; 
 using IGS.Helperclasses;
 using System.Windows;
-using Microsoft.Office.Interop.Excel;
+//using Microsoft.Office.Interop.Excel;
 using IGS.Server.Location;
 using System.Windows.Media.Media3D;
 using IGS.Server.IGS;
@@ -30,7 +30,7 @@ namespace IGS.Classifier
         public List<List<int>> foldNumbers { get; set; }
         public List<List<int>> foldNumbersHopp { get; set; }
         
-        public Microsoft.Office.Interop.Excel.Application xlApp  {get;set;}
+        //public Microsoft.Office.Interop.Excel.Application xlApp  {get;set;}
 
         public List<String> labels { get; set; }
         public List<String> lineLabels { get; set; }
@@ -77,8 +77,8 @@ namespace IGS.Classifier
             hoppFolds = new List<List<collisionPackage>>();
             hoppLabels = new List<string>();
           
-            xlApp = new Microsoft.Office.Interop.Excel.Application();
-            xlApp.Visible = false;
+            //xlApp = new Microsoft.Office.Interop.Excel.Application();
+            //xlApp.Visible = false;
             locator = new Locator(data, null, transformer);
             knnClass = classifier;
 
@@ -219,8 +219,8 @@ namespace IGS.Classifier
         {
             String path = AppDomain.CurrentDomain.BaseDirectory + "CrossvalCollision.xls";
             object misValue = System.Reflection.Missing.Value;
-            Workbook wb = xlApp.Workbooks.Add(misValue);
-            _Worksheet ws = (Worksheet)wb.Sheets.get_Item(1);
+            //Workbook wb = xlApp.Workbooks.Add(misValue);
+            //_Worksheet ws = (Worksheet)wb.Sheets.get_Item(1);
             Stopwatch trainingsWatch = new Stopwatch();
             Stopwatch classificationWatch = new Stopwatch();
             int nrClass = 0;
@@ -292,13 +292,13 @@ namespace IGS.Classifier
                 for (int n = 0; n < cfMatrixCollision.GetLength(1); n++)
                 {
 
-                    ws.Cells[m + 2, n + 2] = cfMatrixCollision[m, n];
+                    //ws.Cells[m + 2, n + 2] = cfMatrixCollision[m, n];
                 }
             }
             for (int r = 0; r < lineLabels.Count; r++)
             {
-                ws.Cells[1, r + 2] = lineLabels[r];
-                ws.Cells[r + 2, 1] = lineLabels[r];
+                //ws.Cells[1, r + 2] = lineLabels[r];
+                //ws.Cells[r + 2, 1] = lineLabels[r];
             }
 
             foreach (List<collisionPackage> lineFold in lineFolds)
@@ -312,9 +312,9 @@ namespace IGS.Classifier
 
             timeForClassifikationCollision = ((double)(timeForClassifikationCollision) / nrClass);
             timeForTrainingCollsion = ((double)(timeForTrainingCollsion) / nrTrain);
-            wb.SaveAs(path, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
-            wb.Close(true, misValue, misValue);
-            xlApp.Quit();
+            //wb.SaveAs(path, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+            //wb.Close(true, misValue, misValue);
+            //xlApp.Quit();
 
 
 
@@ -329,8 +329,8 @@ namespace IGS.Classifier
             int nrClass = 0;
             int nrTrain = 0;
             object misValue = System.Reflection.Missing.Value;
-            Workbook wb = xlApp.Workbooks.Add(misValue);
-            _Worksheet ws = (Worksheet)wb.Sheets.get_Item(1);
+            //Workbook wb = xlApp.Workbooks.Add(misValue);
+            //_Worksheet ws = (Worksheet)wb.Sheets.get_Item(1);
             Stopwatch trainingsWatch = new Stopwatch();
             Stopwatch classificationWatch = new Stopwatch();
             int error = 0;
@@ -392,13 +392,13 @@ namespace IGS.Classifier
                 for (int n = 0; n < cfMatrix.GetLength(1); n++)
                 {
 
-                    ws.Cells[m + 2, n + 2] = cfMatrix[m, n];
+                    //ws.Cells[m + 2, n + 2] = cfMatrix[m, n];
                 }
             }
             for (int r = 0; r < labels.Count; r++)
             {
-                ws.Cells[1, r + 2] = labels[r];
-                ws.Cells[r + 2, 1] = labels[r];
+                //ws.Cells[1, r + 2] = labels[r];
+                //ws.Cells[r + 2, 1] = labels[r];
             }
 
             foreach (List<WallProjectionSample> wpsList in folds)
@@ -409,9 +409,9 @@ namespace IGS.Classifier
             totalAVGError = error / sampleSum;
             timeForClassifikationClassification = ((double)(classificationWatch.ElapsedMilliseconds) / nrClass) ;
             timeForTrainingClassification = ((double)(trainingsWatch.ElapsedMilliseconds)/nrTrain);
-            wb.SaveAs(path, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
-            wb.Close(true, misValue, misValue);
-            xlApp.Quit();
+            //wb.SaveAs(path, Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+            //wb.Close(true, misValue, misValue);
+            //xlApp.Quit();
 
            
         }
