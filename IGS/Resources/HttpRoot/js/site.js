@@ -1,6 +1,6 @@
 ﻿// check if vibration is supported
 var supportsVibrate = "vibrate" in navigator;
-var trackingId = -1;
+var trackingId = null;
 var beforeRegister;
 var editDevice = "";
 var editMode = false;
@@ -312,7 +312,7 @@ var pollStatus = function () {
         if (data.trackingId != '') {
             trackingId = data.trackingId;
 
-            if (trackingId < 0) {
+            if (trackingId != null && trackingId < 0) {
                 // redirect users on pages where tracking is required
                 var hash = $.mobile.path.parseLocation().hash;
 
@@ -399,7 +399,7 @@ $(function (event) {
 
         if (hash == '#point' || hash == '#locate') {
             // redirect to register site if not registered
-            if (trackingId < 0) {
+            if (trackingId != null && trackingId < 0) {
                 event.preventDefault();
                 toast('Bitte erst registrieren');
                 $(':mobile-pagecontainer').pagecontainer('change', '#register');
