@@ -127,15 +127,15 @@ namespace IGS.Server.IGS
             String str = "";
             Server.SendResponse(e.P, str);
         }
-
+        
         private void server_Request(object sender, HttpEventArgs e)
         {
             Debug.WriteLine("server_Request");
             String str = InterpretCommand(sender, e);
-
+            
             Server.SendResponse(e.P, str);
         }
-
+        
         /// <summary>
         ///     Part of the design pattern: observer(KinectEvent).
         ///     Takes place for the update-method in the observer design pattern.
@@ -251,6 +251,8 @@ namespace IGS.Server.IGS
                             else if (id == UserTracker.NO_BODIES_IN_FRAME)
                                 msg = "Keine Nutzer im Bild.";
 
+                            // attach tracking state
+                            retStr += ",\"trackingId\":" + id;
                             break;
                         }
 
@@ -309,7 +311,10 @@ namespace IGS.Server.IGS
                             success = true;
 
                             String[] type = device.Id.Split('_');
-                            msg = AddDevice(type[0], parameters[1], device.address, device.port);
+                            String newDeviceId = AddDevice(type[0], parameters[1], device.address, device.port);
+
+                            // attach to return string
+                            retStr += ",\"deviceId\":\"" + newDeviceId + "\"";
 
                             // remove from new devices list
                             Data.newDevices.Remove(device);
@@ -351,11 +356,11 @@ namespace IGS.Server.IGS
                         success = true;
                         msg = addDeviceVector(device, user);
 
-                        //attach vector numbers
+                        //attach vector numbers 
                         retStr += ",\"vectorCount\":" + device.PositionVectors.Count + ",\"vectorMin\":" + coreMethods.getMinVectorsPerDevice();
                         break;
                      
-                    case "setDeviceLocation":
+                    case "setDevicePosition":
                         device = Data.getDeviceByID(parameters[0]);
 
                         if (device == null)
@@ -501,7 +506,7 @@ namespace IGS.Server.IGS
                 if (devId[0] == type)
                     count++;
             }
-            string idparams = type + "_" + count;
+            string idparam = type + "_" + count;
 
             // TODO: for testing we do not wand to add the device to XML
             // XMLComponentHandler.addDeviceToXML(parameter, count);
@@ -509,16 +514,14 @@ namespace IGS.Server.IGS
             Type typeObject = Type.GetType("IGS.Server.Devices." + type);
             if (typeObject != null)
             {
-                object instance = Activator.CreateInstance(typeObject, name, idparams, new List<Ball>(),
+                object instance = Activator.CreateInstance(typeObject, name, idparam, new List<Ball>(),
                                                            address, port);
                 Data.Devices.Add((Device)instance);
-                retStr = "Gerät wurde in Konfiguration und Liste hinzugefügt";
+                retStr = idparam;
 
                 Console.WriteLine(retStr);
                 return retStr;
             }
-
-            retStr = "Gerätetyp unbekannt";
 
             return retStr;
         }

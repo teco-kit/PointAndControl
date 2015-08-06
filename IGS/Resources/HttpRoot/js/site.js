@@ -2,6 +2,8 @@
 var supportsVibrate = "vibrate" in navigator;
 var trackingId = -1;
 var beforeRegister;
+var editDevice = "";
+var editMode = false;
 
 var vibrate = function (pattern) {
     if (supportsVibrate) {
@@ -34,6 +36,17 @@ var updateNewDeviceDialogue = function () {
 }
 
 
+var changeDevicePosition = function (deviceId) {
+    if (!deviceId || deviceId == "") {
+        $(':mobile-pagecontainer').pagecontainer('change', '#listdevices');
+        return;
+    }
+
+    editDevice = deviceId;
+    $(':mobile-pagecontainer').pagecontainer('change', '#locate');
+}
+
+
 var addDeviceFromList = function () {
     if ($('#newdevicedd').val() == "")
         return;
@@ -47,8 +60,8 @@ var addDeviceFromList = function () {
         if (data.success) {
             toast("Gerät hinzugefügt")
 
-            // close dialogue
-            $(':mobile-pagecontainer').pagecontainer('change', '#listdevices', { changeHash: true, reverse: true } );
+            // set position for new device
+            changeDevicePosition(data.deviceId)
         }
 
         //TODO: check response          
@@ -56,10 +69,10 @@ var addDeviceFromList = function () {
 }
 
 var clearDeviceVectors = function () {
-    if ($('#devicedd').val() == "")
+    if (editDevice == "")
         return;
 
-    $.getJSON('/?dev=server&cmd=resetDeviceVectorList&val=' + $('#devicedd').val(), function (data) {
+    $.getJSON('/?dev=server&cmd=resetDeviceVectorList&val=' + editDevice, function (data) {
 
         if (!data) {
             return;
@@ -70,20 +83,20 @@ var clearDeviceVectors = function () {
         }
 
 
-        if (data.vectorCount >= data.vectorMin) {
-            $('#positiondevicebutton').button('enable');
-        } else {
-            $('#positiondevicebutton').button('disable');
-        }
+        //if (data.vectorCount >= data.vectorMin) {
+        //    $('#positiondevicebutton').button('enable');
+        //} else {
+        //    $('#positiondevicebutton').button('disable');
+        //}
 
     });
 }
 
 var addDeviceVector = function () {
-    if ($('#devicedd').val() == "")
+    if (editDevice == "")
         return;
 
-    $.getJSON('/?dev=server&cmd=addDeviceVector&val=' + $('#devicedd').val(), function (data) {
+    $.getJSON('/?dev=server&cmd=addDeviceVector&val=' + editDevice, function (data) {
 
         if (!data) {
             return;
@@ -97,20 +110,20 @@ var addDeviceVector = function () {
             vibrate(500);
         }
 
-        if (data.vectorCount >= data.vectorMin) {
-            $('#positiondevicebutton').button('enable');
-        } else {
-            $('#positiondevicebutton').button('disable');
-        }
+        //if (data.vectorCount >= data.vectorMin) {
+        //    $('#positiondevicebutton').button('enable');
+        //} else {
+        //    $('#positiondevicebutton').button('disable');
+        //}
 
     });
 }
 
 var saveDevicePosition = function () {
-    if ($('#devicedd').val() == "")
+    if (editDevice == "")
         return;
 
-    $.getJSON('/?dev=server&cmd=addDevicePosition&val=' + $('#devicedd').val(), function (data) {
+    $.getJSON('/?dev=server&cmd=setDevicePosition&val=' + editDevice, function (data) {
 
         if (!data) {
             return;
@@ -161,6 +174,13 @@ var updateDeviceList = function () {
     $.getJSON('/?dev=server&cmd=list', function (data) {
         var listItems = [];
 
+        if (editMode) {
+            $('#devicelist').listview('option', 'icon', 'location')
+            listItems.push('<li data-icon="plus"><a href="#adddevice" style="text-align:center; background:lightgrey" data-ajax="false">Gerät hinzufügen</a></li>')
+        } else {
+            $('#devicelist').listview('option', 'icon', 'carat-r');
+        }
+
         if (!data || !data.devices || data.devices.length == 0) {
             $('#devicelist').html('<li>Keine Geräte</li>');
             $('#devicelist').listview('refresh');
@@ -171,7 +191,12 @@ var updateDeviceList = function () {
 
         for (var i = 0; i < data.devices.length; i++) {
             var device = data.devices[i];
-            listItems.push('<li><a href="/?dev=' + device.id + '&cmd=getControlPath" data-ajax="false">' + device.name + '</a></li>');
+            var target;
+            if (editMode)
+                target = '"javascript:changeDevicePosition(\'' + device.id + '\');"';
+            else
+                target = '"/?dev=' + device.id + '&cmd=getControlPath" data-ajax="false"';
+            listItems.push('<li><a href=' + target + '>' + device.name + '</a></li>');
         }
 
         $('#devicelist').html(listItems.join(''));
@@ -199,6 +224,11 @@ var updateDeviceDD = function () {
         $('#devicedd').html(optionItems.join(''));
         $('#devicedd').selectmenu('refresh');
     });
+}
+
+var switchEditMode = function () {
+    editMode = !editMode;
+    updateDeviceList();
 }
 
 var registerUser = function () {
@@ -230,11 +260,13 @@ var activateGestureControl = function () {
             toast(data.msg);
         }
 
+        if (data.trackingId != '')
+            trackingId = data.trackingId;
+
         if (data.success) {
             vibrate(500);
             if (beforeRegister) {
                 $(':mobile-pagecontainer').pagecontainer('change', beforeRegister);
-                beforeRegister = null;
             } else {
                 $(':mobile-pagecontainer').pagecontainer('change', '#point');
             }
@@ -327,6 +359,7 @@ $(function (event) {
 
     // clear device vectors on server, temporary workaround
     $('#devicedd').on('change', function (event) {
+        editDevice = $('#devicedd').val();
         clearDeviceVectors();
     });
 
@@ -339,12 +372,13 @@ $(function (event) {
     $(document).on('pagecontainerbeforetransition', function (event, ui) {
         var hash = ui.absUrl ? $.mobile.path.parseUrl(ui.absUrl).hash : "";
         if (hash == '#listdevices') {
+            editMode = false;
             updateDeviceList();
         }
 
         if (hash == '#locate') {
-            updateDeviceDD();
-            //clearDeviceVectors();
+            //updateDeviceDD();
+            clearDeviceVectors();
         }
 
         if (hash == '#adddevice') {

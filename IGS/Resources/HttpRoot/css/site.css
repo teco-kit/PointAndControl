@@ -35,5 +35,5 @@ div#pointdevice, div#locatedevice{
   color: #000; 
   text-align:center; 
   background: #ffffff url('../img/selection.png') no-repeat center center;
-  padding-top: 190px;
+  padding-top: 1em;
 }
