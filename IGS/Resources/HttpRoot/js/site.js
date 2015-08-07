@@ -29,6 +29,51 @@ var toast = function (msg) {
 //    }
 }
 
+var updateProgressBar = function (curVectors, minVectors) {
+    if (minVectors <= 0) {
+        text = curVectors + " Eingaben gespeichert";
+        // hide progressbar
+        $('#positionprogressbar').hide();
+        // show navbar
+        $('#locate .ui-navbar').show();
+
+        return;
+    }
+
+    var completion = curVectors / minVectors * 100;
+
+    if (completion <= 100) {
+        var text = curVectors + "/" + minVectors + " Eingaben gespeichert";
+        // update and display progressbar
+        $('#positionprogressbar').show();
+        // hide navbar
+        $('#locate .ui-navbar').hide();
+
+        // update text
+        $('#positionprogresslabel').text(text);
+    }
+
+    // initialize statusbar
+    if (completion == 0) {
+        $('#positionprogressbar').children().eq(0).css({ width: "0%" });
+        return;
+    }
+
+    // else animate
+    $('#positionprogressbar').children().eq(0).animate({
+        width: completion + "%"
+    }, 500, function () {
+        if (completion >= 100) {
+            $('#positionprogresslabel').text(curVectors + " Eingaben gespeichert");
+            // hide progressbar
+            $('#positionprogressbar').hide();
+            // display navbar
+            $('#locate .ui-navbar').show();
+        }
+    });
+
+}
+
 var updateNewDeviceDialogue = function () {
     var selected = $('#newdevicedd').find(":selected");
 
@@ -82,6 +127,7 @@ var clearDeviceVectors = function () {
             toast(data.msg);
         }
 
+        updateProgressBar(data.vectorCount, data.vectorMin);
 
         //if (data.vectorCount >= data.vectorMin) {
         //    $('#positiondevicebutton').button('enable');
@@ -109,6 +155,8 @@ var addDeviceVector = function () {
         if (data.success) {
             vibrate(500);
         }
+
+        updateProgressBar(data.vectorCount, data.vectorMin);
 
         //if (data.vectorCount >= data.vectorMin) {
         //    $('#positiondevicebutton').button('enable');
@@ -316,8 +364,9 @@ var pollStatus = function () {
                 // redirect users on pages where tracking is required
                 var hash = $.mobile.path.parseLocation().hash;
 
-                if (hash == '#point' || hash == '#locate') {
-                    $(':mobile-pagecontainer').pagecontainer('change', '#register');
+                //if (hash == '#point' || hash == '#locate') {
+                if (hash == '#point') {
+                        $(':mobile-pagecontainer').pagecontainer('change', '#register');
                 }
             }
         }
@@ -397,7 +446,8 @@ $(function (event) {
             beforeRegister = ui.fromPage;
         }
 
-        if (hash == '#point' || hash == '#locate') {
+        //if (hash == '#point' || hash == '#locate') {
+        if (hash == '#point') {
             // redirect to register site if not registered
             if (trackingId != null && trackingId < 0) {
                 event.preventDefault();
