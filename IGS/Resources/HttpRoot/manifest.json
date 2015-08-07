@@ -1,0 +1,14 @@
+﻿{
+    "name": "Point & Control",
+  "icons": [
+    {
+      "src": "img/ic_launcher.png",
+      "sizes": "96x96",
+      "type": "image/png",
+      "density": "2.0"
+    }
+  ],
+  "start_url": "index.html",
+  "display": "standalone",
+  "orientation": "portrait"
+}

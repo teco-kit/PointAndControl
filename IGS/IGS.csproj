@@ -218,10 +218,9 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="Resources\HttpRoot\all.json" />
     <None Include="Resources\HttpRoot\Boxee\img\Thumbs.db" />
+    <None Include="Resources\HttpRoot\manifest.json" />
     <None Include="Resources\HttpRoot\js\jquery.mobile-1.4.5.min.map" />
-    <None Include="Resources\HttpRoot\single.json" />
     <None Include="Resources\HttpRoot\XBMCv11\img\Thumbs.db" />
     <None Include="Resources\IGS.apk" />
   </ItemGroup>
@@ -312,7 +311,6 @@
     <Content Include="Resources\HttpRoot\css\site.css" />
     <Resource Include="Resources\HttpRoot\css\themes\default\images\ajax-loader.gif" />
     <Content Include="Resources\HttpRoot\css\themes\default\jquery.mobile-1.4.5.min.css" />
-    <Resource Include="Resources\HttpRoot\img\activate.gif" />
     <Resource Include="Resources\HttpRoot\img\ic_launcher.png" />
     <Resource Include="Resources\HttpRoot\img\selectdevice.gif" />
     <Resource Include="Resources\HttpRoot\img\activate.png" />

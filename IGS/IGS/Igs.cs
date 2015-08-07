@@ -216,7 +216,7 @@ namespace IGS.Server.IGS
                 // return JSON formatted message
                 args.P.WriteSuccess("application/json");
                 retStr = "{\"cmd\":\"" + cmd + "\"";
-
+                
                 if (cmd != "addUser" && cmd != "popup")
                 {
                     // notify online learner that no control command was sent
