@@ -13,6 +13,8 @@ namespace IGS.Server.Location
 {
     public class Locator
     {
+        public const int MIN_NUMBER_OF_VECTORS = 3;
+
         private static Line3D[] gLines;
 
         /// <summary>
@@ -163,8 +165,8 @@ namespace IGS.Server.Location
             //receive Device from DataHolder Data
             Device tempDevice = Data.GetDeviceByName(devId);
             if (tempDevice == null) return "Device with ID [" + devId + "] not found";
-            //get pointing vector of user
 
+            // process collected vectors
             tempDevice.PositionVectors = vectorsList;
 
             Console.Out.WriteLine("CurrentList length:" + tempDevice.PositionVectors.Count);
@@ -180,8 +182,7 @@ namespace IGS.Server.Location
             Console.Out.WriteLine("CurrentList length:" + dev.PositionVectors.Count);
 
             //set new Position
-            // TODO: set number of vectors as constant
-            if (dev.PositionVectors.Count >= 3) // if enough vectors in list to calculate Position
+            if (dev.PositionVectors.Count >= MIN_NUMBER_OF_VECTORS) // if enough vectors in list to calculate Position
             {
                 List<Line3D> lines = new List<Line3D>();
 

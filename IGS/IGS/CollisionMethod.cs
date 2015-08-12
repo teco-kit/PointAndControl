@@ -33,7 +33,7 @@ namespace IGS.Server.IGS
 
         public int getMinVectorsPerDevice()
         {
-            return 3;
+            return Locator.MIN_NUMBER_OF_VECTORS;
         }
     }
 }

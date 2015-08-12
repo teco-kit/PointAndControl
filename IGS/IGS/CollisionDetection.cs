@@ -41,6 +41,7 @@ namespace IGS.Server.IGS
                 return found;
 
             //Wrist - ellbow (direction vector of the line)
+            //TODO: there should be a central definition of the pointing vector
             Vector3D leftForearm = Vector3D.Subtract(vectors[1], vectors[0]);
             Vector3D rightForearm = Vector3D.Subtract(vectors[3], vectors[2]);
 
@@ -57,6 +58,7 @@ namespace IGS.Server.IGS
                     while ((Math.Abs(curr.X) < _maxX) && (Math.Abs(curr.Y) < _maxY) && (Math.Abs(curr.Z) < _maxZ))
                     {
                         curr = Vector3D.Add(rightForearm, curr);
+                        //TODO: there should be real distance calculation line(segment)/point here
                         if (Vector3D.Subtract(curr, ball.Centre).Length <= ball.Radius)
                         {
                             if (!found.Contains(dev))
@@ -73,8 +75,6 @@ namespace IGS.Server.IGS
             {
                 minDistForDev tmpEntry = new minDistForDev();
                 tmpEntry.dev = dev;
-
-
 
                 foreach (Ball ball in dev.Form)
                 {

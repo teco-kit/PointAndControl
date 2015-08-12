@@ -5,6 +5,8 @@ var beforeRegister;
 var editDevice = "";
 var editMode = false;
 
+var deviceList;
+
 var vibrate = function (pattern) {
     if (supportsVibrate) {
         navigator.vibrate(pattern);
@@ -203,7 +205,7 @@ var updateNewDeviceDD = function (event) {
 
             return;
         }
-
+        
         optionItems.push('<option value="">Gerät wählen...</option>')
 
         for (var i = 0; i < data.devices.length; i++) {
@@ -217,7 +219,7 @@ var updateNewDeviceDD = function (event) {
     });
 }
 
-// TODO: abstract commands into single function
+//TODO: abstract commands into single function
 var updateDeviceList = function () {
     $.getJSON('/?dev=server&cmd=list', function (data) {
         var listItems = [];
@@ -236,6 +238,8 @@ var updateDeviceList = function () {
             return;
         }
 
+        // store device list for later use
+        deviceList = data.devices;
 
         for (var i = 0; i < data.devices.length; i++) {
             var device = data.devices[i];
@@ -249,28 +253,6 @@ var updateDeviceList = function () {
 
         $('#devicelist').html(listItems.join(''));
         $('#devicelist').listview('refresh');
-    });
-}
-
-var updateDeviceDD = function () {
-    $.getJSON('/?dev=server&cmd=list', function (data) {
-        var optionItems = [];
-
-        if (!data || !data.devices || data.devices.length == 0) {
-            $('#devicedd').html('<option>Keine Geräte gefunden</option>');
-            $('#devicedd').selectmenu('refresh');
-            return;
-        }
-
-        optionItems.push('<option value="">Gerät wählen...</option>')
-
-        for (var i = 0; i < data.devices.length; i++) {
-            var device = data.devices[i];
-            optionItems.push('<option value="' + device.id + '">' + device.name + '</option>');
-        }
-
-        $('#devicedd').html(optionItems.join(''));
-        $('#devicedd').selectmenu('refresh');
     });
 }
 
@@ -364,8 +346,8 @@ var pollStatus = function () {
                 // redirect users on pages where tracking is required
                 var hash = $.mobile.path.parseLocation().hash;
 
-                //if (hash == '#point' || hash == '#locate') {
-                if (hash == '#point') {
+                if (hash == '#point' || hash == '#locate') {
+                //if (hash == '#point') {
                         $(':mobile-pagecontainer').pagecontainer('change', '#register');
                 }
             }
@@ -409,12 +391,6 @@ $(function (event) {
         updateNewDeviceDialogue();
     });
 
-    // clear device vectors on server, temporary workaround
-    $('#devicedd').on('change', function (event) {
-        editDevice = $('#devicedd').val();
-        clearDeviceVectors();
-    });
-
     // add device from dialogue
     $('#adddevicebutton').on('click', function (event) {
         addDeviceFromList();
@@ -429,8 +405,8 @@ $(function (event) {
         }
 
         if (hash == '#locate') {
-            //updateDeviceDD();
             clearDeviceVectors();
+            $('#locate h1').text(editDevice + " positionieren");
         }
 
         if (hash == '#adddevice') {
@@ -446,8 +422,8 @@ $(function (event) {
             beforeRegister = ui.fromPage;
         }
 
-        //if (hash == '#point' || hash == '#locate') {
-        if (hash == '#point') {
+        if (hash == '#point' || hash == '#locate') {
+        //if (hash == '#point') {
             // redirect to register site if not registered
             if (trackingId != null && trackingId < 0) {
                 event.preventDefault();
