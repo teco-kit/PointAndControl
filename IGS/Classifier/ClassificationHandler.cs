@@ -57,20 +57,6 @@ namespace IGS.Classifier
             knnClassifier.trainClassifier();
         }
 
-        public void doCrossVal(DataHolder data, CoordTransform transformer)
-        {
-            Crossvalidator crossval = new Crossvalidator(this, knnClassifier,data, transformer);
-            crossval.crossValidateClassifier();
-
-            Thread.Sleep(1000);
-            
-            crossval.crossValidateCollision();
-
-            XMLComponentHandler.writeTimesForCrossvalidation(crossval.timeForPreprocessingCollision, crossval.timeForTrainingCollsion, crossval.timeForClassifikationCollision,
-                                                           crossval.timeForPreprocessingClassification, crossval.timeForTrainingClassification, crossval.timeForClassifikationClassification);
-    
-        }
-
 
         public String calculateWallProjectionSampleAndLearn(Vector3D[] vectors, String deviceIdentifier)
         {   

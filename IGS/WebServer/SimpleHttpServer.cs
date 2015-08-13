@@ -447,6 +447,8 @@ namespace IGS.Server.WebServer
         /// </summary>
         public void Listen()
         {
+            Console.WriteLine("Starting HTTP Server on " + LocalIP.ToString() + ":" + Port);
+
             _listener = new TcpListener(LocalIP, Port);
             _listener.Start();
             while (is_active)
@@ -538,6 +540,8 @@ namespace IGS.Server.WebServer
         /// </summary>
         public override void HandleGetRequest(HttpProcessor p)
         {
+            // redirect to index.html in base directory
+
             String querystring = null;
             String pathstring = null;
             // check query part of string

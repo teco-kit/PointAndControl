@@ -4,7 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         mc:Ignorable="d" Loaded="WindowLoaded"
-        Title="IGS" Height="748" Width="1232" ResizeMode="CanMinimize">
+        Title="IGS" Height="748" Width="1232" ResizeMode="CanMinimize" Icon="Resources/HttpRoot/favicon.ico">
 
     <Window.Resources>
         <SolidColorBrush x:Key="MediumGreyBrush" Color="#ff6e6e6e" />
@@ -12,52 +12,6 @@
         <SolidColorBrush x:Key="KinectBlueBrush" Color="#ff00BCF2" />
         <Style TargetType="{x:Type Image}">
             <Setter Property="SnapsToDevicePixels" Value="True" />
-        </Style>
-        <Style TargetType="{x:Type CheckBox}" x:Key="SquareCheckBox">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type CheckBox}">
-                        <Grid>
-                            <StackPanel Orientation="Horizontal" Background="Transparent">
-                                <Grid x:Name="SquareCheckBoxChecked">
-                                    <Image x:Name="CheckedNormal"
-                                           Source="Images\CheckedNormal.png"
-                                           Stretch="None" HorizontalAlignment="Center" />
-                                    <Image x:Name="CheckedHover"
-                                           Source="Images\CheckedHover.png"
-                                           Stretch="None" HorizontalAlignment="Center" Visibility="Collapsed" />
-                                </Grid>
-                                <Grid x:Name="SquareCheckBoxUnchecked" Visibility="Collapsed">
-                                    <Image x:Name="UncheckedNormal"
-                                           Source="Images\UncheckedNormal.png"
-                                           Stretch="None" HorizontalAlignment="Center" />
-                                    <Image x:Name="UncheckedHover"
-                                           Source="Images\UncheckedHover.png"
-                                           Stretch="None" HorizontalAlignment="Center" Visibility="Collapsed" />
-                                </Grid>
-                                <TextBlock x:Name="SquareCheckBoxText" Text="{TemplateBinding Content}"
-                                           TextAlignment="Left" VerticalAlignment="Center"
-                                           Foreground="{StaticResource KinectPurpleBrush}" FontSize="15"
-                                           Margin="9,0,0,0" />
-                            </StackPanel>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsChecked" Value="false">
-                                <Setter Property="Visibility" Value="Collapsed" TargetName="SquareCheckBoxChecked" />
-                                <Setter Property="Visibility" Value="Visible" TargetName="SquareCheckBoxUnchecked" />
-                            </Trigger>
-                            <Trigger Property="IsMouseOver" Value="true">
-                                <Setter Property="Visibility" Value="Collapsed" TargetName="CheckedNormal" />
-                                <Setter Property="Visibility" Value="Collapsed" TargetName="UncheckedNormal" />
-                                <Setter Property="Visibility" Value="Visible" TargetName="CheckedHover" />
-                                <Setter Property="Visibility" Value="Visible" TargetName="UncheckedHover" />
-                                <Setter Property="Foreground" Value="{StaticResource KinectBlueBrush}"
-                                        TargetName="SquareCheckBoxText" />
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
         </Style>
     </Window.Resources>
 
@@ -156,23 +110,18 @@
             <Label Content="X" HorizontalAlignment="Left" Margin="135,130,0,0" VerticalAlignment="Top" Height="23"/>
             <Label Content="Y" HorizontalAlignment="Left" Margin="135,158,0,0" VerticalAlignment="Top" Height="23" RenderTransformOrigin="0.471,-0.043"/>
             <Label Content="Z" HorizontalAlignment="Left" Margin="135,186,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.038,-0.423" Height="23"/>
-            <Button x:Name="Kinect_Replace_Button" Content="Replace Kinect" HorizontalAlignment="Left" Margin="10,271,0,0" VerticalAlignment="Top" Width="120" Click="Kinect_Replace_Button_Click"/>
+            <Button x:Name="Kinect_Replace_Button" Content="Repostion Kinect" HorizontalAlignment="Left" Margin="10,271,0,0" VerticalAlignment="Top" Width="120" Click="Kinect_Replace_Button_Click"/>
             <TextBox x:Name="Kinect_Roomorientation" HorizontalAlignment="Left" Height="23" Margin="10,243,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
             <Label x:Name="Horizontal_Angle_label" Content="H°" HorizontalAlignment="Left" Margin="137,243,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.038,-0.423" Height="23"/>
             <TextBox x:Name="Room_Width" HorizontalAlignment="Left" Height="23" Margin="10,333,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="92"/>
             <TextBox x:Name="Room_Height" HorizontalAlignment="Left" Height="23" Margin="10,361,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="92"/>
             <TextBox x:Name="Room_Depth" HorizontalAlignment="Left" Height="23" Margin="10,389,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="92"/>
-            <Label x:Name="Width" Content="Width" HorizontalAlignment="Left" Margin="117,333,0,0" VerticalAlignment="Top" Height="23" Width="53"/>
-            <Label x:Name="Height" Content="Heigth" HorizontalAlignment="Left" Margin="117,361,0,0" VerticalAlignment="Top" Height="23" Width="53"/>
-            <Label x:Name="Depth" Content="Depth" HorizontalAlignment="Left" Margin="117,389,0,0" VerticalAlignment="Top" Height="23" Width="53"/>
+            <Label x:Name="Label_Room_Width" Content="Width" HorizontalAlignment="Left" Margin="117,333,0,0" VerticalAlignment="Top" Height="23" Width="53"/>
+            <Label x:Name="Label_Room_Height" Content="Heigth" HorizontalAlignment="Left" Margin="117,361,0,0" VerticalAlignment="Top" Height="23" Width="53"/>
+            <Label x:Name="Label_Room_Depth" Content="Depth" HorizontalAlignment="Left" Margin="117,389,0,0" VerticalAlignment="Top" Height="23" Width="53"/>
             <Button x:Name="CreateRoom_Button" Content="Set Room" HorizontalAlignment="Left" Margin="10,417,0,0" VerticalAlignment="Top" Width="92" Click="CreateRoom_Button_Click"/>
-            <Button x:Name="RGB_Body_WIndow_Button" Content="Open RGB View" HorizontalAlignment="Left" Margin="10,467,0,0" VerticalAlignment="Top" Width="92" Click="RGB_Body_WIndow_Button_Click"/>
             <TextBox x:Name="Kinect_TiltAngle_Textbox" HorizontalAlignment="Left" Height="23" Margin="10,214,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="120"/>
             <Label x:Name="TiltAngle_Label" Content="T°" HorizontalAlignment="Left" Margin="137,215,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.038,-0.423" Height="23"/>
-            <Button x:Name="trainBatch_Button" Content="Train Samples Batch!" HorizontalAlignment="Left" Margin="10,539,0,0" VerticalAlignment="Top" Width="148" Click="trainBatch_Button_Click"/>
-            <Button x:Name="WCBMP_Button" Content="Calculate_Classification_BMP" HorizontalAlignment="Left" Margin="10,584,0,0" VerticalAlignment="Top" Width="160" Height="31" Click="WCBMP_Button_Click" />
-            <Button x:Name="CreateTestFiles_Button" Content="Create Test Splits" HorizontalAlignment="Left" Margin="10,643,0,0" VerticalAlignment="Top" Width="160" Click="CreateTestFiles_Button_Click"/>
-            <Button x:Name="CrossVal_Button" Content="Crossvalidate" HorizontalAlignment="Left" Margin="10,689,0,0" VerticalAlignment="Top" Width="160" Click="CrossVal_Button_Click"/>
         </Grid>
     </Grid>
 </Window>

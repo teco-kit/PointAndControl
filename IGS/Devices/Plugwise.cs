@@ -15,7 +15,6 @@ namespace IGS.Server.Devices
     {
         private readonly String _commandString = "http://cumulus.teco.edu:5000/plugwise/";
         private readonly Http _connection;
-        private readonly String[] adresses;
 
         /// <summary>
         ///     Constructor of a plugwise object.

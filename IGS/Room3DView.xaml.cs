@@ -39,6 +39,7 @@ namespace IGS
         /// the list of all devices
         /// </summary>
         private List<Device> deviceList;
+
         // MVP 1 = room
         // MVP 2 = balls
         // MVP 3 = kinect
@@ -119,9 +120,8 @@ namespace IGS
             kinect = new ModelVisual3D();
            
             InitializeComponent();
-            fillRoomWithColoredSamples(list, devices);
-            createRoomDevs();
-            //FillRoom();
+            //fillRoomWithColoredSamples(list, devices);
+            FillRoom();
         }
 
         /// <summary>
@@ -695,20 +695,6 @@ namespace IGS
             mainViewport.Children.Remove(skelRayList[bodyNr]);
             mainViewport.Children.Add(skelRayList[bodyNr]);
         }
-
-        //public void actualizeFloor(Vector3D normal, Point3D origin, float width, float depth)
-        //{
-        //     mainViewport.Children.Remove(floor);
-        //     Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.Green));
-        //     floor.Material = mat;
-        //     floor.Visible = true;
-        //     floor.Normal = normal;
-        //     floor.Origin = origin;
-        //     floor.Width = width;
-        //     floor.Length = depth;
-        //     mainViewport.Children.Add(floor);
-        //}
-
        
         public void addSampleView(Point3D center, Material mat)
         {
@@ -721,120 +707,6 @@ namespace IGS
             sample.Radius = 0.05;
             sample.ThetaDiv = 10;
             this.mainViewport.Children.Add(sample);
-        }
-
-        public void createRoomDevs()
-        {
-            String[] roomMes = XMLComponentHandler.readRoomComponents();
-
-            Double width = Double.Parse(roomMes[0]);
-            Double height = Double.Parse(roomMes[1]);
-            Double depth = Double.Parse(roomMes[2]);
-
-            
-
-            BoxVisual3D TV = new BoxVisual3D();
-            TV.Center = new Point3D(width - 2.47, 1.44, 0.26);
-            TV.Height = 0.09;
-            TV.Width = 0.61;
-            TV.Length = 1.02;
-            Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.Gray));
-            TV.BackMaterial = mat;
-            TV.Material = mat;
-            this.mainViewport.Children.Add(TV);
-
-
-            BoxVisual3D HifiRechts = new BoxVisual3D();
-            HifiRechts.Center = new Point3D(width - 1.44, 1.93, 0.26);
-            HifiRechts.Height = 0.09; //Z
-            HifiRechts.Width = 0.18; //Y
-            HifiRechts.Length = 0.07; //X
-            Material matHR = new DiffuseMaterial(new SolidColorBrush(Colors.Aquamarine));
-            HifiRechts.BackMaterial = matHR;
-            HifiRechts.Material = matHR;
-            this.mainViewport.Children.Add(HifiRechts);
-
-            BoxVisual3D HifiLinks = new BoxVisual3D();
-            HifiLinks.Center = new Point3D(width - 3.86, 1.93, 0.26);
-            HifiLinks.Height = 0.09; //Z
-            HifiLinks.Width = 0.18; //Y
-            HifiLinks.Length = 0.07; //X
-            Material matHL = new DiffuseMaterial(new SolidColorBrush(Colors.Aquamarine));
-            HifiLinks.BackMaterial = matHL;
-            HifiLinks.Material = matHL;
-            this.mainViewport.Children.Add(HifiLinks);
-
-            BoxVisual3D Steckdose = new BoxVisual3D();
-            Steckdose.Center = new Point3D(width - 0.01, 0.74, 1.30);
-            Steckdose.Height = 0.14; //Z
-            Steckdose.Width = 0.12; //Y
-            Steckdose.Length = 0.08; //X
-            Material matSteck = new DiffuseMaterial(new SolidColorBrush(Colors.DarkViolet));
-            Steckdose.BackMaterial = matSteck;
-            Steckdose.Material = matSteck;
-            this.mainViewport.Children.Add(Steckdose);
-
-            BoxVisual3D Deckenläuchte = new BoxVisual3D();
-            Deckenläuchte.Center = new Point3D(width - 3.03, 2.69, 2.22);
-            Deckenläuchte.Height = 0.31; //Z
-            Deckenläuchte.Width = 0.10; //Y
-            Deckenläuchte.Length = 3.09; //X
-            Material matDleucht = new DiffuseMaterial(new SolidColorBrush(Colors.Yellow));
-            Deckenläuchte.BackMaterial = matDleucht;
-            Deckenläuchte.Material = matDleucht;
-            this.mainViewport.Children.Add(Deckenläuchte);
-
-            BoxVisual3D Schalter = new BoxVisual3D();
-            Schalter.Center = new Point3D(width - 5.09, 1.09, 0.01);
-            Schalter.Height = 0.08; //Z
-            Schalter.Width = 0.08; //Y
-            Schalter.Length = 0.08; //X
-            Material matSchalter = new DiffuseMaterial(new SolidColorBrush(Colors.Yellow));
-            Schalter.BackMaterial = matSchalter;
-            Schalter.Material = matSchalter;
-            this.mainViewport.Children.Add(Schalter);
-
-            
-            BoxVisual3D XBox = new BoxVisual3D();
-            XBox.Center = new Point3D(width - 2.79, 0.22, 0.25);
-            XBox.Height = 0.26; //Z
-            XBox.Width = 0.08; //Y
-            XBox.Length = 0.27; //X
-            Material  matXBox = new DiffuseMaterial(new SolidColorBrush(Colors.Green));
-            XBox.BackMaterial = matXBox;
-            XBox.Material = matXBox;
-            this.mainViewport.Children.Add(XBox);
-
-            BoxVisual3D PC = new BoxVisual3D();
-            PC.Center = new Point3D(width - 2.34, 0.22, 0.30);
-            PC.Height = 0.33; //Z
-            PC.Width = 0.10; //Y
-            PC.Length = 0.435; //X
-            Material  matPC = new DiffuseMaterial(new SolidColorBrush(Colors.Brown));
-            PC.BackMaterial = matPC;
-            PC.Material = matPC;
-            this.mainViewport.Children.Add(PC);
-
-            BoxVisual3D LeseLampe = new BoxVisual3D();
-            LeseLampe.Center = new Point3D(width - 1.45, 0.90, 3.30);
-            LeseLampe.Height = 0.14; //Z
-            LeseLampe.Width = 0.32; //Y
-            LeseLampe.Length = 0.13; //X
-            Material  matLeseLampe = new DiffuseMaterial(new SolidColorBrush(Colors.DarkOrange));
-            LeseLampe.BackMaterial = matLeseLampe;
-            LeseLampe.Material = matLeseLampe;
-            this.mainViewport.Children.Add(LeseLampe);
-
-            BoxVisual3D SensorTable = new BoxVisual3D();
-            SensorTable.Center = new Point3D(width - 0.86, 1.60, 5.48);
-            SensorTable.Height = 0.22;
-            SensorTable.Width = 0.50;
-            SensorTable.Length = 0.69;
-            Material  matSensorTable = new DiffuseMaterial(new SolidColorBrush(Colors.Red));
-            SensorTable.BackMaterial = matSensorTable;
-            SensorTable.Material = matSensorTable;
-            this.mainViewport.Children.Add(SensorTable);
-
         }
 
     }

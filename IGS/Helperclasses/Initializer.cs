@@ -5,6 +5,7 @@ using IGS.Server.WebServer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -27,7 +28,9 @@ namespace IGS.Helperclasses
         /// <returns>The igs with its needed components</returns>
         public static Igs InitializeIgs()
         {
-            Igs igs = new Igs(InitializeDataholder(XMLComponentHandler.readDevices()), InitializeUserTracker(new HandsUp(), new Lfu()), InitializeHttpServer()) { Data = { LocalIp = IsLocalIpAddress("") } };
+            xmlFilesControl();
+
+            Igs igs = new Igs(InitializeDataholder(XMLComponentHandler.readDevices()), InitializeUserTracker(new HandsUp(), new Lfu()), InitializeHttpServer());
             return igs;
         }
 
@@ -70,6 +73,7 @@ namespace IGS.Helperclasses
                 IPAddress[] hostIPs = Dns.GetHostAddresses(host);
                 // get local IP addresses
                 IPAddress[] localIPs = Dns.GetHostAddresses(Dns.GetHostName());
+
                 // test if any host IP equals to any local IP or to localhost
                 foreach (IPAddress hostIp in hostIPs)
                 {
@@ -77,15 +81,11 @@ namespace IGS.Helperclasses
                     {
                         // is localhost
                         if (IPAddress.IsLoopback(hostIp)) return hostIp;
+
                         // is local address
                         foreach (IPAddress localIp in localIPs)
                         {
-                            if (hostIp.Equals(localIp))
-                            {
-                                Debug.WriteLine(localIp.ToString());
-
-                                return localIp;
-                            }
+                            if (hostIp.Equals(localIp)) return localIp;
                         }
                     }
                 }
@@ -114,6 +114,44 @@ namespace IGS.Helperclasses
             return data;
         }
 
+        /// <summary>
+        /// Checks if basic configuration files are present and creates missing files
+        /// </summary>
+        private static void xmlFilesControl()
+        {
+            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml"))
+            {
+                Initializer.createXMLFile();
+            }
+
+            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionSamples.xml"))
+            {
+                Initializer.createWallProjectionSampleXMLFile();
+            }
+            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\samples.xml"))
+            {
+                Initializer.createSampleXMLFIle();
+            }
+
+            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionAndPositionSamples.xml"))
+            {
+                Initializer.createWallProjectionAndPositionSampleXMLFile();
+            }
+            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelect.xml"))
+            {
+                Initializer.createLogFilePerSelect();
+            }
+            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelectSmoothed.xml"))
+            {
+                Initializer.createLogFilePerSelectSmoothed();
+            }
+
+            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\program_log.xml"))
+            {
+                Initializer.createGeneralLogFile();
+            }
+        }
+
 
         /// <summary>
         /// Gets the components of the plugwise adress and combines them to the final adress string
@@ -126,6 +164,7 @@ namespace IGS.Helperclasses
             finalString = "http://" + components[0] + ":" + components[1] + "/" + components[2] + "/";
             return finalString;
         }
+
         /// <summary>
         /// creates the basic structure of the configuration.xml file and saves it in the base directory.
         /// </summary>
