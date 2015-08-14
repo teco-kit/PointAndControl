@@ -40,7 +40,7 @@ namespace IGS.Server.IGS
             foreach (Vector3D[] vecs in dev.PositionVectors)
             {
                 s += classificationHandler.calculateWallProjectionSampleAndLearn(vecs, dev.Id);
-                XMLSkeletonJointRecords.writeClassifiedDeviceToLastSelect(dev);
+                //XMLSkeletonJointRecords.writeClassifiedDeviceToLastSelect(dev);
             }
 
             return s;
@@ -51,50 +51,35 @@ namespace IGS.Server.IGS
         {
             List<Device> dev = new List<Device>();
             Vector3D[] vecs = transformer.transformJointCoords(tracker.getMedianFilteredCoordinates(usr.SkeletonId));
+
             if (usr != null)
             {
 
                 WallProjectionSample sample = classificationHandler.sCalculator.calculateSample(vecs, "");
 
+                // execute the classification
                 sample = classificationHandler.classify(sample);
 
                 Console.WriteLine("Classified: " + sample.sampledeviceIdentifier);
                 XMLComponentHandler.writeLogEntry("Device classified to" + sample.sampledeviceIdentifier);
-                Body body = tracker.GetBodyById(usr.SkeletonId);
+                //Body body = tracker.GetBodyById(usr.SkeletonId);
                 //XMLSkeletonJointRecords.writeUserJointsToXmlFile(tempUser, Data.GetDeviceByName(sample.sampledeviceIdentifier), body);
                 //XMLComponentHandler.writeUserJointsPerSelectClick(body);
 
+
+                //TODO: check why we need to do this
                 String decapsulate = "";
-                Device device = null;
 
                 foreach (Device d in data.Devices)
                 {
                     decapsulate = d.Id.Replace("_", "");
                     if (sample.sampledeviceIdentifier.ToLower() == decapsulate.ToLower())
                     {
-                        device = d;
-                    }
-                }
-                sample.sampledeviceIdentifier = device.Id;
-
-
-
-                if (sample != null)
-                {
-                    foreach (Device d in data.Devices)
-                    {
-                        if (d.Id.ToLower() == sample.sampledeviceIdentifier.ToLower())
-                        {
-
-                            Point3D p = new Point3D(vecs[2].X, vecs[2].Y, vecs[2].Z);
-
-                            dev.Add(d);
-
-                            return dev;
-                        }
+                        dev.Add(d);
                     }
                 }
             }
+
             return dev;
         }
 

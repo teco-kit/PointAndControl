@@ -123,13 +123,9 @@
     <Compile Include="Devices\Kodi.cs" />
     <Compile Include="Devices\XBMCv11.cs" />
     <Compile Include="Helperclasses\CoordTransform.cs" />
-    <Compile Include="Helperclasses\DifferenceCalculator.cs" />
     <Compile Include="Helperclasses\igsMath.cs" />
-    <Compile Include="Helperclasses\Initializer.cs" />
-    <Compile Include="Helperclasses\SampleExtractor.cs" />
-    <Compile Include="Helperclasses\SampleSplitter.cs" />
+    <Compile Include="IGS\Initializer.cs" />
     <Compile Include="Helperclasses\XMLComponentHandler.cs" />
-    <Compile Include="Helperclasses\XMLSkeletonJointRecords.cs" />
     <Compile Include="IGS\CollisionMethod.cs" />
     <Compile Include="IGS\CoreMethods.cs" />
     <Compile Include="IGS\ClassifierMethod.cs" />

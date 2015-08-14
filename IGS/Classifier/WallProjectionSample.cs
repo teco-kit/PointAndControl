@@ -39,7 +39,7 @@ namespace IGS.Classifier
             this.x = position.X;
             this.y = position.Y;
             this.z = position.Z;
-            sampledeviceIdentifier = deviceIdentifier;
+            this.sampledeviceIdentifier = deviceIdentifier;
         }
 
         public WallProjectionSample(WallProjectionAndPositionSample wpaps)

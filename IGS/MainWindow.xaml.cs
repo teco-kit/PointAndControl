@@ -688,7 +688,7 @@ public partial class MainWindow
 
         XMLComponentHandler.saveRoomPosition(roomData);
         _igs.classification.sCalculator.calcRoomModel.setRoomMeasures(width, depth, height);
-        _igs.Data.changeRoomModel(width, height, depth);
+        _igs.Data.changeRoomSize(width, height, depth);
         if (_3Dview != null)
         {
             _3Dview.createRoom(width, depth, height);

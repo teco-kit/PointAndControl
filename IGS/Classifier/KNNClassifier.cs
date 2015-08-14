@@ -123,8 +123,6 @@ namespace IGS.Classifier
 
             if (sample == null) { return; }
 
-            
-
             trainingSamples.Add(sample);
 
             if (trainingSetSize > 0 && trainingSamples.Count > trainingSetSize)

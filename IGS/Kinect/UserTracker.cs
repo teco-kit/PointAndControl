@@ -54,12 +54,12 @@ namespace IGS.Server.Kinect
         ///         The strategy which specifies which skeleton should be replaced if to many users want to use gesture control
         ///     </param>
         /// </summary>
-        public UserTracker(GestureStrategy filter, ReplacementStrategy replace, bool movingWindow)
+        public UserTracker(GestureStrategy filter, ReplacementStrategy replace, bool movingWindow = false)
         {
             Filter = filter;
             Strategy = replace;
             Bodies = new List<TrackedSkeleton>();
-            movingWindowCollect = movingWindow;
+            movingWindowCollect = false;
             collectAfterClick = true;
             lastBodies = new List<Body[]>();
             this.jointFilter = new MedianJointFilter();
@@ -184,24 +184,6 @@ namespace IGS.Server.Kinect
         }
 
 
-        public bool checkIfAllBodysAreSame()
-        {
-            bool same = true;
-
-            for (int i = 0; i < lastBodies[0].Length; i++)
-            {
-                ulong bodyID = lastBodies[0][i].TrackingId;
-                foreach (Body[] bodies in lastBodies)
-                {
-                    if (bodyID != bodies[i].TrackingId)
-                    {
-                        return false;
-                    }
-                }
-            }
-            return same;
-
-        }
         /// <summary>
         ///     This method provides the skeletonID of the skeleton perfoming the defined gesture or which should be reactivated.
         ///     
@@ -293,11 +275,7 @@ namespace IGS.Server.Kinect
 
                     {
                         if ((int)s.TrackingId != id) continue;
-                        if (searchForLastBody == lastBodies.Count)
-                        {
-                            XMLSkeletonJointRecords.writeUserJointsPerSelectClick(s);
-                            tmpBody = s;
-                        }
+
                         Vector3D[] result = new Vector3D[4];
                         result[0] = new Vector3D(s.Joints[JointType.ShoulderLeft].Position.X,
                                                  s.Joints[JointType.ShoulderLeft].Position.Y,
@@ -317,12 +295,6 @@ namespace IGS.Server.Kinect
                     searchForLastBody++;
                 }
             }
-
-
-
-            XMLSkeletonJointRecords.writeUserjointsPerSelectSmoothed(id, lastBodies);
-            
-
 
             if (movingWindowCollect == false)
             {

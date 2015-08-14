@@ -78,6 +78,7 @@ namespace IGS.Helperclasses
 
             return devices;
         }
+
         /// <summary>
         ///         Adds an device entry with the given parameters and id_number to the deviceConfiguration in the configuration.xml
         /// </summary>
@@ -123,11 +124,6 @@ namespace IGS.Helperclasses
 
             docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionSamples.xml");
           
-        }
-
-        public static void addDeviceToSampleXML(String[] parameter, int id_number)
-        {
-
         }
 
         /// <summary>
@@ -231,6 +227,7 @@ namespace IGS.Helperclasses
             reader.Close();
             return PlugwiseComponents;
         }
+
         /// <summary>
         /// reads the room specification in the configuaration.xml and returns the width, height, and depth in an array
         /// </summary>
@@ -943,91 +940,7 @@ namespace IGS.Helperclasses
             docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\"+ path + ".xml");
             return;
         }
-
-
-        public static void testAndCreateSampleXML(String fileName)
-        {
-            String p = AppDomain.CurrentDomain.BaseDirectory + "\\" + fileName + ".xml";
-
-
-            if (!File.Exists(p))
-            {
-                XElement root = new XElement("devices");
-                root.Save(p);
-            }
-        }
-
       
-
-        public static void deleteLastSampleFromSampleLogs(Device dev)
-        {
-            String path = AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionSamples.xml";
-            XmlNode rootNode;
-            XmlDocument docConfig = new XmlDocument();
-
-            if (File.Exists(path))
-            {
-                docConfig.Load(path);
-
-                rootNode = docConfig.SelectSingleNode("/devices");
-
-                foreach (XmlNode device in rootNode.ChildNodes)
-                {
-                    if (device.FirstChild.InnerText == dev.Name)
-                    {
-                        XmlNode samplePositions = device.ChildNodes[1];
-                        samplePositions.RemoveChild(samplePositions.LastChild);
-                        break;
-                    }
-                }
-            }
-
-            
-
-
-            path = AppDomain.CurrentDomain.BaseDirectory + "\\samples.xml";
-
-            if (File.Exists(path))
-            {
-                docConfig.Load(path);
-
-                rootNode = docConfig.SelectSingleNode("/devices");
-
-                foreach (XmlNode device in rootNode.ChildNodes)
-                {
-                    if (device.FirstChild.InnerText == dev.Name)
-                    {
-                        XmlNode samples = device.ChildNodes[1];
-                        samples.RemoveChild(samples.LastChild);
-                        break;
-                    }
-                }
-            }
-            
-         
-
-            path = AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionAndPositionSamples.xml";
-
-            if (File.Exists(path))
-            {
-                docConfig.Load(path);
-
-                rootNode = docConfig.SelectSingleNode("/devices");
-
-                foreach (XmlNode device in rootNode.ChildNodes)
-                {
-                    if (device.FirstChild.InnerText == dev.Name)
-                    {
-                        XmlNode samplePositions = device.ChildNodes[1];
-                        samplePositions.RemoveChild(samplePositions.LastChild);
-                        break;
-                    }
-                }
-            }
-
-           
-        }
-
         public static void writeLogEntry(String entry)
         {
             String path = AppDomain.CurrentDomain.BaseDirectory + "\\program_log.xml";
@@ -1046,150 +959,7 @@ namespace IGS.Helperclasses
             logNode.AppendChild(xmlLogEntry);
             docCOnfig.Save(path);
 
-        }
-
-
-
-        public static List<PointingSample> readWNormalSamplesFromXML()
-        {
-            List<PointingSample> sampleList = new List<PointingSample>();
-
-            XmlDocument docConfig = new XmlDocument();
-            docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\Samples.xml");
-
-            XmlNodeList devices = docConfig.SelectSingleNode("/devices").ChildNodes;
-
-            foreach (XmlNode device in devices)
-            {
-                String knndeviceIdentifier = "";
-                foreach (XmlNode prop in device)
-                {
-                    if (prop.Name.Equals("deviceIdentifier"))
-                    {
-                        knndeviceIdentifier = prop.InnerText;
-                    }
-                    else if (prop.Name.Equals("samples"))
-                    {
-                        foreach (XmlNode sample in prop.ChildNodes)
-                        {
-                            PointingSample s = new PointingSample(new Point3D(
-                                double.Parse(sample.FirstChild.ChildNodes[0].InnerText),
-                                double.Parse(sample.FirstChild.ChildNodes[1].InnerText),
-                                double.Parse(sample.FirstChild.ChildNodes[2].InnerText)),
-
-                            new Vector3D(
-                                double.Parse(sample.ChildNodes[1].ChildNodes[0].InnerText),
-                                double.Parse(sample.ChildNodes[1].ChildNodes[1].InnerText),
-                                double.Parse(sample.ChildNodes[1].ChildNodes[2].InnerText)
-                            ), knndeviceIdentifier);
-
-                            sampleList.Add(s);
-                        }
-                    }
-                }
-
-            }
-
-            return sampleList;
-        }
-
-        public static void writeDifferencesPerSelect(double diffLS, double diffLW, double diffRW, double diffRS)
-        {
-
-            XmlDocument docConfig = new XmlDocument();
-            String path = AppDomain.CurrentDomain.BaseDirectory + "\\DifferencesPerSelect.xml";
-            if (!File.Exists(path))
-            {
-                XElement root = new XElement("selects");
-                root.Save(path);
-            }
-
-            docConfig.Load(path);
-
-            XmlNode rootNode = docConfig.SelectSingleNode("/selects");
-
-            XmlElement newElement = docConfig.CreateElement("select");
-            newElement.SetAttribute("difference_LeftShoulder", diffLS.ToString());
-            newElement.SetAttribute("difference_LeftWrist", diffLW.ToString());
-            newElement.SetAttribute("difference_RightShoulder", diffRS.ToString());
-            newElement.SetAttribute("difference_RightWrist", diffRW.ToString());
-       
-
-            rootNode.AppendChild(newElement);
-
-            docConfig.Save(path);
-        }
-
-        public static void writeTimeForElapsedTime(List<double> training, List<double> trainingIncrease, List<double> classIncreased, String dest)
-        {
-
-
-            XmlDocument docConfig = new XmlDocument();
-            String path = AppDomain.CurrentDomain.BaseDirectory + "\\trainingAndClassTime"+dest+".xml";
-            if (!File.Exists(path))
-            {
-                XElement root = new XElement("Times");
-                root.Save(path);
-            }
-
-            docConfig.Load(path);
-
-            XmlNode rootNode = docConfig.SelectSingleNode("/Times");
-
-
-            XmlNode trainTimes = docConfig.CreateElement("trainingTimesIteration");
-
-
-            int i = 1;
-           
-            foreach (float train in training)
-            {
-                
-                XmlElement entry = docConfig.CreateElement(i.ToString());
-                
-                entry.SetAttribute("Time", train.ToString());
-
-                trainTimes.AppendChild(entry);
-                i += 50;
-            }
-
-            XmlNode trainTimeInc = docConfig.CreateElement("trainingTimesIncrease");
-
-            int j = 50;
-            foreach (float trainInc in trainingIncrease)
-            {
-                XmlElement entry = docConfig.CreateElement("Size_" + j);
-                entry.SetAttribute("Time", trainInc.ToString());
-
-                trainTimeInc.AppendChild(entry);
-                j++;
-            }
-
-            XmlNode classTimeInc = docConfig.CreateElement("classificationTime");
-
-            int k = 50;
-            foreach (float trainInc in classIncreased)
-            {
-                XmlElement entry = docConfig.CreateElement("Size_" + k);
-                entry.SetAttribute("Time", trainInc.ToString());
-
-                classTimeInc.AppendChild(entry);
-k               ++;
-            }
-
-
-
-            rootNode.AppendChild(trainTimes);
-            rootNode.AppendChild(trainTimeInc);
-            rootNode.AppendChild(classTimeInc);
-
-
-            docConfig.Save(path);
-
-        }
-
-        
-       
+        }  
 
     }
 }

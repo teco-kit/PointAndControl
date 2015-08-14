@@ -108,17 +108,9 @@ namespace IGS_Integration_Test_Project.IGS
         [Test]
         public void Igs_AddDevice()
         {
-            String[] param;
-            param = new String[4];
-            param[0] = "Boxee";
-            param[1] = "BoxFlo";
-            param[2] = "192.168.0.123";
-            param[3] = "8800";
-            Assert.AreEqual("Device added to deviceConfiguration.xml and devices list", testIgs.AddDevice(param));
-            param[1] = "BoxChris";
-            Assert.AreEqual("Device added to deviceConfiguration.xml and devices list", testIgs.AddDevice(param));
-            param[0] = "Crap";
-            Assert.AreEqual("Device added to deviceConfiguration but not to devices list", testIgs.AddDevice(param));
+            Assert.AreEqual("Device added to deviceConfiguration.xml and devices list", testIgs.AddDevice("Boxee", "BoxFlo", "192.168.0.123", "8800"));
+            Assert.AreEqual("Device added to deviceConfiguration.xml and devices list", testIgs.AddDevice("Boxee", "BoxChris", "192.168.0.123", "8800"));
+            Assert.AreEqual("Device added to deviceConfiguration.xml and devices list", testIgs.AddDevice("Crap", "BoxChris", "192.168.0.123", "8800"));
         }
 
         [Test]

@@ -51,8 +51,8 @@ namespace IGS.Server.IGS
                 d.color = pickRandomColor();
             }
 
-
-            // create a list of devices to add to the system (testing only)
+            //TODO: this is testing only
+            // create a list of devices to add to the system
             _newDevices.Add(new Kodi("MediaCenter", "Kodi_0", null, "127.0.0.1", "8081"));
             _newDevices.Add(new Plugwise("Ventilator", "Plugwise_0", null, "127.0.0.1", "8080"));
             _newDevices.Add(new Plugwise("Stehlampe", "Plugwise_1", null, "127.0.0.1", "8080"));
@@ -264,13 +264,6 @@ namespace IGS.Server.IGS
             return tempDevice;
         }
 
-        public void delNewDevice(String id)
-        {
-            _newDevices.RemoveAll(d => d.Id.Equals(id));
-
-            return;
-        }
-
         /// <summary>
         ///     Deletes the associated bodyID from the through ID implicated user.
         ///     Löscht die zugewiesene ID des Skeletts von dem, durch die ID implizierten, User.
@@ -314,26 +307,6 @@ namespace IGS.Server.IGS
                 }
             }
         }
-        /// <summary>
-        ///     Returns a device with its id.
-        ///     <param name="id">Is used to identify a device.</param>
-        ///     <returns>Returns the deviceobject. If no device with the id exists NULL will be returned<returns>
-        /// </summary>
-        public Device GetDeviceByName(String name)
-        {
-            Device tempDevice = null;
-            bool found = false;
-
-            for (int i = 0; i < _devices.Count && found == false; i++)
-            {
-                if (_devices[i].Name.ToLower() == name.ToLower())
-                {
-                    tempDevice = _devices[i];
-                    found = true;
-                }
-            }
-            return tempDevice;
-        }
 
         public Color pickRandomColor()
         {
@@ -376,27 +349,9 @@ namespace IGS.Server.IGS
             Console.WriteLine("deviceIdentifier: " + dev.Name + " Color: " + dev.color);
             
             return;
-
         }
 
-        public Color deviceColorLookupByName(String name)
-        {
-            String nameLower = name.ToLower();
-
-
-            foreach (Device device in _devices)
-            {
-                if (nameLower.Equals(device.Name.ToLower()))
-                {
-                    return device.color;
-                }
-            }
-            return Color.White;
-        }
-
-
-
-        public void changeRoomModel(float width, float height, float depth)
+        public void changeRoomSize(float width, float height, float depth)
         {
             _roomModel.setRoomMeasures(width, depth, height);
         }    

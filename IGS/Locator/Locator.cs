@@ -1,13 +1,7 @@
-﻿using IGS.Server.Devices;
-using IGS.Server.IGS;
-using IGS.Server.Kinect;
-using Microsoft.Kinect;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Windows.Media.Media3D;
-using System.Xml;
 
 namespace IGS.Server.Location
 {
@@ -19,263 +13,39 @@ namespace IGS.Server.Location
 
         /// <summary>
         ///     Constructor.\n
-        ///     Needs Dataholder, UserTracker and CoordTransform from IGS
-        ///     <param name="data">Dataholder</param>
-        ///     <param name="tracker">UserTracker</param>
-        ///     <param name="transformer">CoordTransform</param>
         /// </summary>
-        public Locator(DataHolder data, UserTracker tracker, CoordTransform transformer)
+        public Locator()
         {
-            Data = data;
-            Tracker = tracker;
-            Transformer = transformer;
+          
         }
 
-        /// <summary>
-        ///     A new Device is created.\n
-        ///     If possible the device is added to the running program. \n\n
-        ///     
-        ///     This function is not used anymore.
-        ///     <param name="cmd"> cmd from IGS. Format shall be: createNewDevice$<type>$<name>$<address>$<port>  </param>
-        ///     <returns>Returns message that is displayed at user device</returns>
-        /// </summary>
-        public String CreateNewDevice(String cmd)
+ 
+        public Vector3D setDeviceLocation(List<Vector3D[]> positions)
         {
-            String retStr = "";
-
-            //split up cmd string that has the form createNewDevice$<type>$<name>$<address>$<port> 
-            String[] commands = cmd.Split(new string[] { "$" }, StringSplitOptions.RemoveEmptyEntries);
-            if (commands.Length < 5)
-            {
-                return "Please fill in all forms.";
-            }
-            String type = commands[1]; //start with index 1 since 0 is createNewDevice command string
-            String name = commands[2];
-            String address = commands[3];
-            String port = commands[4];
-
-            double result;
-            if (!Double.TryParse(port, out result))
-            {
-                return "Port needs to be numeric value!";
-            }
-
-
-            //add device to configuration XML
-            XmlDocument docConfig = new XmlDocument();
-            docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");
-            XmlNode rootNode = docConfig.SelectSingleNode("/config/deviceConfiguration");
-            
-
-            //Create Device node
-            XmlElement device = docConfig.CreateElement("device");
-            device.SetAttribute("type", type);
-            rootNode.AppendChild(device);
-
-            XmlNodeList deviceNodes = docConfig.SelectNodes("/config/deviceConfiguration/device");
-
-            //add attributes
-            XmlElement xmlName = docConfig.CreateElement("name");
-            xmlName.InnerText = name;
-            deviceNodes[deviceNodes.Count - 1].AppendChild(xmlName);
-
-            XmlElement xmlId = docConfig.CreateElement("id");
-            int count = 1;
-            for (int i = 0; i < Data.Devices.Count; i++)
-            {
-                String[] devId = Data.Devices[i].Id.Split('_');
-                if (devId[0] == type)
-                    count++;
-            }
-            xmlId.InnerText = type + "_" + count;
-            deviceNodes[deviceNodes.Count - 1].AppendChild(xmlId);
-
-            XmlElement xmlForm = docConfig.CreateElement("form");
-            xmlForm.SetAttribute("count", "0");
-            deviceNodes[deviceNodes.Count - 1].AppendChild(xmlForm);
-
-            XmlElement xmlAddress = docConfig.CreateElement("address");
-            xmlAddress.InnerText = address;
-            deviceNodes[deviceNodes.Count - 1].AppendChild(xmlAddress);
-
-            XmlElement xmlPort = docConfig.CreateElement("port");
-            xmlPort.InnerText = port;
-            deviceNodes[deviceNodes.Count - 1].AppendChild(xmlPort);
-
-            docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");
-
-            //add device to DataHolder Data
-            Type typeObject = Type.GetType("IGS.Server.Devices." + type);
-            if (typeObject != null){
-                try{
-                    object instance = Activator.CreateInstance(typeObject, name, xmlId.InnerText, new List<Ball>(),
-                                                       address, port);
-                    Data.Devices.Add((Device)instance);
-                }catch(Exception e){
-                    Console.Out.WriteLine(e.ToString());
-                }
-                    
-                    
-                retStr = "Device added to deviceConfiguration.xml and devices list";
-            }
-            else
-            {
-                retStr = "Device added to deviceConfiguration.xml but not to devices list";
-            }
-
-            String logEntry = "HinzugefügtesGerät - " + " Typ: " + type + " Name: " + name + " Id: " + xmlId.InnerText + " Adresse: " + address + " Port: " + port + " Resultat: " + retStr;
-            //Igs.writeInLog(logEntry);
-            return retStr;
-        }
-
-        /// <summary>
-        ///     Based on current kinect data, a new position for the device is created.\n
-        ///     <param name="devId">device to be changed</param>
-        ///     <param name="wlanAdr">wlan address of user that performes change</param>
-        ///     <returns>Returns success message, more vectors needed message, or error message according to progress</returns>
-        /// </summary>
-        public String ChangeDeviceLocation(String devId, String wlanAdr)
-        {
-            //receive Device from DataHolder Data
-            Device tempDevice = Data.getDeviceByID(devId);
-            if(tempDevice == null) return "Device with ID ["+devId+"] not found";
-            //get pointing vector of user
-            User tempUser = Data.GetUserByIp(wlanAdr);
-            if (tempUser == null) return "User with ID ["+wlanAdr+"] not found";
-
-
-            int skeleton = tempUser.SkeletonId;
-            if (skeleton <= 0) return "User with ID [" + wlanAdr + "] not tracked";
-
-            Vector3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(tempUser.SkeletonId));
-
-            tempDevice.PositionVectors.Add(vectors);
-
-            //log current body (evaluation)
-            //writeToXmlFile(tempUser, tempDevice);
-
-
-            Console.Out.WriteLine("CurrentList length:" + tempDevice.PositionVectors.Count);
-            //set new Position
-            return setDeviceLocation(tempDevice);
-        }
-
-        public String ChangeDeviceLocation(String devId, List<Vector3D[]> vectorsList)
-        {
-            //receive Device from DataHolder Data
-            Device tempDevice = Data.GetDeviceByName(devId);
-            if (tempDevice == null) return "Device with ID [" + devId + "] not found";
-
-            // process collected vectors
-            tempDevice.PositionVectors = vectorsList;
-
-            Console.Out.WriteLine("CurrentList length:" + tempDevice.PositionVectors.Count);
-            //set new Position
-            return setDeviceLocation(tempDevice);
-        }
-
-
-        public String setDeviceLocation(Device dev)
-        {
-            if (dev == null) return "Gerät nicht gefunden";
-
-            Console.Out.WriteLine("CurrentList length:" + dev.PositionVectors.Count);
 
             //set new Position
-            if (dev.PositionVectors.Count >= MIN_NUMBER_OF_VECTORS) // if enough vectors in list to calculate Position
+            if (positions.Count >= MIN_NUMBER_OF_VECTORS) // if enough vectors in list to calculate Position
+                return new Vector3D(Double.NaN, Double.NaN, Double.NaN);
+
+            List<Line3D> lines = new List<Line3D>();
+
+            foreach (Vector3D[] v in positions)
             {
-                List<Line3D> lines = new List<Line3D>();
+                Vector3D rightDir = Vector3D.Subtract(v[3], v[2]);
+                Vector3D rightWrist = v[3];
 
-                foreach (Vector3D[] v in dev.PositionVectors)
-                {
-                    Vector3D rightDir = Vector3D.Subtract(v[3], v[2]);
-                    Vector3D rightWrist = v[3];
+                Line3D line = new Line3D(rightWrist, rightDir);
 
-                    Line3D line = new Line3D(rightWrist, rightDir);
-
-                    lines.Add(line);
-                }
-                //Line3D.updateWeight(lines);
-
-                Vector3D position = Locator.cobylaCentralPoint(lines.ToArray());
-
-                // vectors were used for calculation, clear list
-                dev.PositionVectors.Clear();
-
-                if (position.Equals(new Vector3D(Double.NaN, Double.NaN, Double.NaN)))
-                {
-                    //error: advise user to try again
-                    return "Berechnungsfehler. Bitte erneut versuchen.";
-                }
-
-                //change position of device in dataHolder
-                List<Ball> balls = new List<Ball>();
-                balls.Add(new Ball(position, 0.3f));
-                dev.Form = balls;
-
-                //add new location to xml
-                //TODO: disabled for testing, should be handled in dataHolder
-                //String result = xmlChangeDeviceLocation(tempDevice, position);
-                return "Gerät " + dev.Name + " wurde neu plaziert";
-
+                lines.Add(line);
             }
+            //Line3D.updateWeight(lines);
 
-            return "Mehr Vektoren für die Berechnung benötigt";
+            return Locator.cobylaCentralPoint(lines.ToArray());
 
         }
 
-        /// <summary>
-        ///     Set new Device Position in configuraion.xml.\n
-        ///     <param name="device">device to be changed</param>
-        ///     <param name="position">new position of device</param>
-        ///     <returns>Returns "" on success, otherwise error message</returns>
-        /// </summary>
-        private String xmlChangeDeviceLocation(Device device, Vector3D position)
-        {
-            //add device to configuration XML
-            XmlDocument docConfig = new XmlDocument();
-            docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");
-            XmlNode rootNode = docConfig.SelectSingleNode("/config/deviceConfiguration");
 
-            //try to find existing device
-            XmlNode deviceNode = null;
-            foreach (XmlNode XmlDevice in rootNode.ChildNodes)
-            {
-                if (XmlDevice.ChildNodes[1].InnerText.Equals(device.Id))
-                {
-                    deviceNode = XmlDevice;
-                }
-            }
-            //XmlNode deviceNode = docConfig.SelectSingleNode("/deviceConfiguration/device[@type='" +  + "']");
-
-            if (deviceNode == null)
-            {
-                return "Error: Device not found in configuration xml";
-            }
-
-            //get existing form
-            XmlNode oldFormNode = deviceNode.ChildNodes.Item(2);
-
-
-            //create new form, only 1 ball is used -> old ball is removed
-            XmlElement formNode = docConfig.CreateElement("form");
-            formNode.SetAttribute("count", "1");
-
-            XmlElement ball = docConfig.CreateElement("ball");
-            ball.SetAttribute("radius", "0,4");
-            ball.SetAttribute("centerX", position.X.ToString());
-            ball.SetAttribute("centerY", position.Y.ToString());
-            ball.SetAttribute("centerZ", position.Z.ToString());
-
-            formNode.AppendChild(ball);
-
-            //replace old with new form
-            deviceNode.ReplaceChild(formNode, oldFormNode);
-
-
-            docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");
-            return "";
-        }
+        ///TODO: move geometric calculation functions to respective classes
 
         /// <summary>
         ///     Calculates distance between line and point
@@ -503,17 +273,5 @@ namespace IGS.Server.Location
 
         }
 
-        /// <summary>
-        ///     Stores Dataholder to be able to acces its data or functions.\n
-        /// </summary>
-        public DataHolder Data { get; set; }
-        /// <summary>
-        ///     Stores UserTracker to be able to acces its data or functions.\n
-        /// </summary>
-        public UserTracker Tracker { get; set; }
-        /// <summary>
-        ///     Stores CoordTransform to be able to acces its data or functions.\n
-        /// </summary>
-        public  CoordTransform Transformer { get; set; }
     }
 }

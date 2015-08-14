@@ -573,37 +573,6 @@ namespace IGS.Server.IGS
 
         }
 
-        public String collectSample(Device dev, String wlanAddr)
-        {
-            
-            User tmpUser = Data.GetUserByIp(wlanAddr);
-
-            if (dev != null)
-            {
-                if (Tracker.Bodies.Count == 0)
-                {
-                    return "Keine Personen von der Kinect Kamera gefunden";
-                }
-
-                //Vector3D[] vectors = Transformer.transformJointCoords(Tracker.getMedianFilteredCoordinates(tmpUser.SkeletonId));
-                Vector3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(tmpUser.SkeletonId));
-
-                if (classification.calculateWallProjectionSampleAndLearn(vectors, dev.Id) != "Es ist ein Fehler beim Erstellen des Samples aufgetreten, bitte versuchen sie es erneut!")
-                {
-                    //XMLComponentHandler.writeUserJointsToXmlFile(tmpUser, dev, body);
-                    //XMLComponentHandler.writeUserJointsPerSelectClick(body);
-                    XMLSkeletonJointRecords.writeClassifiedDeviceToLastSelect(dev);
-                    return "Sample hinzugefügt.";
-                }
-                else
-                {
-                    XMLSkeletonJointRecords.deleteLastUserSkeletonSelected();
-                    return "Keine Wand getroffen.";
-                }
-            }
-            return "Gerät ist unbekannt.";
-        }
-
         public String getControlPagePathHttp(String id)
         {
             String controlPath = "";
