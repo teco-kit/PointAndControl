@@ -326,6 +326,30 @@ var selectDevice = function () {
     });
 }
 
+var pollDevice = function () {
+    $.getJSON('/?dev=server&cmd=selectDevice', function (data) {
+        if (!data || !data.devices) {
+            return;
+        }
+
+        if (data.msg != '') {
+            toast(data.msg);
+        }
+
+        if (data.success) {
+            // display device
+            $('#arview').text(data.devices[0].name);
+        } else {
+            $('#arview').text("Kein Gerät");
+        }
+
+        // restart request if we are still on the are page
+        var hash = $.mobile.path.parseLocation().hash;
+        if (hash == '#ar')
+            pollDevice();
+    });
+}
+
 var pollStatus = function () {
     // get status from server and generate toast
     $.getJSON('/?dev=server&cmd=popup', function (data) {
@@ -411,6 +435,10 @@ $(function (event) {
 
         if (hash == '#adddevice') {
             updateNewDeviceDD(event);
+        }
+
+        if (hash == '#ar') {
+            pollDevice();
         }
     });
 
