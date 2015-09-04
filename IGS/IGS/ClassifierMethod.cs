@@ -37,7 +37,7 @@ namespace IGS.Server.IGS
             //TODO: validate that this function still works as intended
 
             //Vector3D[] vecs = transformer.transformJointCoords(tracker.getMedianFilteredCoordinates(usr.SkeletonId));
-            foreach (Vector3D[] vecs in dev.PositionVectors)
+            foreach (Point3D[] vecs in dev.skelPositions)
             {
                 s += classificationHandler.calculateWallProjectionSampleAndLearn(vecs, dev.Id);
                 //XMLSkeletonJointRecords.writeClassifiedDeviceToLastSelect(dev);
@@ -50,7 +50,7 @@ namespace IGS.Server.IGS
         public List<Device> chooseDevice(User usr)
         {
             List<Device> dev = new List<Device>();
-            Vector3D[] vecs = transformer.transformJointCoords(tracker.getMedianFilteredCoordinates(usr.SkeletonId));
+            Point3D[] vecs = transformer.transformJointCoords(tracker.getMedianFilteredCoordinates(usr.SkeletonId));
 
             if (usr != null)
             {

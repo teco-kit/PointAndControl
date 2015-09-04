@@ -10,6 +10,6 @@ namespace IGS.Kinect
 {
     interface ISkeletonJointFilter
     {
-        Vector3D[] jointFilter(List<Vector3D[]> jointLists);
+        Point3D[] jointFilter(List<Point3D[]> jointLists);
     }
 }

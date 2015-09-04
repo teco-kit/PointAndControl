@@ -124,6 +124,7 @@
     <Compile Include="Devices\XBMCv11.cs" />
     <Compile Include="Helperclasses\CoordTransform.cs" />
     <Compile Include="Helperclasses\igsMath.cs" />
+    <Compile Include="Helperclasses\Ray3D.cs" />
     <Compile Include="IGS\Initializer.cs" />
     <Compile Include="Helperclasses\XMLComponentHandler.cs" />
     <Compile Include="IGS\CollisionMethod.cs" />
@@ -134,7 +135,6 @@
     <Compile Include="Kinect\TrackingStateEventArgs.cs" />
     <Compile Include="Classifier\KNNClassifier.cs" />
     <Compile Include="Classifier\PointingSample.cs" />
-    <Compile Include="Classifier\Ray3D.cs" />
     <Compile Include="Classifier\Room.cs" />
     <Compile Include="Classifier\ClassificationHandler.cs" />
     <Compile Include="Classifier\WPSampleCalculator.cs" />
@@ -142,7 +142,6 @@
     <Compile Include="Classifier\WallProjectionSample.cs" />
     <Compile Include="Locator\Bobyqa.cs" />
     <Compile Include="Locator\Cobyla.cs" />
-    <Compile Include="Locator\Line3D.cs" />
     <Compile Include="Locator\Locator.cs" />
     <Compile Include="Room3DView.xaml.cs">
       <DependentUpon>Room3DView.xaml</DependentUpon>

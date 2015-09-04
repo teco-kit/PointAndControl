@@ -52,7 +52,7 @@ namespace IGS.Classifier
         }
 
 
-        public String calculateWallProjectionSampleAndLearn(Vector3D[] vectors, String deviceIdentifier)
+        public String calculateWallProjectionSampleAndLearn(Point3D[] vectors, String deviceIdentifier)
         {   
                 WallProjectionSample sample = sCalculator.calculateSample(vectors, deviceIdentifier);
 

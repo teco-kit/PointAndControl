@@ -121,6 +121,8 @@ namespace IGS
            
             InitializeComponent();
             //fillRoomWithColoredSamples(list, devices);
+
+            deviceList = devices;
             FillRoom();
         }
 
@@ -262,7 +264,7 @@ namespace IGS
                     for (int j = 0; j < deviceList[i].Form.Count; j++)
                     {
                         Point3D center = new Point3D();
-                        Vector3D vec = deviceList[i].Form[j].Centre;
+                        Point3D vec = deviceList[i].Form[j].Centre;
                         float rad = deviceList[i].Form[j].Radius;
 
                         HelixToolkit.Wpf.SphereVisual3D sphere = new HelixToolkit.Wpf.SphereVisual3D();
@@ -449,7 +451,7 @@ namespace IGS
                 initBodyBones(IDPlace, pList, midSec);
             }
             transformBallList(IDPlace, pList, midSec);
-            makeBodyRay(IDPlace, right_elbow, right_wrist);
+            makeBodyRay(IDPlace, right_shoulder, right_wrist);
             replaceBodyBones(IDPlace, pList, midSec);
         }
 

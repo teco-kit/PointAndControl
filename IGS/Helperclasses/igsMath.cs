@@ -10,17 +10,17 @@ namespace IGS.Helperclasses
     static class  igsMath
     {
 
-        public static Double l2Norm(Vector3D vec1, Vector3D vec2)
+        public static Double l2Norm(Vector3D vector)
         {
-            return norm(vec1, vec2, 2.0);
+            return norm(vector, 2.0);
         }
 
-        private static Double norm(Vector3D vec1, Vector3D vec2, double p)
+        private static Double norm(Vector3D vector, double p)
         {
             Double result = 0;
-            double diffX = Math.Abs(vec1.X - vec2.X);
-            double diffY = Math.Abs(vec1.Y - vec2.Y);
-            double diffZ = Math.Abs(vec1.Z - vec2.Z);
+            double diffX = Math.Abs(vector.X);
+            double diffY = Math.Abs(vector.Y);
+            double diffZ = Math.Abs(vector.Z);
 
             if (p == 2.0)
             {

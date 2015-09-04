@@ -224,15 +224,15 @@ namespace IGS.Server.Kinect
 
 
         /// <summary>
-        ///     Interface to the IGS where the koordinates of ellbow/wrist of both arms regarding the kinect coordinate system of the kinect will be requested.
-        ///     At postion 0 of the array is the vector of the left shoulder.
-        ///     At postion 1 of the array is the vector of the left wrist.
-        ///     At postion 2 of the array is the vector of the right shoulder.
-        ///     At postion 3 of the array is the vector of the right wrist.
+        ///     Interface to the IGS where the coordinates of ellbow/wrist of both arms regarding the kinect coordinate system of the kinect will be requested.
+        ///     At postion 0 of the array is the vector of the right shoulder.
+        ///     At postion 1 of the array is the vector of the right wrist.
+        ///     At postion 2 of the array is the vector of the left shoulder.
+        ///     At postion 3 of the array is the vector of the left wrist.
         ///     <param name="id">ID of the skeleton the coordinates are requested</param>
         ///     <returns>coordinates of the elbow/wrist as 3D-vector-array</returns>
         /// </summary>
-        public Vector3D[] GetCoordinates(int id)
+        public Point3D[] GetCoordinates(int id)
         {
             foreach (TrackedSkeleton sTracked in Bodies.Where(sTracked => sTracked.Id == id))
             {
@@ -240,29 +240,29 @@ namespace IGS.Server.Kinect
                 foreach (Body s in _bodiesLastFrame)
                 {
                     if ((int)s.TrackingId != id) continue;
-                    Vector3D[] result = new Vector3D[4];
-                    result[0] = new Vector3D(s.Joints[JointType.ShoulderLeft].Position.X,
-                                             s.Joints[JointType.ShoulderLeft].Position.Y,
-                                             s.Joints[JointType.ShoulderLeft].Position.Z);
-                    result[1] = new Vector3D(s.Joints[JointType.WristLeft].Position.X,
-                                             s.Joints[JointType.WristLeft].Position.Y,
-                                             s.Joints[JointType.WristLeft].Position.Z);
-                    result[2] = new Vector3D(s.Joints[JointType.ShoulderRight].Position.X,
+                    Point3D[] result = new Point3D[4];
+                    result[0] = new Point3D(s.Joints[JointType.ShoulderRight].Position.X,
                                              s.Joints[JointType.ShoulderRight].Position.Y,
                                              s.Joints[JointType.ShoulderRight].Position.Z);
-                    result[3] = new Vector3D(s.Joints[JointType.WristRight].Position.X,
+                    result[1] = new Point3D(s.Joints[JointType.WristRight].Position.X,
                                              s.Joints[JointType.WristRight].Position.Y,
                                              s.Joints[JointType.WristRight].Position.Z);
+                    result[2] = new Point3D(s.Joints[JointType.ShoulderLeft].Position.X,
+                                             s.Joints[JointType.ShoulderLeft].Position.Y,
+                                             s.Joints[JointType.ShoulderLeft].Position.Z);
+                    result[3] = new Point3D(s.Joints[JointType.WristLeft].Position.X,
+                                             s.Joints[JointType.WristLeft].Position.Y,
+                                             s.Joints[JointType.WristLeft].Position.Z);
                     return result;
                 }
             }
             return null;
         }
 
-        public List<Vector3D[]> Get30Coordinates(int id)
+        public List<Point3D[]> GetCoordinatesWindow(int id)
         {
-          
-            List<Vector3D[]> returnList = new List<Vector3D[]>();
+
+            List<Point3D[]> returnList = new List<Point3D[]>();
             workingOnWindow = true;
         
             int searchForLastBody = 1;
@@ -272,23 +272,22 @@ namespace IGS.Server.Kinect
                 foreach (Body[] bodies in lastBodies)
                 {
                     foreach (Body s in bodies)
-
                     {
                         if ((int)s.TrackingId != id) continue;
 
-                        Vector3D[] result = new Vector3D[4];
-                        result[0] = new Vector3D(s.Joints[JointType.ShoulderLeft].Position.X,
-                                                 s.Joints[JointType.ShoulderLeft].Position.Y,
-                                                 s.Joints[JointType.ShoulderLeft].Position.Z);
-                        result[1] = new Vector3D(s.Joints[JointType.WristLeft].Position.X,
-                                                 s.Joints[JointType.WristLeft].Position.Y,
-                                                 s.Joints[JointType.WristLeft].Position.Z);
-                        result[2] = new Vector3D(s.Joints[JointType.ShoulderRight].Position.X,
+                        Point3D[] result = new Point3D[4];
+                        result[0] = new Point3D(s.Joints[JointType.ShoulderRight].Position.X,
                                                  s.Joints[JointType.ShoulderRight].Position.Y,
                                                  s.Joints[JointType.ShoulderRight].Position.Z);
-                        result[3] = new Vector3D(s.Joints[JointType.WristRight].Position.X,
+                        result[1] = new Point3D(s.Joints[JointType.WristRight].Position.X,
                                                  s.Joints[JointType.WristRight].Position.Y,
                                                  s.Joints[JointType.WristRight].Position.Z);
+                        result[2] = new Point3D(s.Joints[JointType.ShoulderLeft].Position.X,
+                                                 s.Joints[JointType.ShoulderLeft].Position.Y,
+                                                 s.Joints[JointType.ShoulderLeft].Position.Z);
+                        result[3] = new Point3D(s.Joints[JointType.WristLeft].Position.X,
+                                                 s.Joints[JointType.WristLeft].Position.Y,
+                                                 s.Joints[JointType.WristLeft].Position.Z);
                         returnList.Add(result);
 
                     }
@@ -307,14 +306,14 @@ namespace IGS.Server.Kinect
         }
 
 
-        public Vector3D[] getMedianFilteredCoordinates(int id)
+        public Point3D[] getMedianFilteredCoordinates(int id)
         {
 
 
-            List<Vector3D[]> coords = this.Get30Coordinates(id);
+            List<Point3D[]> coords = this.GetCoordinatesWindow(id);
 
-          
-            Vector3D[] smoothed = jointFilter.jointFilter(coords);
+
+            Point3D[] smoothed = jointFilter.jointFilter(coords);
            
           
 

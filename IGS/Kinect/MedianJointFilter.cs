@@ -14,10 +14,10 @@ namespace IGS.Kinect
    
 
         //Median vector filterting Paper: Noise reduction by vector median filtering by Yike Liu
-        public Vector3D[] jointFilter(List<Vector3D[]> jointLists)
+        public Point3D[] jointFilter(List<Point3D[]> jointLists)
         {
-           
-            Vector3D[] filtered = new Vector3D[4];
+
+            Point3D[] filtered = new Point3D[4];
             double minDist = 0;
             int indexOfMinDist = 0;
             double[] distArray = new double[jointLists.Count];
@@ -33,7 +33,7 @@ namespace IGS.Kinect
                 {
                     for (int j = i+1; j <  jointLists.Count; j++)
                     {
-                            double tmpDist = igsMath.l2Norm(jointLists[i][jointMarker], jointLists[j][jointMarker]);
+                            double tmpDist = igsMath.l2Norm(jointLists[i][jointMarker] - jointLists[j][jointMarker]);
                             distArray[i] += tmpDist;
                             distArray[j] += tmpDist;
                     }

@@ -5,7 +5,7 @@
       <name>SensorTable</name>
       <id>Boxee_1</id>
       <form count="1">
-        <ball radius="0,4" centerX="2,68752094178013" centerY="2,11274908532615" centerZ="3,40792960203882" />
+        <ball radius="0,4" centerX="2,0" centerY="0,5" centerZ="0,3" />
       </form>
       <address>129.13.169.169</address>
       <port>5050</port>
@@ -75,11 +75,11 @@
       <depth>5,58</depth>
     </Roomsize>
     <KinectConfiguration>
-      <X>3,95</X>
-      <Y>1,80</Y>
+      <X>2,00</X>
+      <Y>1,30</Y>
       <Z>0,30</Z>
-      <tiltingAngle>8,0</tiltingAngle>
-      <HorizontalOrientationAngle>0.0</HorizontalOrientationAngle>
+      <tiltingAngle>0</tiltingAngle>
+      <HorizontalOrientationAngle>0</HorizontalOrientationAngle>
     </KinectConfiguration>
     <PlugwiseAdress>
       <host>cloud.teco.edu</host>

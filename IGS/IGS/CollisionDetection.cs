@@ -13,15 +13,12 @@ namespace IGS.Server.IGS
     /// </summary>
     public static class CollisionDetection
     {
-        private static double _maxX;
-        private static double _maxY;
-        private static double _maxZ;
-
         public struct minDistForDev
         {
             public Device dev;
             public double minDist;
         }
+
         /// <summary>
         ///    The Methode does the collision detection
         ///    First the pointing vector of the underarm is calculated.
@@ -31,62 +28,28 @@ namespace IGS.Server.IGS
         /// <param name="devices">Devices which are available in the system</param>
         /// <param name="vectors">The position vectors of the ellbows and wrists</param>
         /// <returns>Devicelist with hit devices</returns>
-        internal static List<Device> Calculate(List<Device> devices, Vector3D[] vectors)
+        internal static List<Device> Calculate(List<Device> devices, Point3D[] vectors)
         {
-            GetMax(devices, vectors);
-
             List<Device> found = new List<Device>();
 
             if (vectors == null)
                 return found;
 
-            //Wrist - ellbow (direction vector of the line)
-            //TODO: there should be a central definition of the pointing vector
-            Vector3D leftForearm = Vector3D.Subtract(vectors[1], vectors[0]);
-            Vector3D rightForearm = Vector3D.Subtract(vectors[3], vectors[2]);
-
-            Debug.WriteLine(vectors[3].ToString());
-
-            Vector3D curr;
-
+            // pointing ray goes from vectors[0] to vectors[1]
+            Ray3D pointer = new Ray3D(vectors[0], vectors[1]);
 
             foreach (Device dev in devices)
             {
                 foreach (Ball ball in dev.Form)
                 {
-                    curr = vectors[3];
-                    while ((Math.Abs(curr.X) < _maxX) && (Math.Abs(curr.Y) < _maxY) && (Math.Abs(curr.Z) < _maxZ))
+                    // check if Ball is in front of pointing ray
+                    if (Vector3D.AngleBetween(pointer.direction, ball.Centre - pointer.origin) < 90)
                     {
-                        curr = Vector3D.Add(rightForearm, curr);
-                        //TODO: there should be real distance calculation line(segment)/point here
-                        if (Vector3D.Subtract(curr, ball.Centre).Length <= ball.Radius)
+                        // check distance
+                        if (Point3D.Subtract(pointer.nearestPoint(ball.Centre), ball.Centre).Length <= ball.Radius)
                         {
-                            if (!found.Contains(dev))
-                            {
-                                found.Add(dev);
-                            }
-                        }
-                    }
-                }
-            }
-
-            curr = vectors[1];
-            foreach (Device dev in devices)
-            {
-                minDistForDev tmpEntry = new minDistForDev();
-                tmpEntry.dev = dev;
-
-                foreach (Ball ball in dev.Form)
-                {
-                    while ((Math.Abs(curr.X) < _maxX) && (Math.Abs(curr.Y) < _maxY) && (Math.Abs(curr.Z) < _maxZ))
-                    {
-                        curr = Vector3D.Add(leftForearm, curr);
-                        if (Vector3D.Subtract(curr, ball.Centre).Length <= ball.Radius)
-                        {
-                            if (!found.Contains(dev))
-                            {
-                                found.Add(dev);
-                            }
+                            found.Add(dev);
+                            continue; // skip other balls of this dev
                         }
                     }
                 }
@@ -94,95 +57,40 @@ namespace IGS.Server.IGS
             return found;
         }
 
-
-
-        internal static List<minDistForDev> CalculateMinDist(List<Device> devices, Vector3D[] vectors)
+        
+        internal static Device CalculateClosestMatch(List<Device> devices, Point3D[] vectors)
         {
-            GetMax(devices, vectors);
-            //double stepSize = 1.0;
-            List<minDistForDev> distances = new List<minDistForDev>();
-
+            Device currDev = null;
+            Double currDist = -1;
+            
             if (vectors == null)
-                return distances;
+                return null;
 
-            //Wrist - ellbow (direction vector of the line)
-            Vector3D leftForearm = Vector3D.Subtract(vectors[1], vectors[0]);
-            Vector3D rightForearm = Vector3D.Subtract(vectors[3], vectors[2]);
+            // pointing ray goes from vectors[0] to vectors[1]
+            Ray3D pointer = new Ray3D(vectors[0], vectors[1]);
 
-            Debug.WriteLine(vectors[3].ToString());
-
-            Vector3D curr;
-
+            Double tempDist;
 
             foreach (Device dev in devices)
             {
-
-                minDistForDev entry = new minDistForDev();
-                entry.dev = dev;
-                entry.minDist = double.MaxValue;
                 foreach (Ball ball in dev.Form)
                 {
-                   // int iterator = 1;
-                    curr = vectors[3];
-                    while ((Math.Abs(curr.X) <= _maxX) && (Math.Abs(curr.Y) <= _maxY) && (Math.Abs(curr.Z) <= _maxZ))
+                    // check if Ball is in front of pointing ray
+                    if (Vector3D.AngleBetween(pointer.direction, ball.Centre - pointer.origin) < 90)
                     {
-                        //curr = Vector3D.Add(rightForearm, Vector3D.Multiply(iterator, Vector3D.Multiply(stepSize, rightForearm)));
-                        curr = Vector3D.Add(rightForearm, curr);
-                        double tmpDist = igsMath.l2Norm(curr, ball.Centre);
-                        //double tmpDist = Vector3D.Subtract(curr, ball.Centre).Length;
-                        if (tmpDist <= entry.minDist)
+                        // check distance
+                        tempDist = Point3D.Subtract(pointer.nearestPoint(ball.Centre), ball.Centre).Length;
+                        if (currDist == -1 || tempDist < currDist)
                         {
-                            entry.minDist = tmpDist;
-
+                            currDev = dev;
+                            currDist = tempDist;
                         }
                     }
                 }
-
-                distances.Add(entry);
-
             }
 
-
-            return distances;
+            return currDev;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="devices"></param>
-        /// <param name="vectors"></param>
-        private static void GetMax(IEnumerable<Device> devices, Vector3D[] vectors)
-        {
-            foreach (Device dev in devices)
-            {
-                foreach (Ball ball in dev.Form)
-                {
-                    foreach (Vector3D vector in vectors)
-                    {
-                        _maxX = Math.Max(Math.Max(_maxX, Math.Abs(ball.Centre.X)), vector.X);
-                        _maxY = Math.Max(Math.Max(_maxY, Math.Abs(ball.Centre.Y)), vector.Y);
-                        _maxZ = Math.Max(Math.Max(_maxZ, Math.Abs(ball.Centre.Z)), vector.Z);
-                    }
-                }
-            }
-        }
-
-
-        public static String getNameOfDeviceWithMinDist(List<Device> devices, Vector3D[] vectors)
-        {
-            List<minDistForDev> distances = CalculateMinDist(devices, vectors);
-            minDistForDev min = new minDistForDev();
-            min.minDist = double.MaxValue;
-
-            foreach (minDistForDev mdd in distances)
-            {
-                if (min.minDist > mdd.minDist)
-                {
-                    min = mdd;
-                }
-            }
-
-            return min.dev.Id;
-        }
     }
 }

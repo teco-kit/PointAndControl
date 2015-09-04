@@ -1,5 +1,4 @@
 ﻿using HelixToolkit.Wpf;
-using IGS.Helperclasses;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,11 +20,10 @@ namespace IGS.Classifier
             this.calcRoomModel = room;
         }
 
-        public WallProjectionSample calculateSample(Vector3D[] vectors, String label)
+        public WallProjectionSample calculateSample(Point3D[] vectors, String label)
         {
-            
-            Vector3D direction = Vector3D.Subtract(vectors[3], vectors[2]);
-            Ray3D ray = new Ray3D(vectors[2].ToPoint3D(), direction);
+
+            Ray3D ray = new Ray3D((Point3D)vectors[0], (Point3D)vectors[1]);
             Point3D samplePoint = intersectAndTestAllWalls(ray);
             WallProjectionSample sample = new WallProjectionSample(new Point3D(), "nullSample");
 
@@ -50,18 +48,16 @@ namespace IGS.Classifier
 
         public Point3D intersectAndTestAllWalls(Ray3D ray)
         {
-            Point3D wallPoint = new Point3D();
+            Point3D wallPoint;
             foreach (Plane3D wall in calcRoomModel.wallList)
             {
-
-                if (
-                    (ray.PlaneIntersection(wall.Position, wall.Normal)) != null
-                   )
+                if (ray.PlaneIntersection(wall.Position, wall.Normal, out wallPoint))
                 {
-                    wallPoint = (Point3D)ray.PlaneIntersection(wall);
                     wallPoint.X = Math.Round(wallPoint.X, 7);
                     wallPoint.Y = Math.Round(wallPoint.Y, 7);
                     wallPoint.Z = Math.Round(wallPoint.Z, 7);
+
+                    // check if point is within room
                     if ((calcRoomModel.width >= wallPoint.X && wallPoint.X >= 0
                         &&
                         calcRoomModel.height >= wallPoint.Y && wallPoint.Y >= 0
@@ -72,9 +68,8 @@ namespace IGS.Classifier
                     }
                 }
             }
-            wallPoint.X = float.NaN;
-            wallPoint.Y = float.NaN;
-            wallPoint.Z = float.NaN;
+
+            wallPoint = new Point3D(float.NaN, float.NaN, float.NaN);
 
             return wallPoint;
         }

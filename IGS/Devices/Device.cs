@@ -25,7 +25,7 @@ namespace IGS.Server.Devices
             Name = name;
             Id = id;
             Form = form;
-            PositionVectors = new List<Vector3D[]>();
+            skelPositions = new List<Point3D[]>();
         }
 
         ///     Name of the device.
@@ -71,7 +71,7 @@ namespace IGS.Server.Devices
         ///     </returns>
         public abstract String Transmit(String cmdId, String value);
 
-        public List<Vector3D[]> PositionVectors { get; set; }
+        public List<Point3D[]> skelPositions { get; set; }
 
         public Color color { get; set; }
 

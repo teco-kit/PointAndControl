@@ -48,7 +48,7 @@ namespace IGS.Helperclasses
                         {
                             ballParams[i] = reader.GetAttribute(i);
                         }
-                        Vector3D vec = new Vector3D(Convert.ToDouble(ballParams[1]), Convert.ToDouble(ballParams[2]),
+                        Point3D vec = new Point3D(Convert.ToDouble(ballParams[1]), Convert.ToDouble(ballParams[2]),
                                                Convert.ToDouble(ballParams[3]));
                         float radius = (float)Convert.ToDouble(ballParams[0]);
                         Ball ball = new Ball(vec, radius);
@@ -748,12 +748,12 @@ namespace IGS.Helperclasses
             return sampleList;
         }
 
-        public static void writeSampleToXML(Vector3D[] positions, String deviceIdentifier)
+        public static void writeSampleToXML(Point3D[] positions, String deviceIdentifier)
         {
             XmlDocument docConfig = new XmlDocument();
             docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\samples.xml");
             XmlNode node = docConfig.SelectSingleNode("/devices");
-            Vector3D dir = Vector3D.Subtract(positions[3], positions[2]);
+            Vector3D dir = Point3D.Subtract(positions[3], positions[2]);
             foreach (XmlNode deviceNode in node.ChildNodes)
             {
                 if (deviceNode.FirstChild.InnerText == deviceIdentifier 
@@ -844,7 +844,7 @@ namespace IGS.Helperclasses
             return;
         }
 
-        public static void writeSampleToXML(Vector3D upPoint, Vector3D direction, String deviceIdentifier, String path)
+        public static void writeSampleToXML(Point3D upPoint, Vector3D direction, String deviceIdentifier, String path)
         {
             XmlDocument docConfig = new XmlDocument();
             

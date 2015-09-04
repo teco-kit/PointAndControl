@@ -341,10 +341,10 @@ namespace IGS.Server.IGS
                         }
 
                         success = true;
-                        device.PositionVectors = new List<Vector3D[]>();
+                        device.skelPositions = new List<Point3D[]>();
 
                         //attach vector numbers
-                        retStr += ",\"vectorCount\":" + device.PositionVectors.Count + ",\"vectorMin\":" + coreMethods.getMinVectorsPerDevice();
+                        retStr += ",\"vectorCount\":" + device.skelPositions.Count + ",\"vectorMin\":" + coreMethods.getMinVectorsPerDevice();
                         break;
 
                     case "addDeviceVector":
@@ -366,7 +366,7 @@ namespace IGS.Server.IGS
                         msg = addDeviceVector(device, user);
 
                         //attach vector numbers 
-                        retStr += ",\"vectorCount\":" + device.PositionVectors.Count + ",\"vectorMin\":" + coreMethods.getMinVectorsPerDevice();
+                        retStr += ",\"vectorCount\":" + device.skelPositions.Count + ",\"vectorMin\":" + coreMethods.getMinVectorsPerDevice();
                         break;
                      
                     case "setDevicePosition":
@@ -470,7 +470,7 @@ namespace IGS.Server.IGS
 
 
         /// <summary>
-        /// Adds a new coordinates and radius for a specified device by reading the right wrist position of the user 
+        /// Adds a new coordinates and radius for a specified device by reading the wrist position of the user 
         /// who wants to add them
         /// <param name="devId">the device to which the coordinate and radius should be added</param>
         /// <param name="wlanAdr">The wlan adress of the user who wants to add the coordinates and radius</param>
@@ -487,8 +487,8 @@ namespace IGS.Server.IGS
 
             if (Tracker.Bodies.Count != 0)
             {
-                Vector3D rightWrist = Transformer.transformJointCoords(Tracker.getMedianFilteredCoordinates(Data.GetUserByIp(wlanAdr).SkeletonId))[3];
-                Ball coord = new Ball(rightWrist, float.Parse(radius));
+                Point3D wrist = Transformer.transformJointCoords(Tracker.getMedianFilteredCoordinates(Data.GetUserByIp(wlanAdr).SkeletonId))[1];
+                Ball coord = new Ball(wrist, float.Parse(radius));
                 Data.getDeviceByID(devId).Form.Add(coord);
                 ret = XMLComponentHandler.addDeviceCoordToXML(devId, radius, coord);
             }
@@ -545,7 +545,7 @@ namespace IGS.Server.IGS
             float ballRad = 0.4f;
 
             String[] kinParamets = XMLComponentHandler.readKinectComponents();
-            Vector3D kinectCenter = new Vector3D(double.Parse(kinParamets[0]), double.Parse(kinParamets[1]), double.Parse(kinParamets[2]));
+            Point3D kinectCenter = new Point3D(double.Parse(kinParamets[0]), double.Parse(kinParamets[1]), double.Parse(kinParamets[2]));
             Ball kinectBall = new Ball(kinectCenter, ballRad);
             double roomOrientation = double.Parse(kinParamets[4]);
             double tiltingDegree = double.Parse(kinParamets[3]);
@@ -566,10 +566,10 @@ namespace IGS.Server.IGS
             if (user.SkeletonId < 0)
                 return "Bitte erst registrieren";
 
-            Vector3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(user.SkeletonId));
-            dev.PositionVectors.Add(vectors);
+            Point3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(user.SkeletonId));
+            dev.skelPositions.Add(vectors);
 
-            return dev.PositionVectors.Count + " von " + coreMethods.getMinVectorsPerDevice() + " Positionen hinzugefügt";
+            return dev.skelPositions.Count + " von " + coreMethods.getMinVectorsPerDevice() + " Positionen hinzugefügt";
 
         }
 

@@ -49,20 +49,20 @@ namespace IGS.Server.IGS
         {
             if (dev == null) return "Gerät nicht gefunden";
 
-            Console.Out.WriteLine("CurrentList length:" + dev.PositionVectors.Count);
+            Console.Out.WriteLine("CurrentList length:" + dev.skelPositions.Count);
 
             //Line3D.updateWeight(lines);
 
             //calculate new Position
-            if (dev.PositionVectors.Count < Locator.MIN_NUMBER_OF_VECTORS)
+            if (dev.skelPositions.Count < Locator.MIN_NUMBER_OF_VECTORS)
                 return "Mehr Vektoren für die Berechnung benötigt";
 
-            Vector3D position = locator.setDeviceLocation(dev.PositionVectors);
+            Point3D position = locator.getDeviceLocation(dev.skelPositions);
 
             // vectors were used for calculation, clear list
-            dev.PositionVectors.Clear();
+            dev.skelPositions.Clear();
 
-            if (position.Equals(new Vector3D(Double.NaN, Double.NaN, Double.NaN)))
+            if (position.Equals(new Point3D(Double.NaN, Double.NaN, Double.NaN)))
             {
                 //error: advise user to try again
                 return "Berechnungsfehler. Bitte erneut versuchen.";

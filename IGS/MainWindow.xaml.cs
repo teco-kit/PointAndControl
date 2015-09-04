@@ -641,12 +641,7 @@ public partial class MainWindow
         double orientation = double.Parse(Hdeg);
 
         XMLComponentHandler.saveKinectPosition(newPosition);
-        Vector3D newCenter = new Vector3D();
-
-        newCenter.X = i_X;
-        newCenter.Y = i_Y;
-        newCenter.Z = i_Z;
-
+        Point3D newCenter = new Point3D(i_X, i_Y, i_Z);
 
         _igs.IGSKinect.roomOrientation = orientation;
         _igs.IGSKinect.ball.Centre = newCenter;
@@ -655,7 +650,7 @@ public partial class MainWindow
         {
             _igs.Transformer.calculateRotationMatrix(0, _igs.IGSKinect.roomOrientation);
         }
-        _igs.Transformer.transVector = newCenter;
+        _igs.Transformer.transVector = (Vector3D)newCenter;
 
         if (_3Dview != null)
         {
