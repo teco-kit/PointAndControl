@@ -11,10 +11,6 @@ namespace IGS.Server.IGS
     {
         private int _skeletonId = -1;
 
-
-
-        //public bool deviceIDChecked { get; set; }
-
         //public WallProjectionSample lastClassDevSample { get; set; }
         /// <summary>
         ///     Constructor of a userobject

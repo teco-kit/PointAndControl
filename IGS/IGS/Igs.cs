@@ -165,7 +165,7 @@ namespace IGS.Server.IGS
         }
 
         /// <summary>
-        ///     This method fetches the id of the skeleton from the user currently perfoming the gesture to choose a device.
+        ///     This method fetches the id of the skeleton from the user currently perfoming the gesture to register.
         ///     This id will be set in the UserObject which is through its WLAN-adress unique.
         ///     If this procedure is finished successfully, the gesture control is for the user active and can be used.
         ///     <param name="wlanAdr">WLAN-Adress of the user wanting to activate gesture control</param>

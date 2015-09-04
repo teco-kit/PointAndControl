@@ -451,6 +451,7 @@ namespace IGS
                 initBodyBones(IDPlace, pList, midSec);
             }
             transformBallList(IDPlace, pList, midSec);
+
             makeBodyRay(IDPlace, right_shoulder, right_wrist);
             replaceBodyBones(IDPlace, pList, midSec);
         }

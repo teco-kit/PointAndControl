@@ -15,6 +15,13 @@ namespace IGS.Server.Kinect
         public TrackedSkeleton(int id)
         {
             Id = id;
+            rightHandUp = true;
+        }
+
+        public TrackedSkeleton(int id, bool rightHand)
+        {
+            Id = id;
+            rightHandUp = rightHand;
         }
 
         /// <summary>
@@ -32,6 +39,11 @@ namespace IGS.Server.Kinect
         ///     <returns>Gibt die Anzahl der Aktionen zurück</returns>
         /// </summary>
         public int Actions { get; set; }
+
+        /// <summary>
+        ///     true if the user used the right hand for activation, false otherwise
+        /// </summary>
+        public bool rightHandUp { get; set; }
 
         /// <summary>
         ///     Compares the id with the id of the given TrackedSkeleton.

@@ -32,11 +32,12 @@ namespace IGS.Server.Kinect
         private Body[] _bodiesLastFrame = new Body[0];
 
         public List<Body[]> lastBodies { get; set; }
-        public bool collectAfterClick { get; set; }
 
         public bool kinectAvailable { get; set; }
 
         public bool movingWindowCollect { get; set; }
+
+        public bool checkOnEveryFrame { get; set; }
 
         ISkeletonJointFilter jointFilter { get; set; }
 
@@ -60,11 +61,11 @@ namespace IGS.Server.Kinect
             Strategy = replace;
             Bodies = new List<TrackedSkeleton>();
             movingWindowCollect = false;
-            collectAfterClick = true;
             lastBodies = new List<Body[]>();
             this.jointFilter = new MedianJointFilter();
             workingOnWindow = false;
             windowSize = 15;
+            checkOnEveryFrame = true;
             kinectAvailable = false;
         }
 
@@ -186,8 +187,6 @@ namespace IGS.Server.Kinect
 
         /// <summary>
         ///     This method provides the skeletonID of the skeleton perfoming the defined gesture or which should be reactivated.
-        ///     
-        ///     Returns the skeletonID of the user
         ///     <param name="igsSkelId">SkeletonID stored in the IGS</param>
         ///     <returns>ID of the skeleton which was marked as tracked</returns>
         /// </summary>
@@ -219,10 +218,6 @@ namespace IGS.Server.Kinect
             return NO_GESTURE_FOUND;
         }
 
-
-
-
-
         /// <summary>
         ///     Interface to the IGS where the coordinates of ellbow/wrist of both arms regarding the kinect coordinate system of the kinect will be requested.
         ///     At postion 0 of the array is the vector of the right shoulder.
@@ -240,19 +235,26 @@ namespace IGS.Server.Kinect
                 foreach (Body s in _bodiesLastFrame)
                 {
                     if ((int)s.TrackingId != id) continue;
-                    Point3D[] result = new Point3D[4];
-                    result[0] = new Point3D(s.Joints[JointType.ShoulderRight].Position.X,
-                                             s.Joints[JointType.ShoulderRight].Position.Y,
-                                             s.Joints[JointType.ShoulderRight].Position.Z);
-                    result[1] = new Point3D(s.Joints[JointType.WristRight].Position.X,
-                                             s.Joints[JointType.WristRight].Position.Y,
-                                             s.Joints[JointType.WristRight].Position.Z);
-                    result[2] = new Point3D(s.Joints[JointType.ShoulderLeft].Position.X,
-                                             s.Joints[JointType.ShoulderLeft].Position.Y,
-                                             s.Joints[JointType.ShoulderLeft].Position.Z);
-                    result[3] = new Point3D(s.Joints[JointType.WristLeft].Position.X,
-                                             s.Joints[JointType.WristLeft].Position.Y,
-                                             s.Joints[JointType.WristLeft].Position.Z);
+                    Point3D[] result = new Point3D[2];
+
+                    if (sTracked.rightHandUp)
+                    {
+                        result[0] = new Point3D(s.Joints[JointType.ShoulderRight].Position.X,
+                                                 s.Joints[JointType.ShoulderRight].Position.Y,
+                                                 s.Joints[JointType.ShoulderRight].Position.Z);
+                        result[1] = new Point3D(s.Joints[JointType.WristRight].Position.X,
+                                                 s.Joints[JointType.WristRight].Position.Y,
+                                                 s.Joints[JointType.WristRight].Position.Z);
+                    }
+                    else
+                    {
+                        result[0] = new Point3D(s.Joints[JointType.ShoulderLeft].Position.X,
+                                                 s.Joints[JointType.ShoulderLeft].Position.Y,
+                                                 s.Joints[JointType.ShoulderLeft].Position.Z);
+                        result[1] = new Point3D(s.Joints[JointType.WristLeft].Position.X,
+                                                 s.Joints[JointType.WristLeft].Position.Y,
+                                                 s.Joints[JointType.WristLeft].Position.Z);
+                    }
                     return result;
                 }
             }
@@ -308,16 +310,9 @@ namespace IGS.Server.Kinect
 
         public Point3D[] getMedianFilteredCoordinates(int id)
         {
-
-
             List<Point3D[]> coords = this.GetCoordinatesWindow(id);
 
-
-            Point3D[] smoothed = jointFilter.jointFilter(coords);
-           
-          
-
-            return smoothed;
+            return  jointFilter.jointFilter(coords);
         }
 
         //returns complete Body by ID
@@ -365,12 +360,10 @@ namespace IGS.Server.Kinect
 
                 HashSet<int> idsSeen = new HashSet<int>();
 
-
                 foreach (Body s in bodies)
                 {
                     if (s.TrackingId != 0) idsSeen.Add((int)s.TrackingId);
                 }
-
 
                 bool bodiesLastFrameNotNull = false;
 
@@ -402,7 +395,12 @@ namespace IGS.Server.Kinect
                 }
                 _bodiesLastFrame = bodies;
 
-                if (collectAfterClick == true || movingWindowCollect == true)
+                if (checkOnEveryFrame)
+                {
+
+                }
+
+                if (movingWindowCollect == true)
                 {
                     Body[] bodiesToSave = new Body[bodies.Length];
                     for (int i = 0; i < bodies.Length; i++)
