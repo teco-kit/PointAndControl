@@ -603,6 +603,11 @@ namespace IGS.Server.WebServer
                 p.WriteSuccess("image/x-icon");
                 sendData(p);
             }
+            else if (pathstring.EndsWith(".svg"))
+            {
+                p.WriteSuccess("image/svg+xml");
+                sendData(p);
+            }
             else if (querystring.Length > 0) //TODO: currently we either serve files or process query parameters
             {
                 NameValueCollection col = HttpUtility.ParseQueryString(querystring);

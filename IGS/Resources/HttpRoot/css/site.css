@@ -37,3 +37,24 @@ div#pointdevice, div#locatedevice{
   background: #ffffff url('../img/selection.png') no-repeat center center;
   padding-top: 1em;
 }
+
+div#arview {
+    position: absolute;
+    top: 10%;
+    left: 0;
+    width: 100%;
+}
+
+div#arview img {
+	width: 100%;
+}
+
+div#mapview{
+    width: 100%;
+    height: 900px;
+}
+
+div#mapview object{
+    width: 100%;
+    height: 100%;
+}

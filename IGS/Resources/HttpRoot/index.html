@@ -10,6 +10,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css" />
     <link rel="stylesheet" href="css/site.css" />
+	<script src="js/adapter.js"></script>
     <script src="js/jquery.min.js"></script>
     <script src="js/jquery.mobile-1.4.5.min.js"></script>
     <script src="js/site.js"></script>
@@ -70,7 +71,13 @@
         <!-- /header -->
 
         <div role="main" class="ui-content fullscreen">
-            <div id="arview">Kein Gerät</div>
+			<video id="video" autoplay></video>
+            <div id="arview">
+                <a href="/" data-ajax="false">
+                    <img src="img/icons/TV.png">
+                    <span>Kein Gerät</span>
+                </a>
+			</div>
         </div>
         <!-- /content -->
 
@@ -85,6 +92,32 @@
         </div>
         <!-- /footer -->
     </div>
+
+      <div data-role="page" id="map">
+          <div data-role="header" data-position="fixed" data-tap-toggle="false">
+              <h1>Map View</h1>
+              <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Zurück</a>
+          </div>
+          <!-- /header -->
+
+          <div role="main" class="ui-content fullscreen">
+              <div id="mapview">
+                  <object class="emb" data="img/living-lab-map.svg" type="image/svg+xml"></object>
+              </div>
+          </div>
+          <!-- /content -->
+
+          <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+              <div data-role="navbar" data-iconpos="right">
+                  <ul>
+                      <li>
+                          <a href="#listdevices" class="btn btn-skip" data-icon="carat-r">Zur Liste</a>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+          <!-- /footer -->
+      </div>
 
     <div data-role="page" id="listdevices">
       <div data-role="header" data-position="fixed" data-tap-toggle="false">

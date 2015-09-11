@@ -7,6 +7,9 @@ var editMode = false;
 
 var deviceList;
 
+//added for AR
+var videoContainer = null;
+
 var vibrate = function (pattern) {
     if (supportsVibrate) {
         navigator.vibrate(pattern);
@@ -248,7 +251,7 @@ var updateDeviceList = function () {
                 target = '"javascript:changeDevicePosition(\'' + device.id + '\');"';
             else
                 target = '"/?dev=' + device.id + '&cmd=getControlPath" data-ajax="false"';
-            listItems.push('<li><a href=' + target + '>' + device.name + '</a></li>');
+            listItems.push('<li><a href=' + target + '><img src="img/icons/' + device.id + '.png">' + device.name + '</a></li>');
         }
 
         $('#devicelist').html(listItems.join(''));
@@ -328,7 +331,7 @@ var selectDevice = function () {
 
 var pollDevice = function () {
     $.getJSON('/?dev=server&cmd=selectDevice', function (data) {
-        if (!data || !data.devices) {
+            if (!data || !data.devices) {
             return;
         }
 
@@ -338,16 +341,61 @@ var pollDevice = function () {
 
         if (data.success) {
             // display device
-            $('#arview').text(data.devices[0].name);
+            $('#arview a').attr("href", "/?dev=" + data.devices[0].id + "&cmd=getControlPath");
+            $('#arview img').attr("src", "img/icons/" + data.devices[0].id + ".png");
+            $('#arview span').text(data.devices[0].name);
+            $('#arview').show();
         } else {
-            $('#arview').text("Kein Gerät");
+            $('#arview').hide();
         }
 
-        // restart request if we are still on the are page
+        // restart request if we are still on the ar page
         var hash = $.mobile.path.parseLocation().hash;
         if (hash == '#ar')
             pollDevice();
     });
+}
+
+var selectItem = function (id) {
+    //toast(id);
+    window.location.assign('/?dev=' + id + '&cmd=getControlPath');
+}
+
+var errorCallback = function(error) {
+  console.log('navigator.getUserMedia error: ', error);
+}
+
+var gotDevices = function(deviceInfos) {
+	
+  for (var i = deviceInfos.length - 1; i > 0; --i) {
+    var deviceInfo = deviceInfos[i];
+
+	if (deviceInfo.kind === 'videoinput') {
+      return deviceInfo.deviceId;
+    }
+  }
+}
+
+var startVideo = function(videoSource) {
+	if (window.stream) {
+		//window.stream.getTracks().forEach(function(track) { track.stop(); });
+		return;
+	}
+	
+	var constraints = {
+		audio: false,
+		video: {deviceId: videoSource}
+	};
+	
+	navigator.mediaDevices.getUserMedia(constraints)
+	.then(function(stream) {  
+		window.stream = stream; // make stream available to console
+		//attachMediaStream(videoContainer, stream);
+		videoContainer.srcObject = stream;
+		// Refresh button list in case labels have become available
+		//return navigator.mediaDevices.enumerateDevices();
+	})
+	.catch(errorCallback);
 }
 
 var pollStatus = function () {
@@ -438,6 +486,11 @@ $(function (event) {
         }
 
         if (hash == '#ar') {
+			videoContainer = $('#video')[0];
+			navigator.mediaDevices.enumerateDevices()
+			.then(gotDevices)
+			.then(startVideo)
+			.catch(errorCallback);
             pollDevice();
         }
     });
@@ -447,7 +500,7 @@ $(function (event) {
 
         if (hash == '#register' && ui.fromPage) {
             // store where we are coming from
-            beforeRegister = ui.fromPage;
+            beforeRegister = ui.prevPage[0].baseURI;
         }
 
         if (hash == '#point' || hash == '#locate') {
@@ -459,5 +512,6 @@ $(function (event) {
                 $(':mobile-pagecontainer').pagecontainer('change', '#register');
             }
         }
+		
     });
 });

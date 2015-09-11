@@ -535,7 +535,7 @@ namespace IGS.Server.IGS
             return retStr;
         }
 
-
+        
         /// <summary>
         /// this method intializes the representation of the kinect camera used for positioning and 
         /// visualization by reading the information out of the config.xml
