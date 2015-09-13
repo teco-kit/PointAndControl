@@ -8,15 +8,12 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="100%"
-   height="100%"
-   preserveAspectRatio="xMinYMin meet"
-   viewBox="0 0 960 200"
+   width="950"
+   height="900"
    id="svg3267"
    version="1.1"
    inkscape:version="0.91 r13725"
-   sodipodi:docname="living-lab-static_map_final.svg">
-   
+   sodipodi:docname="living-lab-map.svg">
   <metadata
      id="metadata3301">
     <rdf:RDF>
@@ -25,173 +22,273 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
   <defs
      id="defs3299">
     <pattern
-       inkscape:collect="always"
-       xlink:href="#AudioLedLampe2pattern"
-       id="pattern4967"
-       patternTransform="translate(-118.6241,76.796456)" />
-    <pattern
-       height="28"
-       width="28"
        patternUnits="objectBoundingBox"
-       id="AudioLedLampepattern">
-      <image
-         sodipodi:absref="G:\Uni_krams\Master\Masterarbeit\Nutzerstudie\Map\.\ThumbAudioLed_radar.png"
-         xlink:href=".\img\icons\Boxee_1.png"
-         height="56"
-         width="56"
-         id="image3660" />
-    </pattern>
-    <pattern
-       height="28"
        width="28"
-       patternUnits="objectBoundingBox"
-       id="VDARpattern">
-      <image
-         sodipodi:absref="G:\Uni_krams\Master\Masterarbeit\Nutzerstudie\Map\.\VDAR_Logo_radar.png"
-         xlink:href=".\VDAR_Logo_radar.png"
-         height="56"
-         width="56"
-         id="image3647" />
-    </pattern>
-    <pattern
        height="28"
-       width="28"
-       patternUnits="objectBoundingBox"
-       id="EmbeddedBusinessSystemspattern">
+       id="Plugwise1Pattern">
       <image
-         sodipodi:absref="G:\Uni_krams\Master\Masterarbeit\Nutzerstudie\Map\.\EBS_front_radar.png"
-         xlink:href=".\EBS_front_radar.png"
+         sodipodi:absref="C:\Users\berning\Documents\!Projekte\PointAndControl\IGS\Resources\HttpRoot\img\icons\Plugwise_1.png"
+         xlink:href="icons\Plugwise_1.png"
+		 
+         id="image4265"
          height="56"
-         width="56"
-         id="image3634" />
+         width="56" />
     </pattern>
-    <pattern
+	<pattern
+       patternUnits="objectBoundingBox"
+       width="28"
        height="28"
-       width="28"
-       patternUnits="objectBoundingBox"
-       id="TecoEnvboardpattern">
+       id="Plugwise2Pattern">
       <image
-         sodipodi:absref="G:\Uni_krams\Master\Masterarbeit\Nutzerstudie\Map\.\envboard-demo-neu_radar.png"
-         xlink:href=".\envboard-demo-neu_radar.png"
+         sodipodi:absref="C:\Users\berning\Documents\!Projekte\PointAndControl\IGS\Resources\HttpRoot\img\icons\Plugwise_2.png"
+         xlink:href="icons\Plugwise_2.png"
+		 
+         id="image4264"
          height="56"
-         width="56"
-         id="image3725" />
+         width="56" />
     </pattern>
-    <pattern
+	<pattern
+       patternUnits="objectBoundingBox"
+       width="28"
        height="28"
-       width="28"
-       patternUnits="objectBoundingBox"
-       id="HealthCareDemopattern">
+       id="Plugwise3Pattern">
       <image
-         sodipodi:absref="G:\Uni_krams\Master\Masterarbeit\Nutzerstudie\Map\.\ThumbKneeGuard_radar.png"
-         xlink:href=".\ThumbKneeGuard_radar.png"
+         sodipodi:absref="C:\Users\berning\Documents\!Projekte\PointAndControl\IGS\Resources\HttpRoot\img\icons\Plugwise_3.png"
+         xlink:href="icons\Plugwise_3.png"
+		 
+         id="image4266"
          height="56"
-         width="56"
-         id="image3712" />
+         width="56" />
     </pattern>
-    <pattern
+	<pattern
+       patternUnits="objectBoundingBox"
+       width="28"
        height="28"
-       width="28"
-       patternUnits="objectBoundingBox"
-       id="PointAndClickpattern">
+       id="Plugwise4Pattern">
       <image
-         sodipodi:absref="G:\Uni_krams\Master\Masterarbeit\Nutzerstudie\Map\.\ThumbPointAndClick_radar.png"
-         xlink:href=".\ThumbPointAndClick_radar.png"
+         sodipodi:absref="C:\Users\berning\Documents\!Projekte\PointAndControl\IGS\Resources\HttpRoot\img\icons\Plugwise_4.png"
+         xlink:href="icons\Plugwise_4.png"
+		 
+         id="image4267"
          height="56"
-         width="56"
-         id="image3699" />
+         width="56" />
     </pattern>
-    <pattern
+	<pattern
+       patternUnits="objectBoundingBox"
+       width="28"
        height="28"
-       width="28"
-       patternUnits="objectBoundingBox"
-       id="AudioLedLampe1pattern">
+       id="Plugwise5Pattern">
       <image
-         sodipodi:absref="G:\Uni_krams\Master\Masterarbeit\Nutzerstudie\Map\.\ThumbAudioLed_radar.png"
-         xlink:href=".\ThumbAudioLed_radar.png"
+         sodipodi:absref="C:\Users\berning\Documents\!Projekte\PointAndControl\IGS\Resources\HttpRoot\img\icons\Plugwise_5.png"
+         xlink:href="icons\Plugwise_5.png"
+		 
+         id="image4268"
          height="56"
-         width="56"
-         id="image3686" />
+         width="56" />
     </pattern>
-    <pattern
+	<pattern
+       patternUnits="objectBoundingBox"
+       width="28"
        height="28"
-       width="28"
-       patternUnits="objectBoundingBox"
-       id="LedPowerDemopattern">
+       id="Plugwise6Pattern">
       <image
-         sodipodi:absref="G:\Uni_krams\Master\Masterarbeit\Nutzerstudie\Map\.\ThumbLedPower_radar.png"
-         xlink:href=".\ThumbLedPower_radar.png"
+         sodipodi:absref="C:\Users\berning\Documents\!Projekte\PointAndControl\IGS\Resources\HttpRoot\img\icons\Plugwise_6.png"
+         xlink:href="icons\Plugwise_6.png"
+		 
+         id="image4269"
          height="56"
-         width="56"
-         id="image3673" />
+         width="56" />
     </pattern>
-    <pattern
+	<pattern
+       patternUnits="objectBoundingBox"
+       width="28"
        height="28"
-       width="28"
-       patternUnits="objectBoundingBox"
-       id="LandmarkeDemopattern">
+       id="Plugwise7Pattern">
       <image
-         sodipodi:absref="G:\Uni_krams\Master\Masterarbeit\Nutzerstudie\Map\.\Landmarke Demo_radar.png"
-         xlink:href=".\Landmarke Demo_radar.png"
+         sodipodi:absref="C:\Users\berning\Documents\!Projekte\PointAndControl\IGS\Resources\HttpRoot\img\icons\Plugwise_7.png"
+         xlink:href="icons\Plugwise_7.png"
+		 
+         id="image4270"
          height="56"
-         width="56"
-         id="image3790" />
+         width="56" />
     </pattern>
-    <pattern
+	<pattern
+       patternUnits="objectBoundingBox"
+       width="28"
        height="28"
-       width="28"
-       patternUnits="objectBoundingBox"
-       id="AudioLedLampe3pattern">
+       id="Plugwise8Pattern">
       <image
-         sodipodi:absref="G:\Uni_krams\Master\Masterarbeit\Nutzerstudie\Map\.\ThumbAudioLed_radar.png"
-         xlink:href=".\ThumbAudioLed_radar.png"
+         sodipodi:absref="C:\Users\berning\Documents\!Projekte\PointAndControl\IGS\Resources\HttpRoot\img\icons\Plugwise_8.png"
+         xlink:href="icons\Plugwise_8.png"
+		 
+         id="image4271"
          height="56"
-         width="56"
-         id="image3777" />
+         width="56" />
     </pattern>
-    <pattern
+	<pattern
+       patternUnits="objectBoundingBox"
+       width="28"
        height="28"
-       width="28"
-       patternUnits="objectBoundingBox"
-       id="MachineHealthDemopattern">
+       id="Plugwise9Pattern">
       <image
-         sodipodi:absref="G:\Uni_krams\Master\Masterarbeit\Nutzerstudie\Map\.\ThumbMachineHealth_radar.png"
-         xlink:href=".\ThumbMachineHealth_radar.png"
+         sodipodi:absref="C:\Users\berning\Documents\!Projekte\PointAndControl\IGS\Resources\HttpRoot\img\icons\Plugwise_9.png"
+         xlink:href="icons\Plugwise_9.png"
+		 
+         id="image4272"
          height="56"
-         width="56"
-         id="image3764" />
+         width="56" />
     </pattern>
-    <pattern
+	<pattern
+       patternUnits="objectBoundingBox"
+       width="28"
        height="28"
-       width="28"
-       patternUnits="objectBoundingBox"
-       id="AudioLedLampe2pattern">
+       id="Plugwise10Pattern">
       <image
-         sodipodi:absref="G:\Uni_krams\Master\Masterarbeit\Nutzerstudie\Map\.\ThumbAudioLed_radar.png"
-         xlink:href=".\ThumbAudioLed_radar.png"
+         sodipodi:absref="C:\Users\berning\Documents\!Projekte\PointAndControl\IGS\Resources\HttpRoot\img\icons\Plugwise_10.png"
+         xlink:href="icons\Plugwise_10.png"
+		 
+         id="image4273"
          height="56"
-         width="56"
-         id="image3751" />
+         width="56" />
     </pattern>
-    <pattern
+	<pattern
+       patternUnits="objectBoundingBox"
+       width="28"
        height="28"
-       width="28"
-       patternUnits="objectBoundingBox"
-       id="RfidCommunicationDemopattern">
+       id="Plugwise11Pattern">
       <image
-         sodipodi:absref="G:\Uni_krams\Master\Masterarbeit\Nutzerstudie\Map\.\ThumbRfidCollab_radar.png"
-         xlink:href=".\ThumbRfidCollab_radar.png"
+         sodipodi:absref="C:\Users\berning\Documents\!Projekte\PointAndControl\IGS\Resources\HttpRoot\img\icons\Plugwise_11.png"
+         xlink:href="icons\Plugwise_11.png"
+		 
+         id="image4274"
          height="56"
-         width="56"
-         id="image3738" />
+         width="56" />
     </pattern>
+	<pattern
+       patternUnits="objectBoundingBox"
+       width="28"
+       height="28"
+       id="Plugwise12Pattern">
+      <image
+         sodipodi:absref="C:\Users\berning\Documents\!Projekte\PointAndControl\IGS\Resources\HttpRoot\img\icons\Plugwise_12.png"
+         xlink:href="icons\Plugwise_12.png"
+		 
+         id="image4275"
+         height="56"
+         width="56" />
+    </pattern>
+	<pattern
+       patternUnits="objectBoundingBox"
+       width="28"
+       height="28"
+       id="Plugwise13Pattern">
+      <image
+         sodipodi:absref="C:\Users\berning\Documents\!Projekte\PointAndControl\IGS\Resources\HttpRoot\img\icons\Plugwise_13.png"
+         xlink:href="icons\Plugwise_13.png"
+		 
+         id="image4276"
+         height="56"
+         width="56" />
+    </pattern>
+	<pattern
+       patternUnits="objectBoundingBox"
+       width="28"
+       height="28"
+       id="Boxee1Pattern">
+      <image
+         sodipodi:absref="C:\Users\berning\Documents\!Projekte\PointAndControl\IGS\Resources\HttpRoot\img\icons\Boxee_1.png"
+         xlink:href="icons\Boxee_1.png"
+		 
+         id="image4280"
+         height="56"
+         width="56" />
+    </pattern>
+	<pattern
+       patternUnits="objectBoundingBox"
+       width="28"
+       height="28"
+       id="Boxee2Pattern">
+      <image
+         sodipodi:absref="C:\Users\berning\Documents\!Projekte\PointAndControl\IGS\Resources\HttpRoot\img\icons\Boxee_2.png"
+         xlink:href="icons\Boxee_2.png"
+		 
+         id="image4281"
+         height="56"
+         width="56" />
+    </pattern>
+	<pattern
+       patternUnits="objectBoundingBox"
+       width="28"
+       height="28"
+       id="Boxee3Pattern">
+      <image
+         sodipodi:absref="C:\Users\berning\Documents\!Projekte\PointAndControl\IGS\Resources\HttpRoot\img\icons\Boxee_3.png"
+         xlink:href="icons\Boxee_3.png"
+		 
+         id="image4283"
+         height="56"
+         width="56" />
+    </pattern>
+	<pattern
+       patternUnits="objectBoundingBox"
+       width="28"
+       height="28"
+       id="Boxee4Pattern">
+      <image
+         sodipodi:absref="C:\Users\berning\Documents\!Projekte\PointAndControl\IGS\Resources\HttpRoot\img\icons\Plugwise_4.png"
+         xlink:href="icons\Boxee_4.png"
+		 
+         id="image4283"
+         height="56"
+         width="56" />
+    </pattern>
+	<pattern
+       patternUnits="objectBoundingBox"
+       width="28"
+       height="28"
+       id="Kodi1Pattern">
+      <image
+         sodipodi:absref="C:\Users\berning\Documents\!Projekte\PointAndControl\IGS\Resources\HttpRoot\img\icons\Kodi_1.png"
+         xlink:href="icons\Kodi_1.png"
+		 
+         id="image4284"
+         height="56"
+         width="56" />
+    </pattern>
+	<pattern
+       patternUnits="objectBoundingBox"
+       width="28"
+       height="28"
+       id="Kodi2Pattern">
+      <image
+         sodipodi:absref="C:\Users\berning\Documents\!Projekte\PointAndControl\IGS\Resources\HttpRoot\img\icons\Kodi_2.png"
+         xlink:href="icons\Kodi_2.png"
+		 
+         id="image4285"
+         height="56"
+         width="56" />
+    </pattern>
+	<pattern
+       patternUnits="objectBoundingBox"
+       width="28"
+       height="28"
+       id="Kodi3Pattern">
+      <image
+         sodipodi:absref="C:\Users\berning\Documents\!Projekte\PointAndControl\IGS\Resources\HttpRoot\img\icons\Kodi_3.png"
+         xlink:href="icons\Kodi_3.png"
+		 
+         id="image4288"
+         height="56"
+         width="56" />
+    </pattern>
+	
   </defs>
   <sodipodi:namedview
      pagecolor="#ffffff"
@@ -203,13 +300,13 @@
      inkscape:pageopacity="0"
      inkscape:pageshadow="2"
      inkscape:window-width="1920"
-     inkscape:window-height="1057"
+     inkscape:window-height="1027"
      id="namedview3297"
      showgrid="false"
      inkscape:zoom="0.529375"
-     inkscape:cx="341.91405"
-     inkscape:cy="514.23131"
-     inkscape:window-x="1672"
+     inkscape:cx="329.37276"
+     inkscape:cy="255.43783"
+     inkscape:window-x="-8"
      inkscape:window-y="-8"
      inkscape:window-maximized="1"
      inkscape:current-layer="svg3267" />
@@ -313,22 +410,22 @@
     <rect
        stroke-linejoin="null"
        stroke-linecap="null"
-       x="-252.73163"
-       y="-292.25528"
-       width="27"
-       height="70"
+       x="-150.98698"
+       y="-283.62637"
+       width="37.127647"
+       height="93.816193"
        id="svg_18"
-       style="fill:none;stroke:#000000;stroke-width:3;stroke-dasharray:none"
-       transform="matrix(-0.99998724,-0.00505192,0.00505192,-0.99998724,0,0)" />
+       style="fill:none;stroke:#000000;stroke-width:2.54612824;stroke-dasharray:none;stroke-miterlimit:4"
+       transform="matrix(-0.99998788,-0.00492382,0.00518335,-0.99998657,0,0)" />
     <rect
        stroke-linejoin="null"
        stroke-linecap="null"
-       x="360.72842"
-       y="26.545883"
-       width="14.184916"
-       height="76.991653"
+       x="360.87009"
+       y="26.687559"
+       width="13.901563"
+       height="97.550278"
        id="svg_20"
-       style="fill:none;stroke:#000000;stroke-width:2.47854304;stroke-dasharray:none" />
+       style="fill:none;stroke:#000000;stroke-width:2.76189613;stroke-dasharray:none" />
     <rect
        stroke-linejoin="null"
        stroke-linecap="null"
@@ -421,160 +518,104 @@
     <rect
        stroke-linejoin="null"
        stroke-linecap="null"
-       x="-253.08817"
-       y="-292.93112"
-       width="11.060517"
-       height="71.065331"
+       x="-125.40966"
+       y="-283.81082"
+       width="12.211922"
+       height="94.770416"
        id="svg_18-8"
-       style="fill:none;stroke:#000000;stroke-width:1.93467021;stroke-dasharray:none"
-       transform="matrix(-0.99998724,-0.00505192,0.00505192,-0.99998724,0,0)" />
+       style="fill:none;stroke:#000000;stroke-width:2.3475709;stroke-dasharray:none"
+       transform="matrix(-0.99998138,-0.00610189,0.00418261,-0.99999125,0,0)" />
     <rect
        stroke-linejoin="null"
        stroke-linecap="null"
-       x="38.829498"
-       y="-299.05145"
+       x="331.62509"
+       y="63.425259"
        width="27.878893"
        height="25.714052"
        id="svg_18-1"
        style="fill:none;stroke:#000000;stroke-width:1.84762299;stroke-dasharray:none"
-       transform="matrix(-0.823888,0.56675265,-0.56675265,-0.823888,0,0)" />
+       transform="matrix(0.79807935,0.60255236,-0.60255236,0.79807935,0,0)" />
     <rect
        stroke-linejoin="null"
        stroke-linecap="null"
-       x="55.627289"
-       y="-299.37057"
+       x="348.42288"
+       y="63.106136"
        width="11.420554"
        height="26.105394"
        id="svg_18-8-5"
        style="fill:none;stroke:#000000;stroke-width:1.19151366;stroke-dasharray:none"
-       transform="matrix(-0.823888,0.56675265,-0.56675265,-0.823888,0,0)" />
+       transform="matrix(0.79807935,0.60255236,-0.60255236,0.79807935,0,0)" />
     <rect
        stroke-linejoin="null"
        stroke-linecap="null"
        x="28.813936"
-       y="-116.89689"
+       y="-141.83728"
        width="17.965624"
        height="18.694981"
        id="svg_18-7"
        style="fill:none;stroke:#000000;stroke-width:1.26466072;stroke-dasharray:none"
        transform="scale(1,-1)" />
+    <rect
+       stroke-linejoin="null"
+       stroke-linecap="null"
+       x="-158.46242"
+       y="-284.8533"
+       width="24.669071"
+       height="10.402833"
+       id="svg_18-2"
+       style="fill:none;stroke:#000000;stroke-width:1.10545874;stroke-dasharray:none"
+       transform="matrix(-0.99999966,-8.2132851e-4,0.0310597,-0.99951753,0,0)" />
+    <rect
+       stroke-linejoin="null"
+       stroke-linecap="null"
+       x="-155.85892"
+       y="-201.04645"
+       width="24.668745"
+       height="10.403233"
+       id="svg_18-2-6"
+       style="fill:none;stroke:#000000;stroke-width:1.10547268;stroke-dasharray:none"
+       transform="matrix(-0.99999966,-8.2136891e-4,0.03105811,-0.99951758,0,0)" />
+    <rect
+       stroke-linejoin="null"
+       stroke-linecap="null"
+       x="-681.70538"
+       y="-581.71497"
+       width="26.81871"
+       height="0.38522777"
+       id="svg_18-2-6-3"
+       style="fill:none;stroke:#000000;stroke-width:0.22180331;stroke-dasharray:none"
+       transform="matrix(-1,-1.14915e-5,0.9118358,-0.41055508,0,0)" />
+
   </g>
+  <path
+     style="fill:#ff6600;stroke:#ff5000;stroke-width:1.45033717px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:0.96803655"
+     d="M 554.24886,564.60885 C 527.45054,553.65576 502.04228,515.81598 493.97037,499.60799"
+     id="path3218"
+     inkscape:connector-curvature="0" />
+  <path
+     style="fill:#ff6600;stroke:#ff5000;stroke-width:1.54150426px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:0.96803655"
+     d="m 472.6252,562.75194 c 29.45489,-15.61872 64.20147,-23.45629 82.27431,-47.40851"
+     id="path3220"
+     inkscape:connector-curvature="0" />
+  <path
+     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:6.47193956;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="m 738.71558,852.72863 -136.81578,-0.54662 31.18549,-43.40313 78.44104,0.3134 z"
+     id="path5001"
+     inkscape:connector-curvature="0" />
+  <path
+     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:6.47193956;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     d="m 884.50716,284.65727 -0.0851,136.81683 -43.50808,-31.0389 0.0488,-78.44165 z"
+     id="path5001-4"
+     inkscape:connector-curvature="0" />
+  <rect
+     style="stroke:none;fill:url(#pattern4267)"
+     width="91.308975"
+     height="90.386658"
+     x="108.13684"
+     y="147.36864"
+     id="rect4270" />
   <a
-     transform="matrix(-1.3512255,0,0,-1.3512255,478.36409,603.42575)"
-     title="link to EmbeddedBusinessSystems"
-     role="link to EmbeddedBusinessSystems using role"
-     id="Plugwise_11">
-    <desc
-       id="desc5061">Schreibtischlampe</desc>
-    <circle
-       cy="0"
-       cx="0"
-       transform="translate(-173.12604,-145.27)"
-       style="fill:url(#EmbeddedBusinessSystemspattern);stroke:#000000;stroke-width:3"
-       r="28"
-       id="EmbeddedBusinessSystems"
-       title="EmbeddedBusinessSystems"
-       role="EmbeddedBusinessSystems role"
-       onclick="top.selectItem(this.id)" />
-  </a>
-  <a
-     transform="matrix(-1.4910516,0,0,-1.4910516,105.36032,253.38156)"
-     title="link to VDAR"
-     role="link to VDAR using role"
-     id="Plugwise_12">
-    <desc
-       id="desc5071">Stehlampe Couch</desc>
-    <circle
-       cy="0"
-       cx="0"
-       transform="translate(-195.72174,-113)"
-       style="fill:url(#VDARpattern);stroke:#000000;stroke-width:3"
-       r="28"
-       id="VDAR"
-       title="VDAR"
-       role="VDAR role"
-       onclick="top.selectItem(this.id)" />
-  </a>
-  <a
-     transform="matrix(-1.4940734,0,0,-1.4940734,536.86166,322.63111)"
-     title="link to LedPowerDemo"
-     role="link to LedPowerDemo using role"
-     id="Plugwise_10">
-    <desc
-       id="desc5053">Rolllaeden OST</desc>
-    <circle
-       cy="0"
-       cx="0"
-       transform="translate(-212.37053,77.296552)"
-       style="fill:url(#LedPowerDemopattern);stroke:#000000;stroke-width:3"
-       r="28"
-       id="LedPowerDemo"
-       title="LedPowerDemo"
-       role="LedPowerDemo role"
-       onclick="top.selectItem(this.id)" />
-  </a>
-  <a
-     transform="matrix(-1.3918803,0,0,-1.3918803,750.3506,663.44403)"
-     title="link to AudioLedLampe1"
-     role="link to AudioLedLampe1 using role"
-     id="Plugwise_6"
-     onclick="top.selectItem(this.id)"
-     inkscape:label="#Plugwise_6">
-    <desc
-       id="desc5055">Tischventilator</desc>
-    <circle
-       cy="0"
-       cx="0"
-       transform="translate(-77.296552,212.37053)"
-       style="fill:url(#AudioLedLampe1pattern);stroke:#000000;stroke-width:3"
-       r="28"
-       id="AudioLedLampe1"
-       title="AudioLedLampe1"
-       role="AudioLedLampe1 role"
-       onclick="top.selectItem(this.id)" />
-  </a>
-  <a
-     transform="matrix(-1.3918452,0,0,-1.4395502,736.02882,423.29694)"
-     title="link to PointAndClick"
-     role="link to PointAndClick using role"
-     id="Plugwise_4"
-     onclick=""
-     inkscape:label="#Plugwise_4">
-    <desc
-       id="desc5049">Mediacenter</desc>
-    <circle
-       cy="0"
-       cx="0"
-       transform="translate(0,226)"
-       style="fill:url(#PointAndClickpattern);stroke:#000000;stroke-width:3"
-       r="28"
-       id="PointAndClick"
-       title="PointAndClick"
-       role="PointAndClick role"
-       onclick="top.selectItem(this.id)" />
-  </a>
-  <a
-     transform="matrix(-1.3691844,0,0,-1.3691844,199.30167,735.3249)"
-     title="link to HealthCareDemo"
-     role="link to HealthCareDemo using role"
-     id="Plugwise_3"
-     onclick="top.selectItem(this.id)"
-     inkscape:label="#Plugwise_3">
-    <desc
-       id="desc5035">Stereoanlage</desc>
-    <circle
-       cy="0"
-       cx="0"
-       transform="matrix(1.0835694,0,0,1.0835694,65.586163,269.89402)"
-       style="fill:url(#HealthCareDemopattern);stroke:#000000;stroke-width:3"
-       r="28"
-       id="HealthCareDemo"
-       title="HealthCareDemo"
-       role="HealthCareDemo role"
-       onclick="top.selectItem(this.id)" />
-  </a>
-  <a
-     transform="matrix(-1.3918452,0,0,-1.4395502,365.6596,403.25161)"
+     transform="matrix(-1.3918452,0,0,-1.4395502,365.6596,429.69789)"
      title="link to TecoEnvboard"
      role="link to TecoEnvboard using role"
      xlink:href="#TecoEnvboard"
@@ -585,8 +626,8 @@
     <circle
        cy="0"
        cx="0"
-       transform="translate(77.296552,212.37053)"
-       style="fill:url(#TecoEnvboardpattern);stroke:#000000;stroke-width:3"
+       transform="translate(77.296552,212.37053) rotate(180)"
+       style="fill:url(#Plugwise2Pattern);stroke:#000000;stroke-width:3"
        r="28"
        id="TecoEnvboard"
        title="TecoEnvboard"
@@ -594,265 +635,387 @@
        onclick="top.selectItem(this.id)" />
   </a>
   <a
-     transform="matrix(-1.3914589,0,0,-1.3914589,420.3936,580.94156)"
-     title="link to RfidCommunicationDemo"
-     role="link to RfidCommunicationDemo using role"
-     id="Plugwise_1"
-     onclick="top.selectItem(this.id)"
-     inkscape:label="#Plugwise_1">
-    <desc
-       id="desc5033"> Stehlampe Regal </desc>
-    <circle
-       cy="0"
-       cx="0"
-       transform="translate(222.56655,39.244488)"
-       style="fill:url(#RfidCommunicationDemopattern);stroke:#000000;stroke-width:3"
-       r="28"
-       id="RfidCommunicationDemo"
-       title="RfidCommunicationDemo"
-       role="RfidCommunicationDemo role"
-       onclick="top.selectItem(this.id)" />
-  </a>
-  <a
-     transform="matrix(-1.3914589,0,0,-1.3914589,688.17791,97.304534)"
-     title="link to AudioLedLampe2"
-     role="link to AudioLedLampe2 using role"
-     id="Plugwise_5"
-     onclick="top.selectItem(this.id)"
-     inkscape:label="#Plugwise_5">
-    <desc
-       id="desc5041">X-Box</desc>
-    <circle
-       cy="0"
-       cx="0"
-       transform="translate(226,0)"
-       style="fill:url(#AudioLedLampe2pattern);stroke:#000000;stroke-width:3"
-       r="28"
-       id="AudioLedLampe2"
-       title="AudioLedLampe2"
-       role="AudioLedLampe2 role"
-       onclick="top.selectItem(this.id)" />
-  </a>
-  <a
-     transform="matrix(-1.3914589,0,0,-1.3914589,539.16211,819.07818)"
-     title="link to AudioLedLampe5"
-     role="link to AudioLedLampe5 using role"
-     id="Plugwise_8"
-     inkscape:label="#Plugwise_8">
-    <desc
-       id="desc5069">Heizung SUED</desc>
-    <circle
-       cy="0"
-       cx="0"
-       transform="translate(226,0)"
-       style="fill:url(#AudioLedLampe2pattern);stroke:#000000;stroke-width:3"
-       r="28"
-       id="AudioLedLampe5"
-       title="AudioLedLampe5"
-       role="AudioLedLampe5 role"
-       onclick="top.selectItem(this.id)" />
-  </a>
-  <a
-     transform="matrix(-1.3914589,0,0,-1.3914589,917.06274,798.30177)"
-     title="link to AudioLedLampe6"
-     role="link to AudioLedLampe6 using role"
-     id="Plugwise_13"
-     inkscape:label="#Plugwise_13">
-    <desc
-       id="desc5063">Radio</desc>
-    <circle
-       cy="0"
-       cx="0"
-       transform="translate(226,0)"
-       style="fill:url(#AudioLedLampe2pattern);stroke:#000000;stroke-width:3"
-       r="28"
-       id="Plugwise_13"
-       title="AudioLedLampe2"
-       role="AudioLedLampe2 role"
-       onclick="top.selectItem(this.id)" />
-  </a>
-  <a
-     transform="matrix(-1.3914589,0,0,-1.3914589,957.77638,99.672153)"
-     title="link to AudioLedLampe7"
-     role="link to AudioLedLampe7 using role"
-     id="Plugwise_17">
-    <desc
-       id="desc5047">Chromecast</desc>
-    <circle
-       cy="0"
-       cx="0"
-       transform="translate(226,0)"
-       style="fill:url(#AudioLedLampe2pattern);stroke:#000000;stroke-width:3"
-       r="28"
-       id="AudioLedLampe7"
-       title="AudioLedLampe7"
-       role="AudioLedLampe7 role"
-       onclick="top.selectItem(this.id)" />
-  </a>
-  <a
-     transform="matrix(-1.3914589,0,0,-1.3914589,775.00932,98.218448)"
-     title="link to AudioLedLampe8"
-     role="link to AudioLedLampe8 using role"
-     id="Plugwise_15">
-    <desc
-       id="desc5043">PS4</desc>
-    <circle
-       cy="0"
-       cx="0"
-       transform="translate(226,0)"
-       style="fill:url(#AudioLedLampe2pattern);stroke:#000000;stroke-width:3"
-       r="28"
-       id="AudioLedLampe8"
-       title="AudioLedLampe8"
-       role="AudioLedLampe8 role"
-       onclick="top.selectItem(this.id)" />
-  </a>
-  <a
-     transform="matrix(-1.3914589,0,0,-1.3914589,1160.9806,102.35037)"
-     title="link to AudioLedLampe9"
-     role="link to AudioLedLampe9 using role"
+     transform="matrix(-1.3918452,0,0,-1.4395502,523.22118,707.00413)"
+     title="link to TecoEnvboard"
+     role="link to TecoEnvboard using role"
+     xlink:href="#TecoEnvboard"
      id="Plugwise_9"
      onclick="top.selectItem(this.id)">
     <desc
-       id="desc5051">Buecherregal</desc>
+       id="desc5581">Stehlampe Couch</desc>
     <circle
        cy="0"
        cx="0"
-       transform="translate(226,0)"
-       style="fill:url(#AudioLedLampe2pattern);stroke:#000000;stroke-width:3"
+       transform="translate(77.296552,212.37053) rotate(180)"
+       style="fill:url(#Plugwise9Pattern);stroke:#000000;stroke-width:3"
        r="28"
-       id="AudioLedLampe9"
-       title="AudioLedLampe9"
-       role="AudioLedLampe9 role"
+       id="circle5583"
+       title="TecoEnvboard"
+       role="TecoEnvboard role"
        onclick="top.selectItem(this.id)" />
   </a>
   <a
-     transform="matrix(-1.3914589,0,0,-1.3914589,1177.1319,516.29798)"
-     title="link to AudioLedLampe9"
-     role="link to AudioLedLampe9 using role"
-     id="Plugwise_18">
-    <desc
-       id="desc5057">Heizung OST</desc>
-    <circle
-       cy="0"
-       cx="0"
-       transform="translate(226,0)"
-       style="fill:url(#AudioLedLampe2pattern);stroke:#000000;stroke-width:3"
-       r="28"
-       id="circle4232"
-       title="AudioLedLampe9"
-       role="AudioLedLampe9 role"
-       onclick="top.selectItem(this.id)" />
-  </a>
-  <a
-     transform="matrix(-1.3914589,0,0,-1.3914589,764.81432,817.83343)"
-     title="link to AudioLedLampe10"
-     role="link to AudioLedLampe10 using role"
-     id="Plugwise_16">
-    <desc
-       id="desc5065">Stehventilator</desc>
-    <circle
-       cy="0"
-       cx="0"
-       transform="translate(226,0)"
-       style="fill:url(#AudioLedLampe2pattern);stroke:#000000;stroke-width:3"
-       r="28"
-       id="AudioLedLampe10"
-       title="AudioLedLampe10"
-       role="AudioLedLampe10 role"
-       onclick="top.selectItem(this.id)" />
-  </a>
-  <a
-     transform="matrix(-1.3914589,0,0,-1.3914589,658.381,815.78433)"
-     title="link to AudioLedLampe11"
-     role="link to AudioLedLampe11 using role"
-     id="Plugwise_20">
-    <desc
-       id="desc5067">Rolllaeden SUED</desc>
-    <circle
-       cy="0"
-       cx="0"
-       transform="translate(226,0)"
-       style="fill:url(#AudioLedLampe2pattern);stroke:#000000;stroke-width:3"
-       r="28"
-       id="AudioLedLampe11"
-       title="AudioLedLampe11"
-       role="AudioLedLampe11 role"
-       onclick="top.selectItem(this.id)" />
-  </a>
-  <a
-     transform="matrix(-1.3914589,0,0,-1.3914589,695.25934,744.19142)"
-     title="link to AudioLedLampe12"
-     role="link to AudioLedLampe12 using role"
-     id="Plugwise_7"
+     transform="matrix(-1.3918452,0,0,-1.4395502,969.68767,995.21876)"
+     title="link to TecoEnvboard"
+     role="link to TecoEnvboard using role"
+     xlink:href="#TecoEnvboard"
+     id="Plugwise_11"
      onclick="top.selectItem(this.id)">
     <desc
-       id="desc5059">Kaffeemaschine</desc>
-    <circle
-       cy="76.796455"
-       cx="-118.6241"
-       style="fill:url(#pattern4967);stroke:#000000;stroke-width:3"
-       r="28"
-       id="AudioLedLampe12"
-       title="AudioLedLampe12"
-       role="AudioLedLampe12 role"
-       onclick="top.selectItem(this.id)" />
-  </a>
-  <a
-     transform="matrix(-1.3914589,0,0,-1.3914589,860.41617,45.622107)"
-     title="link to MachineHealthDemo"
-     role="link to MachineHealthDemo using role"
-     id="Plugwise_14">
-    <desc
-       id="desc5045">Apple TV</desc>
+       id="desc5587">Heizung OST</desc>
     <circle
        cy="0"
        cx="0"
-       transform="translate(222.56655,-39.244488)"
-       style="fill:url(#MachineHealthDemopattern);stroke:#000000;stroke-width:3"
+       transform="translate(77.296552,212.37053) rotate(180)"
+       style="fill:url(#Plugwise11Pattern);stroke:#000000;stroke-width:3"
        r="28"
-       id="MachineHealthDemo"
-       title="MachineHealthDemo"
-       role="MachineHealthDemo role"
+       id="circle5589"
+       title="TecoEnvboard"
+       role="TecoEnvboard role"
        onclick="top.selectItem(this.id)" />
   </a>
   <a
-     transform="matrix(-1.3914589,0,0,-1.3914589,265.12032,427.75094)"
-     title="link to LandmarkeDemo"
-     role="link to LandmarkeDemo using role"
-     id="Plugwise_19"
-     inkscape:label="#Plugwise_19">
+     transform="matrix(-1.3918452,0,0,-1.4395502,983.36916,520.37085)"
+     title="link to TecoEnvboard"
+     role="link to TecoEnvboard using role"
+     xlink:href="#TecoEnvboard"
+     id="a5591"
+     onclick="top.selectItem(this.id)">
     <desc
-       id="desc5037">Mikrowelle</desc>
+       id="desc5593">Stehlampe Tuer</desc>
+    <circle
+       cy="217.61945"
+       cx="93.583015"
+	   
+       style="fill:url(#Plugwise7Pattern);stroke:#000000;stroke-width:3"
+       r="28"
+       id="Plugwise_7"
+       title="TecoEnvboard"
+       role="TecoEnvboard role"
+       onclick="top.selectItem(this.id)">
+      <desc
+         id="desc4970">Rollladen OST</desc>
+    </circle>
+  </a>
+  <a
+     transform="matrix(-1.3918452,0,0,-1.4395502,962.58994,631.82304)"
+     title="link to TecoEnvboard"
+     role="link to TecoEnvboard using role"
+     xlink:href="#TecoEnvboard"
+     id="Plugwise_3"
+     onclick="top.selectItem(this.id)">
+    <desc
+       id="desc5599">Tischventilator</desc>
     <circle
        cy="0"
        cx="0"
-       transform="translate(113,-195.72174)"
-       style="fill:url(#LandmarkeDemopattern);stroke:#000000;stroke-width:3"
+       transform="translate(77.296552,212.37053) rotate(180)"
+       style="fill:url(#Plugwise3Pattern);stroke:#000000;stroke-width:3"
        r="28"
-       id="LandmarkeDemo"
-       title="LandmarkeDemo"
-       role="LandmarkeDemo role"
+       id="circle5601"
+       title="TecoEnvboard"
+       role="TecoEnvboard role"
        onclick="top.selectItem(this.id)" />
   </a>
-  <path
-     style="fill:#ff6600;stroke:#ff5000;stroke-width:1.45033717px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:0.96803655"
-     d="M 591.64955,564.60885 C 564.85123,553.65576 539.44297,515.81598 531.37106,499.60799"
-     id="path3218"
-     inkscape:connector-curvature="0" />
-  <path
-     style="fill:#ff6600;stroke:#ff5000;stroke-width:1.54150426px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:0.96803655"
-     d="m 510.02589,562.75194 c 29.45489,-15.61872 64.20147,-23.45629 82.27431,-47.40851"
-     id="path3220"
-     inkscape:connector-curvature="0" />
-  <path
-     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:6.47193956;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     d="m 731.1595,845.17255 -136.81578,-0.54662 31.18549,-43.40313 78.44104,0.3134 z"
-     id="path5001"
-     inkscape:connector-curvature="0" />
-  <path
-     style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:6.47193956;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     d="m 880.72912,280.87923 -0.0851,136.81683 -43.50808,-31.0389 0.0488,-78.44165 z"
-     id="path5001-4"
-     inkscape:connector-curvature="0" />
+  <a
+     transform="matrix(-1.3918452,0,0,-1.4395502,952.55224,886.76212)"
+     title="link to TecoEnvboard"
+     role="link to TecoEnvboard using role"
+     xlink:href="#TecoEnvboard"
+     id="Plugwise_4"
+     onclick="top.selectItem(this.id)">
+    <desc
+       id="desc5605">Kaffeemaschine</desc>
+    <circle
+       cy="0"
+       cx="0"
+       transform="translate(77.296552,212.37053) rotate(180)"
+       style="fill:url(#Plugwise4Pattern);stroke:#000000;stroke-width:3"
+       r="28"
+       id="circle5607"
+       title="TecoEnvboard"
+       role="TecoEnvboard role"
+       onclick="top.selectItem(this.id)" />
+  </a>
+  <a
+     transform="matrix(-1.3918452,0,0,-1.4395502,826.5805,1105.967)"
+     title="link to TecoEnvboard"
+     role="link to TecoEnvboard using role"
+     xlink:href="#TecoEnvboard"
+     id="Plugwise_8"
+     onclick="top.selectItem(this.id)">
+    <desc
+       id="desc5611">Schreibtischlampe</desc>
+    <circle
+       cy="0"
+       cx="0"
+       transform="translate(77.296552,212.37053) rotate(180)"
+       style="fill:url(#Plugwise8Pattern);stroke:#000000;stroke-width:3"
+       r="28"
+       id="circle5613"
+       title="TecoEnvboard"
+       role="TecoEnvboard role"
+       onclick="top.selectItem(this.id)" />
+  </a>
+  <a
+     transform="matrix(-1.3918452,0,0,-1.4395502,728.35145,1105.9671)"
+     title="link to TecoEnvboard"
+     role="link to TecoEnvboard using role"
+     xlink:href="#TecoEnvboard"
+     id="Boxee_3"
+     onclick="top.selectItem(this.id)">
+    <desc
+       id="desc5617">Radio</desc>
+    <circle
+       cy="0"
+       cx="0"
+       transform="translate(77.296552,212.37053) rotate(180)"
+       style="fill:url(#Boxee3Pattern);stroke:#000000;stroke-width:3"
+       r="28"
+       id="circle5619"
+       title="TecoEnvboard"
+       role="TecoEnvboard role"
+       onclick="top.selectItem(this.id)" />
+  </a>
+  <a
+     transform="matrix(-1.3918452,0,0,-1.4395502,599.89809,1117.3012)"
+     title="link to TecoEnvboard"
+     role="link to TecoEnvboard using role"
+     xlink:href="#TecoEnvboard"
+     id="Plugwise_10"
+     onclick="top.selectItem(this.id)">
+    <desc
+       id="desc5623">Stehlventilator</desc>
+    <circle
+       cy="0"
+       cx="0"
+       transform="translate(77.296552,212.37053) rotate(180)"
+       style="fill:url(#Plugwise10Pattern);stroke:#000000;stroke-width:3"
+       r="28"
+       id="circle5625"
+       title="TecoEnvboard"
+       role="TecoEnvboard role"
+       onclick="top.selectItem(this.id)" />
+  </a>
+  <a
+     transform="matrix(-1.3918452,0,0,-1.4395502,460.1106,1121.0792)"
+     title="link to TecoEnvboard"
+     role="link to TecoEnvboard using role"
+     xlink:href="#TecoEnvboard"
+     id="Plugwise_13"
+     onclick="top.selectItem(this.id)">
+    <desc
+       id="desc5629">Rollladen SUED	</desc>
+    <circle
+       cy="0"
+       cx="0"
+       transform="translate(77.296552,212.37053) rotate(180)"
+       style="fill:url(#Plugwise13Pattern);stroke:#000000;stroke-width:3"
+       r="28"
+       id="circle5631"
+       title="TecoEnvboard"
+       role="TecoEnvboard role"
+       onclick="top.selectItem(this.id)" />
+  </a>
+  <a
+     transform="matrix(-1.3918452,0,0,-1.4395502,312.76704,1124.8573)"
+     title="link to TecoEnvboard"
+     role="link to TecoEnvboard using role"
+     xlink:href="#TecoEnvboard"
+     id="Plugwise_5"
+     onclick="top.selectItem(this.id)">
+    <desc
+       id="desc5635">Heizung SUED</desc>
+    <circle
+       cy="0"
+       cx="0"
+       transform="translate(77.296552,212.37053) rotate(180)"
+       style="fill:url(#Plugwise5Pattern);stroke:#000000;stroke-width:3"
+       r="28"
+       id="circle5637"
+       title="TecoEnvboard"
+       role="TecoEnvboard role"
+       onclick="top.selectItem(this.id)" />
+  </a>
+  <a
+     transform="matrix(-1.3918452,0,0,-1.4395502,926.69856,401.36259)"
+     title="link to TecoEnvboard"
+     role="link to TecoEnvboard using role"
+     xlink:href="#TecoEnvboard"
+     id="Plugwise_6"
+     onclick="top.selectItem(this.id)">
+    <desc
+       id="desc5641">Buecherregal</desc>
+    <circle
+       cy="0"
+       cx="0"
+       transform="translate(77.296552,212.37053) rotate(180)"
+       style="fill:url(#Plugwise6Pattern);stroke:#000000;stroke-width:3"
+       r="28"
+       id="circle5643"
+       title="TecoEnvboard"
+       role="TecoEnvboard role"
+       onclick="top.selectItem(this.id)" />
+  </a>
+  <a
+     transform="matrix(-1.3918452,0,0,-1.4395502,817.1354,401.36259)"
+     title="link to TecoEnvboard"
+     role="link to TecoEnvboard using role"
+     xlink:href="#TecoEnvboard"
+     id="Kodi_2"
+     onclick="top.selectItem(this.id)">
+    <desc
+       id="desc5647">AppleTV</desc>
+    <circle
+       cy="0"
+       cx="0"
+       transform="translate(77.296552,212.37053) rotate(180)"
+       style="fill:url(#Kodi2Pattern);stroke:#000000;stroke-width:3"
+       r="28"
+       id="circle5649"
+       title="TecoEnvboard"
+       role="TecoEnvboard role"
+       onclick="top.selectItem(this.id)" />
+  </a>
+  <a
+     transform="matrix(-1.3918452,0,0,-1.4395502,732.1295,401.36259)"
+     title="link to TecoEnvboard"
+     role="link to TecoEnvboard using role"
+     xlink:href="#TecoEnvboard"
+     id="Kodi_3"
+     onclick="top.selectItem(this.id)">
+    <desc
+       id="desc5653">Chromecast</desc>
+    <circle
+       cy="0"
+       cx="0"
+       transform="translate(77.296552,212.37053) rotate(180)"
+       style="fill:url(#Kodi3Pattern);stroke:#000000;stroke-width:3"
+       r="28"
+       id="circle5655"
+       title="TecoEnvboard"
+       role="TecoEnvboard role"
+       onclick="top.selectItem(this.id)" />
+  </a>
+  <a
+     transform="matrix(-1.3918452,0,0,-1.4395502,647.12359,401.36259)"
+     title="link to TecoEnvboard"
+     role="link to TecoEnvboard using role"
+     xlink:href="#TecoEnvboard"
+     id="Kodi_1"
+     onclick="top.selectItem(this.id)">
+    <desc
+       id="desc5659">Mediacenter</desc>
+    <circle
+       cy="0"
+       cx="0"
+       transform="translate(77.296552,212.37053) rotate(180)"
+       style="fill:url(#Kodi1Pattern);stroke:#000000;stroke-width:3"
+       r="28"
+       id="circle5661"
+       title="TecoEnvboard"
+       role="TecoEnvboard role"
+       onclick="top.selectItem(this.id)" />
+  </a>
+  <a
+     transform="matrix(-1.3918452,0,0,-1.4395502,562.11769,401.36259)"
+     title="link to TecoEnvboard"
+     role="link to TecoEnvboard using role"
+     xlink:href="#TecoEnvboard"
+     id="Boxee_2"
+     onclick="top.selectItem(this.id)">
+    <desc
+       id="desc5665">X-Box</desc>
+    <circle
+       cy="0"
+       cx="0"
+       transform="translate(77.296552,212.37053) rotate(180)"
+       style="fill:url(#Boxee2Pattern);stroke:#000000;stroke-width:3"
+       r="28"
+       id="circle5667"
+       title="TecoEnvboard"
+       role="TecoEnvboard role"
+       onclick="top.selectItem(this.id)" />
+  </a>
+  <a
+     transform="matrix(-1.3918452,0,0,-1.4395502,214.53799,1017.1831)"
+     title="link to TecoEnvboard"
+     role="link to TecoEnvboard using role"
+     xlink:href="#TecoEnvboard"
+     id="Plugwise_12"
+     onclick="top.selectItem(this.id)">
+    <desc
+       id="desc5671">Mikrowelle</desc>
+    <circle
+       cy="0"
+       cx="0"
+       transform="translate(77.296552,212.37053) rotate(180)"
+       style="fill:url(#Plugwise12Pattern);stroke:#000000;stroke-width:3"
+       r="28"
+       id="circle5673"
+       title="TecoEnvboard"
+       role="TecoEnvboard role"
+       onclick="top.selectItem(this.id)" />
+  </a>
+  <a
+     transform="matrix(-1.3918452,0,0,-1.4395502,210.75995,671.49246)"
+     title="link to TecoEnvboard"
+     role="link to TecoEnvboard using role"
+     xlink:href="#TecoEnvboard"
+     id="Boxee_1"
+     onclick="top.selectItem(this.id)">
+    <desc
+       id="desc5677">Stereoanlage</desc>
+    <circle
+       cy="0"
+       cx="0"
+       transform="translate(77.296552,212.37053) rotate(180)"
+       style="fill:url(#Boxee1Pattern);stroke:#000000;stroke-width:3"
+       r="28"
+       id="circle5679"
+       title="TecoEnvboard"
+       role="TecoEnvboard role"
+       onclick="top.selectItem(this.id)" />
+  </a>
+  <a
+     transform="matrix(-1.3918452,0,0,-1.4395502,214.538,837.72623)"
+     title="link to TecoEnvboard"
+     role="link to TecoEnvboard using role"
+     xlink:href="#TecoEnvboard"
+     id="Plugwise_1"
+     onclick="top.selectItem(this.id)">
+    <desc
+       id="desc5683">Stehlampe Regal</desc>
+    <circle
+       cy="0"
+       cx="0"
+       transform="translate(77.296552,212.37053) rotate(180)"
+       style="fill:url(#Plugwise1Pattern);stroke:#000000;stroke-width:3"
+       r="28"
+       id="circle5685"
+       title="TecoEnvboard"
+       role="TecoEnvboard role"
+       onclick="top.selectItem(this.id)" />
+  </a>
+  <a
+     transform="matrix(-1.3918452,0,0,-1.4395502,473.33374,401.36259)"
+     title="link to TecoEnvboard"
+     role="link to TecoEnvboard using role"
+     xlink:href="#TecoEnvboard"
+     id="Boxee_4"
+     onclick="top.selectItem(this.id)">
+    <desc
+       id="desc5689">PS4</desc>
+    <circle
+       cy="0"
+       cx="0"
+       transform="translate(77.296552,212.37053) rotate(180)"
+       style="fill:url(#Boxee4Pattern);stroke:#000000;stroke-width:3"
+       r="28"
+       id="circle5691"
+       title="TecoEnvboard"
+       role="TecoEnvboard role"
+       onclick="top.selectItem(this.id)" />
+  </a>
+
 </svg>

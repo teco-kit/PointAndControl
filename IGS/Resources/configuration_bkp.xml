@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<config>
+  <deviceConfiguration>
+    <device type="Boxee">
+      <name>SensorTable</name>
+      <id>Boxee_1</id>
+      <form count="1">
+        <ball radius="0,4" centerX="2,0" centerY="0,5" centerZ="0,3" />
+      </form>
+      <address>129.13.169.169</address>
+      <port>5050</port>
+    </device>
+    <device type="Kodi">
+      <name>ExampleKodi</name>
+      <id>Kodi_1</id>
+      <form count="0">
+      </form>
+      <address>127.0.0.1</address>
+      <port>8081</port>
+    </device>
+    <device type="Plugwise">
+      <name>Steckdose</name>
+      <id>Plugwise_1</id>
+      <form count="0" />
+      <address>129.13.169.169</address>
+      <port>5050</port>
+    </device>
+    <device type="Plugwise">
+      <name>Leselampe</name>
+      <id>Plugwise_2</id>
+      <form count="0" />
+      <address>129.13.169.169</address>
+      <port>5050</port>
+    </device>
+    <device type="Boxee">
+      <name>XBox</name>
+      <id>Boxee_2</id>
+      <form count="0" />
+      <address>129.13.169.169</address>
+      <port>5050</port>
+    </device>
+    <device type="Boxee">
+      <name>Hifi</name>
+      <id>Boxee_3</id>
+      <form count="0" />
+      <address>129.13.169.169</address>
+      <port>5050</port>
+    </device>
+    <device type="Boxee">
+      <name>PC</name>
+      <id>Boxee_4</id>
+      <form count="0" />
+      <address>129.13.169.169</address>
+      <port>5050</port>
+    </device>
+    <device type="Plugwise">
+      <name>Raumbeleuchtung</name>
+      <id>Plugwise_3</id>
+      <form count="0" />
+      <address>129.13.169.169</address>
+      <port>5050</port>
+    </device>
+  </deviceConfiguration>
+  <environment>
+    <Roomsize>
+      <width>6,35</width>
+      <height>2,70</height>
+      <depth>5,58</depth>
+    </Roomsize>
+    <KinectConfiguration>
+      <X>2,00</X>
+      <Y>1,30</Y>
+      <Z>0,30</Z>
+      <tiltingAngle>0</tiltingAngle>
+      <HorizontalOrientationAngle>0</HorizontalOrientationAngle>
+    </KinectConfiguration>
+    <PlugwiseAdress>
+      <host>cloud.teco.edu</host>
+      <port>5000</port>
+      <path>plugwise</path>
+    </PlugwiseAdress>
+  </environment>
+</config>
