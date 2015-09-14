@@ -568,14 +568,14 @@
        title="link to TecoEnvboard"
        role="link to TecoEnvboard using role"
        xlink:href="#TecoEnvboard"
-       id="a5591"
+       id="Plugwise_7"
        onclick="top.selectItem(this.id)">
         <desc id="desc5593">Stehlampe Tuer</desc>
         <circle cy="217.61945"
                 cx="93.583015"
                 style="fill:url(#Plugwise7Pattern);stroke:#000000;stroke-width:3"
                 r="28"
-                id="Plugwise_7"
+                id="circle2002"
                 title="TecoEnvboard"
                 role="TecoEnvboard role"
                 onclick="top.selectItem(this.id)">

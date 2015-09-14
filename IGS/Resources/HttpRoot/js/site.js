@@ -259,6 +259,35 @@ var updateDeviceList = function () {
     });
 }
 
+var updateMapFromList = function () {
+    $.getJSON('/?dev=server&cmd=list', function (data) {
+        var a = document.getElementById("mapSvg");
+        var svgDoc = a.contentDocument;
+        var circles = svgDoc.getElementsByTagName("a");
+        for (var i = 0; i < circles.length; i++) { circles[i].setAttribute("visibility", "hidden") }
+
+        var listItems = [];
+
+        if (!data || !data.devices || data.devices.length == 0) {
+            return;
+        }
+
+        for (var i = 0; i < data.devices.length; i++) {
+            var device = data.devices[i];
+
+            for (var j = 0; j < circles.length; j++) {
+                if (circles[j].id == device.id)
+                    circles[j].setAttribute("visibility", "visible")
+            }
+        }
+
+        $.mobile.loading('hide');
+
+        // store device list for later use
+        deviceList = data.devices;
+    });
+}
+
 var switchEditMode = function () {
     editMode = !editMode;
     updateDeviceList();
@@ -300,11 +329,11 @@ var activateGestureControl = function () {
             trackingId = data.trackingId;
 
         if (data.success) {
-            vibrate(500);
+            //disable vibration for test vibrate(500);
             if (beforeRegister) {
                 $(':mobile-pagecontainer').pagecontainer('change', beforeRegister);
             } else {
-                $(':mobile-pagecontainer').pagecontainer('change', '#point');
+                $(':mobile-pagecontainer').pagecontainer('change', '#interaction');
             }
         }
     });
@@ -493,6 +522,11 @@ $(function (event) {
 			.catch(errorCallback);
             pollDevice();
         }
+        
+        if (hash == '#map') {
+            $.mobile.loading('show');
+            updateMapFromList();
+        }
     });
 
     $(document).on('pagecontainerbeforechange', function (event, ui) {
@@ -514,4 +548,9 @@ $(function (event) {
         }
 		
     });
+
+    var svg = document.getElementById("mapSvg");
+    svg.addEventListener("load", function () {
+        updateMapFromList();
+    }, false);
 });

@@ -531,10 +531,10 @@ namespace IGS.Server.IGS
                 Console.WriteLine(retStr);
                 return retStr;
             }
-
+            
             return retStr;
         }
-
+        
         
         /// <summary>
         /// this method intializes the representation of the kinect camera used for positioning and 
@@ -550,7 +550,7 @@ namespace IGS.Server.IGS
             double roomOrientation = double.Parse(kinParamets[4]);
             double tiltingDegree = double.Parse(kinParamets[3]);
 
-
+            
             IGSKinect = new devKinect("devKinect", kinectBall, tiltingDegree, roomOrientation);
         }
 
@@ -559,10 +559,10 @@ namespace IGS.Server.IGS
         {
             if (dev == null)
                 return "Gerät ist unbekannt.";
-
+            
             if (Tracker.Bodies.Count == 0)
                 return "Keine Personen von der Kinect gefunden";
-
+            
             if (user.SkeletonId < 0)
                 return "Bitte erst registrieren";
 

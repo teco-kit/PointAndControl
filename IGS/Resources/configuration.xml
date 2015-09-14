@@ -5,7 +5,7 @@
       <name>Stehlampe Regal</name>
       <id>Plugwise_1</id>
       <form count="1">
-        <ball radius="0,50" centerX="-1,00" centerY="1,000" centerZ="3,300" />
+        <ball radius="0,50" centerX="-1,00" centerY="1,000" centerZ="3,10" />
       </form>
       <address>129.13.169.169</address>
       <port>5050</port>
@@ -23,7 +23,7 @@
       <name>Stereoanlage</name>
       <id>Boxee_1</id>
       <form count="1">
-        <ball radius="0,50" centerX="-0,94" centerY="1,6" centerZ="2,40" />
+        <ball radius="0,4" centerX="-0,94" centerY="1,466" centerZ="2,7" />
       </form>
       <address>127.0.0.1</address>
       <port>8081</port>
@@ -88,97 +88,6 @@
       <id>Plugwise_7</id>
        <form count="1">
       <ball radius="0,4" centerX="4,4" centerY="1,5" centerZ="1,2" />
-      </form>
-      <address>129.13.169.169</address>
-      <port>5050</port>
-    </device>
-    
-    <device type="Plugwise">
-      <name>Schreibtischlampe</name>
-      <id>Plugwise_8</id>
-       <form count="1">
-      <ball radius="0,4" centerX="3,50" centerY="0,3" centerZ="4,30" />
-      </form>
-      <address>129.13.169.169</address>
-      <port>5050</port>
-    </device>
-    <device type="Plugwise">
-      <name>Stehlampe Couch</name>
-      <id>Plugwise_9</id>
-       <form count="1">
-      <ball radius="0,50" centerX="2,00" centerY="0,5000" centerZ="3,10" />
-      </form>
-      <address>129.13.169.169</address>
-      <port>5050</port>
-    </device>
-    <device type="Boxee">
-      <name>Radio</name>
-      <id>Boxee_3</id>
-       <form count="1">
-      <ball radius="0,4" centerX="3,00" centerY="0,80" centerZ="4,30" />
-      </form>
-      <address>129.13.169.169</address>
-      <port>5050</port>
-    </device>
-    <device type="Kodi">
-      <name>Apple TV</name>
-      <id>Kodi_2</id>
-     <form count="1">
-        <ball radius="0,4" centerX="2,600" centerY="1,40" centerZ="0,3" />
-      </form>
-      <address>129.13.169.169</address>
-      <port>5050</port>
-    </device>
-    <device type="Kodi">
-      <name>Chromecast</name>
-      <id>Kodi_3</id>
-     <form count="1">
-        <ball radius="0,2" centerX="2,00" centerY="1,5" centerZ="0,3" />
-      </form>
-      <address>129.13.169.169</address>
-      <port>5050</port>
-    </device>
-    <device type="Boxee">
-      <name>PS4</name>
-      <id>Boxee_4</id>
-      <form count="1">
-        <ball radius="0,4" centerX="1,600" centerY="0,5" centerZ="0,3" />
-      </form>
-      <address>127.0.0.1</address>
-      <port>8081</port>
-    </device>
-    <device type="Plugwise">
-      <name>Stehventilator</name>
-      <id>Plugwise_10</id>
-      <form count="1">
-      <ball radius="0,4" centerX="2,50" centerY="0,40" centerZ="4,100" />
-      </form>
-      <address>127.0.0.1</address>
-      <port>8081</port>
-    </device>
-    <device type="Plugwise">
-      <name>Heizung OST</name>
-      <id>Plugwise_11</id>
-      <form count="1">
-      <ball radius="0,4" centerX="4,4" centerY="1,00" centerZ="4,000" />
-      </form>
-      <address>127.0.0.1</address>
-      <port>8081</port>
-    </device>
-    <device type="Plugwise">
-      <name>Mikrowelle</name>
-      <id>Plugwise_12</id>
-      <form count="1">
-      <ball radius="0,400" centerX="-1,00" centerY="1,000" centerZ="3,80" />
-      </form>
-      <address>127.0.0.1</address>
-      <port>8081</port>
-    </device>
-    <device type="Plugwise">
-      <name>Rollladen SUED</name>
-      <id>Plugwise_13</id>
-      <form count="1">
-      <ball radius="0,4" centerX="1,2" centerY="0,3" centerZ="4,30" />
       </form>
       <address>129.13.169.169</address>
       <port>5050</port>

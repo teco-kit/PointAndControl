@@ -28,13 +28,13 @@
       <!-- /content -->
 
       <div data-role="footer" data-position="fixed" data-tap-toggle="false">
-        <!--<div data-role="navbar" data-iconpos="right">
+        <div data-role="navbar" data-iconpos="right">
           <ul>
             <li>
-              <a href="#listdevices" class="btn btn-skip ui-title" data-icon="carat-r">Zur Liste</a>
+              <a href="#interaction" class="btn btn-skip ui-title" data-icon="carat-r">Überspringen</a>
             </li>
           </ul>
-        </div>-->
+        </div>
       </div>
       <!-- /footer -->
     </div>
@@ -63,6 +63,34 @@
       <!-- /footer -->
     </div>
 
+      <div data-role="page" id="interaction">
+          <div data-role="header" data-position="fixed" data-tap-toggle="false">
+              <h1>Choose Method</h1>
+              <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Zurück</a>
+          </div>
+          <!-- /header -->
+
+          <div role="main" class="ui-content fullscreen">
+              <ul id="interactionlist" data-role="listview">
+                  <li><a href="#point">Pointing</a></li>
+                  <li><a href="#listdevices">List</a></li>
+                  <li><a href="#ar">Camera</a></li>
+                  <li><a href="#map">Map</a></li>
+              </ul>
+          </div>
+          <!-- /content -->
+
+          <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+              <!--<div data-role="navbar" data-iconpos="right">
+            <ul>
+                <li>
+                    <a href="#listdevices" class="btn btn-skip" data-icon="carat-r">Zur Liste</a>
+                </li>
+            </ul>
+        </div>-->
+          </div>
+      </div>
+
     <div data-role="page" id="ar">
         <div data-role="header" data-position="fixed" data-tap-toggle="false">
             <h1>Augmented Reality</h1>
@@ -82,13 +110,13 @@
         <!-- /content -->
 
         <div data-role="footer" data-position="fixed" data-tap-toggle="false">
-            <div data-role="navbar" data-iconpos="right">
+            <!--<div data-role="navbar" data-iconpos="right">
                 <ul>
                     <li>
                         <a href="#listdevices" class="btn btn-skip" data-icon="carat-r">Überspringen</a>
                     </li>
                 </ul>
-            </div>
+            </div>-->
         </div>
         <!-- /footer -->
     </div>
@@ -102,7 +130,7 @@
 
           <div role="main" class="ui-content fullscreen">
               <div id="mapview">
-                  <object class="emb" data="img/living-lab-map.svg" type="image/svg+xml"></object>
+                  <object id="mapSvg" class="emb" data="img/living-lab-map.svg" type="image/svg+xml"></object>
               </div>
           </div>
           <!-- /content -->
