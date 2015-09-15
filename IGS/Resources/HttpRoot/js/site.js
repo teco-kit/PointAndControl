@@ -34,6 +34,10 @@ var toast = function (msg) {
 //    }
 }
 
+var logMessage = function (message) {
+    $.getJSON('/?dev=server&cmd=log&val=' + message, function (data) { });
+}
+
 var updateProgressBar = function (curVectors, minVectors) {
     if (minVectors <= 0) {
         text = curVectors + " Eingaben gespeichert";
@@ -329,12 +333,8 @@ var activateGestureControl = function () {
             trackingId = data.trackingId;
 
         if (data.success) {
-            //disable vibration for test vibrate(500);
-            if (beforeRegister) {
-                $(':mobile-pagecontainer').pagecontainer('change', beforeRegister);
-            } else {
-                $(':mobile-pagecontainer').pagecontainer('change', '#interaction');
-            }
+            vibrate(500);
+            $(':mobile-pagecontainer').pagecontainer('change', '#interaction');
         }
     });
 }
@@ -351,7 +351,7 @@ var selectDevice = function () {
 
         if (data.success) {
             if (supportsVibrate) {
-                navigator.vibrate(500);
+                //disable vibration for test navigator.vibrate(500);
             }
             window.location.assign('/?dev=' + data.devices[0].id + '&cmd=getControlPath');
         }
@@ -448,7 +448,6 @@ var pollStatus = function () {
                 var hash = $.mobile.path.parseLocation().hash;
 
                 if (hash == '#point' || hash == '#locate') {
-                //if (hash == '#point') {
                         $(':mobile-pagecontainer').pagecontainer('change', '#register');
                 }
             }
@@ -501,6 +500,7 @@ $(function (event) {
     $(document).on('pagecontainerbeforetransition', function (event, ui) {
         var hash = ui.absUrl ? $.mobile.path.parseUrl(ui.absUrl).hash : "";
         if (hash == '#listdevices') {
+            logMessage("List started");
             editMode = false;
             updateDeviceList();
         }
@@ -510,11 +510,16 @@ $(function (event) {
             $('#locate h1').text(editDevice + " positionieren");
         }
 
+        if (hash == '#point') {
+            logMessage("Pointing started");
+        }
+
         if (hash == '#adddevice') {
             updateNewDeviceDD(event);
         }
 
         if (hash == '#ar') {
+            logMessage("Camera started");
 			videoContainer = $('#video')[0];
 			navigator.mediaDevices.enumerateDevices()
 			.then(gotDevices)
@@ -524,6 +529,7 @@ $(function (event) {
         }
         
         if (hash == '#map') {
+            logMessage("Map started");
             $.mobile.loading('show');
             updateMapFromList();
         }
@@ -538,7 +544,6 @@ $(function (event) {
         }
 
         if (hash == '#point' || hash == '#locate') {
-        //if (hash == '#point') {
             // redirect to register site if not registered
             if (trackingId != null && trackingId < 0) {
                 event.preventDefault();
