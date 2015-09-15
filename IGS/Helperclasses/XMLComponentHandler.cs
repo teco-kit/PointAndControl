@@ -950,7 +950,7 @@ namespace IGS.Helperclasses
             XmlNode logNode = docCOnfig.SelectSingleNode("/log");
 
             XmlElement xmlLogEntry = docCOnfig.CreateElement("entry");
-            xmlLogEntry.SetAttribute("time", DateTime.Now.ToString("HH:mm:ss"));
+            xmlLogEntry.SetAttribute("time", DateTime.Now.ToString("HH:mm:ss.fff"));
             xmlLogEntry.SetAttribute("date", DateTime.Now.ToShortDateString());
             XmlElement xmlEntryString = docCOnfig.CreateElement("msg");
             xmlEntryString.InnerText = entry;
