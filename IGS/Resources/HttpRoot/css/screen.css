@@ -1,0 +1,54 @@
+﻿body
+{
+}
+
+#outercircle {
+    width: 100px;
+    height: 100px;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    border-radius: 100%;
+    border: 5px solid black;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+#circle {
+    width: 100px;
+    height: 100px;
+    -webkit-border-radius: 100%;
+    -moz-border-radius: 100%;
+    border-radius: 100%;
+    border: 2px white;
+    background-color: white;
+    text-align: center;
+    vertical-align: middle;
+    color: black;
+    font: bold 80px/100px sans-serif;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+#display {
+    width: 800px;
+    height: 110px;
+    background-color: white;
+    text-align: center;
+    vertical-align: middle;
+    color: black;
+    font: bold 80px/110px sans-serif;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
