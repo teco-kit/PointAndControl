@@ -52,3 +52,12 @@
     right: 0;
     margin: auto;
 }
+
+#statusbar {
+    width: 100%;
+    height: 40px;
+    background-color: salmon;
+    text-align: center;
+    vertical-align: middle;
+    font: bold 20px/40px sans-serif;
+}

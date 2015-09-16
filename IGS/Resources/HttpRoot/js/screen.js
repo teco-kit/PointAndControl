@@ -4,8 +4,9 @@ var device;
 var demoMode = false;
 var u;
 
-//change the devices in this line to the selectabel 5
-var selDevices = ["Boxee_1", "Plugwise_2", "Plugwise_5", "Kodi_1", "Plugwise_1"];
+//change the devices in this line to the devices for the task
+var selDevices = ["Boxee_1", "Plugwise_1", "Plugwise_3", "Boxee_2", "Plugwise_4"];
+var demoDevices = ["Plugwise_2", "Plugwise_6"];
 
 var countDown = function () {
     var circle = $('#outercircle');
@@ -16,8 +17,9 @@ var countDown = function () {
         counter = 3;
         circle.css({ width: "700", height: "700" });
 
-        //draw from urn
+        // draw from urn
         device = u.draw();
+
         var i;
         for (i = 0; i < deviceList.length; i++) {
             if (deviceList[i].id == device)
@@ -35,7 +37,7 @@ var countDown = function () {
             $("#display").show();
 
             //log event on server
-            logMessage("Task started with device " + device);
+            logMessage("Task started with device " + device + demoMode ? " - Demonstration" : "");
         }
     });
 
@@ -87,11 +89,15 @@ var Urn = function () {
 
     this.draw = function () {
         if (this.count == 0) {
+            // use different sources in normal and demo mode
+            var source = demoMode ? demoDevices : selDevices;
+
             // refill urn by copying
             var index;
-            for (index = 0; index < selDevices.length; index++) {
-                this.add(this.count, selDevices[index]);
+            for (index = 0; index < source.length; index++) {
+                this.add(this.count, source[index]);
             }
+            
         }
         var ret = this.lastDraw;
 
@@ -118,6 +124,19 @@ $(function (event) {
     $(document).keyup(function (evt) {
         if (evt.keyCode == 32) {
             countDown();
+        }
+
+        if (evt.keyCode == 68) {
+            demoMode = !demoMode;
+
+            // reset urn
+            u.clear();
+
+            if (demoMode) {
+                $('#statusbar').text("Demonstrationsmodus!").slideDown();
+            } else {
+                $('#statusbar').slideUp().text(" ");
+            }
         }
     });
 });
