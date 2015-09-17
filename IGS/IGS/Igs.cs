@@ -208,7 +208,7 @@ namespace IGS.Server.IGS
             String msg = "";
             Boolean success = false;
 
-            if (cmd != "popup")
+            if (cmd != "popup" && cmd != "pollDevice")
                 XMLComponentHandler.writeLogEntry("Command arrived! devID: " + devId + " cmdID: " + cmd + " value: " + value + " wlanAdr: " + wlanAdr);
 
             if (devId == "server")
@@ -268,6 +268,7 @@ namespace IGS.Server.IGS
 
                         break;
 
+                    case "pollDevice":
                     case "selectDevice":
                         if (!Tracker.kinectAvailable)
                         {
@@ -399,7 +400,7 @@ namespace IGS.Server.IGS
                 retStr += ",\"success\":" + success.ToString().ToLower() + ",\"msg\":\"" + msg + "\"}";
                 Console.WriteLine(retStr);
 
-                if (cmd != "popup" || msg != "")
+                if ((cmd != "popup" || msg != "") && (cmd != "pollDevice"))
                 {
                     XMLComponentHandler.writeLogEntry("Response to '" + cmd + "': " + retStr);
                 }

@@ -359,8 +359,13 @@ var selectDevice = function () {
 }
 
 var pollDevice = function () {
-    $.getJSON('/?dev=server&cmd=selectDevice', function (data) {
-            if (!data || !data.devices) {
+    $.getJSON('/?dev=server&cmd=pollDevice', function (data) {
+        // restart request if we are still on the ar page
+        var hash = $.mobile.path.parseLocation().hash;
+        if (hash == '#ar')
+            pollDevice();
+
+        if (!data || !data.devices) {
             return;
         }
 
@@ -378,10 +383,6 @@ var pollDevice = function () {
             $('#arview').hide();
         }
 
-        // restart request if we are still on the ar page
-        var hash = $.mobile.path.parseLocation().hash;
-        if (hash == '#ar')
-            pollDevice();
     });
 }
 
