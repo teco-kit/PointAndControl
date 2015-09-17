@@ -37,7 +37,10 @@ var countDown = function () {
             $("#display").show();
 
             //log event on server
-            logMessage("Task started with device " + device + demoMode ? " - Demonstration" : "");
+            var message = "Task started with device " + device;
+            if (demoMode)
+                message = message + " - Demonstration";
+            logMessage(message);
         }
     });
 
