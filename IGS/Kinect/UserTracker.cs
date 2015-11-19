@@ -225,34 +225,41 @@ namespace IGS.Server.Kinect
         ///     <param name="id">ID of the skeleton the coordinates are requested</param>
         ///     <returns>coordinates of the elbow/wrist as 3D-vector-array</returns>
         /// </summary>
-        public Point3D[] GetCoordinates(int id)
+        public Point3D[] GetCoordinates(int id, Boolean headBase = false)
         {
+            JointType baseJoint, directionJoint;
+
             foreach (TrackedSkeleton sTracked in Bodies.Where(sTracked => sTracked.Id == id))
             {
                 sTracked.Actions = sTracked.Actions + 1;
+
+                // use right hand if registeres with right hand
+                if (sTracked.rightHandUp)
+                {
+                    baseJoint = JointType.ShoulderRight;
+                    directionJoint = JointType.WristRight;
+                }
+                else
+                {
+                    baseJoint = JointType.ShoulderLeft;
+                    directionJoint = JointType.WristLeft;
+                }
+
+                // use head as base if requested
+                if (headBase)
+                    baseJoint = JointType.Head;
+
                 foreach (Body s in _bodiesLastFrame)
                 {
                     if ((int)s.TrackingId != id) continue;
                     Point3D[] result = new Point3D[2];
 
-                    if (sTracked.rightHandUp)
-                    {
-                        result[0] = new Point3D(s.Joints[JointType.ShoulderRight].Position.X,
-                                                 s.Joints[JointType.ShoulderRight].Position.Y,
-                                                 s.Joints[JointType.ShoulderRight].Position.Z);
-                        result[1] = new Point3D(s.Joints[JointType.WristRight].Position.X,
-                                                 s.Joints[JointType.WristRight].Position.Y,
-                                                 s.Joints[JointType.WristRight].Position.Z);
-                    }
-                    else
-                    {
-                        result[0] = new Point3D(s.Joints[JointType.ShoulderLeft].Position.X,
-                                                 s.Joints[JointType.ShoulderLeft].Position.Y,
-                                                 s.Joints[JointType.ShoulderLeft].Position.Z);
-                        result[1] = new Point3D(s.Joints[JointType.WristLeft].Position.X,
-                                                 s.Joints[JointType.WristLeft].Position.Y,
-                                                 s.Joints[JointType.WristLeft].Position.Z);
-                    }
+                    result[0] = new Point3D(s.Joints[baseJoint].Position.X,
+                                                s.Joints[baseJoint].Position.Y,
+                                                s.Joints[baseJoint].Position.Z);
+                    result[1] = new Point3D(s.Joints[directionJoint].Position.X,
+                                                s.Joints[directionJoint].Position.Y,
+                                                s.Joints[directionJoint].Position.Z);
                     return result;
                 }
             }

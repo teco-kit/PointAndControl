@@ -45,6 +45,11 @@ namespace IGS.Server.IGS
             return usr != null ? CollisionDetection.Calculate(Data.Devices, Transformer.transformJointCoords(Tracker.GetCoordinates(usr.SkeletonId))) : null;
         }
 
+        public List<Device> chooseDevice(User usr, Boolean headBase)
+        {
+            return usr != null ? CollisionDetection.Calculate(Data.Devices, Transformer.transformJointCoords(Tracker.GetCoordinates(usr.SkeletonId))) : null;
+        }
+
         public String train(Device dev)
         {
             if (dev == null) return "Gerät nicht gefunden";
