@@ -43,6 +43,29 @@ namespace IGS.Server.Devices
         /// </summary>
         public List<Ball> Form { get; set; }
 
+
+        /// <summary>
+        ///     Returns the center of gravity of an object, computed by the
+        ///     weighted mean of the form-defining spheres
+        /// </summary>
+        /// <returns></returns>
+        public Point3D getCenterOfGravity()
+        {
+            
+            Point3D cog = new Point3D(0,0,0);
+            Double mass = 0.0d;
+
+            foreach (Ball ball in this.Form)
+            {
+                cog = Point3D.Add(cog, Vector3D.Multiply((Vector3D)ball.Centre, ball.Radius));
+                mass += ball.Radius;
+            }
+
+            if (this.Form.Count > 0 && mass > 0) cog = (Point3D) Vector3D.Multiply((Vector3D)cog, 1.0d/mass);
+
+            return cog;
+        }
+
         ///     The ID of the device.
         ///     With the "set"-method the ID of the device can be set.
         ///     With the "get"-method the ID of the device can be returned.

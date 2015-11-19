@@ -219,11 +219,9 @@ namespace IGS.Server.Kinect
         }
 
         /// <summary>
-        ///     Interface to the IGS where the coordinates of ellbow/wrist of both arms regarding the kinect coordinate system of the kinect will be requested.
-        ///     At postion 0 of the array is the vector of the right shoulder.
-        ///     At postion 1 of the array is the vector of the right wrist.
-        ///     At postion 2 of the array is the vector of the left shoulder.
-        ///     At postion 3 of the array is the vector of the left wrist.
+        ///     Interface to the IGS where the coordinates of ellbow/wrist of the arms regarding the kinect coordinate system of the kinect will be requested.
+        ///     At postion 0 of the array is the vector of the shoulder.
+        ///     At postion 1 of the array is the vector of the wrist.
         ///     <param name="id">ID of the skeleton the coordinates are requested</param>
         ///     <returns>coordinates of the elbow/wrist as 3D-vector-array</returns>
         /// </summary>
