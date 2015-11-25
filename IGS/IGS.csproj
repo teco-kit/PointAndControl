@@ -79,6 +79,10 @@
       <HintPath>..\packages\Microsoft.Kinect.Tools.x64.2.0.1410.19000\lib\net45\Microsoft.Kinect.Tools.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="numl, Version=0.8.22.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\numl.0.8.22.0\lib\net40\numl.dll</HintPath>
       <Private>True</Private>
@@ -109,6 +113,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ComponentHandling\DeviceStorageFileHandlerJSON.cs" />
+    <Compile Include="ComponentHandling\DeviceStorageHandlingXML.cs" />
+    <Compile Include="ComponentHandling\EnvironmentInfoHandler.cs" />
+    <Compile Include="ComponentHandling\EventLogger.cs" />
+    <Compile Include="ComponentHandling\EventLogWriter.cs" />
+    <Compile Include="ComponentHandling\IEventlogFormat.cs" />
+    <Compile Include="ComponentHandling\XMLEventLogFormat.cs" />
     <Compile Include="Devices\Ball.cs" />
     <Compile Include="Devices\Beamer.cs" />
     <Compile Include="Devices\Boxee.cs" />

@@ -264,7 +264,7 @@ namespace IGS
                     for (int j = 0; j < deviceList[i].Form.Count; j++)
                     {
                         Point3D center = new Point3D();
-                        Point3D vec = deviceList[i].Form[j].Centre;
+                        Point3D vec = deviceList[i].Form[j].Center;
                         float rad = deviceList[i].Form[j].Radius;
 
                         HelixToolkit.Wpf.SphereVisual3D sphere = new HelixToolkit.Wpf.SphereVisual3D();
@@ -304,9 +304,9 @@ namespace IGS
             RotateTransform3D trans = new RotateTransform3D();
             AxisAngleRotation3D rotation = new AxisAngleRotation3D();
 
-            center.X = devKinect.ball.Centre.X;
-            center.Y = devKinect.ball.Centre.Y;
-            center.Z = devKinect.ball.Centre.Z;
+            center.X = devKinect.ball.Center.X;
+            center.Y = devKinect.ball.Center.Y;
+            center.Z = devKinect.ball.Center.Z;
 
             addKinect.Center = center;
             addKinect.Length = 0.38;

@@ -153,9 +153,9 @@ namespace IGS.Helperclasses
                             (Convert.ToInt32(node.ChildNodes[i + 1].Attributes[0].Value) + 1).ToString();
 
                         newElement.SetAttribute("radius", radius);
-                        newElement.SetAttribute("centerX", ball.Centre.X.ToString());
-                        newElement.SetAttribute("centerY", ball.Centre.Y.ToString());
-                        newElement.SetAttribute("centerZ", ball.Centre.Z.ToString());
+                        newElement.SetAttribute("centerX", ball.Center.X.ToString());
+                        newElement.SetAttribute("centerY", ball.Center.Y.ToString());
+                        newElement.SetAttribute("centerZ", ball.Center.Z.ToString());
                         node.ChildNodes[i + 1].AppendChild(newElement);
 
                         ret = "Koordinaten hinzugefügt";

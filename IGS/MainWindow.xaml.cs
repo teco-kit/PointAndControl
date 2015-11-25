@@ -624,9 +624,9 @@ public partial class MainWindow
         newPosition[4] = Hdeg;
 
         oldPlace = "Old Koords: " +
-            "X: " + _igs.IGSKinect.ball.Centre.X + " " +
-            "Y: " + _igs.IGSKinect.ball.Centre.Y + " " +
-            "Z: " + _igs.IGSKinect.ball.Centre.Z + " " +
+            "X: " + _igs.IGSKinect.ball.Center.X + " " +
+            "Y: " + _igs.IGSKinect.ball.Center.Y + " " +
+            "Z: " + _igs.IGSKinect.ball.Center.Z + " " +
             "H°: " + _igs.IGSKinect.roomOrientation;
 
         newPlace = "New Koords: " +
@@ -644,7 +644,7 @@ public partial class MainWindow
         Point3D newCenter = new Point3D(i_X, i_Y, i_Z);
 
         _igs.IGSKinect.roomOrientation = orientation;
-        _igs.IGSKinect.ball.Centre = newCenter;
+        _igs.IGSKinect.ball.Center = newCenter;
 
         if (_igs.Tracker.Sensor != null)
         {
