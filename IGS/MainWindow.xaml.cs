@@ -1,27 +1,15 @@
 ﻿using IGS;
-using IGS.Helperclasses;
-using IGS.Server.Devices;
+using IGS.ComponentHandling;
 using IGS.Server.IGS;
 using IGS.Server.Kinect;
-using IGS.Server.WebServer;
 using Microsoft.Kinect;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Media.Media3D;
-using System.Xml;
-using System.ComponentModel;
-using System.Xml.Linq;
-using IGS.Classifier;
-using IGS.Kinect;
 
 
 
@@ -161,6 +149,10 @@ public partial class MainWindow
     /// </summary>
     private bool _ifSkeletonisBuild { get; set; }
 
+    private string currLang { get; set; }
+
+    public EventLogger logger { get; set; }
+
     /// <summary>
     /// the ImageSource for the colorimage 
     /// </summary>
@@ -187,6 +179,7 @@ public partial class MainWindow
     /// </summary>
     public MainWindow()
     {
+        
         InitializeComponent();
 
     }
@@ -240,9 +233,10 @@ public partial class MainWindow
     /// <param name="e">event arguments</param>
     private void WindowLoaded(object sender, RoutedEventArgs e)
     {
+       
         // Create the drawing group we'll use for drawing
         _drawingGroup = new DrawingGroup();
-
+        currLang = "";
         // Create an image source that we can use in our image control
         _imageSource = new DrawingImage(_drawingGroup);
 
@@ -252,6 +246,8 @@ public partial class MainWindow
         _ifSkeletonisBuild = false;
 
         _igs = Initializer.InitializeIgs();
+
+        logger = _igs.logger;
         fillFieldsGUI();
 
         this.coordinateMapper = _igs.Tracker.Sensor.CoordinateMapper;
@@ -263,7 +259,7 @@ public partial class MainWindow
             this.multiFrameReader = _igs.Tracker.Sensor.OpenMultiSourceFrameReader(FrameSourceTypes.Color | FrameSourceTypes.Body);
             this.multiFrameReader.MultiSourceFrameArrived += this.Reader_MultiSourceFrameArrived;
         }
-        
+
         FrameDescription ColorframeDescription = _igs.Tracker.Sensor.ColorFrameSource.FrameDescription;
         // allocate space to put the pixels being received
         this.pixels = new byte[ColorframeDescription.Width * ColorframeDescription.Height * this.bytesPerPixel];
@@ -275,7 +271,7 @@ public partial class MainWindow
         this.displayWidth = depthFrameDescription.Width;
         this.displayHeight = depthFrameDescription.Height;
         this.imageSourceSkeleton = new DrawingImage(this._drawingGroup);
-    
+
     }
 
     /// <summary>
@@ -566,13 +562,7 @@ public partial class MainWindow
     private void Change_Plugwise_Adress_Button_Click(object sender, RoutedEventArgs e)
     {
 
-        String[] parameter = new String[3];
-
-        parameter[0] = Plugwise_host.Text;
-        parameter[1] = Plugwise_port.Text;
-        parameter[2] = Plugwise_path.Text;
-
-        writePlugwiseAdressesToXMLandDevices(parameter);
+        _igs.Data.change_PlugWise_Adress(Plugwise_host.Text, Plugwise_port.Text, Plugwise_path.Text);
 
     }
 
@@ -585,14 +575,14 @@ public partial class MainWindow
     /// <param name="e">The RoutedEventArgs</param>
     private void _3DViewButton_Click(object sender, RoutedEventArgs e)
     {
-
         _3Dview = new Room3DView(_igs.classification.getSamples(), _igs.Data.Devices, _igs.Transformer);
         _3Dview.SetKinectCamera(_igs.IGSKinect);
         _3Dview.ClipToBounds = false;
         _3Dview.mainViewport.Effect = null;
 
-        String[] roomText = XMLComponentHandler.readRoomComponents();
-        _3Dview.createRoom(float.Parse(roomText[0]), float.Parse(roomText[1]), float.Parse(roomText[2]));
+        _3Dview.createRoom(_igs.Data._environmentHandler.getRoomWidht(),
+                           _igs.Data._environmentHandler.getRoomHeight(),
+                           _igs.Data._environmentHandler.getRoomDepth());
         _3Dview.Show();
     }
 
@@ -635,12 +625,13 @@ public partial class MainWindow
             "Z: " + z + " " +
             "H°: " + Hdeg;
 
-        float i_X = float.Parse(x);
-        float i_Y = float.Parse(y);
-        float i_Z = float.Parse(z);
+        double i_X = double.Parse(x);
+        double i_Y = double.Parse(y);
+        double i_Z = double.Parse(z);
         double orientation = double.Parse(Hdeg);
+        double tilt = double.Parse(Tdeg);
 
-        XMLComponentHandler.saveKinectPosition(newPosition);
+        _igs.Data._environmentHandler.setCompleteKinect(i_X, i_Y, i_Z, short.Parse(Tdeg), short.Parse(Hdeg));
         Point3D newCenter = new Point3D(i_X, i_Y, i_Z);
 
         _igs.IGSKinect.roomOrientation = orientation;
@@ -648,7 +639,7 @@ public partial class MainWindow
 
         if (_igs.Tracker.Sensor != null)
         {
-            _igs.Transformer.calculateRotationMatrix(0, _igs.IGSKinect.roomOrientation);
+            _igs.Transformer.calculateRotationMatrix(tilt, _igs.IGSKinect.roomOrientation);
         }
         _igs.Transformer.transVector = (Vector3D)newCenter;
 
@@ -656,7 +647,8 @@ public partial class MainWindow
         {
             _3Dview.SetKinectCamera(_igs.IGSKinect);
         }
-        logEntry = "Kinectplace changed from: " + oldPlace + " to: " + newPlace;
+
+        logger.enqueueEntry(String.Format("Placement of Kinect changed from: {0} to: {1}", oldPlace, newPlace));
     }
     /// <summary>
     /// The method triggered by the creat room button.
@@ -669,26 +661,26 @@ public partial class MainWindow
     /// <param name="e">The RoutedEventArgs</param>
     private void CreateRoom_Button_Click(object sender, RoutedEventArgs e)
     {
-        float width = 0;
-        float depth = 0;
-        float height = 0;
+        double width = 0;
+        double depth = 0;
+        double height = 0;
         String[] roomData = new String[3];
 
         roomData[0] = Room_Width.Text;
         roomData[2] = Room_Depth.Text;
         roomData[1] = Room_Height.Text;
-        width = float.Parse(Room_Width.Text);
-        depth = float.Parse(Room_Depth.Text);
-        height = float.Parse(Room_Height.Text);
+        width = double.Parse(Room_Width.Text);
+        depth = double.Parse(Room_Depth.Text);
+        height = double.Parse(Room_Height.Text);
 
-        XMLComponentHandler.saveRoomPosition(roomData);
-        _igs.classification.sCalculator.calcRoomModel.setRoomMeasures(width, depth, height);
+
+        _igs.Data._environmentHandler.setRoomMeasures(width, height, depth);
         _igs.Data.changeRoomSize(width, height, depth);
         if (_3Dview != null)
         {
             _3Dview.createRoom(width, depth, height);
         }
-
+        logger.enqueueEntry(String.Format("Room rezized to: Width: {0}, Depth: {1}, Height {2}", width, depth, height));
     }
 
     /// <summary>
@@ -717,54 +709,29 @@ public partial class MainWindow
     }
 
 
-    /// <summary>
-    /// Builds the regular adresses for the plugwises with the passed components
-    /// </summary>
-    /// <param name="components">The components of the plugwise adressin ascending order: Host, Port, Path</param>
-    /// <returns></returns>
-    private String buildPlugwiseString(String[] components)
-    {
-        String PlugWiseAdress = "http://" + components[0] + ":" + components[1] + "/" + components[2] + "/";
-
-        return PlugWiseAdress;
-    }
-
-
-    /// <summary>
-    /// This method wraps the building of the plugwise adress, the distribution to all plugwises and 
-    /// the update function for the plugwise components in the config.xml.
-    /// </summary>
-    /// <param name="components">The components of the plugwise adress: Host, Port, Path</param>
-    private void writePlugwiseAdressesToXMLandDevices(String[] components)
-    {
-        String adress = buildPlugwiseString(components);
-        XMLComponentHandler.writePlugwiseAdresstoXML(components);
-
-        _igs.Data.Change_PlugWise_Adress(adress);
-    }
 
     /// <summary>
     /// This method fills all textboxes in the MainWindow with their parameters stored in the config.xml
     /// </summary>
     private void fillFieldsGUI()
     {
-        String[] PlugComps = XMLComponentHandler.readPlugwiseComponents();
 
-        Plugwise_host.Text = PlugComps[0];
-        Plugwise_port.Text = PlugComps[1];
-        Plugwise_path.Text = PlugComps[2];
 
-        String[] KinectComps = XMLComponentHandler.readKinectComponents();
-        Kinect_X.Text = KinectComps[0];
-        Kinect_Y.Text = KinectComps[1];
-        Kinect_Z.Text = KinectComps[2];
-        Kinect_TiltAngle_Textbox.Text = KinectComps[3];
-        Kinect_Roomorientation.Text = KinectComps[4];
+        Plugwise_host.Text = _igs.Data._environmentHandler.getPWHost();
+        Plugwise_port.Text = _igs.Data._environmentHandler.getPWPort();
+        Plugwise_path.Text = _igs.Data._environmentHandler.getPWPath();
 
-        String[] RoomComps = XMLComponentHandler.readRoomComponents();
-        Room_Width.Text = RoomComps[0];
-        Room_Height.Text = RoomComps[1];
-        Room_Depth.Text = RoomComps[2];
+
+        Kinect_X.Text = _igs.Data._environmentHandler.getKinectPosX().ToString();
+        Kinect_Y.Text = _igs.Data._environmentHandler.getKinectPosY().ToString();
+        Kinect_Z.Text = _igs.Data._environmentHandler.getKinectPosZ().ToString();
+        Kinect_TiltAngle_Textbox.Text = _igs.Data._environmentHandler.getKinectTiltAngle().ToString();
+        Kinect_Roomorientation.Text = _igs.Data._environmentHandler.getKinecHorizontalAngle().ToString();
+
+
+        Room_Width.Text = _igs.Data._environmentHandler.getRoomWidht().ToString();
+        Room_Height.Text = _igs.Data._environmentHandler.getRoomHeight().ToString();
+        Room_Depth.Text = _igs.Data._environmentHandler.getRoomDepth().ToString();
     }
 
     /// <summary>
@@ -779,5 +746,6 @@ public partial class MainWindow
     {
         _igs.AddDevice(DeviceType.Text, deviceIdentifier.Text, DeviceAdress.Text, DevicePort.Text);
     }
-   
+
+
 }

@@ -39,11 +39,12 @@ namespace IGS.ComponentHandling
             entry.logText = text;
 
             eventQueue.Enqueue(entry);
-
+            
             if (!workerThread.IsAlive)
-            {
+            { 
                 workerThread = new Thread(writer.doWork);
                 workerThread.Start();
+
             }
         }
     }

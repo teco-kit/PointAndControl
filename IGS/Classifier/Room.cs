@@ -14,9 +14,9 @@ namespace IGS.Classifier
     public class Room
     {
 
-        public float width { get; set; }
-        public float depth { get; set; }
-        public float height { get; set; }
+        public double width { get; set; }
+        public double depth { get; set; }
+        public double height { get; set; }
 
         Plane3D ceiling { get; set; }
         Plane3D floor { get; set; }
@@ -27,7 +27,7 @@ namespace IGS.Classifier
         public List<Plane3D> wallList { get; set; }
 
 
-        public Room(float width, float height, float depth)
+        public Room(double width, double height, double depth)
         {
             this.width = width;
             this.depth = depth;
@@ -72,7 +72,7 @@ namespace IGS.Classifier
 
 
 
-        public void setRoomMeasures(float width, float depth, float height)
+        public void setRoomMeasures(double width, double depth, double height)
         {
             this.width = width;
             this.depth = depth;

@@ -7,22 +7,38 @@ using IGS.Server.Devices;
 using System.Xml;
 using System.Diagnostics;
 using System.Windows.Media.Media3D;
+using System.IO;
+using System.Xml.Linq;
 
 namespace IGS.ComponentHandling
 {
     class DeviceStorageHandlingXML
     {
+        readonly string DEVICE_SAVE_PATH = AppDomain.CurrentDomain.BaseDirectory + "\\devices.xml";
+
         public void addDevice(Device dev)
         {
-            throw new NotImplementedException();
+            String[] getType = dev.GetType().ToString().Split('.');
+            String[] getID = dev.Id.ToString().Split('_');
+
+            String[] complete = new string[] { (getType[getType.Count() - 1]), dev.Name, dev.address, dev.port };
+
+            addDevice(complete, int.Parse(getID[getID.Count() - 1]));
+            
         }
 
         public void addDevice(string[] parameter, int id_number)
         {
 
+            if (!File.Exists(DEVICE_SAVE_PATH))
+            {
+                XElement cleanNode = new XElement("devices");
+                cleanNode.Save(DEVICE_SAVE_PATH);
+            }
+
             XmlDocument docConfig = new XmlDocument();
-            docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");
-            XmlNode rootNode = docConfig.SelectSingleNode("/config/deviceConfiguration");
+            docConfig.Load(DEVICE_SAVE_PATH);
+            XmlNode rootNode = docConfig.SelectSingleNode("/devices");
 
             // creates an device node
             XmlElement device = docConfig.CreateElement("device");
@@ -68,11 +84,17 @@ namespace IGS.ComponentHandling
         /// <returns>returns the message if the write process was successful</returns>
         public string addDeviceCoord(string devId, string radius, Ball ball)
         {
+
+            if (!File.Exists(DEVICE_SAVE_PATH))
+            {
+                return "No Devices Available";
+            }
+
             String ret = ""; //Properties.Resources.NoCoordinateAdded;
             bool added = false;
             XmlDocument docConfig = new XmlDocument();
-            docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");
-            XmlNodeList nodeList = docConfig.SelectNodes("/config/deviceConfiguration/device");
+            docConfig.Load(DEVICE_SAVE_PATH);
+            XmlNodeList nodeList = docConfig.SelectNodes("/devices");
 
             foreach (XmlNode node in nodeList)
             {
@@ -103,6 +125,13 @@ namespace IGS.ComponentHandling
 
         public List<Device> readDevices()
         {
+            if (!File.Exists(DEVICE_SAVE_PATH))
+            {
+                XElement cleanNode = new XElement("devices");
+                cleanNode.Save(DEVICE_SAVE_PATH);
+                return new List<Device>();
+            }
+
             List<Device> devices = new List<Device>();
             XmlTextReader reader = new XmlTextReader(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");
             while (reader.Read())

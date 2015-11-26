@@ -20,12 +20,13 @@ namespace IGS.ComponentHandling
         }
 
         public List<EventLogger.logEntry> read()
-        { 
+        {
+            List<EventLogger.logEntry> entries = new List<EventLogger.logEntry>();
             if (!File.Exists(logPath + FILE_ENDING))
             {
-                //CreateFile
+                return entries;
             }
-            List<EventLogger.logEntry> entries = new List<EventLogger.logEntry>();
+           
             XmlDocument docConfig = new XmlDocument();
             docConfig.Load(logPath + FILE_ENDING);
             XmlNode root = docConfig.SelectSingleNode("/log");
@@ -49,7 +50,7 @@ namespace IGS.ComponentHandling
         {
             if (!File.Exists(logPath + FILE_ENDING))
             {
-                //CreateFile
+                
             }
 
             XmlDocument docConfig = new XmlDocument();
@@ -76,16 +77,18 @@ namespace IGS.ComponentHandling
         {
             if(!File.Exists(logPath + FILE_ENDING))
             {
-                //CreateFile
+                XElement cleanNode = new XElement("log");
+                cleanNode.Save(logPath + FILE_ENDING);
             }
 
             XmlDocument docConfig = new XmlDocument();
             docConfig.Load(logPath + FILE_ENDING);
             XmlNode root = docConfig.SelectSingleNode("/log");
 
-            XmlElement newEntry = docConfig.CreateElement(root.ChildNodes.Count.ToString());
-            newEntry.SetAttribute("Date and Time", writeString.dt.ToString());
-            newEntry.Value = writeString.logText;
+            XmlElement newEntry = docConfig.CreateElement("Entry_" + root.ChildNodes.Count.ToString());
+            
+            newEntry.SetAttribute("Date_And_Time", writeString.dt.ToString());
+            newEntry.InnerText = writeString.logText;
 
             root.AppendChild(newEntry);
 

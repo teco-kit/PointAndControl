@@ -178,7 +178,7 @@ namespace IGS
         /// <param name="width">the width of the room</param>
         /// <param name="height">the height of the room</param>
         /// <param name="depth">the depth of the room</param>
-        public void createRoom(float width, float height, float depth)
+        public void createRoom(double width, double height, double depth)
         {
             
             Point3D p0 = new Point3D(0, 0, 0);

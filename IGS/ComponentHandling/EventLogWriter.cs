@@ -15,6 +15,7 @@ namespace IGS.ComponentHandling
         public IEventlogFormat format { get; set; }
         public EventLogWriter(ConcurrentQueue<EventLogger.logEntry> queue, IEventlogFormat logFormat)
         {
+            _shouldStop = false;
             eventQueue = queue;
             format = logFormat;
         }
@@ -24,12 +25,12 @@ namespace IGS.ComponentHandling
 
             EventLogger.logEntry dequeued = new EventLogger.logEntry();
 
-            while (eventQueue.Count() > 0 || !_shouldStop)
+            while (eventQueue.Count() > 0)
             {
                 eventQueue.TryDequeue(out dequeued);
                 format.write(dequeued);
             }
-            requestStop();
+           
         }
 
         public void requestStop()

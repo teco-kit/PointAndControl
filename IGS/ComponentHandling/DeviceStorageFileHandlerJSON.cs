@@ -12,21 +12,45 @@ namespace IGS.ComponentHandling
     public class DeviceStorageFileHandlerJSON
     {
         readonly string DEVICE_SAVE_PATH = AppDomain.CurrentDomain.BaseDirectory + "\\devices.txt";
+        private JsonSerializerSettings setting { get; set; }
 
-        public DeviceStorageFileHandlerJSON() { }
+        public DeviceStorageFileHandlerJSON()
+        {
+            setting = new JsonSerializerSettings();
+            setting.TypeNameHandling = TypeNameHandling.All;
+        }
 
         public void addDevice(Device dev)
-        { 
-            List<Device> devices = readDevices();
+        {
+            if (!File.Exists(DEVICE_SAVE_PATH))
+            {
+                File.Create(DEVICE_SAVE_PATH).Close();
+            }
 
-            devices.Add(dev);
+            JsonSerializer serializer = new JsonSerializer();
+            serializer.TypeNameHandling = TypeNameHandling.All;
+            serializer.Formatting = Formatting.Indented;
 
-            writeDevicesToFile(devices);
+            using (FileStream stream = File.Open(DEVICE_SAVE_PATH, FileMode.Append))
+            using (StreamWriter sw = new StreamWriter(stream))
+            using (JsonWriter writer = new JsonTextWriter(sw))
+            {
+                serializer.Serialize(writer, dev);
+            }
+
+            //List<Device> devices = readDevices();
+
+            //devices.Add(dev);
+
+            //writeDevicesToFile(devices);
         }
 
         public void addDeviceCoord(string devId,  Ball ball)
         {
             List<Device> devices = readDevices();
+
+            if (devices == null || devices.Count == 0)
+                return;
 
             foreach(Device dev in devices)
             {
@@ -42,20 +66,57 @@ namespace IGS.ComponentHandling
 
         public List<Device> readDevices()
         {
-            List<Device> devs = new List<Device>();
+            if (!File.Exists(DEVICE_SAVE_PATH))
+            {
+                File.Create(DEVICE_SAVE_PATH).Close();
+            }
 
-            string devices = File.ReadAllText(DEVICE_SAVE_PATH);
+            String devices = File.ReadAllText(DEVICE_SAVE_PATH);
 
-            devs = JsonConvert.DeserializeObject<List<Device>>(devices);
+            String[] splitDevices = devices.Split(new string[] { "}{" }, StringSplitOptions.None);
+
+            splitDevices[0] = splitDevices[0] + "}";
+
+            for (int i = 1; i < (splitDevices.Count() - 2); i++)
+            {
+                splitDevices[i] = "{" + splitDevices[i] + "}";
+            }
+
+            splitDevices[splitDevices.Count() - 1] = "{" + splitDevices[splitDevices.Count() - 1];
+
+
+
+
+            List<Device> devs = JsonConvert.DeserializeObject<List<Device>>(devices);
+
+            //foreach (String dev in splitDevices)
+            //{
+            //    var deseriDev = JsonConvert.DeserializeObject(dev);
+            //    Console.WriteLine(deseriDev.GetType());
+
+            //}
+
+            if (devs == null)
+            {
+                devs = new List<Device>();
+            }
 
             return devs;
         }
 
-        private void writeDevicesToFile(List<Device> devices)
+
+        public void replaceExistingDevices(List<Device> devices)
         {
-            string devicesString = JsonConvert.SerializeObject(devices);
+            writeDevicesToFile(devices);
+        }
+
+        private void writeDevicesToFile(List<Device> devices)
+        { 
+            string devicesString = JsonConvert.SerializeObject(devices, Formatting.Indented, setting);
             File.WriteAllText(DEVICE_SAVE_PATH, devicesString);
         }
+
+        
         
 
         

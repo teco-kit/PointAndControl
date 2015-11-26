@@ -16,12 +16,13 @@ using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 using System.Xml;
 using System.Xml.Linq;
+using IGS.ComponentHandling;
 
 namespace IGS.Server.IGS
 {
     static class Initializer
     {
-        
+
 
         /// <summary>
         /// Initializes the IGS with all and uses the other initialition methods to add the needed Dataholder, Usertracker and HTTP server.
@@ -30,8 +31,9 @@ namespace IGS.Server.IGS
         public static Igs InitializeIgs()
         {
             xmlFilesControl();
-
-            Igs igs = new Igs(InitializeDataholder(XMLComponentHandler.readDevices()), InitializeUserTracker(new HandsUp(), new Lfu()), InitializeHttpServer());
+            EventLogger logger = new EventLogger();
+            Igs igs = new Igs(InitializeDataholder(logger), InitializeUserTracker(new HandsUp(), new Lfu()), InitializeHttpServer(),
+                logger);
             return igs;
         }
 
@@ -105,13 +107,11 @@ namespace IGS.Server.IGS
         ///     </param>
         ///     <returns> the initialized dataholder with its devices</returns>
         /// </summary>
-  
-        private static DataHolder InitializeDataholder(List<Device> devices)
+
+        private static DataHolder InitializeDataholder(EventLogger logger)
         {
-            
-            DataHolder data = new DataHolder(devices);
-            data.Change_PlugWise_Adress(readAndBuildPlugAdressXML());
-            
+            DataHolder data = new DataHolder(logger);
+
             return data;
         }
 
@@ -120,11 +120,6 @@ namespace IGS.Server.IGS
         /// </summary>
         private static void xmlFilesControl()
         {
-            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml"))
-            {
-                Initializer.createXMLFile();
-            }
-
             if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionSamples.xml"))
             {
                 Initializer.createWallProjectionSampleXMLFile();
@@ -146,53 +141,9 @@ namespace IGS.Server.IGS
             {
                 Initializer.createLogFilePerSelectSmoothed();
             }
-
-            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\program_log.xml"))
-            {
-                Initializer.createGeneralLogFile();
-            }
         }
 
 
-        /// <summary>
-        /// Gets the components of the plugwise adress and combines them to the final adress string
-        /// </summary>
-        /// <returns>the final adress string</returns>
-        private static string readAndBuildPlugAdressXML()
-        {
-            String finalString = "";
-            String[] components = XMLComponentHandler.readPlugwiseComponents();
-            finalString = "http://" + components[0] + ":" + components[1] + "/" + components[2] + "/";
-            return finalString;
-        }
-
-        /// <summary>
-        /// creates the basic structure of the configuration.xml file and saves it in the base directory.
-        /// </summary>
-        public static void createXMLFile()
-        {
-
-            XElement rootElement = new XElement("config",
-                new XElement("deviceConfiguration"),
-                new XElement("environment",
-                    new XElement("Roomsize",
-                        new XElement("width", "0.0"),
-                        new XElement("height", "0.0"),
-                        new XElement("depth", "0.0")),
-                    new XElement("KinectConfiguration",
-                        new XElement("X", "0.0"),
-                        new XElement("Y", "0.0"),
-                        new XElement("Z", "0.0"),
-                        new XElement("tiltingAngle", "0.0"),
-                        new XElement("HorizontalOrientationAngle", "0.0")),
-                    new XElement("PlugwiseAdress",
-                        new XElement("host"),
-                        new XElement("port"),
-                        new XElement("path")))
-                        );
-
-            rootElement.Save(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml");
-        }
 
         public static void createWallProjectionSampleXMLFile()
         {
@@ -225,13 +176,5 @@ namespace IGS.Server.IGS
             root.Add(new XAttribute("Selects", "0"));
             root.Save(AppDomain.CurrentDomain.BaseDirectory + "BA_REICHE_LogFilePerSelectSmoothed.xml");
         }
-
-        public static void createGeneralLogFile()
-        {
-            XElement root = new XElement("log");
-            root.Save(AppDomain.CurrentDomain.BaseDirectory + "program_log.xml");
-        }
-       
-
     }
 }

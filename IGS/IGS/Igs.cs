@@ -14,8 +14,7 @@ using System.Text;
 using IGS.Classifier;
 using Microsoft.Kinect;
 using System.Threading;
-
-
+using IGS.ComponentHandling;
 
 namespace IGS.Server.IGS
 {
@@ -36,7 +35,7 @@ namespace IGS.Server.IGS
         ///     <param name="tracker">The Usertracker</param>
         ///     <param name="server">The HTTP server</param>
         /// </summary>
-        public Igs(DataHolder data, UserTracker tracker, HttpServer server)
+        public Igs(DataHolder data, UserTracker tracker, HttpServer server, EventLogger eventLogger)
         {
 
             Data = data;
@@ -53,6 +52,7 @@ namespace IGS.Server.IGS
             this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Center);
             this.classification = new ClassificationHandler(Transformer, Data);
             this.coreMethods = new CollisionMethod(Data, Tracker, Transformer);
+            logger = eventLogger;
 
 
         }
@@ -98,6 +98,8 @@ namespace IGS.Server.IGS
         public ClassificationHandler classification { get; set; }
 
         ICoreMethods coreMethods { get; set; }
+
+        public EventLogger logger { get; set; }
 
 
 
@@ -209,7 +211,7 @@ namespace IGS.Server.IGS
             Boolean success = false;
 
             if (cmd != "popup" && cmd != "pollDevice")
-                XMLComponentHandler.writeLogEntry("Command arrived! devID: " + devId + " cmdID: " + cmd + " value: " + value + " wlanAdr: " + wlanAdr);
+                logger.enqueueEntry(String.Format("Command arrived! devID: {0}; cmdID: {1}; value: {2}; wlanAdr: {3}", devId, cmd, value, wlanAdr));
 
             if (devId == "server")
             {
@@ -402,7 +404,7 @@ namespace IGS.Server.IGS
 
                 if ((cmd != "popup" || msg != "") && (cmd != "pollDevice"))
                 {
-                    XMLComponentHandler.writeLogEntry("Response to '" + cmd + "': " + retStr);
+                    logger.enqueueEntry(String.Format("Respronse to '{0}' : {1}", cmd, retStr));
                 }
 
                 return retStr;
@@ -427,13 +429,14 @@ namespace IGS.Server.IGS
                         break;
                 }
 
-                XMLComponentHandler.writeLogEntry("Response to '" + cmd + "': " + retStr);
+                logger.enqueueEntry(String.Format("Response to Request {0} : {1} ", cmd, retStr));
                 return retStr;
             }
             else
             {
                 // TODO: JSON response
                 retStr = "Unbekannter Befehl.";
+                logger.enqueueEntry(String.Format("Response to Request {0} : {1}", cmd, retStr));
                 return retStr;
             }
         }
@@ -526,7 +529,7 @@ namespace IGS.Server.IGS
             {
                 object instance = Activator.CreateInstance(typeObject, name, idparam, new List<Ball>(),
                                                            address, port);
-                Data.Devices.Add((Device)instance);
+                Data.AddDevice(((Device)instance));
                 retStr = idparam;
 
                 Console.WriteLine(retStr);

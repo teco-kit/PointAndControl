@@ -136,6 +136,7 @@
     <Compile Include="Helperclasses\CoordTransform.cs" />
     <Compile Include="Helperclasses\igsMath.cs" />
     <Compile Include="Helperclasses\Ray3D.cs" />
+    <Compile Include="IGS\Deviceproducer.cs" />
     <Compile Include="IGS\Initializer.cs" />
     <Compile Include="Helperclasses\XMLComponentHandler.cs" />
     <Compile Include="IGS\CollisionMethod.cs" />
