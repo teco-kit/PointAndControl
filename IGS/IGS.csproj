@@ -114,7 +114,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ComponentHandling\DeviceStorageFileHandlerJSON.cs" />
-    <Compile Include="ComponentHandling\DeviceStorageHandlingXML.cs" />
+    <Compile Include="ComponentHandling\DeviceStorageFileHandlerXML.cs" />
     <Compile Include="ComponentHandling\EnvironmentInfoHandler.cs" />
     <Compile Include="ComponentHandling\EventLogger.cs" />
     <Compile Include="ComponentHandling\EventLogWriter.cs" />

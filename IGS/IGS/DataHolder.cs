@@ -14,6 +14,7 @@ using System.Globalization;
 using System.Resources;
 using IGS.Properties;
 using IGS.IGS;
+using System.Windows.Media.Media3D;
 
 namespace IGS.Server.IGS
 {
@@ -37,7 +38,7 @@ namespace IGS.Server.IGS
 
         public Room _roomModel { get; set; }
 
-        public DeviceStorageFileHandlerJSON _deviceStorageHandling { get; set; }
+        public DeviceStorageFileHandlerXML _deviceStorageHandling { get; set; }
         public EnvironmentInfoHandler _environmentHandler { get; set; }
 
         private Deviceproducer devProducer { get; set; }
@@ -52,7 +53,7 @@ namespace IGS.Server.IGS
         {
 
             _newDevices = new List<Device>();
-            _deviceStorageHandling = new DeviceStorageFileHandlerJSON();
+            _deviceStorageHandling = new DeviceStorageFileHandlerXML();
             _environmentHandler = new EnvironmentInfoHandler();
             devProducer = new Deviceproducer();
 
@@ -380,6 +381,13 @@ namespace IGS.Server.IGS
         {
             _roomModel.setRoomMeasures(width, depth, height);
             logger.enqueueEntry(String.Format("Room rezized to: Width: {0}, Depth: {1}, Height {2}", width, depth, height));
+        }
+
+        public String addDeviceCoordinates(String devId, String radius, Point3D wrist)
+        {
+            Ball coord = new Ball(wrist, double.Parse(radius));
+            this.getDeviceByID(devId).Form.Add(coord);
+            return _deviceStorageHandling.addDeviceCoord(devId, coord);
         }
     }
 }

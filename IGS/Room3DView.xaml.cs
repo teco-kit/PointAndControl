@@ -265,7 +265,7 @@ namespace IGS
                     {
                         Point3D center = new Point3D();
                         Point3D vec = deviceList[i].Form[j].Center;
-                        float rad = deviceList[i].Form[j].Radius;
+                        double rad = deviceList[i].Form[j].Radius;
 
                         HelixToolkit.Wpf.SphereVisual3D sphere = new HelixToolkit.Wpf.SphereVisual3D();
 

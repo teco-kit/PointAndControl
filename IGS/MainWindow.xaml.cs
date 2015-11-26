@@ -599,7 +599,7 @@ public partial class MainWindow
     {
         String oldPlace = "";
         String newPlace = "";
-        String logEntry = "";
+
         String[] newPosition = new String[5];
 
         String x = Kinect_X.Text;

@@ -37,7 +37,7 @@ namespace IGS.Server.IGS
         /// </summary>
         public Igs(DataHolder data, UserTracker tracker, HttpServer server, EventLogger eventLogger)
         {
-
+            environmentHandler = new EnvironmentInfoHandler();
             Data = data;
             Tracker = tracker;
             Server = server;
@@ -53,6 +53,7 @@ namespace IGS.Server.IGS
             this.classification = new ClassificationHandler(Transformer, Data);
             this.coreMethods = new CollisionMethod(Data, Tracker, Transformer);
             logger = eventLogger;
+            
 
 
         }
@@ -100,6 +101,8 @@ namespace IGS.Server.IGS
         ICoreMethods coreMethods { get; set; }
 
         public EventLogger logger { get; set; }
+
+        public EnvironmentInfoHandler environmentHandler { get; set; }
 
 
 
@@ -492,9 +495,8 @@ namespace IGS.Server.IGS
             if (Tracker.Bodies.Count != 0)
             {
                 Point3D wrist = Transformer.transformJointCoords(Tracker.getMedianFilteredCoordinates(Data.GetUserByIp(wlanAdr).SkeletonId))[1];
-                Ball coord = new Ball(wrist, float.Parse(radius));
-                Data.getDeviceByID(devId).Form.Add(coord);
-                ret = XMLComponentHandler.addDeviceCoordToXML(devId, radius, coord);
+
+               ret = Data.addDeviceCoordinates(devId, radius, wrist); 
             }
 
             return ret;
@@ -548,11 +550,10 @@ namespace IGS.Server.IGS
         {
             float ballRad = 0.4f;
 
-            String[] kinParamets = XMLComponentHandler.readKinectComponents();
-            Point3D kinectCenter = new Point3D(double.Parse(kinParamets[0]), double.Parse(kinParamets[1]), double.Parse(kinParamets[2]));
+            Point3D kinectCenter = new Point3D(environmentHandler.getKinectPosX(), environmentHandler.getKinectPosY(),environmentHandler.getKinectPosZ());
             Ball kinectBall = new Ball(kinectCenter, ballRad);
-            double roomOrientation = double.Parse(kinParamets[4]);
-            double tiltingDegree = double.Parse(kinParamets[3]);
+            double roomOrientation = environmentHandler.getKinecHorizontalAngle();
+            double tiltingDegree = environmentHandler.getKinectTiltAngle();
 
             
             IGSKinect = new devKinect("devKinect", kinectBall, tiltingDegree, roomOrientation);

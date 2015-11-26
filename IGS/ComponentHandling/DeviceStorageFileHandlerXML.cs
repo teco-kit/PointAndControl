@@ -12,7 +12,7 @@ using System.Xml.Linq;
 
 namespace IGS.ComponentHandling
 {
-    class DeviceStorageHandlingXML
+    public class DeviceStorageFileHandlerXML
     {
         readonly string DEVICE_SAVE_PATH = AppDomain.CurrentDomain.BaseDirectory + "\\devices.xml";
 
@@ -82,7 +82,7 @@ namespace IGS.ComponentHandling
         /// <param name="radius">the radius of the ball</param>
         /// <param name="ball">the ball of the device</param>
         /// <returns>returns the message if the write process was successful</returns>
-        public string addDeviceCoord(string devId, string radius, Ball ball)
+        public string addDeviceCoord(string devId, Ball ball)
         {
 
             if (!File.Exists(DEVICE_SAVE_PATH))
@@ -90,7 +90,7 @@ namespace IGS.ComponentHandling
                 return "No Devices Available";
             }
 
-            String ret = ""; //Properties.Resources.NoCoordinateAdded;
+            String ret = "No Coordinates added"; 
             bool added = false;
             XmlDocument docConfig = new XmlDocument();
             docConfig.Load(DEVICE_SAVE_PATH);
@@ -106,13 +106,13 @@ namespace IGS.ComponentHandling
                         node.ChildNodes[i + 1].Attributes[0].Value =
                             (Convert.ToInt32(node.ChildNodes[i + 1].Attributes[0].Value) + 1).ToString();
 
-                        newElement.SetAttribute("radius", radius);
+                        newElement.SetAttribute("radius", ball.Radius.ToString());
                         newElement.SetAttribute("centerX", ball.Center.X.ToString());
                         newElement.SetAttribute("centerY", ball.Center.Y.ToString());
                         newElement.SetAttribute("centerZ", ball.Center.Z.ToString());
                         node.ChildNodes[i + 1].AppendChild(newElement);
 
-                        ret = ""; //Properties.Resources.CoordinateAdded;
+                        ret = "Coordinates added"; 
                         added = true;
                     }
                 }

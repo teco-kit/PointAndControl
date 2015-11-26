@@ -14,7 +14,7 @@ namespace IGS.Server.Devices
         ///     <param name="center">Vector to the center of the sphere</param>
         ///     <param name="radius">Raidus of the sphere</param>
         /// </summary>
-        public Ball(Point3D center, float radius)
+        public Ball(Point3D center, double radius)
         {
             Center = center;
             Radius = radius;
@@ -34,6 +34,6 @@ namespace IGS.Server.Devices
         ///     With the "get"-method the radius of the ball can be returned.
         ///     <returns>Returns the radius of the the ball</returns>
         /// </summary>
-        public float Radius { get; set; }
+        public double Radius { get; set; }
     }
 }

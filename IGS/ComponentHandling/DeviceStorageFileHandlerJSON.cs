@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using IGS.Server.Devices;
 using Newtonsoft.Json;
 using System.IO;
+using Newtonsoft.Json.Linq;
+using System.Runtime.Serialization;
 
 namespace IGS.ComponentHandling
 {
@@ -45,23 +47,27 @@ namespace IGS.ComponentHandling
             //writeDevicesToFile(devices);
         }
 
-        public void addDeviceCoord(string devId,  Ball ball)
+        public string addDeviceCoord(string devId,  Ball ball)
         {
+            
             List<Device> devices = readDevices();
 
             if (devices == null || devices.Count == 0)
-                return;
+                return "No Devices Available";
 
             foreach(Device dev in devices)
             {
                 if(dev.Id == devId)
                 {
                     dev.Form.Add(ball);
-                    break;
+                    writeDevicesToFile(devices);
+                    return "Coordinates added";
                 }
             }
 
-            writeDevicesToFile(devices);
+           
+
+            return "No Device with that ID Found - Coordinates not added";
         }
 
         public List<Device> readDevices()
@@ -73,27 +79,22 @@ namespace IGS.ComponentHandling
 
             String devices = File.ReadAllText(DEVICE_SAVE_PATH);
 
-            String[] splitDevices = devices.Split(new string[] { "}{" }, StringSplitOptions.None);
+            //String[] splitDevices = devices.Split(new string[] { "}{" }, StringSplitOptions.None);
 
-            splitDevices[0] = splitDevices[0] + "}";
+            //splitDevices[0] = splitDevices[0] + "}";
 
-            for (int i = 1; i < (splitDevices.Count() - 2); i++)
-            {
-                splitDevices[i] = "{" + splitDevices[i] + "}";
-            }
+            //for (int i = 1; i < (splitDevices.Count() - 2); i++)
+            //{
+            //    splitDevices[i] = "{" + splitDevices[i] + "}";
+            //}
 
-            splitDevices[splitDevices.Count() - 1] = "{" + splitDevices[splitDevices.Count() - 1];
-
-
-
+            //splitDevices[splitDevices.Count() - 1] = "{" + splitDevices[splitDevices.Count() - 1];
 
             List<Device> devs = JsonConvert.DeserializeObject<List<Device>>(devices);
-
+            //List<Device> devs = new List<Device>();
             //foreach (String dev in splitDevices)
             //{
-            //    var deseriDev = JsonConvert.DeserializeObject(dev);
-            //    Console.WriteLine(deseriDev.GetType());
-
+                
             //}
 
             if (devs == null)
@@ -101,7 +102,7 @@ namespace IGS.ComponentHandling
                 devs = new List<Device>();
             }
 
-            return devs;
+            return new List<Device>();
         }
 
 
