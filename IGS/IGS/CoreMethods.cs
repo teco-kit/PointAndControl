@@ -13,7 +13,7 @@ namespace IGS.Server.IGS
     interface ICoreMethods
     {
 
-        List<Device> chooseDevice(User usr);
+        List<Device> chooseDevice(User usr, Boolean headBase = false);
 
         String train(Device dev);
 

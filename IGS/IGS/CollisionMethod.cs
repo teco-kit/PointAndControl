@@ -40,14 +40,9 @@ namespace IGS.Server.IGS
             this.locator = new Locator();
         }
 
-        public List<Device> chooseDevice(User usr)
+        public List<Device> chooseDevice(User usr, Boolean headBase = false)
         {
-            return usr != null ? CollisionDetection.Calculate(Data.Devices, Transformer.transformJointCoords(Tracker.GetCoordinates(usr.SkeletonId))) : null;
-        }
-
-        public List<Device> chooseDevice(User usr, Boolean headBase)
-        {
-            return usr != null ? CollisionDetection.Calculate(Data.Devices, Transformer.transformJointCoords(Tracker.GetCoordinates(usr.SkeletonId))) : null;
+            return usr != null ? CollisionDetection.Calculate(Data.Devices, Transformer.transformJointCoords(Tracker.GetCoordinates(usr.SkeletonId, headBase))) : null;
         }
 
         public String train(Device dev)

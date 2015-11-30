@@ -47,7 +47,8 @@ namespace IGS.Server.IGS
 
         }
 
-        public List<Device> chooseDevice(User usr)
+        //TODO: headBase is currently not evaluated
+        public List<Device> chooseDevice(User usr, Boolean headBase = false )
         {
             List<Device> dev = new List<Device>();
             Point3D[] vecs = transformer.transformJointCoords(tracker.getMedianFilteredCoordinates(usr.SkeletonId));
