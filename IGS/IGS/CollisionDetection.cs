@@ -13,15 +13,21 @@ namespace IGS.Server.IGS
     /// </summary>
     public static class CollisionDetection
     {
-        public struct minDistForDev
+        public class DeviceMinDistance : IComparable<DeviceMinDistance>
         {
-            public Device dev;
+            public Device device;
             public double minDist;
+
+            public int DeviceMinDistance(DeviceMinDistance compareTo)
+            {
+                return this.minDist.CompareTo(compareTo.minDist);
+            }
+
         }
 
         /// <summary>
         ///    The Methode does the collision detection
-        ///    First the pointing vector of the underarm is calculated.
+        ///    First the pointing vector is calculated.
         ///    This vector will be "extended" to a straight line. Following it will be calculated if this line hits a sphere of a device.
         ///    Hit devices will be saved in a list.
         /// </summary>
@@ -35,24 +41,39 @@ namespace IGS.Server.IGS
             if (vectors == null)
                 return found;
 
+            List<DeviceMinDistance> minDevices = new List<DeviceMinDistance>();
+
             // pointing ray goes from vectors[0] to vectors[1]
             Ray3D pointer = new Ray3D(vectors[0], vectors[1]);
 
             foreach (Device dev in devices)
             {
+                DeviceMinDistance minDevice = new DeviceMinDistance();
+                minDevice.device = dev;
+                minDevice.minDist = -1;
+
                 foreach (Ball ball in dev.Form)
                 {
                     // check if Ball is in front of pointing ray
                     if (Vector3D.AngleBetween(pointer.direction, ball.Centre - pointer.origin) < 90)
                     {
+                        double distance = Point3D.Subtract(pointer.nearestPoint(ball.Centre), ball.Centre).Length;
+
                         // check distance
-                        if (Point3D.Subtract(pointer.nearestPoint(ball.Centre), ball.Centre).Length <= ball.Radius)
-                        {
-                            found.Add(dev);
-                            continue; // skip other balls of this dev
-                        }
+                        if (distance <= ball.Radius && (minDevice.minDist < 0 || minDevice.minDist > distance))
+                            minDevice.minDist = distance;
                     }
                 }
+
+                if (minDevice.minDist >= 0)
+                    minDevices.Add(minDevice);
+            }
+
+            // add found devices in order
+            minDevices.Sort();
+            foreach (DeviceMinDistance dev in minDevices)
+            {
+                found.Add(dev.device); 
             }
             return found;
         }
@@ -61,7 +82,7 @@ namespace IGS.Server.IGS
         internal static Device CalculateClosestMatch(List<Device> devices, Point3D[] vectors)
         {
             Device currDev = null;
-            Double currDist = -1;
+            double currDist = -1;
             
             if (vectors == null)
                 return null;

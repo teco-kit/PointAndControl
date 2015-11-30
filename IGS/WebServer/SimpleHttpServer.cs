@@ -384,7 +384,7 @@ namespace IGS.Server.WebServer
         }
 
         /// <summary>
-        ///     Responses to redirect to another URL(301).
+        ///     Responses to redirect to another URL(302).
         /// </summary>
         public void WriteRedirect(String new_location)
         {
