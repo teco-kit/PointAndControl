@@ -5,7 +5,7 @@ var beforeRegister;
 var editDevice = "";
 var editMode = false;
 
-var deviceList;
+var deviceList = null;
 
 //added for AR
 var videoContainer = null;
@@ -229,38 +229,49 @@ var updateNewDeviceDD = function (event) {
 //TODO: abstract commands into single function
 var updateDeviceList = function () {
     $.getJSON('/?dev=server&cmd=list', function (data) {
-        var listItems = [];
-
-        if (editMode) {
-            $('#devicelist').listview('option', 'icon', 'location')
-            listItems.push('<li data-icon="plus"><a href="#adddevice" style="text-align:center; background:lightgrey" data-ajax="false">Gerät hinzufügen</a></li>')
-        } else {
-            $('#devicelist').listview('option', 'icon', 'carat-r');
-        }
 
         if (!data || !data.devices || data.devices.length == 0) {
-            $('#devicelist').html('<li>Keine Geräte</li>');
-            $('#devicelist').listview('refresh');
-
-            return;
+            deviceList = null;
+        } else {
+            // store device list for later use
+            deviceList = data.devices;
         }
 
-        // store device list for later use
-        deviceList = data.devices;
-
-        for (var i = 0; i < data.devices.length; i++) {
-            var device = data.devices[i];
-            var target;
-            if (editMode)
-                target = '"javascript:changeDevicePosition(\'' + device.id + '\');"';
-            else
-                target = '"/?dev=' + device.id + '&cmd=getControlPath" data-ajax="false"';
-            listItems.push('<li><a href=' + target + '><img src="img/icons/' + device.id + '.png">' + device.name + '</a></li>');
-        }
-
-        $('#devicelist').html(listItems.join(''));
-        $('#devicelist').listview('refresh');
+        $(':mobile-pagecontainer').pagecontainer('change', '#listdevices', { allowSamePageTransition: true });
+        // implicit with above call
+        // updateDeviceListView();
     });
+}
+
+var updateDeviceListView = function () {
+    var listItems = [];
+
+    if (editMode) {
+        $('#devicelist').listview('option', 'icon', 'location')
+        listItems.push('<li data-icon="plus"><a href="#adddevice" style="text-align:center; background:lightgrey" data-ajax="false">Gerät hinzufügen</a></li>')
+    } else {
+        $('#devicelist').listview('option', 'icon', 'carat-r');
+    }
+
+    if (!deviceList || deviceList.length == 0) {
+        $('#devicelist').html('<li>Keine Geräte</li>');
+        $('#devicelist').listview('refresh');
+
+        return;
+    }
+
+    for (var i = 0; i < deviceList.length; i++) {
+        var device = deviceList[i];
+        var target;
+        if (editMode)
+            target = '"javascript:changeDevicePosition(\'' + device.id + '\');"';
+        else
+            target = '"/?dev=' + device.id + '&cmd=getControlPath" data-ajax="false"';
+        listItems.push('<li><a href=' + target + '><img src="img/icons/' + device.id + '.png">' + device.name + '</a></li>');
+    }
+
+    $('#devicelist').html(listItems.join(''));
+    $('#devicelist').listview('refresh');
 }
 
 var updateMapFromList = function () {
@@ -276,8 +287,11 @@ var updateMapFromList = function () {
             return;
         }
 
-        for (var i = 0; i < data.devices.length; i++) {
-            var device = data.devices[i];
+        // store device list for later use
+        deviceList = data.devices;
+
+        for (var i = 0; i < deviceList.length; i++) {
+            var device = deviceList[i];
 
             for (var j = 0; j < circles.length; j++) {
                 if (circles[j].id == device.id)
@@ -286,15 +300,12 @@ var updateMapFromList = function () {
         }
 
         $.mobile.loading('hide');
-
-        // store device list for later use
-        deviceList = data.devices;
     });
 }
 
 var switchEditMode = function () {
     editMode = !editMode;
-    updateDeviceList();
+    updateDeviceListView();
 }
 
 var registerUser = function () {
@@ -353,7 +364,12 @@ var selectDevice = function () {
             if (supportsVibrate) {
                 //disable vibration for test navigator.vibrate(500);
             }
-            window.location.assign('/?dev=' + data.devices[0].id + '&cmd=getControlPath');
+            if (data.devices.length() == 1) {
+                selectItem(data.devices[0].id);
+            } else {
+                deviceList = data.devices;
+                $(':mobile-pagecontainer').pagecontainer('change', '#listdevices', { changeHash: false });
+            }
         }
     });
 }
@@ -501,9 +517,13 @@ $(function (event) {
     $(document).on('pagecontainerbeforetransition', function (event, ui) {
         var hash = ui.absUrl ? $.mobile.path.parseUrl(ui.absUrl).hash : "";
         if (hash == '#listdevices') {
-            logMessage("List started");
             editMode = false;
-            updateDeviceList();
+            if (!deviceList) {
+                updateDeviceList();
+            } else {
+                updateDeviceListView();
+                logMessage("List started");
+            }
         }
 
         if (hash == '#locate') {

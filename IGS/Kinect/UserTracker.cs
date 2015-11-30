@@ -223,6 +223,7 @@ namespace IGS.Server.Kinect
         ///     At postion 0 of the array is the vector of the shoulder.
         ///     At postion 1 of the array is the vector of the wrist.
         ///     <param name="id">ID of the skeleton the coordinates are requested</param>
+        ///     <param name="headBase">Use head as base for pointing vector, default is shoulder</param>
         ///     <returns>coordinates of the elbow/wrist as 3D-vector-array</returns>
         /// </summary>
         public Point3D[] GetCoordinates(int id, Boolean headBase = false)
@@ -233,13 +234,13 @@ namespace IGS.Server.Kinect
             {
                 sTracked.Actions = sTracked.Actions + 1;
 
-                // use right hand if registeres with right hand
+                // use right hand if user is registered with right hand
                 if (sTracked.rightHandUp)
                 {
                     baseJoint = JointType.ShoulderRight;
                     directionJoint = JointType.WristRight;
                 }
-                else
+                else // use left hand
                 {
                     baseJoint = JointType.ShoulderLeft;
                     directionJoint = JointType.WristLeft;
