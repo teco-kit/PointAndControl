@@ -388,7 +388,7 @@ namespace IGS.Server.WebServer
         /// </summary>
         public void WriteRedirect(String new_location)
         {
-            OutputStream.WriteLine("HTTP/1.1 301 Moved Permanently");
+            OutputStream.WriteLine("HTTP/1.1 302 Found");
             OutputStream.WriteLine("Location: " + new_location);
             OutputStream.WriteLine("");
         }
