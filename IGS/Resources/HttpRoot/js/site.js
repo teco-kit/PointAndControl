@@ -364,7 +364,7 @@ var selectDevice = function () {
             if (supportsVibrate) {
                 //disable vibration for test navigator.vibrate(500);
             }
-            if (data.devices.length() == 1) {
+            if (data.devices.length == 1) {
                 selectItem(data.devices[0].id);
             } else {
                 deviceList = data.devices;
