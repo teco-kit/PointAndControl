@@ -35,7 +35,7 @@ namespace IGS.Helperclasses
             if (a < 0)
                 return new Point3D(Double.NaN, Double.NaN, Double.NaN);
             else
-                return ray.origin + a * ray.direction;
+                return ray.origin + (a * ray.direction);
         }
 
     }

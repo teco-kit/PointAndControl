@@ -2,6 +2,7 @@
 using IGS.Server.IGS;
 using IGS.Server.Kinect;
 using IGS.Server.Location;
+using IGS.Helperclasses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +43,77 @@ namespace IGS.Server.IGS
 
         public List<Device> chooseDevice(User usr, Boolean headBase = false)
         {
-            return usr != null ? CollisionDetection.Calculate(Data.Devices, Transformer.transformJointCoords(Tracker.GetCoordinates(usr.SkeletonId, headBase))) : null;
+            return usr != null ? CollisionDetection.PointSelection(Data.Devices, Transformer.transformJointCoords(Tracker.GetCoordinates(usr.SkeletonId, headBase))) : null;
+        }
+
+        public List<DeviceWithLocation> getDevicesInView(User usr)
+        {
+            if (usr == null)
+                return null;
+
+            // [0] is the head and [1] is the hand/wrist
+            Point3D[] usrCoords = Transformer.transformJointCoords(Tracker.GetCoordinates(usr.SkeletonId, true));
+
+            // 90° is everything in front of the user
+            List<Device> devices = CollisionDetection.ConeSelection(Data.Devices, usrCoords, 60);
+
+            // plane of SmartPhone in the hand of the user, used for projection
+            Plane3D phonePlane = new Plane3D(usrCoords[1], Point3D.Subtract(usrCoords[1], usrCoords[0]));
+            // this results in user perspective rendering
+            Point3D pointOfView = usrCoords[0];
+
+            // reference vector pointing to the ceiling, projected onto plane
+            Ray3D screenUp = new Ray3D(pointOfView, Point3D.Add(phonePlane.origin, new Vector3D(0, 1, 0)));
+            Vector3D upProjection = Point3D.Subtract(phonePlane.rayIntersection(screenUp), phonePlane.origin);
+
+            List<DeviceWithLocation> devLocs = new List<DeviceWithLocation>();
+
+            // compute position
+            foreach (Device dev in devices)
+            {
+                DeviceWithLocation devLoc = new DeviceWithLocation();
+                devLoc.device = dev;
+                
+                Ray3D devCenter = new Ray3D(pointOfView, dev.getCenterOfGravity());
+                Vector3D devProjection = Point3D.Subtract(phonePlane.rayIntersection(devCenter), phonePlane.origin);
+                
+                // distance from center
+                devLoc.radius = devProjection.Length;
+
+                // angle to up direction on plane
+                devLoc.angle = Vector3D.AngleBetween(upProjection, devProjection);
+                // adjust sign based on comparison between cross product and plane normal
+                devLoc.angle *= (Vector3D.DotProduct(Vector3D.CrossProduct(upProjection, devProjection), phonePlane.normal) > 0) ? 1 : -1;
+
+                devLocs.Add(devLoc);
+            }
+
+            devLocs.Sort();
+
+            return devLocs;
+        }
+
+        public class DeviceWithLocation : IComparable<DeviceWithLocation>
+        {
+            /// <summary>
+            /// reference to the device
+            /// </summary>
+            public Device device { get; set; }
+
+            /// <summary>
+            /// radial distance to the center of the reference plane
+            /// </summary>
+            public double radius { get; set; }
+
+            /// <summary>
+            /// angle to up-vector on reference plane from -180 to +180
+            /// </summary>
+            public double angle { get; set; }
+
+            public int CompareTo(DeviceWithLocation compareTo)
+            {
+                return this.radius.CompareTo(compareTo.radius);
+            }
         }
 
         public String train(Device dev)

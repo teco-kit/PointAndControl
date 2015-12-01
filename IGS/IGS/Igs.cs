@@ -16,7 +16,6 @@ using Microsoft.Kinect;
 using System.Threading;
 
 
-
 namespace IGS.Server.IGS
 {
     /// <summary>
@@ -269,6 +268,24 @@ namespace IGS.Server.IGS
                         break;
 
                     case "pollDevice":
+                        if (!Tracker.kinectAvailable)
+                        {
+                            msg = "Keine Kinect am System angeschlossen.";
+                            break;
+                        }
+
+                        if (user == null || !user.TrackingState)
+                        {
+                            msg = "Bitte erst registrieren";
+                            break;
+                        }
+                        List<CollisionMethod.DeviceWithLocation> returnDevices = ((CollisionMethod)coreMethods).getDevicesInView(user);
+
+                        if (returnDevices.Count > 0)
+                            success = true;
+                        retStr += "," + MakeDeviceString(returnDevices);
+                        break;
+
                     case "selectDevice":
                         if (!Tracker.kinectAvailable)
                         {
@@ -281,16 +298,9 @@ namespace IGS.Server.IGS
                             msg = "Bitte erst registrieren";
                             break;
                         }
+                        
+                        List<Device> foundDevices = coreMethods.chooseDevice(user);
 
-                        List<Device> foundDevices;
-                        if (cmd.Equals("selectDevice"))
-                        {
-                             foundDevices = coreMethods.chooseDevice(user);
-                        }
-                        else
-                        {
-                            foundDevices = coreMethods.chooseDevice(user, true);
-                        }
                         if (foundDevices.Count > 0)
                             success = true;
                         retStr += "," + MakeDeviceString(foundDevices);
@@ -465,7 +475,24 @@ namespace IGS.Server.IGS
             return result;
         }
 
+        private String MakeDeviceString(IEnumerable<CollisionMethod.DeviceWithLocation> devices)
+        {
+            String result = "\"devices\":[";
 
+            if (devices != null)
+            {
+                CollisionMethod.DeviceWithLocation[] deviceList = devices.ToArray<CollisionMethod.DeviceWithLocation>();
+                for (int i = 0; i < deviceList.Length; i++)
+                {
+                    if (i != 0)
+                        result += ",";
+                    result += "{\"id\":\"" + deviceList[i].device.Id + "\", \"name\":\"" + deviceList[i].device.Name + 
+                        "\", \"radius\":\"" + deviceList[i].radius + "\", \"angle\":\"" + deviceList[i].angle + "\"}";
+                }
+            }
+            result += "]";
+            return result;
+        }
 
         /// <summary>
         ///     This method deletes the user who closed his app.

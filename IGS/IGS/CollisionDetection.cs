@@ -18,7 +18,7 @@ namespace IGS.Server.IGS
             public Device device;
             public double minDist;
 
-            public int DeviceMinDistance(DeviceMinDistance compareTo)
+            public int CompareTo(DeviceMinDistance compareTo)
             {
                 return this.minDist.CompareTo(compareTo.minDist);
             }
@@ -34,7 +34,7 @@ namespace IGS.Server.IGS
         /// <param name="devices">Devices which are available in the system</param>
         /// <param name="vectors">The position vectors of the ellbows and wrists</param>
         /// <returns>Devicelist with hit devices</returns>
-        internal static List<Device> Calculate(List<Device> devices, Point3D[] vectors)
+        internal static List<Device> PointSelection(List<Device> devices, Point3D[] vectors)
         {
             List<Device> found = new List<Device>();
 
@@ -78,40 +78,31 @@ namespace IGS.Server.IGS
             return found;
         }
 
-        
-        internal static Device CalculateClosestMatch(List<Device> devices, Point3D[] vectors)
+        internal static List<Device> ConeSelection(List<Device> devices, Point3D[] vectors, double angle)
         {
-            Device currDev = null;
-            double currDist = -1;
-            
+            List<Device> found = new List<Device>();
+
             if (vectors == null)
-                return null;
+                return found;
 
             // pointing ray goes from vectors[0] to vectors[1]
             Ray3D pointer = new Ray3D(vectors[0], vectors[1]);
-
-            Double tempDist;
 
             foreach (Device dev in devices)
             {
                 foreach (Ball ball in dev.Form)
                 {
-                    // check if Ball is in front of pointing ray
-                    if (Vector3D.AngleBetween(pointer.direction, ball.Centre - pointer.origin) < 90)
+                    // check if Ball is within selection volume
+                    if (Vector3D.AngleBetween(pointer.direction, ball.Centre - pointer.origin) < angle)
                     {
-                        // check distance
-                        tempDist = Point3D.Subtract(pointer.nearestPoint(ball.Centre), ball.Centre).Length;
-                        if (currDist == -1 || tempDist < currDist)
-                        {
-                            currDev = dev;
-                            currDist = tempDist;
-                        }
+                        // add found devices
+                        found.Add(dev);
                     }
                 }
             }
 
-            return currDev;
+            return found;
         }
-
+        
     }
 }
