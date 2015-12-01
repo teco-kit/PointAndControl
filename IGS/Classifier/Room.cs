@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using HelixToolkit.Wpf;
 using System.Windows.Media.Media3D;
 using System.Drawing;
 using IGS.Helperclasses;

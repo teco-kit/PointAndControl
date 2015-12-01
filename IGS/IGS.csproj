@@ -122,6 +122,7 @@
     <Compile Include="Devices\TCP.cs" />
     <Compile Include="Devices\Kodi.cs" />
     <Compile Include="Devices\XBMCv11.cs" />
+    <Compile Include="Helperclasses\Plane3D.cs" />
     <Compile Include="Helperclasses\CoordTransform.cs" />
     <Compile Include="Helperclasses\igsMath.cs" />
     <Compile Include="Helperclasses\Ray3D.cs" />

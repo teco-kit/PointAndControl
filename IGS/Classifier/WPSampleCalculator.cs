@@ -1,5 +1,4 @@
-﻿using HelixToolkit.Wpf;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
+using IGS.Helperclasses;
 
 namespace IGS.Classifier
 {
@@ -51,7 +51,8 @@ namespace IGS.Classifier
             Point3D wallPoint;
             foreach (Plane3D wall in calcRoomModel.wallList)
             {
-                if (ray.PlaneIntersection(wall.Position, wall.Normal, out wallPoint))
+                wallPoint = wall.rayIntersection(ray);
+                if (!wallPoint.X.Equals(Double.NaN))
                 {
                     wallPoint.X = Math.Round(wallPoint.X, 7);
                     wallPoint.Y = Math.Round(wallPoint.Y, 7);
