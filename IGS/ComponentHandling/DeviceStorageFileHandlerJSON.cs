@@ -29,22 +29,22 @@ namespace IGS.ComponentHandling
                 File.Create(DEVICE_SAVE_PATH).Close();
             }
 
-            JsonSerializer serializer = new JsonSerializer();
-            serializer.TypeNameHandling = TypeNameHandling.All;
-            serializer.Formatting = Formatting.Indented;
+            //JsonSerializer serializer = new JsonSerializer();
+            //serializer.TypeNameHandling = TypeNameHandling.All;
+            //serializer.Formatting = Formatting.Indented;
 
-            using (FileStream stream = File.Open(DEVICE_SAVE_PATH, FileMode.Append))
-            using (StreamWriter sw = new StreamWriter(stream))
-            using (JsonWriter writer = new JsonTextWriter(sw))
-            {
-                serializer.Serialize(writer, dev);
-            }
+            //using (FileStream stream = File.Open(DEVICE_SAVE_PATH, FileMode.Append))
+            //using (StreamWriter sw = new StreamWriter(stream))
+            //using (JsonWriter writer = new JsonTextWriter(sw))
+            //{
+            //    serializer.Serialize(writer, dev);
+            //}
 
-            //List<Device> devices = readDevices();
+            List<Device> devices = readDevices();
 
-            //devices.Add(dev);
+            devices.Add(dev);
 
-            //writeDevicesToFile(devices);
+            writeDevicesToFile(devices);
         }
 
         public string addDeviceCoord(string devId,  Ball ball)

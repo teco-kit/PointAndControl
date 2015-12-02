@@ -38,7 +38,7 @@ namespace IGS.Server.IGS
 
         public Room _roomModel { get; set; }
 
-        public DeviceStorageFileHandlerXML _deviceStorageHandling { get; set; }
+        public DeviceStorageFileHandlerJSON _deviceStorageHandling { get; set; }
         public EnvironmentInfoHandler _environmentHandler { get; set; }
 
         private Deviceproducer devProducer { get; set; }
@@ -53,7 +53,7 @@ namespace IGS.Server.IGS
         {
 
             _newDevices = new List<Device>();
-            _deviceStorageHandling = new DeviceStorageFileHandlerXML();
+            _deviceStorageHandling = new DeviceStorageFileHandlerJSON();
             _environmentHandler = new EnvironmentInfoHandler();
             devProducer = new Deviceproducer();
 
