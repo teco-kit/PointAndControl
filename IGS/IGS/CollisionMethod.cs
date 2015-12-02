@@ -63,7 +63,7 @@ namespace IGS.Server.IGS
             Point3D pointOfView = usrCoords[0];
 
             // reference vector pointing to the ceiling, projected onto plane
-            Ray3D screenUp = new Ray3D(pointOfView, Point3D.Add(phonePlane.origin, new Vector3D(0, 1, 0)));
+            Ray3D screenUp = new Ray3D(pointOfView, Point3D.Add(phonePlane.origin, new Vector3D(0, 0.1, 0)));
             Vector3D upProjection = Point3D.Subtract(phonePlane.rayIntersection(screenUp), phonePlane.origin);
 
             List<DeviceWithLocation> devLocs = new List<DeviceWithLocation>();
