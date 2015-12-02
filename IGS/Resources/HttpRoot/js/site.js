@@ -367,6 +367,9 @@ var selectDevice = function () {
             if (data.devices.length == 1) {
                 selectItem(data.devices[0].id);
             } else {
+                if (supportsVibrate) {
+                    navigator.vibrate(500);
+                }
                 deviceList = data.devices;
                 $(':mobile-pagecontainer').pagecontainer('change', '#listdevices', { changeHash: false });
             }
