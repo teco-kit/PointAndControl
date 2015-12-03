@@ -392,12 +392,24 @@ var pollDevice = function () {
             toast(data.msg);
         }
 
+        var arItems = [];
+
         if (data.success) {
-            // display device
-            $('#arview a').attr("href", "/?dev=" + data.devices[0].id + "&cmd=getControlPath");
-            $('#arview img').attr("src", "img/icons/" + data.devices[0].id + ".png");
-            $('#arview span').text(data.devices[0].name);
+            // create devices
+            for (i = 0; i < devices.length; i++) {
+                var device = data.devices[i];
+                var target = '"/?dev=' + device.id + '&cmd=getControlPath" data-ajax="false"';
+
+                arItems.push('<a href=' + target + '><img src="img/icons/' + device.id + '.png"><span>' + device.name + '</span></a>');
+            }
+
+            $('#arview').html(listItems.join(''));
             $('#arview').show();
+
+            //$('#arview a').attr("href", "/?dev=" + data.devices[0].id + "&cmd=getControlPath");
+            //$('#arview img').attr("src", "img/icons/" + data.devices[0].id + ".png");
+            //$('#arview span').text(data.devices[0].name);
+            //$('#arview').show();
         } else {
             $('#arview').hide();
         }
