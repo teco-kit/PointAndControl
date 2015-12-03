@@ -486,8 +486,9 @@ namespace IGS.Server.IGS
                 {
                     if (i != 0)
                         result += ",";
-                    result += "{\"id\":\"" + deviceList[i].device.Id + "\", \"name\":\"" + deviceList[i].device.Name + 
-                        "\", \"radius\":\"" + deviceList[i].radius + "\", \"angle\":\"" + deviceList[i].angle + "\"}";
+                    result += "{\"id\":\"" + deviceList[i].device.Id + "\", \"name\":\"" + deviceList[i].device.Name +
+                        "\", \"radius\":" + deviceList[i].radius.ToString(System.Globalization.CultureInfo.InvariantCulture) +
+                        ", \"angle\":" + deviceList[i].angle.ToString(System.Globalization.CultureInfo.InvariantCulture) + "}";
                 }
             }
             result += "]";

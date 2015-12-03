@@ -394,16 +394,25 @@ var pollDevice = function () {
 
         var arItems = [];
 
+		var centerX = $('#arview').width()/2;
+		var centerY = $('#arview').height()/2;
+		var scale = 1000;
+
         if (data.success) {
             // create devices
-            for (i = 0; i < devices.length; i++) {
+            for (i = 0; i < data.devices.length; i++) {
                 var device = data.devices[i];
                 var target = '"/?dev=' + device.id + '&cmd=getControlPath" data-ajax="false"';
 
-                arItems.push('<a href=' + target + '><img src="img/icons/' + device.id + '.png"><span>' + device.name + '</span></a>');
+				var x = centerX - (Math.cos(device.angle / 180 * Math.PI) * device.radius * scale);
+				var y = centerY + (Math.sin(device.angle / 180 * Math.PI) * device.radius * scale);
+
+				var position = '"position: absolute; top: ' + x + 'px; left: ' + y + 'px;"';
+
+                arItems.push('<div style=' + position + '><a href=' + target + '><img src="img/icons/' + device.id + '.png"><span>' + device.angle + '; ' + device.radius + '</span></a></div>');
             }
 
-            $('#arview').html(listItems.join(''));
+            $('#arview').html(arItems.join(''));
             $('#arview').show();
 
             //$('#arview a').attr("href", "/?dev=" + data.devices[0].id + "&cmd=getControlPath");
