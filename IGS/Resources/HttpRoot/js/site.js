@@ -396,7 +396,7 @@ var pollDevice = function () {
 
 		var centerX = $('#arview').width()/2;
 		var centerY = $('#arview').height()/2;
-		var scale = 1500;
+		var scale = 318;
 
         if (data.success) {
             // create devices

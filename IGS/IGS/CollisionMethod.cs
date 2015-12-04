@@ -52,7 +52,7 @@ namespace IGS.Server.IGS
                 return null;
 
             // [0] is the head and [1] is the hand/wrist
-            Point3D[] usrCoords = Transformer.transformJointCoords(Tracker.GetCoordinates(usr.SkeletonId, true));
+            Point3D[] usrCoords = Transformer.transformJointCoords(Tracker.getMedianFilteredCoordinates(usr.SkeletonId, true));
 
             // 90° is everything in front of the user
             List<Device> devices = CollisionDetection.ConeSelection(Data.Devices, usrCoords, 60);
@@ -60,7 +60,9 @@ namespace IGS.Server.IGS
             // plane of SmartPhone in the hand of the user, used for projection
             Plane3D phonePlane = new Plane3D(usrCoords[1], Point3D.Subtract(usrCoords[1], usrCoords[0]));
             // this results in user perspective rendering
-            Point3D pointOfView = usrCoords[0];
+            // Point3D pointOfView = usrCoords[0];
+            // or find virtual camera point behind the smartphone (120mm constant for Nexus 4)
+            Point3D pointOfView = phonePlane.origin - (0.12 / phonePlane.normal.Length * phonePlane.normal); 
 
             // reference vector pointing to the ceiling, projected onto plane
             Ray3D screenUp = new Ray3D(pointOfView, Point3D.Add(phonePlane.origin, new Vector3D(0, 0.1, 0)));

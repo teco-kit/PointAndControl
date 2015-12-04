@@ -267,8 +267,9 @@ namespace IGS.Server.Kinect
             return null;
         }
 
-        public List<Point3D[]> GetCoordinatesWindow(int id)
+        public List<Point3D[]> GetCoordinatesWindow(int id, Boolean headBase = false)
         {
+            JointType baseJoint, directionJoint;
 
             List<Point3D[]> returnList = new List<Point3D[]>();
             workingOnWindow = true;
@@ -277,25 +278,36 @@ namespace IGS.Server.Kinect
             foreach (TrackedSkeleton sTracked in Bodies.Where(sTracked => sTracked.Id == id))
             {
                 sTracked.Actions = sTracked.Actions + 1;
+
+                // use right hand if user is registered with right hand
+                if (sTracked.rightHandUp)
+                {
+                    baseJoint = JointType.ShoulderRight;
+                    directionJoint = JointType.HandRight;
+                }
+                else // use left hand
+                {
+                    baseJoint = JointType.ShoulderLeft;
+                    directionJoint = JointType.HandLeft;
+                }
+
+                // use head as base if requested
+                if (headBase)
+                    baseJoint = JointType.Head;
+
                 foreach (Body[] bodies in lastBodies)
                 {
                     foreach (Body s in bodies)
                     {
                         if ((int)s.TrackingId != id) continue;
+                        Point3D[] result = new Point3D[2];
 
-                        Point3D[] result = new Point3D[4];
-                        result[0] = new Point3D(s.Joints[JointType.ShoulderRight].Position.X,
-                                                 s.Joints[JointType.ShoulderRight].Position.Y,
-                                                 s.Joints[JointType.ShoulderRight].Position.Z);
-                        result[1] = new Point3D(s.Joints[JointType.WristRight].Position.X,
-                                                 s.Joints[JointType.WristRight].Position.Y,
-                                                 s.Joints[JointType.WristRight].Position.Z);
-                        result[2] = new Point3D(s.Joints[JointType.ShoulderLeft].Position.X,
-                                                 s.Joints[JointType.ShoulderLeft].Position.Y,
-                                                 s.Joints[JointType.ShoulderLeft].Position.Z);
-                        result[3] = new Point3D(s.Joints[JointType.WristLeft].Position.X,
-                                                 s.Joints[JointType.WristLeft].Position.Y,
-                                                 s.Joints[JointType.WristLeft].Position.Z);
+                        result[0] = new Point3D(s.Joints[baseJoint].Position.X,
+                                                    s.Joints[baseJoint].Position.Y,
+                                                    s.Joints[baseJoint].Position.Z);
+                        result[1] = new Point3D(s.Joints[directionJoint].Position.X,
+                                                    s.Joints[directionJoint].Position.Y,
+                                                    s.Joints[directionJoint].Position.Z);
                         returnList.Add(result);
 
                     }
@@ -307,16 +319,15 @@ namespace IGS.Server.Kinect
             {
                 lastBodies.Clear();
             }
-
             
             workingOnWindow = false;
             return returnList;
         }
 
 
-        public Point3D[] getMedianFilteredCoordinates(int id)
+        public Point3D[] getMedianFilteredCoordinates(int id, Boolean headBase = false)
         {
-            List<Point3D[]> coords = this.GetCoordinatesWindow(id);
+            List<Point3D[]> coords = this.GetCoordinatesWindow(id, headBase);
 
             return  jointFilter.jointFilter(coords);
         }
