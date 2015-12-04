@@ -404,11 +404,11 @@ var pollDevice = function () {
                 var device = data.devices[i];
                 var target = '"/?dev=' + device.id + '&cmd=getControlPath" data-ajax="false"';
 
-				var x = centerX - (Math.cos(device.angle / 180 * Math.PI) * device.radius * scale);
-				var y = centerY + (Math.sin(device.angle / 180 * Math.PI) * device.radius * scale);
+                var x = centerX + (Math.sin(device.angle / 180 * Math.PI) * device.radius * scale); 
+                var y = centerY - (Math.cos(device.angle / 180 * Math.PI) * device.radius * scale);
 
-				var position = '"position: absolute; top: ' + x + 'px; left: ' + y + 'px;"';
-
+				var position = '"position: absolute; left: ' + x + 'px; top: ' + y + 'px;"';
+                 
                 arItems.push('<div style=' + position + '><a href=' + target + '><img src="img/icons/' + device.id + '.png"><span>' + device.angle + '; ' + device.radius + '</span></a></div>');
             }
 
