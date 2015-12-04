@@ -394,17 +394,18 @@ var pollDevice = function () {
 
         var arItems = [];
 
-		var centerX = $('#arview').width()/2;
-		var centerY = $('#arview').height()/2;
-		var scale = 318;
+		// set origin to hand on the right
+		var centerX = $(window).width();
+		var centerY = $(window).height();
+		var scale = 120 * 39.37; // screen dpi * conversion to dpm
 
         if (data.success) {
             // create devices
             for (i = 0; i < data.devices.length; i++) {
                 var device = data.devices[i];
 
-                var x = centerX + (Math.sin(device.angle / 180 * Math.PI) * device.radius * scale); 
-                var y = centerY - (Math.cos(device.angle / 180 * Math.PI) * device.radius * scale);
+                var x = centerX + (Math.sin(device.angle / 180 * Math.PI) * device.radius * scale) - 70; 
+                var y = centerY - (Math.cos(device.angle / 180 * Math.PI) * device.radius * scale) - 70;
 
 				var position = '"position: absolute; left: ' + x + 'px; top: ' + y + 'px;"';
                  

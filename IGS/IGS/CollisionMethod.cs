@@ -53,16 +53,17 @@ namespace IGS.Server.IGS
 
             // [0] is the head and [1] is the hand/wrist
             Point3D[] usrCoords = Transformer.transformJointCoords(Tracker.getMedianFilteredCoordinates(usr.SkeletonId, true));
-
+            //Point3D[] usrCoords = Transformer.transformJointCoords(Tracker.GetCoordinates(usr.SkeletonId, true));
+            
             // 90° is everything in front of the user
-            List<Device> devices = CollisionDetection.ConeSelection(Data.Devices, usrCoords, 60);
+            // List<Device> devices = CollisionDetection.ConeSelection(Data.Devices, usrCoords, 30);
 
             // plane of SmartPhone in the hand of the user, used for projection
             Plane3D phonePlane = new Plane3D(usrCoords[1], Point3D.Subtract(usrCoords[1], usrCoords[0]));
             // this results in user perspective rendering
             // Point3D pointOfView = usrCoords[0];
-            // or find virtual camera point behind the smartphone (120mm constant for Nexus 4)
-            Point3D pointOfView = phonePlane.origin - (0.12 / phonePlane.normal.Length * phonePlane.normal); 
+            // or find virtual camera point in front of the smartphone (120mm constant for Nexus 4)
+            Point3D pointOfView = phonePlane.origin - (0.12 / phonePlane.normal.Length * phonePlane.normal);
 
             // reference vector pointing to the ceiling, projected onto plane
             Ray3D screenUp = new Ray3D(pointOfView, Point3D.Add(phonePlane.origin, new Vector3D(0, 0.1, 0)));
@@ -71,7 +72,7 @@ namespace IGS.Server.IGS
             List<DeviceWithLocation> devLocs = new List<DeviceWithLocation>();
 
             // compute position
-            foreach (Device dev in devices)
+            foreach (Device dev in Data.Devices)
             {
                 DeviceWithLocation devLoc = new DeviceWithLocation();
                 devLoc.device = dev;
@@ -82,10 +83,16 @@ namespace IGS.Server.IGS
                 // distance from center
                 devLoc.radius = devProjection.Length;
 
+                if (Double.IsNaN(devLoc.radius))
+                    continue;
+
                 // angle to up direction on plane
                 devLoc.angle = Vector3D.AngleBetween(upProjection, devProjection);
                 // adjust sign based on comparison between cross product and plane normal
                 devLoc.angle *= (Vector3D.DotProduct(Vector3D.CrossProduct(upProjection, devProjection), phonePlane.normal) > 0) ? 1 : -1;
+
+                if (Double.IsNaN(devLoc.angle))
+                    continue;
 
                 devLocs.Add(devLoc);
             }

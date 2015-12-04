@@ -60,11 +60,11 @@ namespace IGS.Server.Kinect
             Filter = filter;
             Strategy = replace;
             Bodies = new List<TrackedSkeleton>();
-            movingWindowCollect = false;
+            movingWindowCollect = true;
             lastBodies = new List<Body[]>();
             this.jointFilter = new MedianJointFilter();
             workingOnWindow = false;
-            windowSize = 15;
+            windowSize = 5;
             checkOnEveryFrame = true;
             kinectAvailable = false;
         }
@@ -274,7 +274,6 @@ namespace IGS.Server.Kinect
             List<Point3D[]> returnList = new List<Point3D[]>();
             workingOnWindow = true;
         
-            int searchForLastBody = 1;
             foreach (TrackedSkeleton sTracked in Bodies.Where(sTracked => sTracked.Id == id))
             {
                 sTracked.Actions = sTracked.Actions + 1;
@@ -309,9 +308,7 @@ namespace IGS.Server.Kinect
                                                     s.Joints[directionJoint].Position.Y,
                                                     s.Joints[directionJoint].Position.Z);
                         returnList.Add(result);
-
                     }
-                    searchForLastBody++;
                 }
             }
 
@@ -356,7 +353,6 @@ namespace IGS.Server.Kinect
         /// <param name="e">AllFrameReadyEvent with associated data.</param>
         public void reader_FramesReady(object sender, BodyFrameArrivedEventArgs e)
         {
-
             if (e == null)
                 return;
 
@@ -412,27 +408,20 @@ namespace IGS.Server.Kinect
                 }
                 _bodiesLastFrame = bodies;
 
-                if (checkOnEveryFrame)
-                {
-
-                }
-
-                if (movingWindowCollect == true)
+                if (movingWindowCollect)
                 {
                     Body[] bodiesToSave = new Body[bodies.Length];
                     for (int i = 0; i < bodies.Length; i++)
                     {
                         bodiesToSave[i] = bodies[i];
                     }
-                    if (workingOnWindow == false)
-                    {
-                        if (movingWindowCollect == true && lastBodies.Count == windowSize)
-                        {
-                            lastBodies.RemoveAt(0);
-                        }
+                    if (!workingOnWindow)
                         lastBodies.Add(bodiesToSave);
-                    }
 
+                    while (lastBodies.Count >= windowSize && !workingOnWindow)
+                    {
+                        lastBodies.RemoveAt(0);
+                    }
                 }
             }
 
