@@ -238,12 +238,12 @@ namespace IGS.Server.Kinect
                 if (sTracked.rightHandUp)
                 {
                     baseJoint = JointType.ShoulderRight;
-                    directionJoint = JointType.WristRight;
+                    directionJoint = JointType.HandRight;
                 }
                 else // use left hand
                 {
                     baseJoint = JointType.ShoulderLeft;
-                    directionJoint = JointType.WristLeft;
+                    directionJoint = JointType.HandLeft;
                 }
 
                 // use head as base if requested

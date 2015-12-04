@@ -19,10 +19,3 @@ function sendcmd(cmd) {
 	});
 
 }
-
-// check if vibration is supported
-var supportsVibrate = "vibrate" in navigator;
-
-if (supportsVibrate) {
-    navigator.vibrate(500);
-}

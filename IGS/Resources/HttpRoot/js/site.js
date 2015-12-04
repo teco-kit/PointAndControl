@@ -266,7 +266,7 @@ var updateDeviceListView = function () {
         if (editMode)
             target = '"javascript:changeDevicePosition(\'' + device.id + '\');"';
         else
-            target = '"/?dev=' + device.id + '&cmd=getControlPath" data-ajax="false"';
+            target = '"javascript:selectItem(\'' + device.id + '\');"'
         listItems.push('<li><a href=' + target + '><img src="img/icons/' + device.id + '.png">' + device.name + '</a></li>');
     }
 
@@ -396,20 +396,19 @@ var pollDevice = function () {
 
 		var centerX = $('#arview').width()/2;
 		var centerY = $('#arview').height()/2;
-		var scale = 1000;
+		var scale = 1500;
 
         if (data.success) {
             // create devices
             for (i = 0; i < data.devices.length; i++) {
                 var device = data.devices[i];
-                var target = '"/?dev=' + device.id + '&cmd=getControlPath" data-ajax="false"';
 
                 var x = centerX + (Math.sin(device.angle / 180 * Math.PI) * device.radius * scale); 
                 var y = centerY - (Math.cos(device.angle / 180 * Math.PI) * device.radius * scale);
 
 				var position = '"position: absolute; left: ' + x + 'px; top: ' + y + 'px;"';
                  
-                arItems.push('<div style=' + position + '><a href=' + target + '><img src="img/icons/' + device.id + '.png"><span>' + device.angle + '; ' + device.radius + '</span></a></div>');
+                arItems.push('<div style=' + position + ' onclick="selectItem(\'' + device.id + '\')"><img src="img/icons/' + device.id + '.png"></div>');
             }
 
             $('#arview').html(arItems.join(''));
@@ -428,6 +427,7 @@ var pollDevice = function () {
 
 var selectItem = function (id) {
     //toast(id);
+	vibrate(500);
     window.location.assign('/?dev=' + id + '&cmd=getControlPath');
 }
 
