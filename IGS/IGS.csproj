@@ -260,9 +260,11 @@
     <Resource Include="Resources\HttpRoot\img\icons\Ventilator.png" />
     <Resource Include="Resources\HttpRoot\img\icons\XBox.png" />
     <Content Include="Resources\HttpRoot\css\screen.css" />
+    <Content Include="Resources\HttpRoot\img\living-lab-map_270.svg" />
+    <Content Include="Resources\HttpRoot\img\living-lab-map_90.svg" />
     <Content Include="Resources\HttpRoot\js\screen.js" />
     <Content Include="Resources\HttpRoot\screen.html" />
-    <Content Include="Resources\HttpRoot\img\living-lab-map.svg" />
+    <Content Include="Resources\HttpRoot\img\living-lab-map_0.svg" />
     <Content Include="Resources\HttpRoot\js\adapter.js" />
     <Content Include="Resources\HttpRoot\Kodi\index.html" />
     <Resource Include="Resources\HttpRoot\Boxee\img\back.gif" />

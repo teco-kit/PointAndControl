@@ -575,7 +575,10 @@ $(function (event) {
         }
         
         if (hash == '#map') {
-            logMessage("Map started");
+            // change map randomly
+            var rot = (Math.random() >= 0.5) ? 90 : 270;
+            $('#mapSvg').attr('data', 'img/living-lab-map_' + rot + '.svg');
+            logMessage("Map started - " + rot);
             $.mobile.loading('show');
             updateMapFromList();
         }
