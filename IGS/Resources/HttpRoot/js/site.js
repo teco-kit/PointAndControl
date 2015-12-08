@@ -4,6 +4,7 @@ var trackingId = null;
 var beforeRegister;
 var editDevice = "";
 var editMode = false;
+var showDevice;
 
 var deviceList = null;
 
@@ -429,7 +430,19 @@ var pollDevice = function () {
 var selectItem = function (id) {
     //toast(id);
 	vibrate(500);
-    window.location.assign('/?dev=' + id + '&cmd=getControlPath');
+    //window.location.assign('/?dev=' + id + '&cmd=getControlPath');
+
+    // load device info for device screen
+	$.getJSON('/?dev=' + id + '&cmd=getDeviceName', function (data) {
+	    if (!data) {
+	        return;
+	    }
+
+	    if (data.success && data.device) {
+            showDevice = data.device;
+	        $(':mobile-pagecontainer').pagecontainer('change', '#device');
+	    }
+	});
 }
 
 var errorCallback = function(error) {
@@ -581,6 +594,12 @@ $(function (event) {
             logMessage("Map started - " + rot);
             $.mobile.loading('show');
             updateMapFromList();
+        }
+
+        if (hash == '#device') {
+            // update image and caption
+            $('#deviceview img').attr("src", "img/icons/" + showDevice.id + ".png");
+            $('#deviceview span').text(showDevice.name);
         }
     });
 

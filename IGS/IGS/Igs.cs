@@ -437,11 +437,15 @@ namespace IGS.Server.IGS
                         args.P.WriteRedirect(retStr);
                         break;
 
+                    case "getDeviceName":
+                        Device dev = Data.getDeviceByID(devId);
+                        retStr = "{\"cmd\":\"" + cmd + "\",\"success\":true,\"device\":{\"id\":\"" + dev.Id + "\", \"name\":\"" + dev.Name + "\"}}";
+                        break;
+
                     default:
                         // assumes that correct device was selected
                         // executeOnlineLearning(devId, wlanAdr);
                         retStr = Data.getDeviceByID(devId).Transmit(cmd, value);
-
                         break;
                 }
 
