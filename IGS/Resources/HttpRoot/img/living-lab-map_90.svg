@@ -617,7 +617,6 @@
        id="TecoEnvboard"
        title="TecoEnvboard"
        role="TecoEnvboard role"
-       onclick="top.selectItem(this.id)"
        rx="27.072113"
        ry="28.95969" />
   </a>
@@ -638,8 +637,7 @@
        r="28"
        id="circle5583"
        title="TecoEnvboard"
-       role="TecoEnvboard role"
-       onclick="top.selectItem(this.id)" />
+       role="TecoEnvboard role" />
   </a>
   <a
      transform="matrix(-1.3918289,-0.00674532,0.00697651,-1.4395333,351.16146,1138.45)"
@@ -658,8 +656,7 @@
        r="28"
        id="circle5589"
        title="TecoEnvboard"
-       role="TecoEnvboard role"
-       onclick="top.selectItem(this.id)" />
+       role="TecoEnvboard role" />
   </a>
   <a
      transform="matrix(-1.3918289,0.00674532,0.00697651,1.4395333,856.23473,511.66373)"
@@ -668,8 +665,6 @@
      xlink:href="#TecoEnvboard"
      id="Plugwise_7"
      onclick="top.selectItem(this.id)">
-    <desc
-       id="desc5593">Stehlampe Tuer</desc>
     <circle
        cy="217.61945"
        cx="93.583015"
@@ -677,11 +672,9 @@
        r="28"
        id="circle2002"
        title="TecoEnvboard"
-       role="TecoEnvboard role"
-       onclick="top.selectItem(this.id)">
-      <desc
-         id="desc4970">Rollladen OST</desc>
-    </circle>
+       role="TecoEnvboard role" />
+    <desc
+        id="desc4970">Rollladen OST</desc>
   </a>
   <a
      transform="matrix(-1.3918289,-0.00674532,0.00697651,-1.4395333,714.58731,1133.1135)"
@@ -700,8 +693,7 @@
        r="28"
        id="circle5601"
        title="TecoEnvboard"
-       role="TecoEnvboard role"
-       onclick="top.selectItem(this.id)" />
+       role="TecoEnvboard role" />
   </a>
   <a
      transform="matrix(-1.3918289,-0.00674532,0.00697651,-1.4395333,459.69987,1121.8404)"
@@ -720,8 +712,7 @@
        r="28"
        id="circle5607"
        title="TecoEnvboard"
-       role="TecoEnvboard role"
-       onclick="top.selectItem(this.id)" />
+       role="TecoEnvboard role" />
   </a>
   <a
      transform="matrix(-1.3918289,-0.00674532,0.00697651,-1.4395333,244.8861,966.4725)"
@@ -740,8 +731,7 @@
        r="28"
        id="circle5613"
        title="TecoEnvboard"
-       role="TecoEnvboard role"
-       onclick="top.selectItem(this.id)" />
+       role="TecoEnvboard role" />
   </a>
   <a
      transform="matrix(-1.3918289,-0.00674532,0.00697651,-1.4395333,245.36205,853.13245)"
@@ -760,8 +750,7 @@
        r="28"
        id="circle5619"
        title="TecoEnvboard"
-       role="TecoEnvboard role"
-       onclick="top.selectItem(this.id)" />
+       role="TecoEnvboard role" />
   </a>
   <a
      transform="matrix(-1.3918289,-0.00674532,0.00697651,-1.4395333,227.09453,718.9586)"
@@ -780,8 +769,7 @@
        r="28"
        id="circle5625"
        title="TecoEnvboard"
-       role="TecoEnvboard role"
-       onclick="top.selectItem(this.id)" />
+       role="TecoEnvboard role" />
   </a>
   <a
      transform="matrix(-1.3918289,-0.00674532,0.00697651,-1.4395333,229.66109,603.71171)"
@@ -800,8 +788,7 @@
        r="28"
        id="circle5631"
        title="TecoEnvboard"
-       role="TecoEnvboard role"
-       onclick="top.selectItem(this.id)" />
+       role="TecoEnvboard role" />
   </a>
   <a
      transform="matrix(-1.3918289,-0.00674532,0.00697651,-1.4395333,224.70808,480.90883)"
@@ -820,8 +807,7 @@
        r="28"
        id="circle5637"
        title="TecoEnvboard"
-       role="TecoEnvboard role"
-       onclick="top.selectItem(this.id)" />
+       role="TecoEnvboard role" />
   </a>
   <a
      transform="matrix(-1.3918289,-0.00674532,0.00697651,-1.4395333,945.21903,1098.3394)"
@@ -840,8 +826,7 @@
        r="28"
        id="circle5643"
        title="TecoEnvboard"
-       role="TecoEnvboard role"
-       onclick="top.selectItem(this.id)" />
+       role="TecoEnvboard role" />
   </a>
   <a
      transform="matrix(-1.3918289,-0.00674532,0.00697651,-1.4395333,945.74993,988.77755)"
@@ -860,8 +845,7 @@
        r="28"
        id="circle5649"
        title="TecoEnvboard"
-       role="TecoEnvboard role"
-       onclick="top.selectItem(this.id)" />
+       role="TecoEnvboard role" />
   </a>
   <a
      transform="matrix(-1.3918289,-0.00674532,0.00697651,-1.4395333,946.16193,903.77265)"
@@ -880,8 +864,7 @@
        r="28"
        id="circle5655"
        title="TecoEnvboard"
-       role="TecoEnvboard role"
-       onclick="top.selectItem(this.id)" />
+       role="TecoEnvboard role" />
   </a>
   <a
      transform="matrix(-1.3918289,-0.00674532,0.00697651,-1.4395333,946.57393,818.76773)"
@@ -900,8 +883,7 @@
        r="28"
        id="circle5661"
        title="TecoEnvboard"
-       role="TecoEnvboard role"
-       onclick="top.selectItem(this.id)" />
+       role="TecoEnvboard role" />
   </a>
   <a
      transform="matrix(-1.3918289,-0.00674532,0.00697651,-1.4395333,946.98583,733.76283)"
@@ -920,8 +902,7 @@
        r="28"
        id="circle5667"
        title="TecoEnvboard"
-       role="TecoEnvboard role"
-       onclick="top.selectItem(this.id)" />
+       role="TecoEnvboard role" />
   </a>
   <a
      transform="matrix(-1.3918289,-0.00674532,0.00697651,-1.4395333,332.85707,383.20275)"
@@ -940,8 +921,7 @@
        r="28"
        id="circle5673"
        title="TecoEnvboard"
-       role="TecoEnvboard role"
-       onclick="top.selectItem(this.id)" />
+       role="TecoEnvboard role" />
   </a>
   <a
      transform="matrix(-1.3918289,-0.00674532,0.00697651,-1.4395333,678.56196,381.10008)"
@@ -960,8 +940,7 @@
        r="28"
        id="circle5679"
        title="TecoEnvboard"
-       role="TecoEnvboard role"
-       onclick="top.selectItem(this.id)" />
+       role="TecoEnvboard role" />
   </a>
   <a
      transform="matrix(-1.3918289,-0.00674532,0.00697651,-1.4395333,512.31183,384.07247)"
@@ -980,8 +959,7 @@
        r="28"
        id="circle5685"
        title="TecoEnvboard"
-       role="TecoEnvboard role"
-       onclick="top.selectItem(this.id)" />
+       role="TecoEnvboard role" />
   </a>
   <a
      transform="matrix(-1.3918289,-0.00674532,0.00697651,-1.4395333,947.41613,644.97992)"
@@ -1000,7 +978,6 @@
        r="28"
        id="circle5691"
        title="TecoEnvboard"
-       role="TecoEnvboard role"
-       onclick="top.selectItem(this.id)" />
+       role="TecoEnvboard role" />
   </a>
 </svg>
