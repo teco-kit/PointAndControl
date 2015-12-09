@@ -5,6 +5,7 @@ var beforeRegister;
 var editDevice = "";
 var editMode = false;
 var showDevice;
+var changeHistory = true;
 
 var deviceList = null;
 
@@ -352,6 +353,8 @@ var activateGestureControl = function () {
 }
 
 var selectDevice = function () {
+    changeHistory = true;
+
     $.getJSON('/?dev=server&cmd=selectDevice', function (data) {
         if (!data || !data.devices) {
             return;
@@ -372,7 +375,11 @@ var selectDevice = function () {
                     navigator.vibrate(500);
                 }
                 deviceList = data.devices;
-                $(':mobile-pagecontainer').pagecontainer('change', '#listdevices', { changeHash: false });
+                
+                // history will be altered to skip list on back navigation
+                changeHistory = false;
+
+                $(':mobile-pagecontainer').pagecontainer('change', '#listdevices');
             }
         }
     });
@@ -440,7 +447,8 @@ var selectItem = function (id) {
 
 	    if (data.success && data.device) {
             showDevice = data.device;
-	        $(':mobile-pagecontainer').pagecontainer('change', '#device');
+            $(':mobile-pagecontainer').pagecontainer('change', '#device', { changeHash: changeHistory });
+            changeHistory = true;
 	    }
 	});
 }
