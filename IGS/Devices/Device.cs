@@ -55,6 +55,8 @@ namespace IGS.Server.Devices
 
         public String port { get; set; }
 
+        public Connection connection { get; set; }
+
 
         /// <summary>
         ///     The Transmit method is responsible for the correct invocation of a function of the device

@@ -29,16 +29,6 @@ namespace IGS.ComponentHandling
                 File.Create(DEVICE_SAVE_PATH).Close();
             }
 
-            //JsonSerializer serializer = new JsonSerializer();
-            //serializer.TypeNameHandling = TypeNameHandling.All;
-            //serializer.Formatting = Formatting.Indented;
-
-            //using (FileStream stream = File.Open(DEVICE_SAVE_PATH, FileMode.Append))
-            //using (StreamWriter sw = new StreamWriter(stream))
-            //using (JsonWriter writer = new JsonTextWriter(sw))
-            //{
-            //    serializer.Serialize(writer, dev);
-            //}
 
             List<Device> devices = readDevices();
 
@@ -79,30 +69,17 @@ namespace IGS.ComponentHandling
 
             String devices = File.ReadAllText(DEVICE_SAVE_PATH);
 
-            //String[] splitDevices = devices.Split(new string[] { "}{" }, StringSplitOptions.None);
 
-            //splitDevices[0] = splitDevices[0] + "}";
 
-            //for (int i = 1; i < (splitDevices.Count() - 2); i++)
-            //{
-            //    splitDevices[i] = "{" + splitDevices[i] + "}";
-            //}
+            List<Device> devs = JsonConvert.DeserializeObject<List<Device>>(devices,setting);
 
-            //splitDevices[splitDevices.Count() - 1] = "{" + splitDevices[splitDevices.Count() - 1];
-
-            List<Device> devs = JsonConvert.DeserializeObject<List<Device>>(devices);
-            //List<Device> devs = new List<Device>();
-            //foreach (String dev in splitDevices)
-            //{
-                
-            //}
 
             if (devs == null)
             {
                 devs = new List<Device>();
             }
 
-            return new List<Device>();
+            return devs;
         }
 
 

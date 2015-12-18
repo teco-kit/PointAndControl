@@ -2,17 +2,9 @@
 using System.Net;
 using IGS.Server.Devices;
 using System;
-using System.Xml;
 using System.Drawing;
 using IGS.Classifier;
-using IGS.Helperclasses;
 using IGS.ComponentHandling;
-using System.Linq;
-
-using System.IO;
-using System.Globalization;
-using System.Resources;
-using IGS.Properties;
 using IGS.IGS;
 using System.Windows.Media.Media3D;
 

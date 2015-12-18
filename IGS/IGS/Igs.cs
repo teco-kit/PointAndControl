@@ -2,17 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Media3D;
-using System.Xml;
 using IGS.Server.WebServer;
 using IGS.Server.Devices;
 using IGS.Server.Kinect;
 using System.Diagnostics;
-using System.IO;
-using IGS.Helperclasses;
-using System.Net;
-using System.Text;
 using IGS.Classifier;
-using Microsoft.Kinect;
 using System.Threading;
 using IGS.ComponentHandling;
 
@@ -81,7 +75,7 @@ namespace IGS.Server.IGS
         ///     With the "set"-method the IGSKinect can be set.
         ///     With the "get"-method the IGSKinect can be returned.
         /// </summary>
-        public devKinect IGSKinect { get; set; }
+        public DevKinect IGSKinect { get; set; }
 
         /// <summary>
         /// Marks if the devices are initialized or not.
@@ -137,7 +131,7 @@ namespace IGS.Server.IGS
         {
             Debug.WriteLine("server_Request");
             String str = InterpretCommand(sender, e);
-            
+            Console.WriteLine(str);
             Server.SendResponse(e.P, str);
         }
         
@@ -206,12 +200,19 @@ namespace IGS.Server.IGS
             String value = args.Val;
             String[] parameters = value.Split(':');
             String wlanAdr = args.ClientIp;
+            String lang = args.Language;
 
             User user = Data.GetUserByIp(wlanAdr);
             Device device = null;
             String retStr = "";
             String msg = "";
             Boolean success = false;
+
+            if (Thread.CurrentThread.CurrentCulture.Name != lang)
+            {
+                Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo(lang);
+                Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(lang);
+            }
 
             if (cmd != "popup" && cmd != "pollDevice")
                 logger.enqueueEntry(String.Format("Command arrived! devID: {0}; cmdID: {1}; value: {2}; wlanAdr: {3}", devId, cmd, value, wlanAdr));
@@ -248,7 +249,7 @@ namespace IGS.Server.IGS
                     case "activateGestureCtrl":
                         if (!Tracker.kinectAvailable)
                         {
-                            msg = "Keine Kinect am System angeschlossen.";
+                            msg = Properties.Resources.NoKinAvailable;
                             break;
                         }
 
@@ -259,9 +260,9 @@ namespace IGS.Server.IGS
                             if (id >= 0)
                                 success = true;
                             else if (id == UserTracker.NO_GESTURE_FOUND)
-                                msg = "Kein Nutzer mit Geste identifiziert.";
+                                msg = Properties.Resources.NoGestureFound;
                             else if (id == UserTracker.NO_BODIES_IN_FRAME)
-                                msg = "Keine Nutzer im Bild.";
+                                msg = Properties.Resources.NoUserInImage;
 
                             // attach tracking state
                             retStr += ",\"trackingId\":" + id;
@@ -269,7 +270,7 @@ namespace IGS.Server.IGS
                         }
 
                         if (!success)
-                            msg = "Aktivierung der Gestenerkennung fehlgeschlagen.";
+                            msg = Properties.Resources.GesturecontrolError;
 
                         break;
 
@@ -277,13 +278,13 @@ namespace IGS.Server.IGS
                     case "selectDevice":
                         if (!Tracker.kinectAvailable)
                         {
-                            msg = "Keine Kinect am System angeschlossen.";
+                            msg = Properties.Resources.NoKinAvailable;
                             break;
                         }
 
                         if (user == null || !user.TrackingState)
                         {
-                            msg = "Bitte erst registrieren";
+                            msg = Properties.Resources.RegistrationRequest;
                             break;
                         }
 
@@ -313,7 +314,7 @@ namespace IGS.Server.IGS
                             break;
                         }
 
-                        msg = "Hinzufügen fehlgeschlagen. Falsche Anzahl von Parametern";
+                        msg = Properties.Resources.AddDeviceError;
 
                         break;
 
@@ -342,7 +343,7 @@ namespace IGS.Server.IGS
 
                         if (device == null)
                         {
-                            msg = "Kein Gerät gefunden";
+                            msg = Properties.Resources.NoDevFound;
                             break;
                         }
 
@@ -358,13 +359,13 @@ namespace IGS.Server.IGS
 
                         if (device == null)
                         {
-                            msg = "Kein Gerät gefunden";
+                            msg = Properties.Resources.NoDevFound;
                             break;
                         }
 
                         if (user == null || !user.TrackingState)
                         {
-                            msg = "Bitte erst registrieren";
+                            msg = Properties.Resources.RegistrationRequest;
                             break;
                         }
                         
@@ -380,7 +381,7 @@ namespace IGS.Server.IGS
 
                         if (device == null)
                         {
-                            msg = "Kein Gerät gefunden";
+                            msg = Properties.Resources.NoDevFound;
                             break;
                         }
 
@@ -421,7 +422,7 @@ namespace IGS.Server.IGS
                         //onlineNoSucces(devId, wlanAdr);
                         retStr = getControlPagePathHttp(devId);
                         // redirect to device control path
-                        args.P.WriteRedirect(retStr);
+                        args.P.WriteRedirect(retStr, "301");
                         break;
 
                     default:
@@ -486,10 +487,10 @@ namespace IGS.Server.IGS
         /// </summary>
         private String AddDeviceCoord(String devId, String wlanAdr, String radius)
         {
-            String ret = "keine Koordinaten hinzugefügt";
+            String ret = Properties.Resources.NoCoordAdded;
 
             double isDouble;
-            if (!double.TryParse(radius, out isDouble) || String.IsNullOrEmpty(radius)) return ret += ",\nRadius fehlt oder hat falsches Format";
+            if (!double.TryParse(radius, out isDouble) || String.IsNullOrEmpty(radius)) return ret += ",\n" + Properties.Resources.NoRadiusWrongFormat;
 
 
             if (Tracker.Bodies.Count != 0)
@@ -556,25 +557,25 @@ namespace IGS.Server.IGS
             double tiltingDegree = environmentHandler.getKinectTiltAngle();
 
             
-            IGSKinect = new devKinect("devKinect", kinectBall, tiltingDegree, roomOrientation);
+            IGSKinect = new DevKinect("DevKinect", kinectBall, tiltingDegree, roomOrientation);
         }
 
 
         public String addDeviceVector(Device dev, User user)
         {
             if (dev == null)
-                return "Gerät ist unbekannt.";
+                return Properties.Resources.UnknownDev;
             
             if (Tracker.Bodies.Count == 0)
-                return "Keine Personen von der Kinect gefunden";
+                return Properties.Resources.NoUserInImage;
             
             if (user.SkeletonId < 0)
-                return "Bitte erst registrieren";
+                return Properties.Resources.RegistrationRequest;
 
             Point3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(user.SkeletonId));
             dev.skelPositions.Add(vectors);
 
-            return dev.skelPositions.Count + " von " + coreMethods.getMinVectorsPerDevice() + " Positionen hinzugefügt";
+            return String.Format(Properties.Resources.AddDevVec, dev.skelPositions.Count, coreMethods.getMinVectorsPerDevice());
 
         }
 

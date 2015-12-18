@@ -1,20 +1,11 @@
-﻿using IGS.Server.Devices;
-using IGS.Server.IGS;
-using IGS.Server.Kinect;
+﻿using IGS.Server.Kinect;
 using IGS.Server.WebServer;
-using IGS.Helperclasses;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Media.Media3D;
-using System.Xml;
 using System.Xml.Linq;
 using IGS.ComponentHandling;
 

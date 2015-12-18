@@ -295,7 +295,7 @@ namespace IGS
         /// </summary>
         /// <param name="devKinect">the representation of the kinect camera of the IGS to get its information of size and 
         ///                         and position</param>
-        public void SetKinectCamera(devKinect devKinect)
+        public void SetKinectCamera(DevKinect devKinect)
         {
             Point3D center = new Point3D();
 

@@ -5,6 +5,7 @@ using IGS.Server.Kinect;
 using Microsoft.Kinect;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -272,6 +273,8 @@ public partial class MainWindow
         this.displayHeight = depthFrameDescription.Height;
         this.imageSourceSkeleton = new DrawingImage(this._drawingGroup);
 
+       
+      
     }
 
     /// <summary>
@@ -589,7 +592,7 @@ public partial class MainWindow
     /// <summary>
     /// The method which is triggered by the kinect replace button.
     /// It reads the information specified in the textboxes of the kinect fields X,Y,Z,Tdeg and Hdeg.
-    /// Those will be written in the newPosition array then in the config.xml and to the devKinect object 
+    /// Those will be written in the newPosition array then in the config.xml and to the DevKinect object 
     /// and also the CoordinateTransformer will be updated to have the right position.
     /// Additionally the old and new place will be printed to the console.
     /// </summary>

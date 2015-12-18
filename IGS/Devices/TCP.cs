@@ -38,7 +38,7 @@ namespace IGS.Server.Devices
             catch (Exception e)
             {
                 Console.WriteLine(e.StackTrace);
-                return "TCP Verbindung fehlgeschlagen.\n Befehl konnte nicht ausgeführt werden.";
+                return Properties.Resources.TCPConnFailure;
             }
             byte[] buffer = Encoding.ASCII.GetBytes(command);
 

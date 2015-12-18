@@ -28,12 +28,13 @@ namespace IGS.Server.WebServer
         ///     <param name="val">The Value belonging to the command.</param>
         ///     <param name="p">The HTTpProcessor belonging to the command.</param>
         /// </summary>
-        public HttpEventArgs(String clientip, String dev, String cmd, String val, HttpProcessor p)
+        public HttpEventArgs(String clientip, String dev, String cmd, String val,String language, HttpProcessor p)
         {
             ClientIp = clientip;
             Dev = dev;
             Cmd = cmd;
             Val = val;
+            Language = language;
             P = p;
         }
 
@@ -60,6 +61,7 @@ namespace IGS.Server.WebServer
         /// </summary>
         public String Dev { get; set; }
 
+        public String Language { get; set; }
         /// <summary>
         ///     The Command ID of the command which should be executed.\n
         ///     With the "set"-method the CommandID can be set.\n
@@ -384,14 +386,48 @@ namespace IGS.Server.WebServer
         }
 
         /// <summary>
-        ///     Responses to redirect to another URL(301).
+        ///     Responses to redirect to another URL.
+        ///     Error Number 301 (Moved Permanently) - Cache - UA MUST NOT Autmatically Redirect
+        ///     Error Number 302 (Found) - Only Cachable if indicated by Cache-Control or Expires header fiel. UA See 301
+        ///     Error Number 303 (See Other) - MUST NOT be Cached - Should be answered with a GET method. 
+        ///     Default: 301 
         /// </summary>
-        public void WriteRedirect(String new_location)
+        public void WriteRedirect(String new_location, String errorNumber)
         {
-            OutputStream.WriteLine("HTTP/1.1 301 Moved Permanently");
+            String error = "";
+
+            switch (errorNumber)
+            {
+                case "301":
+                    error = "Moved Permanently";
+                    break;
+                case "302":
+                    error = "Found";
+                    break;
+                case "303":
+                    error = "See Other";
+                    break;
+                case "307":
+                    error = "Moved Temporary";
+                    break;
+                default:
+                    error = "302";
+                    errorNumber = "Found";
+                    break;
+            } 
+                    
+
+            OutputStream.WriteLine("HTTP/1.1 "  + errorNumber + " " + error);
             OutputStream.WriteLine("Location: " + new_location);
-            OutputStream.WriteLine("");
+            if (error == "302")
+            {
+                OutputStream.WriteLine("Cache - Control: no - cache, no - store");
+                OutputStream.WriteLine("Pragma: no-cache");
+                OutputStream.WriteLine("Expires: 0");
+            }
         }
+
+
     }
 
     /// <summary>
@@ -447,7 +483,7 @@ namespace IGS.Server.WebServer
         /// </summary>
         public void Listen()
         {
-            Console.WriteLine("Starting HTTP Server on " + LocalIP.ToString() + ":" + Port);
+            Console.WriteLine(String.Format(Properties.Resources.StartingHTTPServer, LocalIP.ToString(),Port));
 
             _listener = new TcpListener(LocalIP, Port);
             _listener.Start();
@@ -561,51 +597,61 @@ namespace IGS.Server.WebServer
             if (pathstring.EndsWith(".html"))
             {
                 p.WriteSuccess("text/html");
+                
                 sendData(p);
             }
             else if (pathstring.EndsWith(".css"))
             {
                 p.WriteSuccess("text/css");
+                
                 sendData(p);
             }
             else if (pathstring.EndsWith(".js"))
             {
                 p.WriteSuccess("text/javascript");
+                
                 sendData(p);
             }
             else if (pathstring.EndsWith(".json"))
             {
                 p.WriteSuccess("application/json");
+                
                 sendData(p);
             }
             else if (pathstring.EndsWith(".map"))
             {
                 p.WriteSuccess("application/octet-stream");
+                
                 sendData(p);
             }
             else if (pathstring.EndsWith(".jpg"))
             {
                 p.WriteSuccess("image/jpg");
+                
                 sendData(p);
             }
             else if (pathstring.EndsWith(".gif"))
             {
                 p.WriteSuccess("image/gif");
+                
                 sendData(p);
             }
             else if (pathstring.EndsWith(".png"))
             {
                 p.WriteSuccess("image/png");
+                
                 sendData(p);
             }
             else if (pathstring.EndsWith(".ico"))
             {
                 p.WriteSuccess("image/x-icon");
+                
                 sendData(p);
             }
             else if (pathstring.EndsWith(".svg"))
             {
                 p.WriteSuccess("image/svg+xml");
+                
                 sendData(p);
             }
             else if (querystring.Length > 0) //TODO: currently we either serve files or process query parameters
@@ -613,6 +659,11 @@ namespace IGS.Server.WebServer
                 NameValueCollection col = HttpUtility.ParseQueryString(querystring);
                 String device = col["dev"];
                 String command = col["cmd"];
+                String language = p.HttpHeaders["Accept-Language"].ToString();
+                language = language.Split(',')[0];
+
+                Console.WriteLine("Mainlanguage of Client: " + language);
+
                 if (device != null && command != null)
                 {
                     // TODO: clean this mess up
@@ -620,7 +671,7 @@ namespace IGS.Server.WebServer
                     if (col["val"] != null)
                         value = col["val"];
                     String clientIp = ((IPEndPoint)p.Socket.Client.RemoteEndPoint).Address.ToString();
-                    OnRequest(new HttpEventArgs(clientIp, device, command, value, p));
+                    OnRequest(new HttpEventArgs(clientIp, device, command, value, language, p));
 
                 } else {
                     p.WriteFailure();
@@ -665,8 +716,29 @@ namespace IGS.Server.WebServer
             {
                 pathstring = p.HttpUrl.Substring(0, iqs);
             }
+            Debug.WriteLine("send Data: " + pathstring);
+            String language = p.HttpHeaders["Accept-Language"].ToString();
+            language = language.Split(',')[0];
+            Debug.WriteLine("Main Lang:" + language);
 
             //TODO: make httproot configurable
+
+
+            string pathAccumulate = AppDomain.CurrentDomain.BaseDirectory;
+
+            if(!Directory.Exists(pathAccumulate + "\\HttpRoot\\js\\globalize"))
+            {
+                //Handling for missing globalize directory => globalize is missing
+            }
+
+            pathAccumulate = pathAccumulate + "\\HttpRoot\\js\\globalize\\";
+
+            if(File.Exists(pathAccumulate + language + "\\globalize.js"))
+            {
+                //Rerout to HTML File and load js 
+            }
+
+
             if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\" + pathstring))
             {
                 using (

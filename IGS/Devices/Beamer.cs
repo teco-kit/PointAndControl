@@ -8,7 +8,7 @@ namespace IGS.Server.Devices
 {
     class Beamer : Device
     {
-        private Http _connection;
+        
         private readonly String _commandString;
 
         /// <summary>
@@ -22,20 +22,8 @@ namespace IGS.Server.Devices
         public Beamer(String name, String id, List<Ball> form, String address, String port)
             : base(name, id, form)
         {
-            _connection = new Http(Convert.ToInt32(port), address);
+            connection = new Http(Convert.ToInt32(port), address);
 
-        }
-
-        /// <summary>
-        ///     The connection existing between a beamer and a server.
-        ///     With the "set"-method the connection can be set.
-        ///     With the "get"-method the connection can be returned.
-        ///     <returns>Returns the connection</returns>
-        /// </summary>
-        public Http Connection
-        {
-            get { return _connection; }
-            set { _connection = value; }
         }
 
         /// <summary>
@@ -58,7 +46,7 @@ namespace IGS.Server.Devices
             switch (cmdId)
             {
                 case "volup":
-                    response = _connection.Send(_commandString + "Action(88)");
+                    response = connection.Send(_commandString + "Action(88)");
                     break;
 
             }

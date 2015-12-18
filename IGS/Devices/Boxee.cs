@@ -17,7 +17,7 @@ namespace IGS.Server.Devices
     public class Boxee : Device
     {
         private readonly String _commandString;
-        private Http _connection;
+     
 
         /// <summary>
         ///     Constructor of a boxee object.
@@ -30,20 +30,9 @@ namespace IGS.Server.Devices
         public Boxee(String name, String id, List<Ball> form, String address, String port)
             : base(name, id, form)
         {
-            _connection = new Http(Convert.ToInt32(port), address);
-            _commandString = "http://" + _connection.Ip + ":" + _connection.Port + "/xbmcCmds/xbmcHttp?command=";
-        }
-
-        /// <summary>
-        ///     The connection existing between a boxee and a server.
-        ///     With the "set"-method the connection can be set.
-        ///     With the "get"-method the connection can be returned.
-        ///     <returns>Returns the connection</returns>
-        /// </summary>
-        public Http Connection
-        {
-            get { return _connection; }
-            set { _connection = value; }
+            connection = new Http(Convert.ToInt32(port), address);
+          
+            _commandString = "http://" + connection.Ip + ":" + connection.Port + "/xbmcCmds/xbmcHttp?command=";
         }
 
         /// <summary>
@@ -66,61 +55,61 @@ namespace IGS.Server.Devices
             switch (cmdId)
             {
                 case "volup":
-                    response = _connection.Send(_commandString + "Action(88)");
+                    response = connection.Send(_commandString + "Action(88)");
                     break;
 
                 case "voldown":
-                    response = _connection.Send(_commandString + "Action(89)");
+                    response = connection.Send(_commandString + "Action(89)");
                     break;
 
                 case "up":
-                    response = _connection.Send(_commandString + "Action(3)");
+                    response = connection.Send(_commandString + "Action(3)");
                     break;
 
                 case "right":
-                    response = _connection.Send(_commandString + "Action(2)");
+                    response = connection.Send(_commandString + "Action(2)");
                     break;
 
                 case "down":
-                    response = _connection.Send(_commandString + "Action(4)");
+                    response = connection.Send(_commandString + "Action(4)");
                     break;
 
                 case "left":
-                    response = _connection.Send(_commandString + "Action(1)");
+                    response = connection.Send(_commandString + "Action(1)");
                     break;
 
                 case "select":
-                    response = _connection.Send(_commandString + "Action(7)");
+                    response = connection.Send(_commandString + "Action(7)");
                     break;
 
                 case "mute":
-                    response = _connection.Send(_commandString + "Mute()");
+                    response = connection.Send(_commandString + "Mute()");
                     break;
 
                 case "back":
-                    response = _connection.Send(_commandString + "SendKey(275)");
+                    response = connection.Send(_commandString + "SendKey(275)");
                     break;
 
                 case "play":
-                    response = _connection.Send(_commandString + "Pause()");
+                    response = connection.Send(_commandString + "Pause()");
                     break;
 
                 case "pause":
-                    response = _connection.Send(_commandString + "Pause()");
+                    response = connection.Send(_commandString + "Pause()");
                     break;
 
                 case "stop":
-                    response = _connection.Send(_commandString + "Stop()");
+                    response = connection.Send(_commandString + "Stop()");
                     break;
 
                 default:
                     if (cmdId.Length == 1)
                     {
-                        response = _connection.Send(_commandString + "SendKey(" + CmdIdToAscii(cmdId) + ")");
+                        response = connection.Send(_commandString + "SendKey(" + CmdIdToAscii(cmdId) + ")");
                     }
                     else
                     {
-                        response = "ungueltiger Befehl";
+                        response = Properties.Resources.InvalidCommand;
                     }
                     break;
             }

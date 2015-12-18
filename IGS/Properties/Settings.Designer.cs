@@ -25,7 +25,7 @@ namespace IGS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\"\"")]
+        [global::System.Configuration.DefaultSettingValueAttribute("cloud.teco.edu")]
         public string PWHost {
             get {
                 return ((string)(this["PWHost"]));
@@ -37,7 +37,7 @@ namespace IGS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\"\"")]
+        [global::System.Configuration.DefaultSettingValueAttribute("5000")]
         public string PWPort {
             get {
                 return ((string)(this["PWPort"]));
@@ -49,7 +49,7 @@ namespace IGS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("\"\"")]
+        [global::System.Configuration.DefaultSettingValueAttribute("plugwise")]
         public string PWPath {
             get {
                 return ((string)(this["PWPath"]));
@@ -61,7 +61,7 @@ namespace IGS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6.35")]
         public double RoomWidth {
             get {
                 return ((double)(this["RoomWidth"]));
@@ -73,7 +73,7 @@ namespace IGS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("2.7")]
         public double RoomHeight {
             get {
                 return ((double)(this["RoomHeight"]));
@@ -85,7 +85,7 @@ namespace IGS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("5.58")]
         public double RoomDepth {
             get {
                 return ((double)(this["RoomDepth"]));
@@ -97,7 +97,7 @@ namespace IGS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("2.4")]
         public double KinectPosX {
             get {
                 return ((double)(this["KinectPosX"]));
@@ -109,7 +109,7 @@ namespace IGS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.8")]
         public double KinectPosY {
             get {
                 return ((double)(this["KinectPosY"]));
@@ -121,7 +121,7 @@ namespace IGS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.3")]
         public double KinectPosZ {
             get {
                 return ((double)(this["KinectPosZ"]));
@@ -163,18 +163,6 @@ namespace IGS.Properties {
             }
             set {
                 this["EventLog"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("en-US")]
-        public string ChosenLanguage {
-            get {
-                return ((string)(this["ChosenLanguage"]));
-            }
-            set {
-                this["ChosenLanguage"] = value;
             }
         }
     }

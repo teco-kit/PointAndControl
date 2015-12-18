@@ -58,17 +58,6 @@ namespace IGS.ComponentHandling
             return buildPlugwiseString(getPWHost(), getPWPort(), getPWPath());
         }
 
-        public void setChosenLanguage(string language)
-        {
-            Properties.Settings.Default.ChosenLanguage = language;
-            Properties.Settings.Default.Save();
-        }
-
-        public string getChosenLanguage()
-        {
-            return Properties.Settings.Default.ChosenLanguage;
-        }
-
         public double getRoomWidht()
         {
             return Properties.Settings.Default.RoomWidth;

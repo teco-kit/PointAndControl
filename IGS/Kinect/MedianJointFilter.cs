@@ -33,7 +33,7 @@ namespace IGS.Kinect
                 {
                     for (int j = i+1; j <  jointLists.Count; j++)
                     {
-                            double tmpDist = igsMath.l2Norm(jointLists[i][jointMarker] - jointLists[j][jointMarker]);
+                            double tmpDist = IgsMath.l2Norm(jointLists[i][jointMarker] - jointLists[j][jointMarker]);
                             distArray[i] += tmpDist;
                             distArray[j] += tmpDist;
                     }
