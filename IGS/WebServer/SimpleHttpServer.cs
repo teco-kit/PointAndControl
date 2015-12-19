@@ -392,39 +392,39 @@ namespace IGS.Server.WebServer
         ///     Error Number 303 (See Other) - MUST NOT be Cached - Should be answered with a GET method. 
         ///     Default: 301 
         /// </summary>
-        public void WriteRedirect(String new_location, String errorNumber)
+        public void WriteRedirect(String new_location, int errorNumber)
         {
             String error = "";
 
             switch (errorNumber)
             {
-                case "301":
+                case 301:
                     error = "Moved Permanently";
                     break;
-                case "302":
+                case 302:
                     error = "Found";
                     break;
-                case "303":
+                case 303:
                     error = "See Other";
                     break;
-                case "307":
+                case 307:
                     error = "Moved Temporary";
                     break;
                 default:
-                    error = "302";
-                    errorNumber = "Found";
+                    error = "Found";
+                    errorNumber = 302;
                     break;
-            } 
-                    
-
-            OutputStream.WriteLine("HTTP/1.1 "  + errorNumber + " " + error);
-            OutputStream.WriteLine("Location: " + new_location);
-            if (error == "302")
-            {
-                OutputStream.WriteLine("Cache - Control: no - cache, no - store");
-                OutputStream.WriteLine("Pragma: no-cache");
-                OutputStream.WriteLine("Expires: 0");
             }
+
+            OutputStream.WriteLine("HTTP/1.1 " + errorNumber + " " + error);
+            OutputStream.WriteLine("Location: " + new_location);
+            OutputStream.WriteLine("Cache - Control: no - cache, no - store");
+            OutputStream.WriteLine("Pragma: no-cache");
+            OutputStream.WriteLine("Expires: 0");
+            OutputStream.WriteLine("");
+            OutputStream.Flush();
+            
+
         }
 
 
@@ -592,69 +592,75 @@ namespace IGS.Server.WebServer
             {
                 pathstring = p.HttpUrl;
             }
+           
+
 
             // check for file
-            if (pathstring.EndsWith(".html"))
+            //if (pathstring.EndsWith(".html"))
+            //{
+            //    p.WriteSuccess("text/html");
+
+            //    sendData(p);
+            //}
+            //else if (pathstring.EndsWith(".css"))
+            //{
+            //    p.WriteSuccess("text/css");
+
+            //    sendData(p);
+            //}
+            //else if (pathstring.EndsWith(".js"))
+            //{
+            //    p.WriteSuccess("text/javascript");
+
+            //    sendData(p);
+            //}
+            //else if (pathstring.EndsWith(".json"))
+            //{
+            //    p.WriteSuccess("application/json");
+
+            //    sendData(p);
+            //}
+            //else if (pathstring.EndsWith(".map"))
+            //{
+            //    p.WriteSuccess("application/octet-stream");
+
+            //    sendData(p);
+            //}
+            //else if (pathstring.EndsWith(".jpg"))
+            //{
+            //    p.WriteSuccess("image/jpg");
+
+            //    sendData(p);
+            //}
+            //else if (pathstring.EndsWith(".gif"))
+            //{
+            //    p.WriteSuccess("image/gif");
+
+            //    sendData(p);
+            //}
+            //else if (pathstring.EndsWith(".png"))
+            //{
+            //    p.WriteSuccess("image/png");
+
+            //    sendData(p);
+            //}
+            //else if (pathstring.EndsWith(".ico"))
+            //{
+            //    p.WriteSuccess("image/x-icon");
+
+            //    sendData(p);
+            //}
+            //else if (pathstring.EndsWith(".svg"))
+            //{
+            //    p.WriteSuccess("image/svg+xml");
+
+            //    sendData(p);
+            //}
+
+            if (isFileEnding(pathstring))
             {
-                p.WriteSuccess("text/html");
-                
                 sendData(p);
-            }
-            else if (pathstring.EndsWith(".css"))
-            {
-                p.WriteSuccess("text/css");
-                
-                sendData(p);
-            }
-            else if (pathstring.EndsWith(".js"))
-            {
-                p.WriteSuccess("text/javascript");
-                
-                sendData(p);
-            }
-            else if (pathstring.EndsWith(".json"))
-            {
-                p.WriteSuccess("application/json");
-                
-                sendData(p);
-            }
-            else if (pathstring.EndsWith(".map"))
-            {
-                p.WriteSuccess("application/octet-stream");
-                
-                sendData(p);
-            }
-            else if (pathstring.EndsWith(".jpg"))
-            {
-                p.WriteSuccess("image/jpg");
-                
-                sendData(p);
-            }
-            else if (pathstring.EndsWith(".gif"))
-            {
-                p.WriteSuccess("image/gif");
-                
-                sendData(p);
-            }
-            else if (pathstring.EndsWith(".png"))
-            {
-                p.WriteSuccess("image/png");
-                
-                sendData(p);
-            }
-            else if (pathstring.EndsWith(".ico"))
-            {
-                p.WriteSuccess("image/x-icon");
-                
-                sendData(p);
-            }
-            else if (pathstring.EndsWith(".svg"))
-            {
-                p.WriteSuccess("image/svg+xml");
-                
-                sendData(p);
-            }
-            else if (querystring.Length > 0) //TODO: currently we either serve files or process query parameters
+            } else if (querystring.Length > 0) //TODO: currently we either serve files or process query parameters
             {
                 NameValueCollection col = HttpUtility.ParseQueryString(querystring);
                 String device = col["dev"];
@@ -662,7 +668,7 @@ namespace IGS.Server.WebServer
                 String language = p.HttpHeaders["Accept-Language"].ToString();
                 language = language.Split(',')[0];
 
-                Console.WriteLine("Mainlanguage of Client: " + language);
+                
 
                 if (device != null && command != null)
                 {
@@ -700,12 +706,14 @@ namespace IGS.Server.WebServer
             OnPOSTRequest(new HttpEventArgs(clientIp, data, p));
         }
 
+      
         /// <summary>
         ///     Sends the requested file to the client
         ///     <param name="p">the HttpProcessor</param>
         /// </summary>
         private void sendData(HttpProcessor p)
         {
+            //TODO: Write Flexible Header usage
             String pathstring = null;
             int iqs = p.HttpUrl.IndexOf("?");
             if (iqs == -1)
@@ -717,27 +725,17 @@ namespace IGS.Server.WebServer
                 pathstring = p.HttpUrl.Substring(0, iqs);
             }
             Debug.WriteLine("send Data: " + pathstring);
-            String language = p.HttpHeaders["Accept-Language"].ToString();
-            language = language.Split(',')[0];
-            Debug.WriteLine("Main Lang:" + language);
+
+
+            bool continueSending = responseToFileRequest(p, pathstring);
+
+            if (!continueSending)
+            {
+                return;
+            }
+
 
             //TODO: make httproot configurable
-
-
-            string pathAccumulate = AppDomain.CurrentDomain.BaseDirectory;
-
-            if(!Directory.Exists(pathAccumulate + "\\HttpRoot\\js\\globalize"))
-            {
-                //Handling for missing globalize directory => globalize is missing
-            }
-
-            pathAccumulate = pathAccumulate + "\\HttpRoot\\js\\globalize\\";
-
-            if(File.Exists(pathAccumulate + language + "\\globalize.js"))
-            {
-                //Rerout to HTML File and load js 
-            }
-
 
             if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\" + pathstring))
             {
@@ -762,9 +760,121 @@ namespace IGS.Server.WebServer
         /// <param name="p">the HttpProcessor processing the connection with the client.</param>
         /// <param name="msg">the response</param>
         public override void SendResponse(HttpProcessor p, String msg)
-        {
-            
+        { 
             p.OutputStream.Write(msg);
         }
+
+        public bool isFileEnding(string pathstring)
+        {
+            string ending = getFileEnding(pathstring);
+
+            switch (ending)
+            {
+                case ".html":
+                    return true;
+                case ".css":
+                    return true;
+                case ".js":
+                    return true;
+                case ".json":
+                    return true;
+                case ".map":
+                    return true;
+                case ".jpg":
+                    return true;
+                case ".gif":
+                    return true;
+                case ".png":
+                    return true;
+                case ".ico":
+                    return true;
+                case ".svg":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        private string getFileEnding(string s)
+        {
+            string[] pathDotSplit = s.Split('.');
+            string ending = "." + pathDotSplit[pathDotSplit.Length - 1];
+
+            return ending;
+        }
+
+        private bool responseToFileRequest(HttpProcessor p, string pathString)
+        {
+            string fileEnding = getFileEnding(pathString);
+
+            switch (fileEnding)
+            {
+                case ".html":
+                    p.WriteSuccess("text/html");
+                    return true;
+                case ".css":
+                    p.WriteSuccess("text/css");
+                    return true;
+                case ".js":
+                    if (pathString.Equals("js/globalize/globalize.js"))
+                    {
+                        string gloablizeRerout = getLocalizationPath(p, pathString);
+                        p.WriteRedirect(gloablizeRerout, 302);
+                        return false;
+                    }
+                    p.WriteSuccess("text/javascript");
+                    return true;
+                case ".json":
+                    p.WriteSuccess("application/json");
+                    return true;
+                case ".map":
+                    p.WriteSuccess("application/octet-stream");
+                    return true;
+                case ".jpg":
+                    p.WriteSuccess("image/jpg");
+                    return true;
+                case ".gif":
+                    p.WriteSuccess("image/gif");
+                    return true;
+                case ".png":
+                    p.WriteSuccess("image/png");
+                    return true;
+                case ".ico":
+                    p.WriteSuccess("image/x-icon");
+                    return true;
+                case ".svg":
+                    p.WriteSuccess("image/svg+xml");
+                    return true;
+                default:
+                    p.WriteFailure();
+                    return false;
+            }
+        }
+
+        public string getLocalizationPath(HttpProcessor p, string pathString)
+        {
+            string language = p.HttpHeaders["Accept-Language"].ToString();
+            language = language.Split(',')[0];
+           
+            if(pathString == "js/globalize/globalize.js")
+            {
+                string baseServerGlobalize = "http://" + LocalIP + ":" + Port + "/js/globalize/";
+                string globalizeServerPath = AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\js\\globalize\\" + language + "\\globalize.js";
+               
+                if (File.Exists(globalizeServerPath))
+                { 
+                    return baseServerGlobalize + language + "/globalize.js";
+                } else
+                {
+                    return baseServerGlobalize + "default" + "/globalize.js"; 
+                }
+            } else
+            {
+                return "";
+            }
+
+        }
+
+       
     }
 }

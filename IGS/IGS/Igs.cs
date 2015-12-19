@@ -422,7 +422,7 @@ namespace IGS.Server.IGS
                         //onlineNoSucces(devId, wlanAdr);
                         retStr = getControlPagePathHttp(devId);
                         // redirect to device control path
-                        args.P.WriteRedirect(retStr, "301");
+                        args.P.WriteRedirect(retStr, 301);
                         break;
 
                     default:
