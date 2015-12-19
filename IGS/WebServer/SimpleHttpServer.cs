@@ -576,10 +576,11 @@ namespace IGS.Server.WebServer
         /// </summary>
         public override void HandleGetRequest(HttpProcessor p)
         {
-            // redirect to index.html in base directory
 
-            String querystring = null;
-            String pathstring = null;
+            //TODO: full localization testing
+
+            string querystring = null;
+            string pathstring = null;
             // check query part of string
             int iqs = p.HttpUrl.IndexOf('?');
             // If query string variables exist, put them in a string.
@@ -595,67 +596,7 @@ namespace IGS.Server.WebServer
            
 
 
-            // check for file
-            //if (pathstring.EndsWith(".html"))
-            //{
-            //    p.WriteSuccess("text/html");
-
-            //    sendData(p);
-            //}
-            //else if (pathstring.EndsWith(".css"))
-            //{
-            //    p.WriteSuccess("text/css");
-
-            //    sendData(p);
-            //}
-            //else if (pathstring.EndsWith(".js"))
-            //{
-            //    p.WriteSuccess("text/javascript");
-
-            //    sendData(p);
-            //}
-            //else if (pathstring.EndsWith(".json"))
-            //{
-            //    p.WriteSuccess("application/json");
-
-            //    sendData(p);
-            //}
-            //else if (pathstring.EndsWith(".map"))
-            //{
-            //    p.WriteSuccess("application/octet-stream");
-
-            //    sendData(p);
-            //}
-            //else if (pathstring.EndsWith(".jpg"))
-            //{
-            //    p.WriteSuccess("image/jpg");
-
-            //    sendData(p);
-            //}
-            //else if (pathstring.EndsWith(".gif"))
-            //{
-            //    p.WriteSuccess("image/gif");
-
-            //    sendData(p);
-            //}
-            //else if (pathstring.EndsWith(".png"))
-            //{
-            //    p.WriteSuccess("image/png");
-
-            //    sendData(p);
-            //}
-            //else if (pathstring.EndsWith(".ico"))
-            //{
-            //    p.WriteSuccess("image/x-icon");
-
-            //    sendData(p);
-            //}
-            //else if (pathstring.EndsWith(".svg"))
-            //{
-            //    p.WriteSuccess("image/svg+xml");
-
-            //    sendData(p);
-            //}
+            
 
             if (isFileEnding(pathstring))
             {
