@@ -1,24 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Media.Media3D;
 using HelixToolkit.Wpf;
 using IGS.Server.Devices;
-using System.Windows.Media.Animation;
 using Microsoft.Kinect;
 using IGS.Server.IGS;
 using IGS.Classifier;
-using IGS.Helperclasses;
+using IGS.Server.Kinect;
 
 namespace IGS
 {
@@ -710,6 +701,35 @@ namespace IGS
             sample.Radius = 0.05;
             sample.ThetaDiv = 10;
             this.mainViewport.Children.Add(sample);
+        }
+
+        public void updateSkeletons(List<TrackedSkeleton> bodies)
+        {
+            // check if trackedskeletons of counter == shown skeletons in 3D
+            int[] notFound = new int[6];
+            bool foundID = false;
+
+            for (int j = 0; j < IDList.Count; j++)
+            {
+
+                for (int i = 0; i < bodies.Count; i++)
+                {
+                    if (IDList[j] == bodies[i].Id)
+                    {
+                        foundID = true;
+                        break;
+                    }
+                }
+
+                if (foundID == false)
+                {
+                    mainViewport.Children.Remove(skelList[j]);
+                    mainViewport.Children.Remove(skelRayList[j]);
+                    IDList[j] = -1;
+                    IDListNullSpaces[j] = true;
+                }
+                foundID = false;
+            }
         }
 
     }

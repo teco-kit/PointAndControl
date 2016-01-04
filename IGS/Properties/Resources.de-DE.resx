@@ -136,7 +136,7 @@
     <value>Kein Gerät gefunden</value>
   </data>
   <data name="NoGestureFound" xml:space="preserve">
-    <value>No User with gesture identified</value>
+    <value>Kein Benutzer der die Aktivierungsgeste ausführt gefunden</value>
   </data>
   <data name="NoKinAvailable" xml:space="preserve">
     <value>Keine Kinect an das System angeschlossen</value>
@@ -151,7 +151,7 @@
     <value>Keine Person im Bild der Kinect</value>
   </data>
   <data name="RegistrationRequest" xml:space="preserve">
-    <value>Bitte zuerst am System registrieren</value>
+    <value>Bitte zuerst am System anmelden</value>
   </data>
   <data name="ResponseLog" xml:space="preserve">
     <value>Antwort zu '{0}' : {1}</value>
@@ -179,9 +179,11 @@
 Befehl konnte nicht ausgeführt werden</value>
   </data>
   <data name="TCPConnEstablishFailure" xml:space="preserve">
-    <value>TCP Verbindung fehlgeschlagen.\n Befehl konnte nicht ausgeführt werden</value>
+    <value>TCP Verbindung fehlgeschlagen. 
+Befehl konnte nicht ausgeführt werden</value>
   </data>
   <data name="TCPConnFailure" xml:space="preserve">
-    <value>TCP Verbindung fehlgeschlagen.\n Befehl konnte nicht ausgeführt werden</value>
+    <value>TCP Verbindung fehlgeschlagen. 
+Befehl konnte nicht ausgeführt werden</value>
   </data>
 </root>

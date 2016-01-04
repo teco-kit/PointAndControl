@@ -391,31 +391,32 @@ public partial class MainWindow
                     //TODO: move update logic to 3Dview
                     if (_3Dview != null)
                     {
-                        // check if trackedskeletons of counter == shown skeletons in 3D
-                        int[] notFound = new int[6];
-                        bool foundID = false;
+                        _3Dview.updateSkeletons(_igs.Tracker.Bodies); 
+                    //    // check if trackedskeletons of counter == shown skeletons in 3D
+                    //    int[] notFound = new int[6];
+                    //    bool foundID = false;
 
-                        for (int j = 0; j < _3Dview.IDList.Count; j++)
-                        {
+                    //    for (int j = 0; j < _3Dview.IDList.Count; j++)
+                    //    {
 
-                            for (int i = 0; i < _igs.Tracker.Bodies.Count; i++)
-                            {
-                                if (_3Dview.IDList[j] == _igs.Tracker.Bodies[i].Id)
-                                {
-                                    foundID = true;
-                                    break;
-                                }
-                            }
+                    //        for (int i = 0; i < _igs.Tracker.Bodies.Count; i++)
+                    //        {
+                    //            if (_3Dview.IDList[j] == _igs.Tracker.Bodies[i].Id)
+                    //            {
+                    //                foundID = true;
+                    //                break;
+                    //            }
+                    //        }
 
-                            if (foundID == false)
-                            {
-                                _3Dview.mainViewport.Children.Remove(_3Dview.skelList[j]);
-                                _3Dview.mainViewport.Children.Remove(_3Dview.skelRayList[j]);
-                                _3Dview.IDList[j] = -1;
-                                _3Dview.IDListNullSpaces[j] = true;
-                            }
-                            foundID = false;
-                        }
+                    //        if (foundID == false)
+                    //        {
+                    //            _3Dview.mainViewport.Children.Remove(_3Dview.skelList[j]);
+                    //            _3Dview.mainViewport.Children.Remove(_3Dview.skelRayList[j]);
+                    //            _3Dview.IDList[j] = -1;
+                    //            _3Dview.IDListNullSpaces[j] = true;
+                    //        }
+                    //        foundID = false;
+                    //    }
                     }
 
                 }

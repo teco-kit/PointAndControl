@@ -118,37 +118,37 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AddDeviceError" xml:space="preserve">
-    <value>Adding a Device failed. Wrong number of parameters</value>
+    <value>Adding a device failed. Wrong number of parameters</value>
   </data>
   <data name="AddDevVec" xml:space="preserve">
-    <value>{0} of {1} Positions added</value>
+    <value>{0} of {1} positions added</value>
   </data>
   <data name="CmdArrivedLog" xml:space="preserve">
     <value>Command arrived! devID: {0}; cmdID: {1}; value: {2}, wlanAdr:{3}</value>
   </data>
   <data name="GesturecontrolError" xml:space="preserve">
-    <value>Activation of gesturecontrol failed</value>
+    <value>Activation of gesture control failed</value>
   </data>
   <data name="NoCoordAdded" xml:space="preserve">
-    <value>No Coordinates added</value>
+    <value>No coordinates added</value>
   </data>
   <data name="NoDevFound" xml:space="preserve">
-    <value>No Device found</value>
+    <value>No device found</value>
   </data>
   <data name="NoGestureFound" xml:space="preserve">
-    <value>No User with gesture identified</value>
+    <value>No user performing registration gesture identified</value>
   </data>
   <data name="NoKinAvailable" xml:space="preserve">
-    <value>No Kinect connected to the System</value>
+    <value>No kinect connected to the system</value>
   </data>
   <data name="NoPersonFoundKin" xml:space="preserve">
-    <value>No Person found by Kinect</value>
+    <value>No person found by kinect</value>
   </data>
   <data name="NoRadiusWrongFormat" xml:space="preserve">
-    <value>Radius is missing or has wromg Format</value>
+    <value>Radius is missing or has wrong Format</value>
   </data>
   <data name="NoUserInImage" xml:space="preserve">
-    <value>No Person in the view of the kinect camera</value>
+    <value>No person in the view of the kinect</value>
   </data>
   <data name="RegistrationRequest" xml:space="preserve">
     <value>Please register yourself at the system first</value>
@@ -157,7 +157,7 @@
     <value>Response to '{0}' : {1}</value>
   </data>
   <data name="RoomLeft" xml:space="preserve">
-    <value>You left the Room</value>
+    <value>You left the room</value>
   </data>
   <data name="StartingHTTPServer" xml:space="preserve">
     <value>Starting HTTP Server on {0} : {1}</value>
@@ -169,19 +169,20 @@
     <value>Unknown Error</value>
   </data>
   <data name="InvalidCommand" xml:space="preserve">
-    <value>Invalid Command</value>
+    <value>Invalid command</value>
   </data>
   <data name="HTTPConnEstablishFailure" xml:space="preserve">
     <value>Couldn't establish HTTP connection</value>
   </data>
   <data name="HTTPConnFailure" xml:space="preserve">
-    <value>HTTP connection error. 
+    <value>HTTP connection error.
 Command could not be executed</value>
   </data>
   <data name="TCPConnEstablishFailure" xml:space="preserve">
     <value />
   </data>
   <data name="TCPConnFailure" xml:space="preserve">
-    <value>TCP connection error. \n Command could not be executed</value>
+    <value>TCP connection error.
+Command could not be executed</value>
   </data>
 </root>
