@@ -43,7 +43,7 @@ namespace IGS.ComponentHandling
             List<Device> devices = readDevices();
 
             if (devices == null || devices.Count == 0)
-                return "No Devices Available";
+                return Properties.Resources.SpecifiedDeviceNotFound;
 
             foreach(Device dev in devices)
             {
@@ -51,13 +51,13 @@ namespace IGS.ComponentHandling
                 {
                     dev.Form.Add(ball);
                     writeDevicesToFile(devices);
-                    return "Coordinates added";
+                    return Properties.Resources.CoordinatesAdded;
                 }
             }
 
            
 
-            return "No Device with that ID Found - Coordinates not added";
+            return Properties.Resources.NoCoordAdded;
         }
 
         public List<Device> readDevices()

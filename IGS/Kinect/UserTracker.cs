@@ -33,8 +33,6 @@ namespace IGS.Server.Kinect
 
         public List<Body[]> lastBodies { get; set; }
 
-        public bool kinectAvailable { get; set; }
-
         public bool movingWindowCollect { get; set; }
 
         public bool checkOnEveryFrame { get; set; }
@@ -66,7 +64,7 @@ namespace IGS.Server.Kinect
             workingOnWindow = false;
             windowSize = 15;
             checkOnEveryFrame = true;
-            kinectAvailable = false;
+            
         }
 
         /// <summary>
@@ -123,9 +121,10 @@ namespace IGS.Server.Kinect
             //}
             Sensor = KinectSensor.GetDefault();
             _bodiesLastFrame = new Body[6];
-            this.reader = Sensor.BodyFrameSource.OpenReader();
-            
             if (Sensor == null) return;
+            this.reader = Sensor.BodyFrameSource.OpenReader();
+
+            
 
             // it seems the sensor will never report to be available
             //if (!Sensor.IsAvailable)
@@ -133,8 +132,6 @@ namespace IGS.Server.Kinect
             //    this.kinectAvailable = false;
             //    return;
             //}
-
-            this.kinectAvailable = true;
 
 
             // Start den Sensor!
@@ -192,6 +189,7 @@ namespace IGS.Server.Kinect
         /// </summary>
         public int GetSkeletonId(int igsSkelId)
         {
+
             if (Bodies.Any(s => s.Id == igsSkelId))
                 return igsSkelId;
 
@@ -419,6 +417,11 @@ namespace IGS.Server.Kinect
                 }
             }
 
+        }
+
+        public bool isKinectAvailable()
+        {
+            return Sensor.IsAvailable;
         }
 
 

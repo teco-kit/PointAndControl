@@ -85,7 +85,7 @@ namespace IGS.ComponentHandling
             docConfig.Load(logPath + FILE_ENDING);
             XmlNode root = docConfig.SelectSingleNode("/log");
 
-            XmlElement newEntry = docConfig.CreateElement("Entry_" + root.ChildNodes.Count.ToString());
+            XmlElement newEntry = docConfig.CreateElement("Entry");
             
             newEntry.SetAttribute("Date_And_Time", writeString.dt.ToString());
             newEntry.InnerText = writeString.logText;

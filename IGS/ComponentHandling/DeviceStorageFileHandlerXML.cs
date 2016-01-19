@@ -90,15 +90,15 @@ namespace IGS.ComponentHandling
                 return "No Devices Available";
             }
 
-            String ret = "No Coordinates added"; 
-            bool added = false;
+            String ret = Properties.Resources.NoCoordAdded; 
+         
             XmlDocument docConfig = new XmlDocument();
             docConfig.Load(DEVICE_SAVE_PATH);
             XmlNodeList nodeList = docConfig.SelectNodes("/devices");
 
             foreach (XmlNode node in nodeList)
             {
-                for (int i = 0; i < node.ChildNodes.Count && !added; i++)
+                for (int i = 0; i < node.ChildNodes.Count; i++)
                 {
                     if (node.ChildNodes[i].InnerText.Equals(devId))
                     {
@@ -112,8 +112,8 @@ namespace IGS.ComponentHandling
                         newElement.SetAttribute("centerZ", ball.Center.Z.ToString());
                         node.ChildNodes[i + 1].AppendChild(newElement);
 
-                        ret = "Coordinates added"; 
-                        added = true;
+                        ret = Properties.Resources.CoordinatesAdded; 
+                        break;
                     }
                 }
             }

@@ -185,4 +185,10 @@ Command could not be executed</value>
     <value>TCP connection error.
 Command could not be executed</value>
   </data>
+  <data name="CoordinatesAdded" xml:space="preserve">
+    <value>Coordinates added</value>
+  </data>
+  <data name="SpecifiedDeviceNotFound" xml:space="preserve">
+    <value>Specified device not found</value>
+  </data>
 </root>

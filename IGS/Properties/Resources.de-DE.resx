@@ -186,4 +186,10 @@ Befehl konnte nicht ausgeführt werden</value>
     <value>TCP Verbindung fehlgeschlagen. 
 Befehl konnte nicht ausgeführt werden</value>
   </data>
+  <data name="CoordinatesAdded" xml:space="preserve">
+    <value>Coordinaten hinzugefügt</value>
+  </data>
+  <data name="SpecifiedDeviceNotFound" xml:space="preserve">
+    <value>Spezifizierted Gerät wurde nicht gefunden</value>
+  </data>
 </root>

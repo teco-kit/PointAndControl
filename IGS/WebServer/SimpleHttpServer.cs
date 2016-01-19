@@ -578,12 +578,16 @@ namespace IGS.Server.WebServer
         {
 
             //TODO: full localization testing
-
             string querystring = null;
             string pathstring = null;
             // check query part of string
+
             int iqs = p.HttpUrl.IndexOf('?');
             // If query string variables exist, put them in a string.
+            //if(p.HttpUrl == "")
+            //{
+            //    p.WriteRedirect("Http://" + LocalIP + ":" + Port + "/index.html",302);
+            //}
             if (iqs >= 0)
             {
                 querystring = (iqs < p.HttpUrl.Length - 1) ? p.HttpUrl.Substring(iqs + 1) : String.Empty;
@@ -593,15 +597,14 @@ namespace IGS.Server.WebServer
             {
                 pathstring = p.HttpUrl;
             }
-           
 
 
             
-
             if (isFileEnding(pathstring))
             {
                 sendData(p);
-            } else if (querystring.Length > 0) //TODO: currently we either serve files or process query parameters
+            }
+            else if (querystring != null && querystring.Length > 0) //TODO: currently we either serve files or process query parameters
             {
                 NameValueCollection col = HttpUtility.ParseQueryString(querystring);
                 String device = col["dev"];
@@ -626,7 +629,7 @@ namespace IGS.Server.WebServer
             }
             else
             {
-                p.WriteFailure();
+                p.WriteRedirect(String.Format("Http://{0}:{1}/index.html", LocalIP, Port), 302);
             }
 
         }
@@ -739,9 +742,7 @@ namespace IGS.Server.WebServer
         private string getFileEnding(string s)
         {
             string[] pathDotSplit = s.Split('.');
-            string ending = "." + pathDotSplit[pathDotSplit.Length - 1];
-
-            return ending;
+            return "." + pathDotSplit[pathDotSplit.Length - 1];
         }
 
         private bool responseToFileRequest(HttpProcessor p, string pathString)

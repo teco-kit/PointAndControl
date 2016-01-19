@@ -88,6 +88,15 @@ namespace IGS.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Coordinates added.
+        /// </summary>
+        internal static string CoordinatesAdded {
+            get {
+                return ResourceManager.GetString("CoordinatesAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Activation of gesturecontrol failed.
         /// </summary>
         internal static string GesturecontrolError {
@@ -211,6 +220,15 @@ namespace IGS.Properties {
         internal static string RoomLeft {
             get {
                 return ResourceManager.GetString("RoomLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specified device not found.
+        /// </summary>
+        internal static string SpecifiedDeviceNotFound {
+            get {
+                return ResourceManager.GetString("SpecifiedDeviceNotFound", resourceCulture);
             }
         }
         

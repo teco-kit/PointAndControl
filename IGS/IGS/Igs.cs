@@ -47,9 +47,7 @@ namespace IGS.Server.IGS
             this.classification = new ClassificationHandler(Transformer, Data);
             this.coreMethods = new CollisionMethod(Data, Tracker, Transformer);
             logger = eventLogger;
-            
-
-
+          
         }
 
 
@@ -148,7 +146,7 @@ namespace IGS.Server.IGS
             User user = Data.GetUserBySkeleton(args.SkeletonId);
             if (user != null)
             {
-                user.AddError("Sie haben den Raum verlassen");
+                user.AddError(Properties.Resources.RoomLeft);
                 user.TrackingState = false;
             }
             Data.DelTrackedSkeleton(args.SkeletonId);
@@ -171,6 +169,7 @@ namespace IGS.Server.IGS
         /// </summary>
         public int SkeletonIdToUser(String wlanAdr)
         {
+            
             User tempUser = Data.GetUserByIp(wlanAdr);
             int id = -1;
 
@@ -236,8 +235,13 @@ namespace IGS.Server.IGS
 
                         if (Data.GetUserByIp(wlanAdr) != null)
                         {
-                            // attach tracking state
-                            retStr += ",\"trackingId\":" + SkeletonIdToUser(wlanAdr);
+                            if (Tracker.isKinectAvailable())
+                            {
+                                retStr += ",\"trackingId\":" + SkeletonIdToUser(wlanAdr);
+                            } else
+                            {
+                                msg = Properties.Resources.NoKinAvailable;
+                            }
                         }
 
                         break;
@@ -247,7 +251,7 @@ namespace IGS.Server.IGS
                         break;
 
                     case "activateGestureCtrl":
-                        if (!Tracker.kinectAvailable)
+                        if (!Tracker.isKinectAvailable())
                         {
                             msg = Properties.Resources.NoKinAvailable;
                             break;
@@ -276,7 +280,7 @@ namespace IGS.Server.IGS
 
                     case "pollDevice":
                     case "selectDevice":
-                        if (!Tracker.kinectAvailable)
+                        if (!Tracker.isKinectAvailable())
                         {
                             msg = Properties.Resources.NoKinAvailable;
                             break;
@@ -315,6 +319,7 @@ namespace IGS.Server.IGS
                         }
 
                         msg = Properties.Resources.AddDeviceError;
+
 
                         break;
 
@@ -439,7 +444,7 @@ namespace IGS.Server.IGS
             else
             {
                 // TODO: JSON response
-                retStr = "Unbekannter Befehl.";
+                retStr = Properties.Resources.UnknownError;
                 logger.enqueueEntry(String.Format("Response to Request {0} : {1}", cmd, retStr));
                 return retStr;
             }
