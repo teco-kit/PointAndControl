@@ -64,7 +64,7 @@ namespace IGS.Server.Kinect
             lastBodies = new List<Body[]>();
             this.jointFilter = new MedianJointFilter();
             workingOnWindow = false;
-            windowSize = 5;
+            windowSize = 9;
             checkOnEveryFrame = true;
             kinectAvailable = false;
         }
