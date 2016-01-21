@@ -50,7 +50,6 @@ namespace IGS.Server.Devices
         public override String Transmit(String cmdId, String value)
         {
             String response = Properties.Resources.InvalidCommand;
-            Console.WriteLine(CommandString);
             switch (cmdId)
             {
 

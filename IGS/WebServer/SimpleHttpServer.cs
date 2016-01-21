@@ -708,6 +708,7 @@ namespace IGS.Server.WebServer
             p.OutputStream.Write(msg);
         }
 
+
         public bool isFileEnding(string pathstring)
         {
             string ending = getFileEnding(pathstring);

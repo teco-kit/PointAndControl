@@ -129,7 +129,6 @@ namespace IGS.Server.IGS
         {
             Debug.WriteLine("server_Request");
             String str = InterpretCommand(sender, e);
-            Console.WriteLine(str);
             Server.SendResponse(e.P, str);
         }
         
@@ -409,7 +408,7 @@ namespace IGS.Server.IGS
 
                 // finalize JSON response
                 retStr += ",\"success\":" + success.ToString().ToLower() + ",\"msg\":\"" + msg + "\"}";
-                Console.WriteLine(retStr);
+                
 
                 if ((cmd != "popup" || msg != "") && (cmd != "pollDevice"))
                 {
@@ -540,7 +539,6 @@ namespace IGS.Server.IGS
                 Data.AddDevice(((Device)instance));
                 retStr = idparam;
 
-                Console.WriteLine(retStr);
                 return retStr;
             }
             

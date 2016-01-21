@@ -364,7 +364,6 @@ namespace IGS.Server.IGS
             }
 
             dev.color = pickRandomColor();
-            Console.WriteLine("deviceIdentifier: " + dev.Name + " Color: " + dev.color);
 
             return;
         }

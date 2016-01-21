@@ -175,7 +175,6 @@ namespace IGS.ComponentHandling
                     }
                     catch (Exception e)
                     {
-                        //Console.WriteLine(Properties.Resources.DeviceCreationError);
                         Console.WriteLine(e.StackTrace);
                     }
                 }

@@ -42,12 +42,10 @@ namespace IGS.ComponentHandling
             
             if (!workerThread.IsAlive)
             {
-                Console.WriteLine("EnqueEntry Start");
                 workerThread = new Thread(writer.doWork);
                 workerThread.Start();
             } else
             {
-                Console.WriteLine("Still in working");
             }
         }
     }

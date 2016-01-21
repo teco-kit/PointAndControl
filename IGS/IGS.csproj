@@ -57,7 +57,7 @@
     <StartupObject>App</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\HttpRoot\favicon.ico</ApplicationIcon>
@@ -380,7 +380,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>XCOPY "$(ProjectDir)Resources\HttpRoot" "$(TargetDir)\HttpRoot\" /S /Y
-COPY "$(ProjectDir)Resources\configuration.xml" "$(TargetDir)\" /Y</PostBuildEvent>
+COPY "$(ProjectDir)Resources\devices.txt" "$(TargetDir)\" /Y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

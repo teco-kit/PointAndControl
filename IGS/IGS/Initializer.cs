@@ -23,8 +23,7 @@ namespace IGS.Server.IGS
         {
             xmlFilesControl();
             EventLogger logger = new EventLogger();
-            Igs igs = new Igs(InitializeDataholder(logger), InitializeUserTracker(new HandsUp(), new Lfu()), InitializeHttpServer(),
-                logger);
+            Igs igs = new Igs(InitializeDataholder(logger), InitializeUserTracker(new HandsUp(), new Lfu()), InitializeHttpServer(),logger);
             return igs;
         }
 
