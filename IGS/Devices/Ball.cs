@@ -11,12 +11,12 @@ namespace IGS.Server.Devices
     {
         /// <summary>
         ///     Constructor of the ball class
-        ///     <param name="centre">Vector to the center of the sphere</param>
+        ///     <param name="center">Vector to the center of the sphere</param>
         ///     <param name="radius">Raidus of the sphere</param>
         /// </summary>
-        public Ball(Point3D centre, float radius)
+        public Ball(Point3D center, double radius)
         {
-            Centre = centre;
+            Center = center;
             Radius = radius;
         }
 
@@ -26,7 +26,7 @@ namespace IGS.Server.Devices
         ///     With the "get"-method the vector to the center of the ball can be returned.
         ///     <returns>Returns the vector to the center</returns>
         /// </summary>
-        public Point3D Centre { get; set; }
+        public Point3D Center { get; set; }
 
         /// <summary>
         ///     The radius of the ball.
@@ -34,6 +34,6 @@ namespace IGS.Server.Devices
         ///     With the "get"-method the radius of the ball can be returned.
         ///     <returns>Returns the radius of the the ball</returns>
         /// </summary>
-        public float Radius { get; set; }
+        public double Radius { get; set; }
     }
 }

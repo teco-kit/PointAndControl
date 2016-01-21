@@ -1,24 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Media.Media3D;
 using HelixToolkit.Wpf;
 using IGS.Server.Devices;
-using System.Windows.Media.Animation;
 using Microsoft.Kinect;
 using IGS.Server.IGS;
 using IGS.Classifier;
-using IGS.Helperclasses;
+using IGS.Server.Kinect;
 
 namespace IGS
 {
@@ -178,7 +169,7 @@ namespace IGS
         /// <param name="width">the width of the room</param>
         /// <param name="height">the height of the room</param>
         /// <param name="depth">the depth of the room</param>
-        public void createRoom(float width, float height, float depth)
+        public void createRoom(double width, double height, double depth)
         {
             
             Point3D p0 = new Point3D(0, 0, 0);
@@ -264,8 +255,8 @@ namespace IGS
                     for (int j = 0; j < deviceList[i].Form.Count; j++)
                     {
                         Point3D center = new Point3D();
-                        Point3D vec = deviceList[i].Form[j].Centre;
-                        float rad = deviceList[i].Form[j].Radius;
+                        Point3D vec = deviceList[i].Form[j].Center;
+                        double rad = deviceList[i].Form[j].Radius;
 
                         HelixToolkit.Wpf.SphereVisual3D sphere = new HelixToolkit.Wpf.SphereVisual3D();
 
@@ -295,7 +286,7 @@ namespace IGS
         /// </summary>
         /// <param name="devKinect">the representation of the kinect camera of the IGS to get its information of size and 
         ///                         and position</param>
-        public void SetKinectCamera(devKinect devKinect)
+        public void SetKinectCamera(DevKinect devKinect)
         {
             Point3D center = new Point3D();
 
@@ -304,9 +295,9 @@ namespace IGS
             RotateTransform3D trans = new RotateTransform3D();
             AxisAngleRotation3D rotation = new AxisAngleRotation3D();
 
-            center.X = devKinect.ball.Centre.X;
-            center.Y = devKinect.ball.Centre.Y;
-            center.Z = devKinect.ball.Centre.Z;
+            center.X = devKinect.ball.Center.X;
+            center.Y = devKinect.ball.Center.Y;
+            center.Z = devKinect.ball.Center.Z;
 
             addKinect.Center = center;
             addKinect.Length = 0.38;
@@ -710,6 +701,35 @@ namespace IGS
             sample.Radius = 0.05;
             sample.ThetaDiv = 10;
             this.mainViewport.Children.Add(sample);
+        }
+
+        public void updateSkeletons(List<TrackedSkeleton> bodies)
+        {
+            // check if trackedskeletons of counter == shown skeletons in 3D
+            int[] notFound = new int[6];
+            bool foundID = false;
+
+            for (int j = 0; j < IDList.Count; j++)
+            {
+
+                for (int i = 0; i < bodies.Count; i++)
+                {
+                    if (IDList[j] == bodies[i].Id)
+                    {
+                        foundID = true;
+                        break;
+                    }
+                }
+
+                if (foundID == false)
+                {
+                    mainViewport.Children.Remove(skelList[j]);
+                    mainViewport.Children.Remove(skelRayList[j]);
+                    IDList[j] = -1;
+                    IDListNullSpaces[j] = true;
+                }
+                foundID = false;
+            }
         }
 
     }

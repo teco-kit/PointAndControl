@@ -7,7 +7,7 @@ using System.Windows.Media.Media3D;
 
 namespace IGS.Helperclasses
 {
-    static class  igsMath
+    static class  IgsMath
     {
 
         public static Double l2Norm(Vector3D vector)

@@ -57,7 +57,7 @@
     <StartupObject>App</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\HttpRoot\favicon.ico</ApplicationIcon>
@@ -77,6 +77,10 @@
     </Reference>
     <Reference Include="Microsoft.Kinect.Tools, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
       <HintPath>..\packages\Microsoft.Kinect.Tools.x64.2.0.1410.19000\lib\net45\Microsoft.Kinect.Tools.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="numl, Version=0.8.22.0, Culture=neutral, processorArchitecture=MSIL">
@@ -109,12 +113,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ComponentHandling\DeviceStorageFileHandlerJSON.cs" />
+    <Compile Include="ComponentHandling\DeviceStorageFileHandlerXML.cs" />
+    <Compile Include="ComponentHandling\EnvironmentInfoHandler.cs" />
+    <Compile Include="ComponentHandling\EventLogger.cs" />
+    <Compile Include="ComponentHandling\EventLogWriter.cs" />
+    <Compile Include="ComponentHandling\IEventlogFormat.cs" />
+    <Compile Include="ComponentHandling\XMLEventLogFormat.cs" />
     <Compile Include="Devices\Ball.cs" />
     <Compile Include="Devices\Beamer.cs" />
     <Compile Include="Devices\Boxee.cs" />
     <Compile Include="Devices\Connection.cs" />
     <Compile Include="Devices\Device.cs" />
-    <Compile Include="Devices\devKinect.cs" />
+    <Compile Include="Devices\DevKinect.cs" />
     <Compile Include="Devices\HTTP.cs" />
     <Compile Include="Devices\NecLcdMonitorMultiSyncV421.cs" />
     <Compile Include="Devices\Plugwise.cs" />
@@ -123,8 +134,9 @@
     <Compile Include="Devices\Kodi.cs" />
     <Compile Include="Devices\XBMCv11.cs" />
     <Compile Include="Helperclasses\CoordTransform.cs" />
-    <Compile Include="Helperclasses\igsMath.cs" />
+    <Compile Include="Helperclasses\IgsMath.cs" />
     <Compile Include="Helperclasses\Ray3D.cs" />
+    <Compile Include="IGS\Deviceproducer.cs" />
     <Compile Include="IGS\Initializer.cs" />
     <Compile Include="Helperclasses\XMLComponentHandler.cs" />
     <Compile Include="IGS\CollisionMethod.cs" />
@@ -143,9 +155,20 @@
     <Compile Include="Locator\Bobyqa.cs" />
     <Compile Include="Locator\Cobyla.cs" />
     <Compile Include="Locator\Locator.cs" />
+    <Compile Include="Properties\Resources.de-DE.Designer.cs">
+      <DependentUpon>Resources.de-DE.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Properties\Resources.en-US.Designer.cs">
+      <DependentUpon>Resources.en-US.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Room3DView.xaml.cs">
       <DependentUpon>Room3DView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Settings.cs" />
     <Compile Include="Webserver\SimpleHttpServer.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -189,6 +212,16 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="Properties\Resources.de-DE.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.de-DE.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.en-US.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -347,7 +380,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>XCOPY "$(ProjectDir)Resources\HttpRoot" "$(TargetDir)\HttpRoot\" /S /Y
-COPY "$(ProjectDir)Resources\configuration.xml" "$(TargetDir)\" /Y</PostBuildEvent>
+COPY "$(ProjectDir)Resources\devices.txt" "$(TargetDir)\" /Y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

@@ -12,7 +12,7 @@ namespace IGS.Server.Devices
             [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint = "SetCursorPos")]
             internal extern static Int32 SetCursorPos(Int32 x, Int32 y);
 
-            private Http _connection;
+         
             private readonly String _commandString;
             private readonly String _absolutePathToKodi = "C:\\Program Files (x86)\\Kodi\\Kodi.exe"; //TODO: this is not nice;
 
@@ -29,8 +29,8 @@ namespace IGS.Server.Devices
             {
                 this.address = address;
                 this.port = port;
-                this._connection = new Http(Convert.ToInt32(port), address);
-                this._commandString = "http://" + _connection.Ip + ":" + _connection.Port + "/jsonrpc?request=";
+                connection = new Http(Convert.ToInt32(port), address);
+                this._commandString = "http://" + connection.Ip + ":" + connection.Port + "/jsonrpc?request=";
             }
 
             /// <summary>
@@ -115,16 +115,16 @@ namespace IGS.Server.Devices
                         break;
                 } 
                 if (action != "")
-                    response = _connection.Send(_commandString +
+                    response = connection.Send(_commandString +
                         "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"Input.ExecuteAction\",\"params\":{\"action\":\"" + action + "\"}}");
 
                 if (cmdId == "off")
-                    response = _connection.Send(_commandString +
+                    response = connection.Send(_commandString +
                         "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"Application.Quit\"}");
 
                 //ugly hack for keyboard input
                 if (cmdId.Length == 1)
-                    response = _connection.Send(_commandString + 
+                    response = connection.Send(_commandString + 
                         "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"Input.SendText\",\"params\":{\"text\":\"" + cmdId + "\"}}");
                 else
                     response = "False";
@@ -134,17 +134,7 @@ namespace IGS.Server.Devices
                 return response;
             }
 
-            /// <summary>
-            ///     The connection existing between a XBMC and a server.
-            ///     With the "set"-method the connection can be set.
-            ///     With the "get"-method the connection can be returned.
-            ///     <returns>Returns the connection</returns>
-            /// </summary>
-            public Http Connection
-            {
-                get { return _connection; }
-                set { _connection = value; }
-            }
+
 
             private string cmdIdToAscii(string cmdId)
             {

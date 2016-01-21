@@ -8,7 +8,7 @@ namespace IGS.Server.Devices
     {
         
         private readonly String _commandString;
-        private Http _connection;
+ 
 
         /// <summary>
         ///     Constructor of a presenter object.
@@ -21,21 +21,11 @@ namespace IGS.Server.Devices
         public Presenter (String name, String id, List<Ball> form, String address, String port)
             : base(name, id, form)
         {
-            _connection = new Http(Convert.ToInt32(port), address);
-            _commandString = "http://" + _connection.Ip + ":" + _connection.Port + "/?key=";
+            connection = new Http(Convert.ToInt32(port), address);
+            _commandString = "http://" + connection.Ip + ":" + connection.Port + "/?key=";
         }
 
-        /// <summary>
-        ///     The connection existing between a presenter and a server.
-        ///     With the "set"-method the connection can be set.
-        ///     With the "get"-method the connection can be returned.
-        ///     <returns>Returns the connection</returns>
-        /// </summary>
-        public Http Connection
-        {
-            get { return _connection; }
-            set { _connection = value; }
-        }
+
 
         /// <summary>
         ///     The Transmit method is responsible for the correct invocation of a function of the presenter 
@@ -57,16 +47,16 @@ namespace IGS.Server.Devices
             switch (cmdId)
             {
                 case "left":
-                    response = _connection.Send(_commandString + "left");
+                    response = connection.Send(_commandString + "left");
                     break;
                 case "right":
-                    response = _connection.Send(_commandString + "right");
+                    response = connection.Send(_commandString + "right");
                     break;
                 case "return":
-                    response = _connection.Send(_commandString + "ret");
+                    response = connection.Send(_commandString + "ret");
                     break;
                 case "f5":
-                    response = _connection.Send(_commandString + "f5");
+                    response = connection.Send(_commandString + "f5");
                     break; 
             }
             if (response.StartsWith("<html><body><h1>")) return "True";

@@ -38,7 +38,7 @@ namespace IGS.Server.Devices
             catch (Exception e)
             {
                 Debug.WriteLine(e.ToString());
-                return "HTTP Verbindung konnte nicht hergestellt werden.";
+                return Properties.Resources.HTTPConnEstablishFailure;
             }
             request.Proxy = null;
             request.Timeout = 300;
@@ -55,7 +55,7 @@ namespace IGS.Server.Devices
             catch (Exception e)
             {
                 Debug.WriteLine(e.ToString());
-                return "HTTP Verbindung fehlgeschlagen .\n Befehl konnte nicht ausgeführt werden.";
+                return Properties.Resources.HTTPConnFailure;
 
             }
 

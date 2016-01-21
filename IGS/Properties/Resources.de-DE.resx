@@ -118,76 +118,78 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AddDeviceError" xml:space="preserve">
-    <value>Adding a Device failed. Wrong number of parameters</value>
+    <value>Gerät hinzufügen fehlgeschlagen. Falsche Anzahl an Parametern</value>
   </data>
   <data name="AddDevVec" xml:space="preserve">
-    <value>{0} of {1} Positions added</value>
+    <value>{0} von {1} Positionen hinzugefügt</value>
   </data>
   <data name="CmdArrivedLog" xml:space="preserve">
-    <value>Command arrived! devID: {0}; cmdID: {1}; value: {2}, wlanAdr:{3}</value>
+    <value>Kommando angekommen! devID: {0}; cmdID: {1}; value: {2}, wlanAdr:{3}</value>
   </data>
   <data name="GesturecontrolError" xml:space="preserve">
-    <value>Activation of gesturecontrol failed</value>
+    <value>Aktivierung der Gestenerkennung fehlgeschlagen</value>
   </data>
   <data name="NoCoordAdded" xml:space="preserve">
-    <value>No Coordinates added</value>
+    <value>Keine Koordinaten hinzugefügt</value>
   </data>
   <data name="NoDevFound" xml:space="preserve">
-    <value>No Device found</value>
+    <value>Kein Gerät gefunden</value>
   </data>
   <data name="NoGestureFound" xml:space="preserve">
-    <value>No User with gesture identified</value>
+    <value>Kein Benutzer der die Aktivierungsgeste ausführt gefunden</value>
   </data>
   <data name="NoKinAvailable" xml:space="preserve">
-    <value>No Kinect connected to the System</value>
+    <value>Keine Kinect an das System angeschlossen</value>
   </data>
   <data name="NoPersonFoundKin" xml:space="preserve">
-    <value>No Person found by Kinect</value>
+    <value>Keine Person von der Kinect gefunden</value>
   </data>
   <data name="NoRadiusWrongFormat" xml:space="preserve">
-    <value>Radius is missing or has wromg Format</value>
+    <value>Radius fehlt oder hat falsches Format</value>
   </data>
   <data name="NoUserInImage" xml:space="preserve">
-    <value>No Person in the view of the kinect camera</value>
+    <value>Keine Person im Bild der Kinect</value>
   </data>
   <data name="RegistrationRequest" xml:space="preserve">
-    <value>Please register yourself at the system first</value>
+    <value>Bitte zuerst am System anmelden</value>
   </data>
   <data name="ResponseLog" xml:space="preserve">
-    <value>Response to '{0}' : {1}</value>
+    <value>Antwort zu '{0}' : {1}</value>
   </data>
   <data name="RoomLeft" xml:space="preserve">
-    <value>You left the Room</value>
+    <value>Sie haben den Raum verlassen</value>
   </data>
   <data name="StartingHTTPServer" xml:space="preserve">
-    <value>Starting HTTP Server on {0} : {1}</value>
+    <value>Starte HTTP Server auf  {0} : {1}</value>
   </data>
   <data name="UnknownDev" xml:space="preserve">
-    <value>Device unknown</value>
+    <value>Unbekanntes Gerät</value>
   </data>
   <data name="UnknownError" xml:space="preserve">
-    <value>Unknown Error</value>
+    <value>Unbekannter Fehler </value>
   </data>
   <data name="InvalidCommand" xml:space="preserve">
-    <value>Invalid Command</value>
+    <value>Ungültiger Befehl</value>
   </data>
   <data name="HTTPConnEstablishFailure" xml:space="preserve">
-    <value>Couldn't establish HTTP connection</value>
+    <value>HTTP Verbindung konnte nicht hergestellt werden</value>
   </data>
   <data name="HTTPConnFailure" xml:space="preserve">
-    <value>HTTP connection error. 
-Command could not be executed</value>
+    <value>HTTP Verbindung fehlgeschlagen.
+Befehl konnte nicht ausgeführt werden</value>
   </data>
   <data name="TCPConnEstablishFailure" xml:space="preserve">
-    <value />
+    <value>TCP Verbindung fehlgeschlagen. 
+Befehl konnte nicht ausgeführt werden</value>
   </data>
   <data name="TCPConnFailure" xml:space="preserve">
-    <value>TCP connection error. \n Command could not be executed</value>
+    <value>TCP Verbindung fehlgeschlagen. 
+Befehl konnte nicht ausgeführt werden</value>
   </data>
   <data name="CoordinatesAdded" xml:space="preserve">
-    <value>Coordinates added</value>
+    <value>Coordinaten hinzugefügt</value>
   </data>
   <data name="SpecifiedDeviceNotFound" xml:space="preserve">
-    <value>Specified device not found</value>
+    <value>Spezifizierted Gerät wurde nicht gefunden</value>
   </data>
 </root>

@@ -43,10 +43,10 @@ namespace IGS.Server.IGS
                 foreach (Ball ball in dev.Form)
                 {
                     // check if Ball is in front of pointing ray
-                    if (Vector3D.AngleBetween(pointer.direction, ball.Centre - pointer.origin) < 90)
+                    if (Vector3D.AngleBetween(pointer.direction, ball.Center - pointer.origin) < 90)
                     {
                         // check distance
-                        if (Point3D.Subtract(pointer.nearestPoint(ball.Centre), ball.Centre).Length <= ball.Radius)
+                        if (Point3D.Subtract(pointer.nearestPoint(ball.Center), ball.Center).Length <= ball.Radius)
                         {
                             found.Add(dev);
                             continue; // skip other balls of this dev
@@ -76,10 +76,10 @@ namespace IGS.Server.IGS
                 foreach (Ball ball in dev.Form)
                 {
                     // check if Ball is in front of pointing ray
-                    if (Vector3D.AngleBetween(pointer.direction, ball.Centre - pointer.origin) < 90)
+                    if (Vector3D.AngleBetween(pointer.direction, ball.Center - pointer.origin) < 90)
                     {
                         // check distance
-                        tempDist = Point3D.Subtract(pointer.nearestPoint(ball.Centre), ball.Centre).Length;
+                        tempDist = Point3D.Subtract(pointer.nearestPoint(ball.Center), ball.Center).Length;
                         if (currDist == -1 || tempDist < currDist)
                         {
                             currDev = dev;

@@ -2,11 +2,11 @@
 using System.Net;
 using IGS.Server.Devices;
 using System;
-using System.Xml;
 using System.Drawing;
 using IGS.Classifier;
-using IGS.Helperclasses;
-
+using IGS.ComponentHandling;
+using IGS.IGS;
+using System.Windows.Media.Media3D;
 
 namespace IGS.Server.IGS
 {
@@ -30,26 +30,35 @@ namespace IGS.Server.IGS
 
         public Room _roomModel { get; set; }
 
+        public DeviceStorageFileHandlerJSON _deviceStorageHandling { get; set; }
+        public EnvironmentInfoHandler _environmentHandler { get; set; }
+
+        private Deviceproducer devProducer { get; set; }
+
+        private EventLogger logger { get; set; }
 
         /// <summary>
         ///     Constructor for the DataHolder
         ///     <param name="devices">The devices for the DataHolder know at initialization</param>
         /// </summary>
-        public DataHolder(List<Device> devices)
+        public DataHolder(EventLogger eventLogger)
         {
-            _devices = devices;
-            _newDevices = new List<Device>();
 
-            String[] roomComps = XMLComponentHandler.readRoomComponents();
-            float roomWidth = float.Parse(roomComps[0]);
-            float roomHeight = float.Parse(roomComps[1]);
-            float roomDepth = float.Parse(roomComps[2]);
+            _newDevices = new List<Device>();
+            _deviceStorageHandling = new DeviceStorageFileHandlerJSON();
+            _environmentHandler = new EnvironmentInfoHandler();
+            devProducer = new Deviceproducer();
+
+            _devices = _deviceStorageHandling.readDevices();
+
+            change_PlugWise_Adress(_environmentHandler.getPWAdress());
+
+            double roomWidth = _environmentHandler.getRoomWidht();
+            double roomHeight = _environmentHandler.getRoomHeight();
+            double roomDepth = _environmentHandler.getRoomDepth();
             _roomModel = new Room(roomWidth, roomHeight, roomDepth);
 
-            foreach (Device d in _devices)
-            {
-                d.color = pickRandomColor();
-            }
+            _devices.ForEach(x => x.color = pickRandomColor());
 
             //TODO: this is testing only
             // create a list of devices to add to the system
@@ -57,8 +66,9 @@ namespace IGS.Server.IGS
             _newDevices.Add(new Plugwise("Ventilator", "Plugwise_0", null, "127.0.0.1", "8080"));
             _newDevices.Add(new Plugwise("Stehlampe", "Plugwise_1", null, "127.0.0.1", "8080"));
             _newDevices.Add(new Boxee("XBox", "Boxee_0", null, "127.0.0.1", "8080"));
-            
+
             _users = new List<User>();
+            logger = eventLogger;
         }
 
         /// <summary>
@@ -110,13 +120,14 @@ namespace IGS.Server.IGS
         /// //TODO: change return value to something more meaningful
         public bool AddUser(String wlanAdr)
         {
-            for (int i = 0; i < _users.Count; i++)
+            foreach (User u in _users)
             {
-                if (_users[i].WlanAdr == wlanAdr)
+                if (u.WlanAdr == wlanAdr)
                 {
-                    return true;
+                    return false;
                 }
             }
+
             User createdUser = new User(wlanAdr);
             Users.Add(createdUser);
             return true;
@@ -131,17 +142,18 @@ namespace IGS.Server.IGS
         /// </summary>
         public bool SetTrackedSkeleton(String wlanAdr, int bodyID)
         {
-            bool success = false;
 
-            for (int i = 0; i < _users.Count && success == false; i++)
+            foreach (User u in _users)
             {
-                if (_users[i].WlanAdr == wlanAdr)
+                if (u.WlanAdr == wlanAdr)
                 {
-                    _users[i].SkeletonId = bodyID;
-                    success = true;
+                    u.SkeletonId = bodyID;
+                    return true;
                 }
             }
-            return success;
+
+            return false;
+
         }
 
         /// <summary>
@@ -154,18 +166,18 @@ namespace IGS.Server.IGS
         /// </summary>
         public bool DelUser(String wlanAdr)
         {
-            bool success = false;
 
-            for (int i = 0; i < _users.Count && success == false; i++)
+
+            for (int i = 0; i < _users.Count; i++)
             {
                 if (_users[i].WlanAdr == wlanAdr)
                 {
                     _users.RemoveAt(i);
-                    success = true;
+                    return true;
                 }
             }
 
-            return success;
+            return false;
         }
 
         /// <summary>
@@ -177,19 +189,14 @@ namespace IGS.Server.IGS
         /// </summary>
         public User GetUserBySkeleton(int bodyId)
         {
-            User tempUser = null;
-            bool found = false;
-
-            for (int i = 0; i < _users.Count && found == false; i++)
+            foreach (User u in _users)
             {
-                if (_users[i].SkeletonId == bodyId)
+                if (u.SkeletonId == bodyId)
                 {
-                    tempUser = _users[i];
-                    found = true;
+                    return u;
                 }
             }
-
-            return tempUser;
+            return null;
         }
 
         /// <summary>
@@ -201,18 +208,16 @@ namespace IGS.Server.IGS
         /// </summary>
         public User GetUserByIp(String wlanAdr)
         {
-            User tempUser = null;
-            bool found = false;
 
-            for (int i = 0; i < _users.Count && found == false; i++)
+            foreach (User u in _users)
             {
-                if (_users[i].WlanAdr == wlanAdr)
+                if (u.WlanAdr == wlanAdr)
                 {
-                    tempUser = _users[i];
-                    found = true;
+                    return u;
                 }
             }
-            return tempUser;
+
+            return null;
         }
 
 
@@ -222,24 +227,29 @@ namespace IGS.Server.IGS
         /// </summary>
         public void AddDevice(Device dev)
         {
-            bool contains = false;
 
-            for (int i = 0; i < _devices.Count && contains == false; i++)
+            for (int i = 0; i < _devices.Count; i++)
             {
                 if (_devices[i].Id == dev.Id)
                 {
-                    contains = true;
+                    return;
                 }
             }
 
-            if (contains == false)
-            {
-                checkAndWriteColorForNewDevice(dev);
-                _devices.Add(dev);
-                
-            }
+            checkAndWriteColorForNewDevice(dev);
+            _deviceStorageHandling.addDevice(dev);
+            _devices.Add(dev);
         }
 
+        public void AddDevice(string type, string name, string address, string port)
+        {
+            Device newDevice = devProducer.produceDevice(type, name, address, port, _devices);
+
+            checkAndWriteColorForNewDevice(newDevice);
+            _devices.Add(newDevice);
+            _deviceStorageHandling.addDevice(newDevice);
+
+        }
         /// <summary>
         ///     Returns a device with its id.
         ///     <param name="id">Is used to identify a device.</param>
@@ -250,18 +260,15 @@ namespace IGS.Server.IGS
             if (id == null || id == "")
                 return null;
 
-            Device tempDevice = null;
-            bool found = false;
-
-            for (int i = 0; i < _devices.Count && found == false; i++)
+            foreach (Device dev in _devices)
             {
-                if (_devices[i].Id == id)
+                if (dev.Id == id)
                 {
-                    tempDevice = _devices[i];
-                    found = true;
+                    return dev;
                 }
             }
-            return tempDevice;
+
+            return null;
         }
 
         /// <summary>
@@ -272,24 +279,25 @@ namespace IGS.Server.IGS
         /// </summary>
         public bool DelTrackedSkeleton(int id)
         {
-            bool success = false;
 
-            for (int i = 0; i < Users.Count && success == false; i++)
+            foreach (User u in _users)
             {
-                if (_users[i].SkeletonId == id)
+                if (u.SkeletonId == id)
                 {
-                    _users[i].SkeletonId = -1;
-                    success = true;
+                    u.SkeletonId = -1;
+                    return true;
                 }
             }
-            return success;
+
+            return false;
+
         }
 
         /// <summary>
         /// Publishes the given adress to all plugwise devices
         /// </summary>
         /// <param name="input">the new adress for all plugwises</param>
-        public void Change_PlugWise_Adress(String input)
+        public void change_PlugWise_Adress(String input)
         {
 
             String[] splitted;
@@ -306,6 +314,16 @@ namespace IGS.Server.IGS
                     _devices[i].CommandString = newCommandString;
                 }
             }
+
+
+        }
+
+        public void change_PlugWise_Adress(string host, string port, string path)
+        {
+            
+            string completeAdr = _environmentHandler.getPWAdress();
+            change_PlugWise_Adress(completeAdr);
+            logger.enqueueEntry(String.Format("New PlugwiseAdress: {0}", completeAdr));
         }
 
         public Color pickRandomColor()
@@ -344,17 +362,23 @@ namespace IGS.Server.IGS
                     return;
                 }
             }
-            
+
             dev.color = pickRandomColor();
-            Console.WriteLine("deviceIdentifier: " + dev.Name + " Color: " + dev.color);
-            
+
             return;
         }
 
-        public void changeRoomSize(float width, float height, float depth)
+        public void changeRoomSize(double width, double height, double depth)
         {
             _roomModel.setRoomMeasures(width, depth, height);
-        }    
-    }
+            logger.enqueueEntry(String.Format("Room rezized to: Width: {0}, Depth: {1}, Height {2}", width, depth, height));
+        }
 
+        public String addDeviceCoordinates(String devId, String radius, Point3D wrist)
+        {
+            Ball coord = new Ball(wrist, double.Parse(radius));
+            this.getDeviceByID(devId).Form.Add(coord);
+            return _deviceStorageHandling.addDeviceCoord(devId, coord);
+        }
+    }
 }
