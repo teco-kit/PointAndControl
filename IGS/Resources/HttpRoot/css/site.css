@@ -1,0 +1,66 @@
+div.toast {
+  display: block;
+  background: #333;
+  opacity: 0.90;
+  position: fixed;
+  text-align: center;
+  text-shadow: none;
+  color: #fff;
+}
+
+.ui-content.fullscreen{
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
+}
+
+div#activate {
+  width:100%; 
+  height:390px;
+  font-size:4em; 
+  color: #000;
+  text-align:center; 
+  background: #ffffff url('../img/activate.png') no-repeat center center;
+  padding-top: 150px;
+  overflow:hidden;
+}
+
+ul#interactionlist {
+  width:100%; 
+  height:500px;
+  margin:0;
+}
+
+div#pointdevice, div#locatedevice{
+  width:100%;
+  height:350px;
+  font-size:4em; 
+  color: #000; 
+  text-align:center; 
+  background: #ffffff url('../img/selection.png') no-repeat center center;
+  padding-top: 1em;
+  overflow:hidden;
+}
+
+div#arview {
+    position: absolute;
+    top: 10%;
+    left: 0;
+    width: 100%;
+    overflow:hidden;
+}
+
+div#arview img {
+	width: 100%;
+}
+
+div#mapview{
+    width: 100%;
+    height: 600px;
+    overflow:hidden;
+}
+
+div#mapview object{
+    width: 100%;
+    height: 100%;
+}

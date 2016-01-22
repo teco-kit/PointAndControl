@@ -17,6 +17,8 @@ using IGS.Server.Devices;
 using System.Windows.Media.Animation;
 using Microsoft.Kinect;
 using IGS.Server.IGS;
+using IGS.Classifier;
+using IGS.Helperclasses;
 
 namespace IGS
 {
@@ -25,6 +27,7 @@ namespace IGS
     /// as well as the users with activated gesture control. Also it does the building and 
     /// and positioning of the 3D elements.
     /// </summary>
+    ///
     public partial class Room3DView : Window
     {
         /// <summary>
@@ -36,6 +39,7 @@ namespace IGS
         /// the list of all devices
         /// </summary>
         private List<Device> deviceList;
+
         // MVP 1 = room
         // MVP 2 = balls
         // MVP 3 = kinect
@@ -80,6 +84,8 @@ namespace IGS
         /// </summary>
         ModelVisual3D room = new ModelVisual3D();
 
+        RectangleVisual3D floor { get; set; }
+
 
         /// <summary>
         /// constructor for the 3D view of the room. 
@@ -87,11 +93,9 @@ namespace IGS
         /// </summary>
         /// <param name="list">The locally stored device list</param>
         /// <param name="transformator">The transformator used for transforming the coordinates from camera to world coordinates</param>
-        public Room3DView(List<Device> list, CoordTransform transformator)
+        public Room3DView(List<WallProjectionSample> list, List<Device> devices , CoordTransform transformator)
         {
-            this.deviceList = list;
             this.transformator = transformator;
-
             skelList = new List<ModelVisual3D>();
             boneListInitList = new List<Boolean>();
             IDList = new List<long>();
@@ -112,10 +116,13 @@ namespace IGS
                 boneListsList.Add(new List<PipeVisual3D>());
             }
             lastSkeletonAktualized = 0;
-
+         
             kinect = new ModelVisual3D();
-
+           
             InitializeComponent();
+            //fillRoomWithColoredSamples(list, devices);
+
+            deviceList = devices;
             FillRoom();
         }
 
@@ -127,7 +134,7 @@ namespace IGS
         /// <param name="p1">second point of the triangle</param>
         /// <param name="p2">third point of the triangle</param>
         /// <returns>a trianglemodel for the room</returns>
-        private ModelVisual3D creatTriangleModelRoom(Point3D p0, Point3D p1, Point3D p2)
+        private ModelVisual3D creatTriangleModelRoom(Point3D p0, Point3D p1, Point3D p2, bool site)
         {
             ModelVisual3D group = new ModelVisual3D();
             MeshGeometry3D triangleMesh = new MeshGeometry3D();
@@ -143,14 +150,21 @@ namespace IGS
 
             normal = calcNormal(p0, p1, p2);
 
-
-            triangleMesh.Normals.Add(-normal);
-            triangleMesh.Normals.Add(-normal);
-            triangleMesh.Normals.Add(-normal);
-
+            if (site == true)
+            {
+                triangleMesh.Normals.Add(-normal);
+                triangleMesh.Normals.Add(-normal);
+                triangleMesh.Normals.Add(-normal);
+            }
+            else
+            {
+                triangleMesh.Normals.Add(normal);
+                triangleMesh.Normals.Add(normal);
+                triangleMesh.Normals.Add(normal);
+            }
             Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.AliceBlue));
             GeometryModel3D model = new GeometryModel3D(triangleMesh, mat);
-
+           
             group.Content = model;
 
             return group;
@@ -164,9 +178,9 @@ namespace IGS
         /// <param name="width">the width of the room</param>
         /// <param name="height">the height of the room</param>
         /// <param name="depth">the depth of the room</param>
-        public void createRoom(float width, float depth, float height)
+        public void createRoom(float width, float height, float depth)
         {
-
+            
             Point3D p0 = new Point3D(0, 0, 0);
             Point3D p1 = new Point3D(width, 0, 0);
             Point3D p2 = new Point3D(width, 0, depth);
@@ -176,24 +190,24 @@ namespace IGS
             Point3D p6 = new Point3D(width, height, depth);
             Point3D p7 = new Point3D(0, height, depth);
 
-            //front
-            room.Children.Add(creatTriangleModelRoom(p3, p2, p6));
-            room.Children.Add(creatTriangleModelRoom(p3, p6, p7));
+            ////front
+            room.Children.Add(creatTriangleModelRoom(p3, p2, p6, true));
+            room.Children.Add(creatTriangleModelRoom(p3, p6, p7, true));
             //right
-            room.Children.Add(creatTriangleModelRoom(p2, p1, p5));
-            room.Children.Add(creatTriangleModelRoom(p2, p5, p6));
+            room.Children.Add(creatTriangleModelRoom(p2, p1, p5, true));
+            room.Children.Add(creatTriangleModelRoom(p2, p5, p6, true));
             //back
-            room.Children.Add(creatTriangleModelRoom(p1, p0, p4));
-            room.Children.Add(creatTriangleModelRoom(p1, p4, p5));
+            room.Children.Add(creatTriangleModelRoom(p1, p0, p4, true));
+            room.Children.Add(creatTriangleModelRoom(p1, p4, p5, true));
             //left
-            room.Children.Add(creatTriangleModelRoom(p0, p3, p7));
-            room.Children.Add(creatTriangleModelRoom(p0, p7, p4));
+            room.Children.Add(creatTriangleModelRoom(p0, p3, p7, true));
+            room.Children.Add(creatTriangleModelRoom(p0, p7, p4, true));
             //top
-            room.Children.Add(creatTriangleModelRoom(p7, p6, p5));
-            room.Children.Add(creatTriangleModelRoom(p7, p5, p4));
+            room.Children.Add(creatTriangleModelRoom(p7, p6, p5, true));
+            room.Children.Add(creatTriangleModelRoom(p7, p5, p4, true));
             //bottom
-            room.Children.Add(creatTriangleModelRoom(p2, p3, p0));
-            room.Children.Add(creatTriangleModelRoom(p2, p0, p1));
+            room.Children.Add(creatTriangleModelRoom(p2, p3, p0, true));
+            room.Children.Add(creatTriangleModelRoom(p2, p0, p1, true));
 
             this.mainViewport.Children.Remove(room);
             this.mainViewport.Children.Add(room);
@@ -250,7 +264,7 @@ namespace IGS
                     for (int j = 0; j < deviceList[i].Form.Count; j++)
                     {
                         Point3D center = new Point3D();
-                        Vector3D vec = deviceList[i].Form[j].Centre;
+                        Point3D vec = deviceList[i].Form[j].Centre;
                         float rad = deviceList[i].Form[j].Radius;
 
                         HelixToolkit.Wpf.SphereVisual3D sphere = new HelixToolkit.Wpf.SphereVisual3D();
@@ -281,7 +295,7 @@ namespace IGS
         /// </summary>
         /// <param name="devKinect">the representation of the kinect camera of the IGS to get its information of size and 
         ///                         and position</param>
-        public void SetKinectCamera(IGS.Server.Devices.devKinect devKinect)
+        public void SetKinectCamera(devKinect devKinect)
         {
             Point3D center = new Point3D();
 
@@ -437,12 +451,13 @@ namespace IGS
                 initBodyBones(IDPlace, pList, midSec);
             }
             transformBallList(IDPlace, pList, midSec);
-            makeBodyRay(IDPlace, right_elbow, right_wrist);
+
+            makeBodyRay(IDPlace, right_shoulder, right_wrist);
             replaceBodyBones(IDPlace, pList, midSec);
         }
 
         /// <summary>
-        /// initializes for a body its joints
+        /// initializes for the joint models for a body
         /// </summary>
         /// <returns>returns a list with initialized joint spheres</returns>
         private List<SphereVisual3D> initBalls()
@@ -466,6 +481,42 @@ namespace IGS
             }
 
             return sphereList;
+        }
+        
+        private void fillRoomWithColoredSamples(List<WallProjectionSample> samples, List<Device> devs)
+        {
+            foreach (WallProjectionSample sample in samples)
+            {
+                foreach (Device dev in devs)
+                {
+                    if (sample.sampledeviceIdentifier == dev.Id)
+                    {
+                        Color c = Color.FromArgb(dev.color.A, dev.color.R, dev.color.G, dev.color.B);
+                        Material mat = new DiffuseMaterial(new SolidColorBrush(c));
+                        addSampleView(new Point3D(sample.x, sample.y, sample.z), mat);
+                        break;
+                    }
+                }
+            }
+        }
+
+        private void fillRoomWithColoredSampleSmoothedAndUnsmoothed(List<WallProjectionSample> nonSmoothed, List<WallProjectionSample> smoothed)
+        {
+            foreach (WallProjectionSample s in nonSmoothed)
+            {
+                
+                Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.Red));
+                addSampleView(new Point3D(s.x, s.y, s.z), mat);
+                
+            }
+
+            foreach (WallProjectionSample s in smoothed)
+            {
+
+                Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.Blue));
+                addSampleView(new Point3D(s.x, s.y, s.z), mat);
+
+            }
         }
         /// <summary>
         /// Creates a pipe (bone) between two joints
@@ -647,5 +698,19 @@ namespace IGS
             mainViewport.Children.Remove(skelRayList[bodyNr]);
             mainViewport.Children.Add(skelRayList[bodyNr]);
         }
+       
+        public void addSampleView(Point3D center, Material mat)
+        {
+            
+            SphereVisual3D sample = new SphereVisual3D();
+            sample.Center = center;
+            sample.BackMaterial = mat;
+            sample.Material = mat;
+            sample.PhiDiv = 10;
+            sample.Radius = 0.05;
+            sample.ThetaDiv = 10;
+            this.mainViewport.Children.Add(sample);
+        }
+
     }
 }

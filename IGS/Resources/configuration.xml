@@ -1,47 +1,114 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <config>
   <deviceConfiguration>
-    <device type="Boxee">
-      <name>ExampleBoxee</name>
-      <id>Boxee_1</id>
+    <device type="Plugwise">
+      <name>Stehlampe Regal</name>
+      <id>Plugwise_1</id>
       <form count="1">
-        <ball radius="0,4" centerX="2,0" centerY="2,0" centerZ="0,0" />
+        <ball radius="0,50" centerX="-1,00" centerY="1,000" centerZ="3,10" />
       </form>
-      <address>192.168.0.2</address>
+      <address>129.13.169.169</address>
       <port>5050</port>
     </device>
+    <device type="Plugwise">
+      <name>Stehlampe Tuer</name>
+      <id>Plugwise_2</id>
+       <form count="1">
+        <ball radius="0,4" centerX="-0,80" centerY="0,48" centerZ="0,1" />
+      </form>
+      <address>129.13.169.169</address>
+      <port>5050</port>
+    </device>
+    <device type="Boxee">
+      <name>Stereoanlage</name>
+      <id>Boxee_1</id>
+      <form count="1">
+        <ball radius="0,4" centerX="-0,94" centerY="1,466" centerZ="2,7" />
+      </form>
+      <address>127.0.0.1</address>
+      <port>8081</port>
+    </device>
     <device type="Kodi">
-      <name>ExampleKodi</name>
+      <name>Mediacenter</name>
       <id>Kodi_1</id>
-      <form count="0">
+     <form count="1">
+        <ball radius="0,4" centerX="2,4" centerY="0,5" centerZ="0,3" />
+      </form>
+      <address>129.13.169.169</address>
+      <port>5050</port>
+    </device>
+    
+    <device type="Boxee">
+      <name>XBox</name>
+      <id>Boxee_2</id>
+      <form count="1">
+        <ball radius="0,4" centerX="2,0" centerY="0,5" centerZ="0,3" />
       </form>
       <address>127.0.0.1</address>
       <port>8081</port>
     </device>
     <device type="Plugwise">
-      <name>ExamplePlugwise</name>
-      <id>Plugwise_1</id>
-      <form count="0" />
-      <address>192.168.0.3</address>
+      <name>Tischventilator</name>
+      <id>Plugwise_3</id>
+      <form count="1">
+      <ball radius="0,50" centerX="4,4" centerY="1,00" centerZ="2,000" />
+      </form>
+      <address>129.13.169.169</address>
+      <port>5050</port>
+    </device>
+    <device type="Plugwise">
+      <name>Kaffeemaschine</name>
+      <id>Plugwise_4</id>
+      <form count="1">
+      <ball radius="0,4" centerX="4,4" centerY="1,00" centerZ="3,5" />
+      </form>
+      <address>129.13.169.169</address>
+      <port>5050</port>
+    </device>
+    <device type="Plugwise">
+      <name>Heizung SUED</name>
+      <id>Plugwise_5</id>
+      <form count="1">
+      <ball radius="0,4" centerX="0,2" centerY="0,3" centerZ="4,30" />
+      </form>
+      <address>129.13.169.169</address>
+      <port>5050</port>
+    </device>
+    <device type="Plugwise">
+      <name>Buecherregal</name>
+      <id>Plugwise_6</id>
+       <form count="1">
+      <ball radius="0,4" centerX="3,5" centerY="1,000" centerZ="0,50" />
+      </form>
+      <address>129.13.169.169</address>
+      <port>5050</port>
+    </device>
+    <device type="Plugwise">
+      <name>Rolllaeden OST</name>
+      <id>Plugwise_7</id>
+       <form count="1">
+      <ball radius="0,4" centerX="4,4" centerY="1,5" centerZ="1,2" />
+      </form>
+      <address>129.13.169.169</address>
       <port>5050</port>
     </device>
   </deviceConfiguration>
   <environment>
     <Roomsize>
-      <width>4,0</width>
-      <height>4,0</height>
-      <depth>4,0</depth>
+      <width>6,35</width>
+      <height>2,70</height>
+      <depth>5,58</depth>
     </Roomsize>
     <KinectConfiguration>
-      <X>2,0</X>
-      <Y>2,0</Y>
-      <Z>0,0</Z>
-      <tiltingAngle>0.0</tiltingAngle>
-      <HorizontalOrientationAngle>0.0</HorizontalOrientationAngle>
+      <X>2,40</X>
+      <Y>1,80</Y>
+      <Z>0,30</Z>
+      <tiltingAngle>0</tiltingAngle>
+      <HorizontalOrientationAngle>0</HorizontalOrientationAngle>
     </KinectConfiguration>
     <PlugwiseAdress>
-      <host>this.is.an.example</host>
-      <port>8080</port>
+      <host>cloud.teco.edu</host>
+      <port>5000</port>
       <path>plugwise</path>
     </PlugwiseAdress>
   </environment>

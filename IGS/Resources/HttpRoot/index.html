@@ -1,0 +1,233 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Point &amp; Control</title>
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css" />
+    <link rel="stylesheet" href="css/site.css" />
+	<script src="js/adapter.js"></script>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script src="js/site.js"></script>
+  </head>
+  <body>
+    <div data-role="page" id="register">
+      <div data-role="header" data-position="fixed" data-tap-toggle="false">
+        <h1>Bitte registrieren</h1>
+      </div>
+      <!-- /header -->
+
+      <div role="main" class="ui-content fullscreen">
+        <div id="activate">Bitte Arm heben und Bildschirm berühren!</div>
+      </div>
+      <!-- /content -->
+
+      <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+        <div data-role="navbar" data-iconpos="right">
+          <ul>
+            <li>
+              <a href="#interaction" class="btn btn-skip ui-title" data-icon="carat-r">Überspringen</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <!-- /footer -->
+    </div>
+
+    <div data-role="page" id="point">
+      <div data-role="header" data-position="fixed" data-tap-toggle="false">
+        <h1>Gerät auswählen</h1>
+        <a href="#interaction" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Zurück</a>
+      </div>
+      <!-- /header -->
+
+      <div role="main" class="ui-content fullscreen">
+        <div id="pointdevice">Auf das Gerät zeigen und Bildschirm berühren!</div>
+      </div>
+      <!-- /content -->
+
+      <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+        <!--<div data-role="navbar" data-iconpos="right">
+          <ul>
+            <li>
+              <a href="#listdevices" class="btn btn-skip" data-icon="carat-r">Zur Liste</a>
+            </li>
+          </ul>
+        </div>-->
+      </div>
+      <!-- /footer -->
+    </div>
+
+      <div data-role="page" id="interaction">
+          <div data-role="header" data-position="fixed" data-tap-toggle="false">
+              <h1>Choose Method</h1>
+              <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Zurück</a>
+          </div>
+          <!-- /header -->
+
+          <div role="main" class="ui-content fullscreen">
+              <ul id="interactionlist" data-role="listview">
+                  <li><a href="#point">Pointing</a></li>
+                  <li><a href="#listdevices">List</a></li>
+                  <li><a href="#ar">Camera</a></li>
+                  <li><a href="#map">Map</a></li>
+              </ul>
+          </div>
+          <!-- /content -->
+
+          <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+              <!--<div data-role="navbar" data-iconpos="right">
+            <ul>
+                <li>
+                    <a href="#listdevices" class="btn btn-skip" data-icon="carat-r">Zur Liste</a>
+                </li>
+            </ul>
+        </div>-->
+          </div>
+      </div>
+
+    <div data-role="page" id="ar">
+        <div data-role="header" data-position="fixed" data-tap-toggle="false">
+            <h1>Augmented Reality</h1>
+            <a href="#interaction" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Zurück</a>
+        </div>
+        <!-- /header -->
+
+        <div role="main" class="ui-content fullscreen">
+			<video id="video" autoplay></video>
+            <div id="arview">
+                <a href="/" data-ajax="false">
+                    <img src="img/icons/TV.png">
+                    <span>Kein Gerät</span>
+                </a>
+			</div>
+        </div>
+        <!-- /content -->
+
+        <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+            <!--<div data-role="navbar" data-iconpos="right">
+                <ul>
+                    <li>
+                        <a href="#listdevices" class="btn btn-skip" data-icon="carat-r">Überspringen</a>
+                    </li>
+                </ul>
+            </div>-->
+        </div>
+        <!-- /footer -->
+    </div>
+
+      <div data-role="page" id="map">
+          <div data-role="header" data-position="fixed" data-tap-toggle="false">
+              <h1>Map View</h1>
+              <a href="#interaction" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Zurück</a>
+          </div>
+          <!-- /header -->
+
+          <div role="main" class="ui-content fullscreen">
+              <div id="mapview">
+                  <object id="mapSvg" class="emb" data="img/living-lab-map.svg" type="image/svg+xml"></object>
+              </div>
+          </div>
+          <!-- /content -->
+
+          <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+              <!--<div data-role="navbar" data-iconpos="right">
+                  <ul>
+                      <li>
+                          <a href="#listdevices" class="btn btn-skip" data-icon="carat-r">Zur Liste</a>
+                      </li>
+                  </ul>
+              </div>-->
+          </div>
+          <!-- /footer -->
+      </div>
+
+    <div data-role="page" id="listdevices">
+      <div data-role="header" data-position="fixed" data-tap-toggle="false">
+        <h1>Gerät auswählen</h1>
+        <a href="#interaction" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Zurück</a>
+        <!-- <a href="javascript:switchEditMode()" class="ui-btn ui-btn-inline ui-corner-all ui-btn-icon-right ui-icon-edit">Bearbeiten</a> -->
+      </div>
+      <!-- /header -->
+
+      <div role="main" class="ui-content">
+        <ul id="devicelist" data-role="listview">
+          <li>Keine Geräte in der Liste</li>
+        </ul>
+      </div>
+      <!-- /content -->
+
+        <div data-role="footer" data-position="fixed" data-tap-toggle="false">
+            <!--<div data-role="navbar" data-iconpos="right">
+            <ul>
+                <li>
+                    <a href="#listdevices" class="btn btn-skip" data-icon="carat-r">Zur Liste</a>
+                </li>
+            </ul>
+        </div>-->
+        </div>
+        <!-- /footer -->
+
+    </div>
+
+    <div data-role="page" id="locate">
+        <div data-role="header" data-position="fixed" data-tap-toggle="false">
+            <h1>Position festlegen</h1>
+            <a href="#register" data-rel="back" class="ui-btn-left ui-btn ui-btn-inline ui-corner-all ui-btn-icon-left ui-icon-carat-l">Zurück</a>
+        </div>
+        <!-- /header -->
+
+        <div role="main" class="ui-content fullscreen">
+            <div id="locatedevice">Position durch zeigen bestimmen</div>
+        </div>
+        <!-- /content -->
+
+        <div data-role="footer" data-position="fixed" data-tap-toggle="false" style="text-align: center;">
+            <div id="positionprogresslabel" style="width:100%">0 Vektoren</div>
+            <div id="positionprogressbar">
+                <div style="background:limegreen;width:200px;float:left;">&nbsp;</div>
+                <div style="background:lightgrey;width:100%;">&nbsp;</div>
+            </div>
+            <div data-role="navbar" style="display:none" data-iconpos="right">
+                <ul>
+                    <li>
+                        <a id="positiondevicebutton" href="" data-icon="carat-r">Position speichern</a>
+                    </li>
+                </ul>
+            </div>
+        </div> <!-- /footer -->
+    </div>
+
+    <div data-role="page" data-dialog="true" id="adddevice">
+      <div data-role="header">
+        <h1>Neues Gerät hinzufügen</h1>
+      </div>
+      <!-- /header -->
+
+      <div role="main" class="ui-content">
+        <form>
+            <select name="newdevicedd" id="newdevicedd" data-mini="true">
+                <option value="">Gerät auswählen...</option>
+                <option value="dev1">The 1st Option</option>
+                <option value="dev2">The 2nd Option</option>
+                <option value="dev3">The 3rd Option</option>
+                <option value="dev4">The 4th Option</option>
+            </select>
+          <div class="ui-field-contain">
+              <label for="newdevicename">Name:</label>
+              <input type="text" name="newdevicename" id="newdevicename" value="" />
+          </div>
+            <input type="button" href="#" id="adddevicebutton" value="Gerät hinzufügen" />
+      </form>
+      </div>
+      <!-- /content -->
+
+    </div>
+
+  </body>
+</html>

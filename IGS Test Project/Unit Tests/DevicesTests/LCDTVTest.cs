@@ -10,7 +10,7 @@ namespace IGS_Unit_Test_Project.DevicesTests
     [TestFixture]
     public class LCDTVTest {
 
-        NECLCDmonitorMultiSyncV421 tv;
+        NecLcdMonitorMultiSyncV421 tv;
 
         /// <summary>
         /// Initialisiert die Testklasse.
@@ -19,7 +19,7 @@ namespace IGS_Unit_Test_Project.DevicesTests
         public void LCDTV_Init()
         {
             Ball ball1 = new Ball(new Vector3D(1, 1, 1), 1);
-            tv = new NECLCDmonitorMultiSyncV421("tv", "tv1", new List<Ball> { ball1 }, "1.1.1.1", "1");
+            tv = new NecLcdMonitorMultiSyncV421("tv", "tv1", new List<Ball> { ball1 }, "1.1.1.1", "1");
         }
 
         /// <summary>

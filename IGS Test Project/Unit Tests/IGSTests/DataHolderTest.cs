@@ -190,7 +190,7 @@ namespace IGS_Unit_Test_Project.IGS
         [Test]
         public void DataHolder_GetDevice_ExistingId()
         {
-            Assert.AreEqual(testDevice1, testDataHolder.GetDevice(testDevice1.Id));
+            Assert.AreEqual(testDevice1, testDataHolder.getDeviceByID(testDevice1.Id));
         }
 
         /// <summary>
@@ -199,7 +199,7 @@ namespace IGS_Unit_Test_Project.IGS
         [Test]
         public void DataHolder_GetDevice_NotExistingId()
         {
-            Assert.AreEqual(null, testDataHolder.GetDevice(testDevice2.Id));
+            Assert.AreEqual(null, testDataHolder.getDeviceByID(testDevice2.Id));
         }
 
         /// <summary>
@@ -208,7 +208,7 @@ namespace IGS_Unit_Test_Project.IGS
         [Test]
         public void DataHolder_GetDevice_NullId()
         {
-            Assert.AreEqual(null, testDataHolder.GetDevice(null));
+            Assert.AreEqual(null, testDataHolder.getDeviceByID(null));
         }
 
         /// <summary>

@@ -1,0 +1,64 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Locator_changePosition</title>
+		<link rel="stylesheet" type="text/css" href="css/screen.css">
+		<script type="text/javascript" src="../jquery-1.8.3.min.js"></script>
+		<script type="text/javascript">
+			function sendcmd(cmd) {
+					Android.click(cmd);
+				}
+			$(document).ready(function() {
+				$("#1").css("display", "table");
+				$("#2").css("display", "none");
+				$("#3").css("display", "none");
+				$("#tfinput").keypress(function(event) {
+					sendcmd(String.fromCharCode(event.which));
+					return false;
+				});
+				$("#tfinput").keydown(function(event) {
+					var br = "<br />";
+					if (event.which == 8) {
+						sendcmd("backspace");
+						var tmp = $("#textfield").html();
+						$("#textfield").html(tmp.substring(0, tmp.length - 1));
+					} else if (event.which == 13) {
+						sendcmd("select");
+					}
+				});
+				$("#buInputtxt").click(function() {
+					$("#tfinput").focus();
+				});
+			});
+			function changePane(paneId) {
+				$(".content").css("display", "none");
+				$("#" + paneId).css("display", "table");
+				
+			}
+		</script>
+	</head>
+	<body>
+		<div id="container">
+			<div id="header">
+
+			</div>
+			<div class="content" id="1">
+				<div class="row">
+					<div class="element">
+
+					<button onclick="sendcmd('changePosition')">
+						Auf Gerät zeigen um Position zu ändern.
+					</button>
+					</div>
+					
+				</div>
+				
+
+			</div>
+			
+			<div id="footer">
+			
+			</div>
+		</div>
+	</body>
+</html>

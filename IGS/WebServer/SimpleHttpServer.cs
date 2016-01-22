@@ -240,6 +240,7 @@ namespace IGS.Server.WebServer
             }
             catch (Exception e)
             {
+                
                 Console.WriteLine(e.StackTrace);
                 WriteFailure();
             }
@@ -257,7 +258,7 @@ namespace IGS.Server.WebServer
         private void ParseRequest()
         {
             String request = StreamReadLine(InputStream);
-            Console.WriteLine(request);
+            
             String[] tokens = request.Split(' ');
             if (tokens.Length != 3)
             {
@@ -321,9 +322,9 @@ namespace IGS.Server.WebServer
             // we hand him needs to let him see the "end of the stream" at this content 
             // length, because otherwise he won't know when he's seen it all! 
 
-            Console.WriteLine("get post data start");
             int content_len = 0;
             MemoryStream ms = new MemoryStream();
+
             if (HttpHeaders.ContainsKey("Content-Length"))
             {
                 content_len = Convert.ToInt32(this.HttpHeaders["Content-Length"]);
@@ -357,7 +358,6 @@ namespace IGS.Server.WebServer
                 }
                 ms.Seek(0, SeekOrigin.Begin);
             }
-            Console.WriteLine("get post data end");
             Srv.HandlePostRequest(this, new StreamReader(ms));
         }
 
@@ -380,6 +380,16 @@ namespace IGS.Server.WebServer
         {
             OutputStream.WriteLine("HTTP/1.0 404 File not found");
             OutputStream.WriteLine("Connection: close");
+            OutputStream.WriteLine("");
+        }
+
+        /// <summary>
+        ///     Responses to redirect to another URL(301).
+        /// </summary>
+        public void WriteRedirect(String new_location)
+        {
+            OutputStream.WriteLine("HTTP/1.1 302 Found");
+            OutputStream.WriteLine("Location: " + new_location);
             OutputStream.WriteLine("");
         }
     }
@@ -437,6 +447,8 @@ namespace IGS.Server.WebServer
         /// </summary>
         public void Listen()
         {
+            Console.WriteLine("Starting HTTP Server on " + LocalIP.ToString() + ":" + Port);
+
             _listener = new TcpListener(LocalIP, Port);
             _listener.Start();
             while (is_active)
@@ -473,6 +485,8 @@ namespace IGS.Server.WebServer
         /// <param name="p">the HttpProcessor processing the connection with the client.</param>
         /// <param name="msg">the response</param>
         public abstract void SendResponse(HttpProcessor p, String msg);
+
+        //public abstract void SendDataDirect(HttpProcessor p, String msg);
     }
 
 
@@ -521,62 +535,100 @@ namespace IGS.Server.WebServer
 
         /// <summary>
         ///     Processes the GET-request.
-        ///     Either the requested file will be send to the client or the provided parameters will be processed.
+        ///     Either the requested file will be sent to the client or the provided parameters will be processed.
         ///     <param name="p">the HttpProcessor</param>
         /// </summary>
         public override void HandleGetRequest(HttpProcessor p)
         {
-            if (p.HttpUrl.EndsWith(".html"))
+            // redirect to index.html in base directory
+
+            String querystring = null;
+            String pathstring = null;
+            // check query part of string
+            int iqs = p.HttpUrl.IndexOf('?');
+            // If query string variables exist, put them in a string.
+            if (iqs >= 0)
+            {
+                querystring = (iqs < p.HttpUrl.Length - 1) ? p.HttpUrl.Substring(iqs + 1) : String.Empty;
+                pathstring = p.HttpUrl.Substring(0, iqs);
+            }
+            else
+            {
+                pathstring = p.HttpUrl;
+            }
+
+            // check for file
+            if (pathstring.EndsWith(".html"))
             {
                 p.WriteSuccess("text/html");
                 sendData(p);
             }
-            else if (p.HttpUrl.EndsWith(".css"))
+            else if (pathstring.EndsWith(".css"))
             {
                 p.WriteSuccess("text/css");
                 sendData(p);
             }
-            else if (p.HttpUrl.EndsWith(".js"))
+            else if (pathstring.EndsWith(".js"))
             {
                 p.WriteSuccess("text/javascript");
                 sendData(p);
             }
-            else if (p.HttpUrl.EndsWith(".jpg"))
+            else if (pathstring.EndsWith(".json"))
+            {
+                p.WriteSuccess("application/json");
+                sendData(p);
+            }
+            else if (pathstring.EndsWith(".map"))
+            {
+                p.WriteSuccess("application/octet-stream");
+                sendData(p);
+            }
+            else if (pathstring.EndsWith(".jpg"))
             {
                 p.WriteSuccess("image/jpg");
                 sendData(p);
             }
-            else if (p.HttpUrl.EndsWith(".gif"))
+            else if (pathstring.EndsWith(".gif"))
             {
                 p.WriteSuccess("image/gif");
                 sendData(p);
             }
-            else if (p.HttpUrl.EndsWith(".png"))
+            else if (pathstring.EndsWith(".png"))
             {
                 p.WriteSuccess("image/png");
                 sendData(p);
             }
-            else if (p.HttpUrl.EndsWith(".ico"))
+            else if (pathstring.EndsWith(".ico"))
             {
                 p.WriteSuccess("image/x-icon");
                 sendData(p);
             }
-            else
+            else if (pathstring.EndsWith(".svg"))
             {
-                p.WriteSuccess("text/html");
-                NameValueCollection col = HttpUtility.ParseQueryString(p.HttpUrl);
+                p.WriteSuccess("image/svg+xml");
+                sendData(p);
+            }
+            else if (querystring.Length > 0) //TODO: currently we either serve files or process query parameters
+            {
+                NameValueCollection col = HttpUtility.ParseQueryString(querystring);
                 String device = col["dev"];
-                String temp = col["cmd"];
-                if (temp != null)
+                String command = col["cmd"];
+                if (device != null && command != null)
                 {
-                    String[] cmdval = temp.Split('_');
-                    String command = cmdval[0];
+                    // TODO: clean this mess up
                     String value = "";
-                    if (cmdval.Length > 1) value = cmdval[1].Trim();
+                    if (col["val"] != null)
+                        value = col["val"];
                     String clientIp = ((IPEndPoint)p.Socket.Client.RemoteEndPoint).Address.ToString();
                     OnRequest(new HttpEventArgs(clientIp, device, command, value, p));
 
+                } else {
+                    p.WriteFailure();
                 }
+            }
+            else
+            {
+                p.WriteFailure();
             }
 
         }
@@ -603,10 +655,22 @@ namespace IGS.Server.WebServer
         /// </summary>
         private void sendData(HttpProcessor p)
         {
-            if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\" + p.HttpUrl))
+            String pathstring = null;
+            int iqs = p.HttpUrl.IndexOf("?");
+            if (iqs == -1)
+            {
+                pathstring = p.HttpUrl;
+            }
+            else if (iqs > 0)
+            {
+                pathstring = p.HttpUrl.Substring(0, iqs);
+            }
+
+            //TODO: make httproot configurable
+            if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\" + pathstring))
             {
                 using (
-                    Stream fs = File.Open(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\" + p.HttpUrl,
+                    Stream fs = File.Open(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\" + pathstring,
                                           FileMode.Open)
                     )
                 {
@@ -627,6 +691,7 @@ namespace IGS.Server.WebServer
         /// <param name="msg">the response</param>
         public override void SendResponse(HttpProcessor p, String msg)
         {
+            
             p.OutputStream.Write(msg);
         }
     }

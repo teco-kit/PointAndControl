@@ -14,7 +14,7 @@ namespace IGS.Server.Devices
 
             private Http _connection;
             private readonly String _commandString;
-            private readonly String _absolutePathToKodi = "C:\\Program Files (x86)\\Kodi\\Kodi.exe"; // this is not nice;
+            private readonly String _absolutePathToKodi = "C:\\Program Files (x86)\\Kodi\\Kodi.exe"; //TODO: this is not nice;
 
             /// <summary>
             ///     Constructor of a XBMC object.
@@ -27,6 +27,8 @@ namespace IGS.Server.Devices
             public Kodi(String name, String id, List<Ball> form,String address,String port)
                 : base(name, id, form)
             {
+                this.address = address;
+                this.port = port;
                 this._connection = new Http(Convert.ToInt32(port), address);
                 this._commandString = "http://" + _connection.Ip + ":" + _connection.Port + "/jsonrpc?request=";
             }

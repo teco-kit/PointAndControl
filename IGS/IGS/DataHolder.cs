@@ -3,6 +3,9 @@ using System.Net;
 using IGS.Server.Devices;
 using System;
 using System.Xml;
+using System.Drawing;
+using IGS.Classifier;
+using IGS.Helperclasses;
 
 
 namespace IGS.Server.IGS
@@ -16,13 +19,16 @@ namespace IGS.Server.IGS
         /// <summary>
         ///     List of the devices
         /// </summary>
-        private List<Device> _devices;
+        private List<Device> _devices { get; set; }
+
+        private List<Device> _newDevices { get; set; }
 
         /// <summary>
         ///     List of the users
         /// </summary>
-        private List<User> _users;
+        private List<User> _users { get; set; }
 
+        public Room _roomModel { get; set; }
 
 
         /// <summary>
@@ -32,6 +38,26 @@ namespace IGS.Server.IGS
         public DataHolder(List<Device> devices)
         {
             _devices = devices;
+            _newDevices = new List<Device>();
+
+            String[] roomComps = XMLComponentHandler.readRoomComponents();
+            float roomWidth = float.Parse(roomComps[0]);
+            float roomHeight = float.Parse(roomComps[1]);
+            float roomDepth = float.Parse(roomComps[2]);
+            _roomModel = new Room(roomWidth, roomHeight, roomDepth);
+
+            foreach (Device d in _devices)
+            {
+                d.color = pickRandomColor();
+            }
+
+            //TODO: this is testing only
+            // create a list of devices to add to the system
+            _newDevices.Add(new Kodi("MediaCenter", "Kodi_0", null, "127.0.0.1", "8081"));
+            _newDevices.Add(new Plugwise("Ventilator", "Plugwise_0", null, "127.0.0.1", "8080"));
+            _newDevices.Add(new Plugwise("Stehlampe", "Plugwise_1", null, "127.0.0.1", "8080"));
+            _newDevices.Add(new Boxee("XBox", "Boxee_0", null, "127.0.0.1", "8080"));
+            
             _users = new List<User>();
         }
 
@@ -44,6 +70,17 @@ namespace IGS.Server.IGS
         {
             get { return _devices; }
             set { _devices = value; }
+        }
+
+        /// <summary>
+        ///     With the "set"-method the device list can be set
+        ///     With the "get"-method, the device list can be returned
+        ///     <returns>Returns the list of devices</returns>
+        /// </summary>
+        public List<Device> newDevices
+        {
+            get { return _newDevices; }
+            set { _newDevices = value; }
         }
 
         /// <summary>
@@ -70,13 +107,14 @@ namespace IGS.Server.IGS
         ///     and adds the user to the user-list.
         ///     <param name="wlanAdr"> Used to identify and to add a user</param>
         /// </summary>
+        /// //TODO: change return value to something more meaningful
         public bool AddUser(String wlanAdr)
         {
             for (int i = 0; i < _users.Count; i++)
             {
                 if (_users[i].WlanAdr == wlanAdr)
                 {
-                    return false;
+                    return true;
                 }
             }
             User createdUser = new User(wlanAdr);
@@ -196,7 +234,9 @@ namespace IGS.Server.IGS
 
             if (contains == false)
             {
+                checkAndWriteColorForNewDevice(dev);
                 _devices.Add(dev);
+                
             }
         }
 
@@ -205,8 +245,11 @@ namespace IGS.Server.IGS
         ///     <param name="id">Is used to identify a device.</param>
         ///     <returns>Returns the deviceobject. If no device with the id exists NULL will be returned<returns>
         /// </summary>
-        public Device GetDevice(String id)
+        public Device getDeviceByID(String id)
         {
+            if (id == null || id == "")
+                return null;
+
             Device tempDevice = null;
             bool found = false;
 
@@ -220,7 +263,6 @@ namespace IGS.Server.IGS
             }
             return tempDevice;
         }
-
 
         /// <summary>
         ///     Deletes the associated bodyID from the through ID implicated user.
@@ -266,6 +308,53 @@ namespace IGS.Server.IGS
             }
         }
 
+        public Color pickRandomColor()
+        {
+            bool uniqueFound = true;
+
+            Random random = new Random();
+            KnownColor[] names = (KnownColor[])Enum.GetValues(typeof(KnownColor));
+            KnownColor randomColorName = names[random.Next(names.Length)];
+            Color randomColor = Color.FromKnownColor(randomColorName);
+
+            foreach (Device d in Devices)
+            {
+                if (d.color != null)
+                {
+                    if (d.color.Equals(randomColor))
+                    {
+                        uniqueFound = false;
+                    }
+                }
+            }
+            if (uniqueFound == false)
+            {
+                randomColor = pickRandomColor();
+            }
+
+            return randomColor;
+        }
+
+        public void checkAndWriteColorForNewDevice(Device dev)
+        {
+            foreach (Device d in Devices)
+            {
+                if (d.Name.Equals(dev.Name))
+                {
+                    return;
+                }
+            }
+            
+            dev.color = pickRandomColor();
+            Console.WriteLine("deviceIdentifier: " + dev.Name + " Color: " + dev.color);
+            
+            return;
+        }
+
+        public void changeRoomSize(float width, float height, float depth)
+        {
+            _roomModel.setRoomMeasures(width, depth, height);
+        }    
     }
 
 }

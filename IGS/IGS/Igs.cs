@@ -11,6 +11,11 @@ using System.IO;
 using IGS.Helperclasses;
 using System.Net;
 using System.Text;
+using IGS.Classifier;
+using Microsoft.Kinect;
+using System.Threading;
+
+
 
 namespace IGS.Server.IGS
 {
@@ -42,10 +47,14 @@ namespace IGS.Server.IGS
             Tracker.KinectEvents += UserLeft;
             Tracker.Strategy.TrackingStateEvents += SwitchTrackingState;
 
+
             createIGSKinect();
 
-
             this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Centre);
+            this.classification = new ClassificationHandler(Transformer, Data);
+            this.coreMethods = new CollisionMethod(Data, Tracker, Transformer);
+
+
         }
 
 
@@ -79,11 +88,19 @@ namespace IGS.Server.IGS
         /// With the "get"-method the devInit can be returned.
         /// </summary>
         public bool devInit { get; set; }
+
         /// <summary>
         /// With the "set"-method the CoordTransform can be set.
         /// With the "get"-method the CoordTransform can be returned.
         /// </summary>
         public CoordTransform Transformer { get; set; }
+
+        public ClassificationHandler classification { get; set; }
+
+        ICoreMethods coreMethods { get; set; }
+
+
+
 
         /// <summary>
         /// 
@@ -110,13 +127,15 @@ namespace IGS.Server.IGS
             String str = "";
             Server.SendResponse(e.P, str);
         }
+        
         private void server_Request(object sender, HttpEventArgs e)
         {
             Debug.WriteLine("server_Request");
             String str = InterpretCommand(sender, e);
+            
             Server.SendResponse(e.P, str);
         }
-
+        
         /// <summary>
         ///     Part of the design pattern: observer(KinectEvent).
         ///     Takes place for the update-method in the observer design pattern.
@@ -130,7 +149,8 @@ namespace IGS.Server.IGS
             User user = Data.GetUserBySkeleton(args.SkeletonId);
             if (user != null)
             {
-                user.AddError("You left the room!");
+                user.AddError("Sie haben den Raum verlassen");
+                user.TrackingState = false;
             }
             Data.DelTrackedSkeleton(args.SkeletonId);
         }
@@ -145,26 +165,28 @@ namespace IGS.Server.IGS
         }
 
         /// <summary>
-        ///     This method fetches the id of the skeleton from the user currently perfoming the gesture to choose a device.
+        ///     This method fetches the id of the skeleton from the user currently perfoming the gesture to register.
         ///     This id will be set in the UserObject which is through its WLAN-adress unique.
         ///     If this procedure is finished successfully, the gesture control is for the user active and can be used.
         ///     <param name="wlanAdr">WLAN-Adress of the user wanting to activate gesture control</param>
         /// </summary>
-        public bool SkeletonIdToUser(String wlanAdr)
+        public int SkeletonIdToUser(String wlanAdr)
         {
             User tempUser = Data.GetUserByIp(wlanAdr);
             int id = -1;
+
             if (tempUser != null)
             {
-                int sklId = tempUser.SkeletonId;
+                id = Tracker.GetSkeletonId(tempUser.SkeletonId);
 
-                id = Tracker.GetSkeletonId(sklId);
-
-                if (id != -1)
+                if (id >= 0)
+                {
                     tempUser.TrackingState = true;
+                    Data.SetTrackedSkeleton(wlanAdr, id);
+                }
             }
 
-            return id >= 0 && Data.SetTrackedSkeleton(wlanAdr, id);
+            return id;
         }
 
         /// <summary>
@@ -175,111 +197,266 @@ namespace IGS.Server.IGS
         public String InterpretCommand(object sender, HttpEventArgs args)
         {
             String devId = args.Dev;
-            String cmdId = args.Cmd;
+            String cmd = args.Cmd;
             String value = args.Val;
+            String[] parameters = value.Split(':');
             String wlanAdr = args.ClientIp;
+
+            User user = Data.GetUserByIp(wlanAdr);
+            Device device = null;
             String retStr = "";
-            String logEntry = "";
-            logEntry = wlanAdr + ": " + cmdId + " " + devId + " " + value + " " + "Response: ";
+            String msg = "";
+            Boolean success = false;
+
+            if (cmd != "popup" && cmd != "pollDevice")
+                XMLComponentHandler.writeLogEntry("Command arrived! devID: " + devId + " cmdID: " + cmd + " value: " + value + " wlanAdr: " + wlanAdr);
 
             if (devId == "server")
             {
-                switch (cmdId)
+                // return JSON formatted message
+                args.P.WriteSuccess("application/json");
+                retStr = "{\"cmd\":\"" + cmd + "\"";
+                
+                if (cmd != "addUser" && cmd != "popup")
+                {
+                    // notify online learner that no control command was sent
+                    // onlineNoSucces(devId, wlanAdr);
+                }
+
+                switch (cmd)
                 {
                     case "addUser":
+                        success = AddUser(wlanAdr);
 
-                        retStr = AddUser(wlanAdr).ToString();
-                        Console.WriteLine(retStr);
-                        return retStr;
+                        if (Data.GetUserByIp(wlanAdr) != null)
+                        {
+                            // attach tracking state
+                            retStr += ",\"trackingId\":" + SkeletonIdToUser(wlanAdr);
+                        }
+
+                        break;
 
                     case "close":
-                        retStr = DelUser(wlanAdr).ToString();
-
-                        return retStr;
+                        success = DelUser(wlanAdr);
+                        break;
 
                     case "activateGestureCtrl":
-
-                        if (Data.GetUserByIp(wlanAdr) != null)
+                        if (!Tracker.kinectAvailable)
                         {
-                            retStr = SkeletonIdToUser(wlanAdr).ToString();
-                            Console.WriteLine(retStr);
-                            return retStr;
-
+                            msg = "Keine Kinect am System angeschlossen.";
+                            break;
                         }
 
-                        retStr = "Aktivierung nicht möglich.\nBitte starten Sie die App neu.";
-
-                        return retStr;
-                    case "selectDevice":
-                        if (Data.GetUserByIp(wlanAdr).TrackingState)
+                        if (user != null)
                         {
-                            retStr = MakeDeviceString(ChooseDevice(wlanAdr));
+                            int id = SkeletonIdToUser(wlanAdr);
 
-                            return retStr;
+                            if (id >= 0)
+                                success = true;
+                            else if (id == UserTracker.NO_GESTURE_FOUND)
+                                msg = "Kein Nutzer mit Geste identifiziert.";
+                            else if (id == UserTracker.NO_BODIES_IN_FRAME)
+                                msg = "Keine Nutzer im Bild.";
+
+                            // attach tracking state
+                            retStr += ",\"trackingId\":" + id;
+                            break;
                         }
-                        Server.SendResponse(args.P, "ungueltiger Befehl");
+
+                        if (!success)
+                            msg = "Aktivierung der Gestenerkennung fehlgeschlagen.";
+
                         break;
+
+                    case "pollDevice":
+                    case "selectDevice":
+                        if (!Tracker.kinectAvailable)
+                        {
+                            msg = "Keine Kinect am System angeschlossen.";
+                            break;
+                        }
+
+                        if (user == null || !user.TrackingState)
+                        {
+                            msg = "Bitte erst registrieren";
+                            break;
+                        }
+
+                        List<Device> foundDevices = coreMethods.chooseDevice(user);
+                        if (foundDevices.Count > 0)
+                            success = true;
+                        retStr += "," + MakeDeviceString(foundDevices);
+                        break;
+
+                        
                     case "list":
+                        success = true;
+                        retStr += "," + MakeDeviceString(Data.Devices);
+                        break;
 
-                        retStr = MakeDeviceString(Data.Devices);
+                    case "discoverDevices":
+                        success = true;
+                        // Data.newDevices = discoverDevices();
+                        retStr += "," + MakeDeviceString(Data.newDevices);
+                        break;
 
-                        return retStr;
                     case "addDevice":
-                        string[] parameter = value.Split(':');
-                        if (parameter.Length == 4)
+                        if (parameters.Length == 4)
                         {
-
-                            AddDevice(parameter);
-
-                            retStr = "Gerät hinzugefügt.";
-
-                            return retStr;
+                            success = true;
+                            msg = AddDevice(parameters[0], parameters[1], parameters[2], parameters[3]);
+                            break;
                         }
 
-                        retStr = "Kein Gerät hinzugefügt. Paramter Anzahl nicht Korrekt";
+                        msg = "Hinzufügen fehlgeschlagen. Falsche Anzahl von Parametern";
 
-                        return retStr;
+                        break;
+
+                    case "addDeviceFromList":
+                        // find device in newDevices list
+                        device = Data.newDevices.Find(d => d.Id.Equals(parameters[0]));
+
+                        if (device != null)
+                        {
+                            success = true;
+
+                            String[] type = device.Id.Split('_');
+                            String newDeviceId = AddDevice(type[0], parameters[1], device.address, device.port);
+
+                            // attach to return string
+                            retStr += ",\"deviceId\":\"" + newDeviceId + "\"";
+
+                            // remove from new devices list
+                            Data.newDevices.Remove(device);
+                        }
+
+                        break;
+
+                    case "resetDeviceVectorList":
+                        device = Data.getDeviceByID(parameters[0]);
+
+                        if (device == null)
+                        {
+                            msg = "Kein Gerät gefunden";
+                            break;
+                        }
+
+                        success = true;
+                        device.skelPositions = new List<Point3D[]>();
+
+                        //attach vector numbers
+                        retStr += ",\"vectorCount\":" + device.skelPositions.Count + ",\"vectorMin\":" + coreMethods.getMinVectorsPerDevice();
+                        break;
+
+                    case "addDeviceVector":
+                        device = Data.getDeviceByID(parameters[0]);
+
+                        if (device == null)
+                        {
+                            msg = "Kein Gerät gefunden";
+                            break;
+                        }
+
+                        if (user == null || !user.TrackingState)
+                        {
+                            msg = "Bitte erst registrieren";
+                            break;
+                        }
+                        
+                        success = true;
+                        msg = addDeviceVector(device, user);
+
+                        //attach vector numbers 
+                        retStr += ",\"vectorCount\":" + device.skelPositions.Count + ",\"vectorMin\":" + coreMethods.getMinVectorsPerDevice();
+                        break;
+                     
+                    case "setDevicePosition":
+                        device = Data.getDeviceByID(parameters[0]);
+
+                        if (device == null)
+                        {
+                            msg = "Kein Gerät gefunden";
+                            break;
+                        }
+
+                        success = true;
+                        msg = coreMethods.train(device);
+                        break;
+
                     case "popup":
-                        String msg = "";
-                        if (Data.GetUserByIp(wlanAdr) != null)
+                        if (user != null)
                         {
-                            msg = Data.GetUserByIp(wlanAdr).Errors;
-                            Data.GetUserByIp(wlanAdr).ClearErrors();
-                        }
+                            success = true;
+                            msg = user.Errors;
+                            user.ClearErrors();
 
-                        retStr = msg;
-                        return retStr;
+                            // attach tracking state
+                            retStr += ",\"trackingId\":" + user.SkeletonId;
+                        }
+                        break;
                 }
+
+                // finalize JSON response
+                retStr += ",\"success\":" + success.ToString().ToLower() + ",\"msg\":\"" + msg + "\"}";
+                Console.WriteLine(retStr);
+
+                if ((cmd != "popup" || msg != "") && (cmd != "pollDevice"))
+                {
+                    XMLComponentHandler.writeLogEntry("Response to '" + cmd + "': " + retStr);
+                }
+
+                return retStr;
+
+            }
+            else if (Data.getDeviceByID(devId) != null && cmd != null)
+            {
+                switch (cmd)
+                {
+                    case "getControlPath":
+                        //onlineNoSucces(devId, wlanAdr);
+                        retStr = getControlPagePathHttp(devId);
+                        // redirect to device control path
+                        args.P.WriteRedirect(retStr);
+                        break;
+
+                    default:
+                        // assumes that correct device was selected
+                        // executeOnlineLearning(devId, wlanAdr);
+                        retStr = Data.getDeviceByID(devId).Transmit(cmd, value);
+
+                        break;
+                }
+
+                XMLComponentHandler.writeLogEntry("Response to '" + cmd + "': " + retStr);
+                return retStr;
             }
             else
             {
-                if (cmdId == "addDeviceCoord")
-                {
-                    retStr = AddDeviceCoord(devId, wlanAdr, value);
-
-                    return retStr;
-                }
-                if (devId != null && cmdId != null && Data.GetDevice(devId) != null)
-                {
-                    retStr = Data.GetDevice(devId).Transmit(cmdId, value);
-
-                    return retStr;
-                }
-                Server.SendResponse(args.P, "ungueltiger Befehl");
+                // TODO: JSON response
+                retStr = "Unbekannter Befehl.";
+                return retStr;
             }
-            return null;
         }
 
 
-        private static String MakeDeviceString(IEnumerable<Device> devices)
+        private String MakeDeviceString(IEnumerable<Device> devices)
         {
-            String result = "";
+            String result = "\"devices\":[";
+
             if (devices != null)
             {
-                result = devices.Aggregate(result, (current, dev) => current + (dev.Id + "\t" + dev.Name + "\n"));
+                Device[] deviceList = devices.ToArray<Device>();
+                for (int i = 0; i < deviceList.Length; i++)
+                {
+                    if (i != 0)
+                        result += ",";
+                    result += "{\"id\":\"" + deviceList[i].Id + "\", \"name\":\"" + deviceList[i].Name + "\"}";
+                }
             }
+            result += "]";
             return result;
         }
+
 
 
         /// <summary>
@@ -291,19 +468,10 @@ namespace IGS.Server.IGS
             return Data.DelUser(wlanAdr);
         }
 
-        /// <summary>
-        ///     Calculates the possible device the user want to choose per gesture control
-        ///     <param name="wlanAdr">wlan adress of the user</param>
-        ///     <returns>list with the possiible devices</returns>
-        /// </summary>
-        public List<Device> ChooseDevice(String wlanAdr)
-        {
-            User tempUser = Data.GetUserByIp(wlanAdr);
-            return tempUser != null ? CollisionDetection.Calculate(Data.Devices, Transformer.transformJointCoords(Tracker.GetCoordinates(tempUser.SkeletonId))) : null;
-        }
+
 
         /// <summary>
-        /// Adds a new coordinates and radius for a specified device by reading the right wrist position of the user 
+        /// Adds a new coordinates and radius for a specified device by reading the wrist position of the user 
         /// who wants to add them
         /// <param name="devId">the device to which the coordinate and radius should be added</param>
         /// <param name="wlanAdr">The wlan adress of the user who wants to add the coordinates and radius</param>
@@ -320,9 +488,9 @@ namespace IGS.Server.IGS
 
             if (Tracker.Bodies.Count != 0)
             {
-                Vector3D rightWrist = Transformer.transformJointCoords(Tracker.GetCoordinates(Data.GetUserByIp(wlanAdr).SkeletonId))[3];
-                Ball coord = new Ball(rightWrist, float.Parse(radius));
-                Data.GetDevice(devId).Form.Add(coord);
+                Point3D wrist = Transformer.transformJointCoords(Tracker.getMedianFilteredCoordinates(Data.GetUserByIp(wlanAdr).SkeletonId))[1];
+                Ball coord = new Ball(wrist, float.Parse(radius));
+                Data.getDeviceByID(devId).Form.Add(coord);
                 ret = XMLComponentHandler.addDeviceCoordToXML(devId, radius, coord);
             }
 
@@ -337,7 +505,7 @@ namespace IGS.Server.IGS
         ///     </param>
         ///     <returns>returns a response string what result the process had</returns>
         /// </summary>
-        public String AddDevice(String[] parameter)
+        public String AddDevice(String type, String name, String address, String port)
         {
             String retStr = "";
 
@@ -345,34 +513,32 @@ namespace IGS.Server.IGS
             for (int i = 0; i < Data.Devices.Count; i++)
             {
                 String[] devId = Data.Devices[i].Id.Split('_');
-                if (devId[0] == parameter[0])
+                if (devId[0] == type)
                     count++;
             }
-            string idparams = parameter[0] + "_" + count;
+            string idparam = type + "_" + count;
 
+            // TODO: for testing we do not wand to add the device to XML
+            // XMLComponentHandler.addDeviceToXML(parameter, count);
 
-            XMLComponentHandler.addDeviceToXML(parameter, count);
-
-            Type typeObject = Type.GetType("IGS.Server.Devices." + parameter[0]);
+            Type typeObject = Type.GetType("IGS.Server.Devices." + type);
             if (typeObject != null)
             {
-                object instance = Activator.CreateInstance(typeObject, parameter[1], idparams, new List<Ball>(),
-                                                           parameter[2], parameter[3]);
+                object instance = Activator.CreateInstance(typeObject, name, idparam, new List<Ball>(),
+                                                           address, port);
                 Data.Devices.Add((Device)instance);
-                retStr = "Device added to deviceConfiguration.xml and devices list";
+                retStr = idparam;
 
                 Console.WriteLine(retStr);
                 return retStr;
             }
-
-            retStr = "Device added to deviceConfiguration but not to devices list";
-
+            
             return retStr;
         }
-
-
+        
+        
         /// <summary>
-        /// this method intiializes the representation of the kinect camera used for positioning and 
+        /// this method intializes the representation of the kinect camera used for positioning and 
         /// visualization by reading the information out of the config.xml
         /// </summary>
         public void createIGSKinect()
@@ -380,15 +546,44 @@ namespace IGS.Server.IGS
             float ballRad = 0.4f;
 
             String[] kinParamets = XMLComponentHandler.readKinectComponents();
-            Vector3D kinectCenter = new Vector3D(double.Parse(kinParamets[0]), double.Parse(kinParamets[1]), double.Parse(kinParamets[2]));
+            Point3D kinectCenter = new Point3D(double.Parse(kinParamets[0]), double.Parse(kinParamets[1]), double.Parse(kinParamets[2]));
             Ball kinectBall = new Ball(kinectCenter, ballRad);
             double roomOrientation = double.Parse(kinParamets[4]);
             double tiltingDegree = double.Parse(kinParamets[3]);
 
-
+            
             IGSKinect = new devKinect("devKinect", kinectBall, tiltingDegree, roomOrientation);
         }
 
 
+        public String addDeviceVector(Device dev, User user)
+        {
+            if (dev == null)
+                return "Gerät ist unbekannt.";
+            
+            if (Tracker.Bodies.Count == 0)
+                return "Keine Personen von der Kinect gefunden";
+            
+            if (user.SkeletonId < 0)
+                return "Bitte erst registrieren";
+
+            Point3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(user.SkeletonId));
+            dev.skelPositions.Add(vectors);
+
+            return dev.skelPositions.Count + " von " + coreMethods.getMinVectorsPerDevice() + " Positionen hinzugefügt";
+
+        }
+
+        public String getControlPagePathHttp(String id)
+        {
+            String controlPath = "";
+
+            Type t = Data.getDeviceByID(id).GetType();
+
+            controlPath = "http://" + Server.LocalIP + ":8080" + "/" + t.Name + "/" + "index.html?dev=" + id;
+
+            return controlPath;
+        }
     }
+
 }

@@ -20,6 +20,8 @@ using System.Windows.Media.Media3D;
 using System.Xml;
 using System.ComponentModel;
 using System.Xml.Linq;
+using IGS.Classifier;
+using IGS.Kinect;
 
 
 
@@ -77,6 +79,7 @@ public partial class MainWindow
     private byte[] pixels = null;
     private readonly int bytesPerPixel = (PixelFormats.Bgr32.BitsPerPixel + 7) / 8;
     private const double HandSize = 30;
+
     /// <summary>
     /// Width of display (depth space)
     /// </summary>
@@ -96,8 +99,6 @@ public partial class MainWindow
     /// </summary>
     private readonly Brush _trackedJointBrush = new SolidColorBrush(Color.FromArgb(255, 68, 192, 68));
 
-    private String roomPath = AppDomain.CurrentDomain.BaseDirectory + "\\3DroomSize.txt";
-
     /// <summary>
     /// Brush used for drawing hands that are currently tracked as closed
     /// </summary>
@@ -115,6 +116,7 @@ public partial class MainWindow
 
     private Igs _igs;
     private WriteableBitmap bitmap = null;
+
     /// <summary>
     ///     Drawing group for skeleton rendering output
     /// </summary>
@@ -124,19 +126,17 @@ public partial class MainWindow
     ///     Drawing image that we will display
     /// </summary>
     private DrawingImage _imageSource;
+
     /// <summary>
     /// Drawing image only of the skeleton components
     /// </summary>
     private DrawingImage imageSourceSkeleton;
-    private String _input;
+
     /// <summary>
     /// If activated, the 3D view of the room
     /// </summary>
     private Room3DView _3Dview;
-    /// <summary>
-    /// the RGB view of the kinect cameras view
-    /// </summary>
-    private RGB_SkelpointView _RGBView;
+
     /// <summary>
     ///     Active Kinect sensor
     /// </summary>
@@ -160,6 +160,7 @@ public partial class MainWindow
     /// indicator if a skeleton is build or not
     /// </summary>
     private bool _ifSkeletonisBuild { get; set; }
+
     /// <summary>
     /// the ImageSource for the colorimage 
     /// </summary>
@@ -244,16 +245,12 @@ public partial class MainWindow
 
         // Create an image source that we can use in our image control
         _imageSource = new DrawingImage(_drawingGroup);
+
         DataContext = this;
-        // Display the drawing using our image control
 
         _3dviewIsAktive = false;
         _ifSkeletonisBuild = false;
 
-        if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\configuration.xml"))
-        {
-            Initializer.createXMLFile();
-        }
         _igs = Initializer.InitializeIgs();
         fillFieldsGUI();
 
@@ -266,22 +263,19 @@ public partial class MainWindow
             this.multiFrameReader = _igs.Tracker.Sensor.OpenMultiSourceFrameReader(FrameSourceTypes.Color | FrameSourceTypes.Body);
             this.multiFrameReader.MultiSourceFrameArrived += this.Reader_MultiSourceFrameArrived;
         }
-
-        String[] roomText = XMLComponentHandler.readRoomComponents();
-
+        
         FrameDescription ColorframeDescription = _igs.Tracker.Sensor.ColorFrameSource.FrameDescription;
-
         // allocate space to put the pixels being received
         this.pixels = new byte[ColorframeDescription.Width * ColorframeDescription.Height * this.bytesPerPixel];
-
         // create the bitmap to display
         this.bitmap = new WriteableBitmap(ColorframeDescription.Width, ColorframeDescription.Height, 96.0, 96.0, PixelFormats.Bgr32, null);
+
+        // query frame description for skeleton display
         FrameDescription depthFrameDescription = _igs.Tracker.Sensor.DepthFrameSource.FrameDescription;
         this.displayWidth = depthFrameDescription.Width;
-        this.displayHeight = depthFrameDescription.Width;
-
+        this.displayHeight = depthFrameDescription.Height;
         this.imageSourceSkeleton = new DrawingImage(this._drawingGroup);
-
+    
     }
 
     /// <summary>
@@ -294,6 +288,7 @@ public partial class MainWindow
         _igs.Tracker.ShutDown();
         Environment.Exit(1);
     }
+
     /// <summary>
     /// This reads an arriving MultiSourceFrameArrived event and uses the data to draw the 
     /// color and the skeleton image and also calls the Room3DView to visualize the skeletons in 3D
@@ -306,67 +301,55 @@ public partial class MainWindow
         List<ModelVisual3D> models = new List<ModelVisual3D>();
         List<ulong> skelIDs = new List<ulong>();
 
-        ColorFrame frameColor = e.FrameReference.AcquireFrame().ColorFrameReference.AcquireFrame();
+        ColorFrame colorFrame = e.FrameReference.AcquireFrame().ColorFrameReference.AcquireFrame();
         BodyFrame bodyFrame = e.FrameReference.AcquireFrame().BodyFrameReference.AcquireFrame();
 
-        if (frameColor != null)
+        if (colorFrame != null)
         {
             // ColorFrame is IDisposable
-            using (frameColor)
+            using (colorFrame)
             {
+                FrameDescription frameDescriptionColor = colorFrame.FrameDescription;
 
-
-                FrameDescription frameDescriptionColor = frameColor.FrameDescription;
-
-                // update status unless last message is sticky for a whil
+                // update status unless last message is sticky for a while
 
                 // verify data and write the new color frame data to the display bitmap
                 if ((frameDescriptionColor.Width == this.bitmap.PixelWidth) && (frameDescriptionColor.Height == this.bitmap.PixelHeight))
                 {
-                    if (frameColor.RawColorImageFormat == ColorImageFormat.Bgra)
+                    if (colorFrame.RawColorImageFormat == ColorImageFormat.Bgra)
                     {
-                        frameColor.CopyRawFrameDataToArray(this.pixels);
+                        colorFrame.CopyRawFrameDataToArray(this.pixels);
                     }
                     else
                     {
-                        frameColor.CopyConvertedFrameDataToArray(this.pixels, ColorImageFormat.Bgra);
+                        colorFrame.CopyConvertedFrameDataToArray(this.pixels, ColorImageFormat.Bgra);
                     }
 
                     this.bitmap.WritePixels(
-                    new Int32Rect(0, 0, frameDescriptionColor.Width, frameDescriptionColor.Height),
-                    this.pixels,
-                    frameDescriptionColor.Width * this.bytesPerPixel, 0);
-                    if (_RGBView != null)
-                    {
-                        _RGBView.ColorImage.Source = this.bitmap;
-                    }
-
+                        new Int32Rect(0, 0, frameDescriptionColor.Width, frameDescriptionColor.Height),
+                        this.pixels,
+                        frameDescriptionColor.Width * this.bytesPerPixel, 0);
                 }
             }
         }
-        Body[] bodies = new Body[0];
 
+        //TODO: review this to check drawing of bodies - colorFrame and bodyFrame have different sizes and aspect ratios
         if (bodyFrame != null)
         {
             using (bodyFrame)
             {
-                bodies = new Body[bodyFrame.BodyCount];
+                Body[] bodies = new Body[bodyFrame.BodyCount];
 
                 using (DrawingContext dc = this._drawingGroup.Open())
                 {
                     // Draw a transparent background to set the render size
                     dc.DrawRectangle(Brushes.Transparent, null, new Rect(0.0, 0.0, this.displayWidth, this.displayHeight));
-                    // dc.DrawImage(
-                    // BitmapSource.Create(colorFrameDescription.Width, colorFrameDescription.Height, 96, 96, PixelFormats.Bgr32, null,
-                    //                    pixels, stride), new Rect(0.0, 0.0, RenderWidth, RenderHeight));
-
 
                     bodyFrame.GetAndRefreshBodyData(bodies);
                     if (bodies.Length != 0)
                     {
                         foreach (Body body in bodies)
                         {
-
                             foreach (TrackedSkeleton ts in _igs.Tracker.Bodies)
                             {
                                 if ((int)body.TrackingId == ts.Id)
@@ -391,10 +374,7 @@ public partial class MainWindow
 
                                         this.DrawHand(body.HandLeftState, jointPoints[JointType.HandLeft], dc);
                                         this.DrawHand(body.HandRightState, jointPoints[JointType.HandRight], dc);
-                                        if (_RGBView != null)
-                                        {
-                                            _RGBView.BodyImage.Source = imageSourceSkeleton;
-                                        }
+
                                         if (_3Dview != null)
                                         {
                                             _3Dview.createBody(body);
@@ -409,6 +389,7 @@ public partial class MainWindow
 
                     }
 
+                    //TODO: move update logic to 3Dview
                     if (_3Dview != null)
                     {
                         // check if trackedskeletons of counter == shown skeletons in 3D
@@ -594,6 +575,7 @@ public partial class MainWindow
         writePlugwiseAdressesToXMLandDevices(parameter);
 
     }
+
     /// <summary>
     /// The method triggered by a click on the 3DView button.
     /// It opens a new window with a 3D view to vizualize the Room, its devices(by their coordinate balls) and users with
@@ -604,10 +586,11 @@ public partial class MainWindow
     private void _3DViewButton_Click(object sender, RoutedEventArgs e)
     {
 
-        _3Dview = new Room3DView(_igs.Data.Devices, _igs.Transformer);
+        _3Dview = new Room3DView(_igs.classification.getSamples(), _igs.Data.Devices, _igs.Transformer);
         _3Dview.SetKinectCamera(_igs.IGSKinect);
         _3Dview.ClipToBounds = false;
         _3Dview.mainViewport.Effect = null;
+
         String[] roomText = XMLComponentHandler.readRoomComponents();
         _3Dview.createRoom(float.Parse(roomText[0]), float.Parse(roomText[1]), float.Parse(roomText[2]));
         _3Dview.Show();
@@ -658,12 +641,7 @@ public partial class MainWindow
         double orientation = double.Parse(Hdeg);
 
         XMLComponentHandler.saveKinectPosition(newPosition);
-        Vector3D newCenter = new Vector3D();
-
-        newCenter.X = i_X;
-        newCenter.Y = i_Y;
-        newCenter.Z = i_Z;
-
+        Point3D newCenter = new Point3D(i_X, i_Y, i_Z);
 
         _igs.IGSKinect.roomOrientation = orientation;
         _igs.IGSKinect.ball.Centre = newCenter;
@@ -672,7 +650,7 @@ public partial class MainWindow
         {
             _igs.Transformer.calculateRotationMatrix(0, _igs.IGSKinect.roomOrientation);
         }
-        _igs.Transformer.transVector = newCenter;
+        _igs.Transformer.transVector = (Vector3D)newCenter;
 
         if (_3Dview != null)
         {
@@ -697,16 +675,18 @@ public partial class MainWindow
         String[] roomData = new String[3];
 
         roomData[0] = Room_Width.Text;
-        roomData[1] = Room_Depth.Text;
-        roomData[2] = Room_Height.Text;
+        roomData[2] = Room_Depth.Text;
+        roomData[1] = Room_Height.Text;
         width = float.Parse(Room_Width.Text);
         depth = float.Parse(Room_Depth.Text);
         height = float.Parse(Room_Height.Text);
-        XMLComponentHandler.saveRoomPosition(roomData);
 
+        XMLComponentHandler.saveRoomPosition(roomData);
+        _igs.classification.sCalculator.calcRoomModel.setRoomMeasures(width, depth, height);
+        _igs.Data.changeRoomSize(width, height, depth);
         if (_3Dview != null)
         {
-            _3Dview.createRoom(width, height, depth);
+            _3Dview.createRoom(width, depth, height);
         }
 
     }
@@ -738,20 +718,6 @@ public partial class MainWindow
 
 
     /// <summary>
-    /// This method is triggered by the Open RGB Window Button.
-    /// It opens a new Window which shows the rgb view of the kinect with overlaying body joints.
-    /// </summary>
-    /// <param name="sender">The object which triggered the event</param>
-    /// <param name="e">The RoutedEventArgs</param>
-    private void RGB_Body_WIndow_Button_Click(object sender, RoutedEventArgs e)
-    {
-        // create the bitmap to display
-
-        _RGBView = new RGB_SkelpointView();
-
-        _RGBView.Show();
-    }
-    /// <summary>
     /// Builds the regular adresses for the plugwises with the passed components
     /// </summary>
     /// <param name="components">The components of the plugwise adressin ascending order: Host, Port, Path</param>
@@ -776,6 +742,7 @@ public partial class MainWindow
 
         _igs.Data.Change_PlugWise_Adress(adress);
     }
+
     /// <summary>
     /// This method fills all textboxes in the MainWindow with their parameters stored in the config.xml
     /// </summary>
@@ -810,13 +777,7 @@ public partial class MainWindow
     /// <param name="e">The MouseButtonEventArgs</param>
     private void CreateDeviceButton_Click(object sender, RoutedEventArgs e)
     {
-        String[] parameter = new String[4];
-
-        parameter[0] = DeviceType.Text;
-        parameter[1] = DeviceName.Text;
-        parameter[2] = DeviceAdress.Text;
-        parameter[3] = DevicePort.Text;
-
-        _igs.AddDevice(parameter);
+        _igs.AddDevice(DeviceType.Text, deviceIdentifier.Text, DeviceAdress.Text, DevicePort.Text);
     }
+   
 }

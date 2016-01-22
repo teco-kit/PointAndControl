@@ -1,5 +1,9 @@
-﻿using System;
+﻿using IGS.Classifier;
+using IGS.Server.Location;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Windows.Media.Media3D;
 
 namespace IGS.Server.Devices
 {
@@ -21,6 +25,7 @@ namespace IGS.Server.Devices
             Name = name;
             Id = id;
             Form = form;
+            skelPositions = new List<Point3D[]>();
         }
 
         ///     Name of the device.
@@ -46,6 +51,11 @@ namespace IGS.Server.Devices
 
         public String CommandString { get; set; }
 
+        public String address { get; set; }
+
+        public String port { get; set; }
+
+
         /// <summary>
         ///     The Transmit method is responsible for the correct invocation of a function of the device
         ///     which is implicated by the "commandID"
@@ -60,5 +70,10 @@ namespace IGS.Server.Devices
         ///     If execution was successful
         ///     </returns>
         public abstract String Transmit(String cmdId, String value);
+
+        public List<Point3D[]> skelPositions { get; set; }
+
+        public Color color { get; set; }
+
     }
 }

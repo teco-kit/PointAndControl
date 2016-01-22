@@ -4,6 +4,11 @@ using System.Linq;
 using System.Windows.Media.Media3D;
 using Microsoft.Kinect;
 using System;
+using System.Threading;
+using System.Threading.Tasks;
+using IGS.Kinect;
+using IGS.Helperclasses;
+using System.Diagnostics;
 
 namespace IGS.Server.Kinect
 {
@@ -21,10 +26,26 @@ namespace IGS.Server.Kinect
         /// </summary>
         public delegate void KinectUserHandler(object sender, KinectUserEventArgs args);
 
+        public const int NO_BODIES_IN_FRAME = -2;
+        public const int NO_GESTURE_FOUND = -1;
+
         private Body[] _bodiesLastFrame = new Body[0];
 
+        public List<Body[]> lastBodies { get; set; }
 
+        public bool kinectAvailable { get; set; }
 
+        public bool movingWindowCollect { get; set; }
+
+        public bool checkOnEveryFrame { get; set; }
+
+        ISkeletonJointFilter jointFilter { get; set; }
+
+        public bool workingOnWindow { get; set; }
+
+        public Body tmpBody { get; set; }
+
+        public int windowSize { get; set; }
         /// <summary>
         ///     Constructor of a Usertracker.
         ///     <param name='filter'>
@@ -34,11 +55,18 @@ namespace IGS.Server.Kinect
         ///         The strategy which specifies which skeleton should be replaced if to many users want to use gesture control
         ///     </param>
         /// </summary>
-        public UserTracker(GestureStrategy filter, ReplacementStrategy replace)
+        public UserTracker(GestureStrategy filter, ReplacementStrategy replace, bool movingWindow = false)
         {
             Filter = filter;
             Strategy = replace;
             Bodies = new List<TrackedSkeleton>();
+            movingWindowCollect = false;
+            lastBodies = new List<Body[]>();
+            this.jointFilter = new MedianJointFilter();
+            workingOnWindow = false;
+            windowSize = 15;
+            checkOnEveryFrame = true;
+            kinectAvailable = false;
         }
 
         /// <summary>
@@ -96,8 +124,18 @@ namespace IGS.Server.Kinect
             Sensor = KinectSensor.GetDefault();
             _bodiesLastFrame = new Body[6];
             this.reader = Sensor.BodyFrameSource.OpenReader();
-
+            
             if (Sensor == null) return;
+
+            // it seems the sensor will never report to be available
+            //if (!Sensor.IsAvailable)
+            //{
+            //    this.kinectAvailable = false;
+            //    return;
+            //}
+
+            this.kinectAvailable = true;
+
 
             // Start den Sensor!
             try
@@ -108,6 +146,7 @@ namespace IGS.Server.Kinect
             {
                 Sensor = null;
             }
+
             if (this.reader != null)
             {
                 this.reader.FrameArrived += this.reader_FramesReady;
@@ -145,20 +184,19 @@ namespace IGS.Server.Kinect
             }
         }
 
+
         /// <summary>
-        ///     This method provides the skeletonID of the skeleton perfoming the definded gesture or which should be reaktivated.
-        ///     
-        ///     Returns the skeletonID of the user
+        ///     This method provides the skeletonID of the skeleton perfoming the defined gesture or which should be reactivated.
         ///     <param name="igsSkelId">SkeletonID stored in the IGS</param>
         ///     <returns>ID of the skeleton which was marked as tracked</returns>
         /// </summary>
         public int GetSkeletonId(int igsSkelId)
         {
-          
             if (Bodies.Any(s => s.Id == igsSkelId))
-            {
                 return igsSkelId;
-            }
+
+            if (!_bodiesLastFrame.Any(s => s.TrackingId != 0))
+                return NO_BODIES_IN_FRAME;
 
             Bodies = Strategy.Replace(Bodies);
 
@@ -176,24 +214,20 @@ namespace IGS.Server.Kinect
             {
                 return s.Id;
             }
-           
-            return -1;
+
+            return NO_GESTURE_FOUND;
         }
 
-
-        
-        
-
         /// <summary>
-        ///     Interface to the IGS where the koordinates of ellbow/wrist of both arms regarding the kinect coordinate system of the kinect will be requested.
-        ///     At postion 0 of the array is the vector of the left elbow.
-        ///     At postion 1 of the array is the vector of the left wrist.
-        ///     At postion 2 of the array is the vector of the right elbow.
-        ///     At postion 3 of the array is the vector of the right wrist.
+        ///     Interface to the IGS where the coordinates of ellbow/wrist of both arms regarding the kinect coordinate system of the kinect will be requested.
+        ///     At postion 0 of the array is the vector of the right shoulder.
+        ///     At postion 1 of the array is the vector of the right wrist.
+        ///     At postion 2 of the array is the vector of the left shoulder.
+        ///     At postion 3 of the array is the vector of the left wrist.
         ///     <param name="id">ID of the skeleton the coordinates are requested</param>
         ///     <returns>coordinates of the elbow/wrist as 3D-vector-array</returns>
         /// </summary>
-        public Vector3D[] GetCoordinates(int id)
+        public Point3D[] GetCoordinates(int id)
         {
             foreach (TrackedSkeleton sTracked in Bodies.Where(sTracked => sTracked.Id == id))
             {
@@ -201,20 +235,96 @@ namespace IGS.Server.Kinect
                 foreach (Body s in _bodiesLastFrame)
                 {
                     if ((int)s.TrackingId != id) continue;
-                    Vector3D[] result = new Vector3D[4];
-                    result[0] = new Vector3D(s.Joints[JointType.ElbowLeft].Position.X,
-                                             s.Joints[JointType.ElbowLeft].Position.Y,
-                                             s.Joints[JointType.ElbowLeft].Position.Z);
-                    result[1] = new Vector3D(s.Joints[JointType.WristLeft].Position.X,
-                                             s.Joints[JointType.WristLeft].Position.Y,
-                                             s.Joints[JointType.WristLeft].Position.Z);
-                    result[2] = new Vector3D(s.Joints[JointType.ElbowRight].Position.X,
-                                             s.Joints[JointType.ElbowRight].Position.Y,
-                                             s.Joints[JointType.ElbowRight].Position.Z);
-                    result[3] = new Vector3D(s.Joints[JointType.WristRight].Position.X,
-                                             s.Joints[JointType.WristRight].Position.Y,
-                                             s.Joints[JointType.WristRight].Position.Z);
+                    Point3D[] result = new Point3D[2];
+
+                    if (sTracked.rightHandUp)
+                    {
+                        result[0] = new Point3D(s.Joints[JointType.ShoulderRight].Position.X,
+                                                 s.Joints[JointType.ShoulderRight].Position.Y,
+                                                 s.Joints[JointType.ShoulderRight].Position.Z);
+                        result[1] = new Point3D(s.Joints[JointType.WristRight].Position.X,
+                                                 s.Joints[JointType.WristRight].Position.Y,
+                                                 s.Joints[JointType.WristRight].Position.Z);
+                    }
+                    else
+                    {
+                        result[0] = new Point3D(s.Joints[JointType.ShoulderLeft].Position.X,
+                                                 s.Joints[JointType.ShoulderLeft].Position.Y,
+                                                 s.Joints[JointType.ShoulderLeft].Position.Z);
+                        result[1] = new Point3D(s.Joints[JointType.WristLeft].Position.X,
+                                                 s.Joints[JointType.WristLeft].Position.Y,
+                                                 s.Joints[JointType.WristLeft].Position.Z);
+                    }
                     return result;
+                }
+            }
+            return null;
+        }
+
+        public List<Point3D[]> GetCoordinatesWindow(int id)
+        {
+
+            List<Point3D[]> returnList = new List<Point3D[]>();
+            workingOnWindow = true;
+        
+            int searchForLastBody = 1;
+            foreach (TrackedSkeleton sTracked in Bodies.Where(sTracked => sTracked.Id == id))
+            {
+                sTracked.Actions = sTracked.Actions + 1;
+                foreach (Body[] bodies in lastBodies)
+                {
+                    foreach (Body s in bodies)
+                    {
+                        if ((int)s.TrackingId != id) continue;
+
+                        Point3D[] result = new Point3D[4];
+                        result[0] = new Point3D(s.Joints[JointType.ShoulderRight].Position.X,
+                                                 s.Joints[JointType.ShoulderRight].Position.Y,
+                                                 s.Joints[JointType.ShoulderRight].Position.Z);
+                        result[1] = new Point3D(s.Joints[JointType.WristRight].Position.X,
+                                                 s.Joints[JointType.WristRight].Position.Y,
+                                                 s.Joints[JointType.WristRight].Position.Z);
+                        result[2] = new Point3D(s.Joints[JointType.ShoulderLeft].Position.X,
+                                                 s.Joints[JointType.ShoulderLeft].Position.Y,
+                                                 s.Joints[JointType.ShoulderLeft].Position.Z);
+                        result[3] = new Point3D(s.Joints[JointType.WristLeft].Position.X,
+                                                 s.Joints[JointType.WristLeft].Position.Y,
+                                                 s.Joints[JointType.WristLeft].Position.Z);
+                        returnList.Add(result);
+
+                    }
+                    searchForLastBody++;
+                }
+            }
+
+            if (movingWindowCollect == false)
+            {
+                lastBodies.Clear();
+            }
+
+            
+            workingOnWindow = false;
+            return returnList;
+        }
+
+
+        public Point3D[] getMedianFilteredCoordinates(int id)
+        {
+            List<Point3D[]> coords = this.GetCoordinatesWindow(id);
+
+            return  jointFilter.jointFilter(coords);
+        }
+
+        //returns complete Body by ID
+        public Body GetBodyById(int id)
+        {
+            foreach (TrackedSkeleton sTracked in Bodies.Where(sTracked => sTracked.Id == id))
+            {
+                sTracked.Actions = sTracked.Actions + 1;
+                foreach (Body s in _bodiesLastFrame)
+                {
+                    if ((int)s.TrackingId != id) continue;
+                    return s;
                 }
             }
             return null;
@@ -250,12 +360,10 @@ namespace IGS.Server.Kinect
 
                 HashSet<int> idsSeen = new HashSet<int>();
 
-
                 foreach (Body s in bodies)
                 {
                     if (s.TrackingId != 0) idsSeen.Add((int)s.TrackingId);
                 }
-
 
                 bool bodiesLastFrameNotNull = false;
 
@@ -277,7 +385,7 @@ namespace IGS.Server.Kinect
                     //checks if a skeleton doesnt exist anymore.
                     foreach (Body s in _bodiesLastFrame.Where(s => s != null && !idsSeen.Contains((int)s.TrackingId) && s.TrackingId != 0))
                     {
-                        OnUserLeft(this, new KinectUserEventArgs((int)s.TrackingId));
+                        this.OnUserLeft(this, new KinectUserEventArgs((int)s.TrackingId));
                         for (int i = 0; i < Bodies.Count; i++)
                         {
                             if (Bodies[i].Id == (int)s.TrackingId)
@@ -286,8 +394,33 @@ namespace IGS.Server.Kinect
                     }
                 }
                 _bodiesLastFrame = bodies;
+
+                if (checkOnEveryFrame)
+                {
+
+                }
+
+                if (movingWindowCollect == true)
+                {
+                    Body[] bodiesToSave = new Body[bodies.Length];
+                    for (int i = 0; i < bodies.Length; i++)
+                    {
+                        bodiesToSave[i] = bodies[i];
+                    }
+                    if (workingOnWindow == false)
+                    {
+                        if (movingWindowCollect == true && lastBodies.Count == windowSize)
+                        {
+                            lastBodies.RemoveAt(0);
+                        }
+                        lastBodies.Add(bodiesToSave);
+                    }
+
+                }
             }
 
         }
+
+
     }
 }

@@ -21,11 +21,11 @@ namespace IGS.Server.IGS
         /// <param name="tiltDegree">The tilting degree the camera has</param>
         /// <param name="roomOrientation">The horizontal orientation the camera has (the direction she "looks" in the room)</param>
         /// <param name="position">the position where the camera stands in the room</param>
-        public CoordTransform(double tiltDegree, double roomOrientation, Vector3D position)
+        public CoordTransform(double tiltDegree, double roomOrientation, Point3D position)
         {
             this.rotationMatrix = new Matrix3D();
             this.calculateRotationMatrix(tiltDegree, roomOrientation);
-            this.transVector = position;
+            this.transVector = (Vector3D)position;
         }
         /// <summary>
         /// Getter and setter of the matrix defining how the camera is placed in the room
@@ -112,18 +112,32 @@ namespace IGS.Server.IGS
         /// </summary>
         /// <param name="joints">the body joints (their positions) which will be transformed</param>
         /// <returns></returns>
-        public Vector3D[] transformJointCoords(Vector3D[] joints)
+        public Point3D[] transformJointCoords(Point3D[] joints)
         {
             if (joints == null) return null;
-            Vector3D[] result = new Vector3D[joints.Length];
+            Point3D[] result = new Point3D[joints.Length];
 
             for (int i = 0; i < joints.Length; i++)
             {
 
-                result[i] = Vector3D.Multiply(joints[i], rotationMatrix);
+                result[i] = Point3D.Multiply(joints[i], rotationMatrix);
                 result[i] = result[i] + transVector;
             }
             return result;
+        }
+
+        public void transformJointCoordsReference(Point3D[] joints)
+        {
+            
+            
+
+            for (int i = 0; i < joints.Length; i++)
+            {
+
+                joints[i] = Point3D.Multiply(joints[i], rotationMatrix);
+                joints[i] = joints[i] + transVector;
+            }
+            
         }
 
 
@@ -161,6 +175,16 @@ namespace IGS.Server.IGS
             Point3D resPoint = new Point3D(vec.X, vec.Y, vec.Z);
 
             return resPoint;
+        }
+
+        public Vector3D transformVector3D(Vector3D vec)
+        {
+            Vector3D newVec = vec;
+
+            newVec = Vector3D.Multiply(vec, rotationMatrix);
+            newVec = vec + transVector;
+
+            return newVec;
         }
 
         /// <summary>

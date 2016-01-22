@@ -16,7 +16,7 @@ namespace IGS.Server.Devices
     ///     Audio Input ("audio")(Audio 1 PC ("1"), Audio 2 "2", Audio 3 "3", HDMI "4")
     ///     @author Christopher Baumgärtner
     /// </summary>
-    public class NECLCDmonitorMultiSyncV421 : Device
+    public class NecLcdMonitorMultiSyncV421 : Device
     {
         /// <summary>
         ///     Constructor of a LCDTV object.
@@ -26,7 +26,7 @@ namespace IGS.Server.Devices
         ///     <param name="address">IP-adress of the device</param>
         ///     <param name="port">Port of the device</param>
         /// </summary>
-        public NECLCDmonitorMultiSyncV421(String name, String id, List<Ball> form, String address, String port)
+        public NecLcdMonitorMultiSyncV421(String name, String id, List<Ball> form, String address, String port)
             : base(name, id, form)
         {
             Connection = new Tcp(Convert.ToInt32(port), address);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IGS.Classifier;
+using System;
 namespace IGS.Server.IGS
 {
     /// <summary>
@@ -10,6 +11,7 @@ namespace IGS.Server.IGS
     {
         private int _skeletonId = -1;
 
+        //public WallProjectionSample lastClassDevSample { get; set; }
         /// <summary>
         ///     Constructor of a userobject
         ///     <param name="wlanAdr">wlan adress of a user.</param>
@@ -19,6 +21,9 @@ namespace IGS.Server.IGS
             WlanAdr = wlanAdr;
             Errors = "";
             TrackingState = false;
+            //lastChosenDeviceID = "";
+            //lastClassDevSample = null;
+            //deviceIDChecked = true;
         }
 
         
@@ -28,6 +33,7 @@ namespace IGS.Server.IGS
         ///     <returns>Returns the wlan adress</returns>
         /// </summary>
         public String WlanAdr { get; set; }
+        //public String lastChosenDeviceID { get; set; }
 
 
         /// <summary>
@@ -65,7 +71,7 @@ namespace IGS.Server.IGS
         /// </summary>
         public void AddError(String msg)
         {
-            Errors += (msg + "\n");
+            Errors += (msg + "<br/>");
         }
 
         /// <summary>

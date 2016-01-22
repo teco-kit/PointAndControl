@@ -14,6 +14,8 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <IsWebBootstrapper>false</IsWebBootstrapper>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
     <PublishUrl>veröffentlichen\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -30,15 +32,17 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>x64</PlatformTarget>
@@ -50,20 +54,39 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject />
+    <StartupObject>App</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\HttpRoot\favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HelixToolkit.Wpf">
-      <HintPath>..\packages\HelixToolkit.2014.1.204.1\lib\NET45\HelixToolkit.Wpf.dll</HintPath>
+    <Reference Include="HelixToolkit, Version=2015.1.545.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+      <HintPath>..\packages\HelixToolkit.2015.1.545\lib\portable-net4+sl4+wp71+win8\HelixToolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HelixToolkit.Wpf, Version=2015.1.545.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+      <HintPath>..\packages\HelixToolkit.Wpf.2015.1.545\lib\net45\HelixToolkit.Wpf.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Kinect, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Kinect.2.0.1410.19000\lib\net45\Microsoft.Kinect.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Kinect.Tools, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
+      <HintPath>..\packages\Microsoft.Kinect.Tools.x64.2.0.1410.19000\lib\net45\Microsoft.Kinect.Tools.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="numl, Version=0.8.22.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\numl.0.8.22.0\lib\net40\numl.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -93,19 +116,33 @@
     <Compile Include="Devices\Device.cs" />
     <Compile Include="Devices\devKinect.cs" />
     <Compile Include="Devices\HTTP.cs" />
-    <Compile Include="Devices\NECLCDmonitorMultiSyncV421.cs" />
+    <Compile Include="Devices\NecLcdMonitorMultiSyncV421.cs" />
     <Compile Include="Devices\Plugwise.cs" />
     <Compile Include="Devices\Presenter.cs" />
     <Compile Include="Devices\TCP.cs" />
     <Compile Include="Devices\Kodi.cs" />
     <Compile Include="Devices\XBMCv11.cs" />
     <Compile Include="Helperclasses\CoordTransform.cs" />
-    <Compile Include="Helperclasses\Initializer.cs" />
+    <Compile Include="Helperclasses\igsMath.cs" />
+    <Compile Include="Helperclasses\Ray3D.cs" />
+    <Compile Include="IGS\Initializer.cs" />
     <Compile Include="Helperclasses\XMLComponentHandler.cs" />
+    <Compile Include="IGS\CollisionMethod.cs" />
+    <Compile Include="IGS\CoreMethods.cs" />
+    <Compile Include="IGS\ClassifierMethod.cs" />
+    <Compile Include="Kinect\MedianJointFilter.cs" />
+    <Compile Include="Kinect\SkeletonJointFilter.cs" />
     <Compile Include="Kinect\TrackingStateEventArgs.cs" />
-    <Compile Include="RGB_SkelpointView.xaml.cs">
-      <DependentUpon>RGB_SkelpointView.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="Classifier\KNNClassifier.cs" />
+    <Compile Include="Classifier\PointingSample.cs" />
+    <Compile Include="Classifier\Room.cs" />
+    <Compile Include="Classifier\ClassificationHandler.cs" />
+    <Compile Include="Classifier\WPSampleCalculator.cs" />
+    <Compile Include="Classifier\WallProjectionAndPositionSample.cs" />
+    <Compile Include="Classifier\WallProjectionSample.cs" />
+    <Compile Include="Locator\Bobyqa.cs" />
+    <Compile Include="Locator\Cobyla.cs" />
+    <Compile Include="Locator\Locator.cs" />
     <Compile Include="Room3DView.xaml.cs">
       <DependentUpon>Room3DView.xaml</DependentUpon>
     </Compile>
@@ -133,10 +170,6 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="RGB_SkelpointView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Room3DView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -161,32 +194,104 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="Images\Thumbs.db" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\Thumbs.db" />
-    <None Include="Resources\HttpRoot\Plugwise\img\Thumbs.db" />
+    <None Include="Resources\HttpRoot\Boxee\img\Thumbs.db" />
+    <None Include="Resources\HttpRoot\manifest.json" />
+    <None Include="Resources\HttpRoot\js\jquery.mobile-1.4.5.min.map" />
     <None Include="Resources\HttpRoot\XBMCv11\img\Thumbs.db" />
-    <None Include="Resources\IGS.apk" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\CheckedHover.png" />
-    <Resource Include="Images\CheckedNormal.png" />
-    <Resource Include="Images\Kinect.ico" />
-    <Resource Include="Images\Logo.png" />
-    <Resource Include="Images\Status.png" />
-    <Resource Include="Images\UncheckedHover.png" />
-    <Resource Include="Images\UncheckedNormal.png" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\back.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\bg.jpg" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\down.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\left.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\mute.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\pause.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\play.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\right.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\select.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\stop.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\up.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\voldown.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\volup.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\off.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\on.gif" />
+    <Resource Include="Resources\HttpRoot\img\icons\AppleTV.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Boxee_1.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Boxee_2.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Boxee_3.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Boxee_4.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Buecherregal.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Chromecast.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Heizung.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Kaffeemaschine.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Kodi_1.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Kodi_2.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Kodi_3.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Lampge.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Mikrowelle.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Multimediacenter.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_1.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_10.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_11.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_12.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_13.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_2.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_3.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_4.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_5.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_6.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_7.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_8.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_9.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\PS4.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Rolladen.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Stereoanlange.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\TV.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Ventilator.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\XBox.png" />
+    <Content Include="Resources\HttpRoot\css\screen.css" />
+    <Content Include="Resources\HttpRoot\js\screen.js" />
+    <Content Include="Resources\HttpRoot\screen.html" />
+    <Content Include="Resources\HttpRoot\img\living-lab-map.svg" />
+    <Content Include="Resources\HttpRoot\js\adapter.js" />
+    <Content Include="Resources\HttpRoot\Kodi\index.html" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\back.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\bg.jpg" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\down.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\left.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\mute.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\pause.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\play.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\right.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\select.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\stop.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\up.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\voldown.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\volup.gif" />
+    <Resource Include="Resources\HttpRoot\favicon.ico" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\mute.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\back.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\bg.jpg" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\down.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\left.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\mute.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\pause.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\play.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\right.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\select.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\stop.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\up.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\voldown.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\volup.gif" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
@@ -207,118 +312,48 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\configuration.xml" />
-    <Content Include="Resources\HttpRoot\Kodi\css\screen.css" />
-    <Resource Include="Resources\HttpRoot\Kodi\img\back.gif" />
-    <Resource Include="Resources\HttpRoot\Kodi\img\bg.jpg" />
-    <Resource Include="Resources\HttpRoot\Kodi\img\down.gif" />
-    <Resource Include="Resources\HttpRoot\Kodi\img\left.gif" />
-    <Resource Include="Resources\HttpRoot\Kodi\img\mute.gif" />
-    <Resource Include="Resources\HttpRoot\Kodi\img\pause.gif" />
-    <Resource Include="Resources\HttpRoot\Kodi\img\play.gif" />
-    <Resource Include="Resources\HttpRoot\Kodi\img\right.gif" />
-    <Resource Include="Resources\HttpRoot\Kodi\img\select.gif" />
-    <Resource Include="Resources\HttpRoot\Kodi\img\stop.gif" />
-    <Resource Include="Resources\HttpRoot\Kodi\img\up.gif" />
-    <Resource Include="Resources\HttpRoot\Kodi\img\voldown.gif" />
-    <Resource Include="Resources\HttpRoot\Kodi\img\volup.gif" />
-    <Resource Include="Resources\HttpRoot\Kodi\img\off.gif" />
-    <Resource Include="Resources\HttpRoot\Kodi\img\on.gif" />
-    <Content Include="Resources\HttpRoot\Kodi\index.html" />
-    <Content Include="Resources\HttpRoot\Boxee\css\screen.css" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\back.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\bg.jpg" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\down.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\left.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\mute.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\pause.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\play.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\right.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\select.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\stop.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\up.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\voldown.gif" />
-    <Resource Include="Resources\HttpRoot\Boxee\img\volup.gif" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Resources\HttpRoot\Boxee\index.html" />
-    <Resource Include="Resources\HttpRoot\favicon.ico" />
-    <Content Include="Resources\HttpRoot\jquery-1.8.3.min.js" />
-    <Content Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\audio.html" />
-    <Content Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\css\screen.css" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\audio.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\back.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\bg.jpg" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\down.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\left.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\mute.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\off.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\on.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\pause.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\play.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\right.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\select.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\src.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\stop.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\up.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\voldown.gif" />
-    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\volup.gif" />
+    <Content Include="Resources\HttpRoot\css\remote.css" />
+    <Content Include="Resources\HttpRoot\css\site.css" />
+    <Resource Include="Resources\HttpRoot\css\themes\default\images\ajax-loader.gif" />
+    <Content Include="Resources\HttpRoot\css\themes\default\jquery.mobile-1.4.5.min.css" />
+    <Resource Include="Resources\HttpRoot\img\ic_launcher.png" />
+    <Resource Include="Resources\HttpRoot\img\selectdevice.gif" />
+    <Resource Include="Resources\HttpRoot\img\activate.png" />
+    <Resource Include="Resources\HttpRoot\img\remote_bg.jpg" />
+    <Content Include="Resources\HttpRoot\index.html" />
+    <Content Include="Resources\HttpRoot\js\jquery.min.js" />
+    <Content Include="Resources\HttpRoot\js\jquery.mobile-1.4.5.min.js" />
+    <Content Include="Resources\HttpRoot\js\remote.js" />
+    <Content Include="Resources\HttpRoot\js\site.js" />
     <Content Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\index.html" />
-    <Content Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\src.html" />
-    <Content Include="Resources\HttpRoot\Plugwise\css\screen.css" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\back.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\bg.jpg" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\down.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\left.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\mute.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\pause.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\play.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\right.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\select.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\stop.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\up.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\voldown.gif" />
-    <Resource Include="Resources\HttpRoot\Plugwise\img\volup.gif" />
     <Content Include="Resources\HttpRoot\Plugwise\index.html" />
-    <Content Include="Resources\HttpRoot\Presenter\css\screen.css" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\back.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\bg.jpg" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\down.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\left.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\mute.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\pause.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\play.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\right.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\select.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\stop.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\up.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\voldown.gif" />
-    <Resource Include="Resources\HttpRoot\Presenter\img\volup.gif" />
     <Content Include="Resources\HttpRoot\Presenter\index.html" />
-    <Resource Include="Resources\HttpRoot\test.png" />
-    <Content Include="Resources\HttpRoot\XBMCv11\css\screen.css" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\back.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\bg.jpg" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\down.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\left.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\mute.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\pause.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\play.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\right.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\select.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\stop.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\up.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\voldown.gif" />
-    <Resource Include="Resources\HttpRoot\XBMCv11\img\volup.gif" />
     <Content Include="Resources\HttpRoot\XBMCv11\index.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>XCOPY "$(ProjectDir)Resources\HttpRoot" "$(TargetDir)\HttpRoot\" /S /Y
-COPY "$(ProjectDir)Resources\configuration.xml" "$(TargetDir)\" /Y
-COPY "$(ProjectDir)Resources\IGS.apk" "$(TargetDir)\" /Y</PostBuildEvent>
+COPY "$(ProjectDir)Resources\configuration.xml" "$(TargetDir)\" /Y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

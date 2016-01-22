@@ -23,15 +23,17 @@ namespace IGS.Server.Kinect
         /// </summary>
         public override List<TrackedSkeleton> Filter(Body[] bodies, List<TrackedSkeleton> trackedSkeletons, int id, BodyFrameReader reader)
         {
+            if (trackedSkeletons == null)
+                return trackedSkeletons;
+
             int i = 0;
            
-            List<Body> handsUpSkeletons = new List<Body>();
-
             foreach (Body t in bodies.Where(t => (int)t.TrackingId == id))
             {
                 trackedSkeletons.Add(new TrackedSkeleton((int)t.TrackingId));
                 return trackedSkeletons;
             }
+
             foreach (Body s in bodies.Where(s => s.TrackingId != 0))
             {
                 Debug.WriteLine(s.TrackingId);
@@ -55,29 +57,33 @@ namespace IGS.Server.Kinect
                         }
                     }
                 }
-               
-                //checks if an arm is raised
-                handsUpSkeletons.AddRange(from tempS in tempSkeletons
-                                          where tempS.TrackingId == s.TrackingId && tempS.IsTracked
-                                          let head = tempS.Joints[JointType.Head]
-                                          let wristL = tempS.Joints[JointType.WristLeft]
-                                          let elbowL = tempS.Joints[JointType.ElbowLeft]
-                                          let shoulderL = tempS.Joints[JointType.ShoulderLeft]
-                                          let wristR = tempS.Joints[JointType.WristRight]
-                                          let elbowR = tempS.Joints[JointType.ElbowRight]
-                                          let shoulderR = tempS.Joints[JointType.ShoulderRight]
-                                          where (head.Position.Y < wristL.Position.Y && shoulderL.Position.Y < elbowL.Position.Y) || (head.Position.Y < wristR.Position.Y && shoulderR.Position.Y < elbowR.Position.Y)
-                                          select s);
-               
-            }
-            if (trackedSkeletons != null && handsUpSkeletons.Count == 1)
-            {
-                trackedSkeletons.Add(new TrackedSkeleton((int)handsUpSkeletons[0].TrackingId));
+
+                // checks if an arm is raised
+                foreach (Body skeleton in tempSkeletons)
+                {
+                    if (skeleton.TrackingId == s.TrackingId && skeleton.IsTracked)
+                    {
+                        // check left hand
+                        if ((skeleton.Joints[JointType.Head].Position.Y < skeleton.Joints[JointType.WristLeft].Position.Y) &&
+                            (skeleton.Joints[JointType.ShoulderLeft].Position.Y < skeleton.Joints[JointType.ElbowLeft].Position.Y))
+                        {
+                            trackedSkeletons.Add(new TrackedSkeleton((int)skeleton.TrackingId, false));
+                        }
+
+                        // check right hand
+                        if ((skeleton.Joints[JointType.Head].Position.Y < skeleton.Joints[JointType.WristRight].Position.Y) &&
+                            (skeleton.Joints[JointType.ShoulderRight].Position.Y < skeleton.Joints[JointType.ElbowRight].Position.Y))
+                        {
+                            trackedSkeletons.Add(new TrackedSkeleton((int)skeleton.TrackingId, true));
+                        }
+                    }
+                }
+              
             }
            
-            
             return trackedSkeletons;
             
         }
     }
+
 }
