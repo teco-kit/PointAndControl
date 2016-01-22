@@ -344,9 +344,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\configuration.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Resources\HttpRoot\Boxee\index.html" />
     <Content Include="Resources\HttpRoot\css\remote.css" />
     <Content Include="Resources\HttpRoot\css\site.css" />
