@@ -29,16 +29,10 @@ namespace IGS.Server.Devices
         public NecLcdMonitorMultiSyncV421(String name, String id, List<Ball> form, String address, String port)
             : base(name, id, form)
         {
-            Connection = new Tcp(Convert.ToInt32(port), address);
+            connection = new Tcp(Convert.ToInt32(port), address);
         }
 
-        /// <summary>
-        ///     The connection existing between a LCDTV and a server.
-        ///     With the "set"-method the connection can be set.
-        ///     With the "get"-method the connection can be returned.
-        ///     <returns>Returns the connection</returns>
-        /// </summary>
-        public Tcp Connection { get; set; }
+      
 
         /// <summary>
         ///     The Transmit method is responsible for the correct invocation of a function of the LCDTV
@@ -73,7 +67,7 @@ namespace IGS.Server.Devices
                 case "audio":
                     return Audio((byte)(0x30 + Convert.ToInt32(value)));
             }
-            return "ungueltiger Befehl";
+            return Properties.Resources.InvalidCommand;
         }
 
         private String Power(byte b)
@@ -83,7 +77,7 @@ namespace IGS.Server.Devices
             message.CopyTo(msg, 0);
             msg[19] = CalcBcc(msg);
             msg[20] = 0x0D;
-            return Connection.Send(Encoding.ASCII.GetString(msg));
+            return connection.Send(Encoding.ASCII.GetString(msg));
         }
 
         private String Vol(int i)
@@ -101,7 +95,7 @@ namespace IGS.Server.Devices
             try
             {
                 response = Encoding.ASCII.GetBytes
-                    (Connection.Send(Encoding.ASCII.GetString(msg)));
+                    (connection.Send(Encoding.ASCII.GetString(msg)));
             }
             catch (SocketException e)
             {
@@ -118,7 +112,7 @@ namespace IGS.Server.Devices
             msg[13] = CalcBcc(msg);
             msg[14] = 0x0D;
 
-            return Connection.Send(Encoding.ASCII.GetString(msg));
+            return connection.Send(Encoding.ASCII.GetString(msg));
 
         }
 
@@ -137,7 +131,7 @@ namespace IGS.Server.Devices
             try
             {
                 response = Encoding.ASCII.GetBytes
-                    (Connection.Send(Encoding.ASCII.GetString(msg)));
+                    (connection.Send(Encoding.ASCII.GetString(msg)));
             }
             catch (SocketException e)
             {
@@ -164,7 +158,7 @@ namespace IGS.Server.Devices
             msg[17] = CalcBcc(msg);
             msg[18] = 0x0D;
 
-            return Connection.Send(Encoding.ASCII.GetString(msg));
+            return connection.Send(Encoding.ASCII.GetString(msg));
         }
 
         private String Input(byte b)
@@ -177,7 +171,7 @@ namespace IGS.Server.Devices
             msg[17] = CalcBcc(msg);
             msg[18] = 0x0D;
 
-            return Connection.Send(Encoding.ASCII.GetString(msg));
+            return connection.Send(Encoding.ASCII.GetString(msg));
         }
 
         private String Audio(byte b)
@@ -190,7 +184,7 @@ namespace IGS.Server.Devices
             msg[17] = CalcBcc(msg);
             msg[18] = 0x0D;
 
-            return Connection.Send(Encoding.ASCII.GetString(msg));
+            return connection.Send(Encoding.ASCII.GetString(msg));
         }
 
         private static byte CalcBcc(byte[] command)

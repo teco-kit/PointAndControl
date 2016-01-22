@@ -26,8 +26,8 @@ namespace IGS_Unit_Test_Project.DevicesTests
         public void Ball_set_get()
         {
             Vector3D vec = new Vector3D(1,1,1);
-            ball.Centre = vec;
-            Assert.AreEqual(vec, ball.Centre);
+            ball.Center = vec;
+            Assert.AreEqual(vec, ball.Center);
 
             float rad = 1;
             ball.Radius = rad;

@@ -2,20 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media.Media3D;
-using System.Xml;
 using IGS.Server.WebServer;
 using IGS.Server.Devices;
 using IGS.Server.Kinect;
 using System.Diagnostics;
-using System.IO;
-using IGS.Helperclasses;
-using System.Net;
-using System.Text;
 using IGS.Classifier;
-using Microsoft.Kinect;
 using System.Threading;
-
-
+using IGS.ComponentHandling;
 
 namespace IGS.Server.IGS
 {
@@ -36,9 +29,9 @@ namespace IGS.Server.IGS
         ///     <param name="tracker">The Usertracker</param>
         ///     <param name="server">The HTTP server</param>
         /// </summary>
-        public Igs(DataHolder data, UserTracker tracker, HttpServer server)
+        public Igs(DataHolder data, UserTracker tracker, HttpServer server, EventLogger eventLogger)
         {
-
+            environmentHandler = new EnvironmentInfoHandler();
             Data = data;
             Tracker = tracker;
             Server = server;
@@ -50,11 +43,11 @@ namespace IGS.Server.IGS
 
             createIGSKinect();
 
-            this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Centre);
+            this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Center);
             this.classification = new ClassificationHandler(Transformer, Data);
             this.coreMethods = new CollisionMethod(Data, Tracker, Transformer);
-
-
+            logger = eventLogger;
+          
         }
 
 
@@ -80,7 +73,7 @@ namespace IGS.Server.IGS
         ///     With the "set"-method the IGSKinect can be set.
         ///     With the "get"-method the IGSKinect can be returned.
         /// </summary>
-        public devKinect IGSKinect { get; set; }
+        public DevKinect IGSKinect { get; set; }
 
         /// <summary>
         /// Marks if the devices are initialized or not.
@@ -98,6 +91,10 @@ namespace IGS.Server.IGS
         public ClassificationHandler classification { get; set; }
 
         ICoreMethods coreMethods { get; set; }
+
+        public EventLogger logger { get; set; }
+
+        public EnvironmentInfoHandler environmentHandler { get; set; }
 
 
 
@@ -132,7 +129,6 @@ namespace IGS.Server.IGS
         {
             Debug.WriteLine("server_Request");
             String str = InterpretCommand(sender, e);
-            
             Server.SendResponse(e.P, str);
         }
         
@@ -149,7 +145,7 @@ namespace IGS.Server.IGS
             User user = Data.GetUserBySkeleton(args.SkeletonId);
             if (user != null)
             {
-                user.AddError("Sie haben den Raum verlassen");
+                user.AddError(Properties.Resources.RoomLeft);
                 user.TrackingState = false;
             }
             Data.DelTrackedSkeleton(args.SkeletonId);
@@ -172,6 +168,7 @@ namespace IGS.Server.IGS
         /// </summary>
         public int SkeletonIdToUser(String wlanAdr)
         {
+            
             User tempUser = Data.GetUserByIp(wlanAdr);
             int id = -1;
 
@@ -201,6 +198,7 @@ namespace IGS.Server.IGS
             String value = args.Val;
             String[] parameters = value.Split(':');
             String wlanAdr = args.ClientIp;
+            String lang = args.Language;
 
             User user = Data.GetUserByIp(wlanAdr);
             Device device = null;
@@ -208,8 +206,14 @@ namespace IGS.Server.IGS
             String msg = "";
             Boolean success = false;
 
+            if (Thread.CurrentThread.CurrentCulture.Name != lang)
+            {
+                Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo(lang);
+                Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(lang);
+            }
+
             if (cmd != "popup" && cmd != "pollDevice")
-                XMLComponentHandler.writeLogEntry("Command arrived! devID: " + devId + " cmdID: " + cmd + " value: " + value + " wlanAdr: " + wlanAdr);
+                logger.enqueueEntry(String.Format("Command arrived! devID: {0}; cmdID: {1}; value: {2}; wlanAdr: {3}", devId, cmd, value, wlanAdr));
 
             if (devId == "server")
             {
@@ -230,8 +234,13 @@ namespace IGS.Server.IGS
 
                         if (Data.GetUserByIp(wlanAdr) != null)
                         {
-                            // attach tracking state
-                            retStr += ",\"trackingId\":" + SkeletonIdToUser(wlanAdr);
+                            if (Tracker.isKinectAvailable())
+                            {
+                                retStr += ",\"trackingId\":" + SkeletonIdToUser(wlanAdr);
+                            } else
+                            {
+                                msg = Properties.Resources.NoKinAvailable;
+                            }
                         }
 
                         break;
@@ -241,9 +250,9 @@ namespace IGS.Server.IGS
                         break;
 
                     case "activateGestureCtrl":
-                        if (!Tracker.kinectAvailable)
+                        if (!Tracker.isKinectAvailable())
                         {
-                            msg = "Keine Kinect am System angeschlossen.";
+                            msg = Properties.Resources.NoKinAvailable;
                             break;
                         }
 
@@ -254,9 +263,9 @@ namespace IGS.Server.IGS
                             if (id >= 0)
                                 success = true;
                             else if (id == UserTracker.NO_GESTURE_FOUND)
-                                msg = "Kein Nutzer mit Geste identifiziert.";
+                                msg = Properties.Resources.NoGestureFound;
                             else if (id == UserTracker.NO_BODIES_IN_FRAME)
-                                msg = "Keine Nutzer im Bild.";
+                                msg = Properties.Resources.NoUserInImage;
 
                             // attach tracking state
                             retStr += ",\"trackingId\":" + id;
@@ -264,21 +273,21 @@ namespace IGS.Server.IGS
                         }
 
                         if (!success)
-                            msg = "Aktivierung der Gestenerkennung fehlgeschlagen.";
+                            msg = Properties.Resources.GesturecontrolError;
 
                         break;
 
                     case "pollDevice":
                     case "selectDevice":
-                        if (!Tracker.kinectAvailable)
+                        if (!Tracker.isKinectAvailable())
                         {
-                            msg = "Keine Kinect am System angeschlossen.";
+                            msg = Properties.Resources.NoKinAvailable;
                             break;
                         }
 
                         if (user == null || !user.TrackingState)
                         {
-                            msg = "Bitte erst registrieren";
+                            msg = Properties.Resources.RegistrationRequest;
                             break;
                         }
 
@@ -308,7 +317,8 @@ namespace IGS.Server.IGS
                             break;
                         }
 
-                        msg = "Hinzufügen fehlgeschlagen. Falsche Anzahl von Parametern";
+                        msg = Properties.Resources.AddDeviceError;
+
 
                         break;
 
@@ -337,7 +347,7 @@ namespace IGS.Server.IGS
 
                         if (device == null)
                         {
-                            msg = "Kein Gerät gefunden";
+                            msg = Properties.Resources.NoDevFound;
                             break;
                         }
 
@@ -353,13 +363,13 @@ namespace IGS.Server.IGS
 
                         if (device == null)
                         {
-                            msg = "Kein Gerät gefunden";
+                            msg = Properties.Resources.NoDevFound;
                             break;
                         }
 
                         if (user == null || !user.TrackingState)
                         {
-                            msg = "Bitte erst registrieren";
+                            msg = Properties.Resources.RegistrationRequest;
                             break;
                         }
                         
@@ -375,7 +385,7 @@ namespace IGS.Server.IGS
 
                         if (device == null)
                         {
-                            msg = "Kein Gerät gefunden";
+                            msg = Properties.Resources.NoDevFound;
                             break;
                         }
 
@@ -398,11 +408,11 @@ namespace IGS.Server.IGS
 
                 // finalize JSON response
                 retStr += ",\"success\":" + success.ToString().ToLower() + ",\"msg\":\"" + msg + "\"}";
-                Console.WriteLine(retStr);
+                
 
                 if ((cmd != "popup" || msg != "") && (cmd != "pollDevice"))
                 {
-                    XMLComponentHandler.writeLogEntry("Response to '" + cmd + "': " + retStr);
+                    logger.enqueueEntry(String.Format("Respronse to '{0}' : {1}", cmd, retStr));
                 }
 
                 return retStr;
@@ -416,7 +426,7 @@ namespace IGS.Server.IGS
                         //onlineNoSucces(devId, wlanAdr);
                         retStr = getControlPagePathHttp(devId);
                         // redirect to device control path
-                        args.P.WriteRedirect(retStr);
+                        args.P.WriteRedirect(retStr, 301);
                         break;
 
                     default:
@@ -427,13 +437,14 @@ namespace IGS.Server.IGS
                         break;
                 }
 
-                XMLComponentHandler.writeLogEntry("Response to '" + cmd + "': " + retStr);
+                logger.enqueueEntry(String.Format("Response to Request {0} : {1} ", cmd, retStr));
                 return retStr;
             }
             else
             {
                 // TODO: JSON response
-                retStr = "Unbekannter Befehl.";
+                retStr = Properties.Resources.UnknownError;
+                logger.enqueueEntry(String.Format("Response to Request {0} : {1}", cmd, retStr));
                 return retStr;
             }
         }
@@ -480,18 +491,17 @@ namespace IGS.Server.IGS
         /// </summary>
         private String AddDeviceCoord(String devId, String wlanAdr, String radius)
         {
-            String ret = "keine Koordinaten hinzugefügt";
+            String ret = Properties.Resources.NoCoordAdded;
 
             double isDouble;
-            if (!double.TryParse(radius, out isDouble) || String.IsNullOrEmpty(radius)) return ret += ",\nRadius fehlt oder hat falsches Format";
+            if (!double.TryParse(radius, out isDouble) || String.IsNullOrEmpty(radius)) return ret += ",\n" + Properties.Resources.NoRadiusWrongFormat;
 
 
             if (Tracker.Bodies.Count != 0)
             {
                 Point3D wrist = Transformer.transformJointCoords(Tracker.getMedianFilteredCoordinates(Data.GetUserByIp(wlanAdr).SkeletonId))[1];
-                Ball coord = new Ball(wrist, float.Parse(radius));
-                Data.getDeviceByID(devId).Form.Add(coord);
-                ret = XMLComponentHandler.addDeviceCoordToXML(devId, radius, coord);
+
+               ret = Data.addDeviceCoordinates(devId, radius, wrist); 
             }
 
             return ret;
@@ -526,10 +536,9 @@ namespace IGS.Server.IGS
             {
                 object instance = Activator.CreateInstance(typeObject, name, idparam, new List<Ball>(),
                                                            address, port);
-                Data.Devices.Add((Device)instance);
+                Data.AddDevice(((Device)instance));
                 retStr = idparam;
 
-                Console.WriteLine(retStr);
                 return retStr;
             }
             
@@ -545,32 +554,31 @@ namespace IGS.Server.IGS
         {
             float ballRad = 0.4f;
 
-            String[] kinParamets = XMLComponentHandler.readKinectComponents();
-            Point3D kinectCenter = new Point3D(double.Parse(kinParamets[0]), double.Parse(kinParamets[1]), double.Parse(kinParamets[2]));
+            Point3D kinectCenter = new Point3D(environmentHandler.getKinectPosX(), environmentHandler.getKinectPosY(),environmentHandler.getKinectPosZ());
             Ball kinectBall = new Ball(kinectCenter, ballRad);
-            double roomOrientation = double.Parse(kinParamets[4]);
-            double tiltingDegree = double.Parse(kinParamets[3]);
+            double roomOrientation = environmentHandler.getKinecHorizontalAngle();
+            double tiltingDegree = environmentHandler.getKinectTiltAngle();
 
             
-            IGSKinect = new devKinect("devKinect", kinectBall, tiltingDegree, roomOrientation);
+            IGSKinect = new DevKinect("DevKinect", kinectBall, tiltingDegree, roomOrientation);
         }
 
 
         public String addDeviceVector(Device dev, User user)
         {
             if (dev == null)
-                return "Gerät ist unbekannt.";
+                return Properties.Resources.UnknownDev;
             
             if (Tracker.Bodies.Count == 0)
-                return "Keine Personen von der Kinect gefunden";
+                return Properties.Resources.NoUserInImage;
             
             if (user.SkeletonId < 0)
-                return "Bitte erst registrieren";
+                return Properties.Resources.RegistrationRequest;
 
             Point3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(user.SkeletonId));
             dev.skelPositions.Add(vectors);
 
-            return dev.skelPositions.Count + " von " + coreMethods.getMinVectorsPerDevice() + " Positionen hinzugefügt";
+            return String.Format(Properties.Resources.AddDevVec, dev.skelPositions.Count, coreMethods.getMinVectorsPerDevice());
 
         }
 

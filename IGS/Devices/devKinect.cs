@@ -12,7 +12,7 @@ namespace IGS.Server.Devices
     /// <summary>
     /// This class represents a kinect camera with a name, a place in the room, its tilting angle and its horizontal view(roomOrientation).
     /// </summary>
-    public class devKinect
+    public class DevKinect
     {
         /// <summary>
         /// Constructor of the kinect representation
@@ -21,7 +21,7 @@ namespace IGS.Server.Devices
         /// <param name="ball">place of the camera</param>
         /// <param name="tiltingDegree">degree of tilting of the camera</param>
         /// <param name="roomOrientation">the degree of horizontal orientation of the camera</param>
-        public devKinect(String name, Ball ball, double tiltingDegree, double roomOrientation)
+        public DevKinect(String name, Ball ball, double tiltingDegree, double roomOrientation)
         {
             this.name = name;
             this.ball = ball;

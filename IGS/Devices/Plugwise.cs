@@ -14,7 +14,7 @@ namespace IGS.Server.Devices
     public class Plugwise : Device
     {
         private readonly String _commandString = "http://cumulus.teco.edu:5000/plugwise/";
-        private readonly Http _connection;
+     
 
         /// <summary>
         ///     Constructor of a plugwise object.
@@ -27,7 +27,7 @@ namespace IGS.Server.Devices
         public Plugwise(String name, String id, List<Ball> form, String address, String port)
             : base(name, id, form)
         {
-            _connection = new Http(Convert.ToInt32(port), "127.0.0.1");
+            connection = new Http(Convert.ToInt32(port), "127.0.0.1");
             _commandString += address;
 
             CommandString = _commandString;
@@ -49,17 +49,16 @@ namespace IGS.Server.Devices
         /// </summary>
         public override String Transmit(String cmdId, String value)
         {
-            String response = "ungueltiger Befehl";
-            Console.WriteLine(CommandString);
+            String response = Properties.Resources.InvalidCommand;
             switch (cmdId)
             {
 
                 case "on":
-                    if (_connection.Send(CommandString + "/on").StartsWith("{\n  \"plugwise\": {\n    \"state\":"))
+                    if (connection.Send(CommandString + "/on").StartsWith("{\n  \"plugwise\": {\n    \"state\":"))
                         response = "true";
                     break;
                 case "off":
-                    if (_connection.Send(CommandString + "/off").StartsWith("{\n  \"plugwise\": {\n    \"state\":"))
+                    if (connection.Send(CommandString + "/off").StartsWith("{\n  \"plugwise\": {\n    \"state\":"))
                         response = "true";
                     break;
             }

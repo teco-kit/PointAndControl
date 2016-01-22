@@ -1,14 +1,9 @@
 ﻿using IGS.Server.Devices;
-using IGS.Server.IGS;
 using IGS.Server.Kinect;
 using IGS.Server.Location;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
-using System.IO;
 using System.Xml;
 
 namespace IGS.Server.IGS

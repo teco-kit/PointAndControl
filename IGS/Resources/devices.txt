@@ -1,0 +1,137 @@
+{
+  "$type": "System.Collections.Generic.List`1[[IGS.Server.Devices.Device, IGS]], mscorlib",
+  "$values": [
+    {
+      "$type": "IGS.Server.Devices.Plugwise, IGS",
+      "Name": "Lamp_Shelf",
+      "Form": {
+        "$type": "System.Collections.Generic.List`1[[IGS.Server.Devices.Ball, IGS]], mscorlib",
+        "$values": []
+      },
+      "Id": "Plugwise_1",
+      "CommandString": "http://cumulus.teco.edu:5000/plugwise/129.13.169.169",
+      "address": null,
+      "port": null,
+      "connection": {
+        "$type": "IGS.Server.Devices.Http, IGS",
+        "Port": 5050,
+        "Ip": "127.0.0.1"
+      },
+      "skelPositions": {
+        "$type": "System.Collections.Generic.List`1[[System.Windows.Media.Media3D.Point3D[], PresentationCore]], mscorlib",
+        "$values": []
+      },
+      "color": "SteelBlue"
+    },
+    {
+      "$type": "IGS.Server.Devices.Plugwise, IGS",
+      "Name": "Lamp_Door",
+      "Form": {
+        "$type": "System.Collections.Generic.List`1[[IGS.Server.Devices.Ball, IGS]], mscorlib",
+        "$values": []
+      },
+      "Id": "Plugwise_2",
+      "CommandString": "http://cumulus.teco.edu:5000/plugwise/129.13.169.169",
+      "address": null,
+      "port": null,
+      "connection": {
+        "$type": "IGS.Server.Devices.Http, IGS",
+        "Port": 5050,
+        "Ip": "127.0.0.1"
+      },
+      "skelPositions": {
+        "$type": "System.Collections.Generic.List`1[[System.Windows.Media.Media3D.Point3D[], PresentationCore]], mscorlib",
+        "$values": []
+      },
+      "color": "Chartreuse"
+    },
+    {
+      "$type": "IGS.Server.Devices.Boxee, IGS",
+      "Name": "Hifi",
+      "Form": {
+        "$type": "System.Collections.Generic.List`1[[IGS.Server.Devices.Ball, IGS]], mscorlib",
+        "$values": []
+      },
+      "Id": "Boxee_1",
+      "CommandString": null,
+      "address": null,
+      "port": null,
+      "connection": {
+        "$type": "IGS.Server.Devices.Http, IGS",
+        "Port": 8081,
+        "Ip": "127.0.0.1"
+      },
+      "skelPositions": {
+        "$type": "System.Collections.Generic.List`1[[System.Windows.Media.Media3D.Point3D[], PresentationCore]], mscorlib",
+        "$values": []
+      },
+      "color": "Ivory"
+    },
+    {
+      "$type": "IGS.Server.Devices.Kodi, IGS",
+      "Name": "Mediacenter",
+      "Form": {
+        "$type": "System.Collections.Generic.List`1[[IGS.Server.Devices.Ball, IGS]], mscorlib",
+        "$values": []
+      },
+      "Id": "Kodi_1",
+      "CommandString": null,
+      "address": "129.13.169.169",
+      "port": "5050",
+      "connection": {
+        "$type": "IGS.Server.Devices.Http, IGS",
+        "Port": 5050,
+        "Ip": "129.13.169.169"
+      },
+      "skelPositions": {
+        "$type": "System.Collections.Generic.List`1[[System.Windows.Media.Media3D.Point3D[], PresentationCore]], mscorlib",
+        "$values": []
+      },
+      "color": "DimGray"
+    },
+    {
+      "$type": "IGS.Server.Devices.Boxee, IGS",
+      "Name": "XBox",
+      "Form": {
+        "$type": "System.Collections.Generic.List`1[[IGS.Server.Devices.Ball, IGS]], mscorlib",
+        "$values": []
+      },
+      "Id": "Boxee_2",
+      "CommandString": null,
+      "address": null,
+      "port": null,
+      "connection": {
+        "$type": "IGS.Server.Devices.Http, IGS",
+        "Port": 8081,
+        "Ip": "127.0.0.1"
+      },
+      "skelPositions": {
+        "$type": "System.Collections.Generic.List`1[[System.Windows.Media.Media3D.Point3D[], PresentationCore]], mscorlib",
+        "$values": []
+      },
+      "color": "ForestGreen"
+    },
+    {
+      "$type": "IGS.Server.Devices.Boxee, IGS",
+      "Name": "PC",
+      "Form": {
+        "$type": "System.Collections.Generic.List`1[[IGS.Server.Devices.Ball, IGS]], mscorlib",
+        "$values": []
+      },
+      "Id": "Boxee_3",
+      "CommandString": null,
+      "address": null,
+      "port": null,
+      "connection": {
+        "$type": "IGS.Server.Devices.Http, IGS",
+        "Port": 8081,
+        "Ip": "127.0.0.1"
+      },
+      "skelPositions": {
+        "$type": "System.Collections.Generic.List`1[[System.Windows.Media.Media3D.Point3D[], PresentationCore]], mscorlib",
+        "$values": []
+      },
+      "color": "Lime"
+    }
+  ]
+}

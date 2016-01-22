@@ -28,12 +28,13 @@ namespace IGS.Server.WebServer
         ///     <param name="val">The Value belonging to the command.</param>
         ///     <param name="p">The HTTpProcessor belonging to the command.</param>
         /// </summary>
-        public HttpEventArgs(String clientip, String dev, String cmd, String val, HttpProcessor p)
+        public HttpEventArgs(String clientip, String dev, String cmd, String val,String language, HttpProcessor p)
         {
             ClientIp = clientip;
             Dev = dev;
             Cmd = cmd;
             Val = val;
+            Language = language;
             P = p;
         }
 
@@ -60,6 +61,7 @@ namespace IGS.Server.WebServer
         /// </summary>
         public String Dev { get; set; }
 
+        public String Language { get; set; }
         /// <summary>
         ///     The Command ID of the command which should be executed.\n
         ///     With the "set"-method the CommandID can be set.\n
@@ -384,14 +386,48 @@ namespace IGS.Server.WebServer
         }
 
         /// <summary>
-        ///     Responses to redirect to another URL(301).
+        ///     Responses to redirect to another URL.
+        ///     Error Number 301 (Moved Permanently) - Cache - UA MUST NOT Autmatically Redirect
+        ///     Error Number 302 (Found) - Only Cachable if indicated by Cache-Control or Expires header fiel. UA See 301
+        ///     Error Number 303 (See Other) - MUST NOT be Cached - Should be answered with a GET method. 
+        ///     Default: 301 
         /// </summary>
-        public void WriteRedirect(String new_location)
+        public void WriteRedirect(String new_location, int errorNumber)
         {
-            OutputStream.WriteLine("HTTP/1.1 302 Found");
+            String error = "";
+
+            switch (errorNumber)
+            {
+                case 301:
+                    error = "Moved Permanently";
+                    break;
+                case 302:
+                    error = "Found";
+                    break;
+                case 303:
+                    error = "See Other";
+                    break;
+                case 307:
+                    error = "Moved Temporary";
+                    break;
+                default:
+                    error = "Found";
+                    errorNumber = 302;
+                    break;
+            }
+
+            OutputStream.WriteLine("HTTP/1.1 " + errorNumber + " " + error);
             OutputStream.WriteLine("Location: " + new_location);
+            OutputStream.WriteLine("Cache - Control: no - cache, no - store");
+            OutputStream.WriteLine("Pragma: no-cache");
+            OutputStream.WriteLine("Expires: 0");
             OutputStream.WriteLine("");
+            OutputStream.Flush();
+            
+
         }
+
+
     }
 
     /// <summary>
@@ -447,7 +483,7 @@ namespace IGS.Server.WebServer
         /// </summary>
         public void Listen()
         {
-            Console.WriteLine("Starting HTTP Server on " + LocalIP.ToString() + ":" + Port);
+            Console.WriteLine(String.Format(Properties.Resources.StartingHTTPServer, LocalIP.ToString(),Port));
 
             _listener = new TcpListener(LocalIP, Port);
             _listener.Start();
@@ -540,13 +576,18 @@ namespace IGS.Server.WebServer
         /// </summary>
         public override void HandleGetRequest(HttpProcessor p)
         {
-            // redirect to index.html in base directory
 
-            String querystring = null;
-            String pathstring = null;
+            //TODO: full localization testing
+            string querystring = null;
+            string pathstring = null;
             // check query part of string
+
             int iqs = p.HttpUrl.IndexOf('?');
             // If query string variables exist, put them in a string.
+            //if(p.HttpUrl == "")
+            //{
+            //    p.WriteRedirect("Http://" + LocalIP + ":" + Port + "/index.html",302);
+            //}
             if (iqs >= 0)
             {
                 querystring = (iqs < p.HttpUrl.Length - 1) ? p.HttpUrl.Substring(iqs + 1) : String.Empty;
@@ -557,62 +598,22 @@ namespace IGS.Server.WebServer
                 pathstring = p.HttpUrl;
             }
 
-            // check for file
-            if (pathstring.EndsWith(".html"))
+
+            
+            if (isFileEnding(pathstring))
             {
-                p.WriteSuccess("text/html");
                 sendData(p);
             }
-            else if (pathstring.EndsWith(".css"))
-            {
-                p.WriteSuccess("text/css");
-                sendData(p);
-            }
-            else if (pathstring.EndsWith(".js"))
-            {
-                p.WriteSuccess("text/javascript");
-                sendData(p);
-            }
-            else if (pathstring.EndsWith(".json"))
-            {
-                p.WriteSuccess("application/json");
-                sendData(p);
-            }
-            else if (pathstring.EndsWith(".map"))
-            {
-                p.WriteSuccess("application/octet-stream");
-                sendData(p);
-            }
-            else if (pathstring.EndsWith(".jpg"))
-            {
-                p.WriteSuccess("image/jpg");
-                sendData(p);
-            }
-            else if (pathstring.EndsWith(".gif"))
-            {
-                p.WriteSuccess("image/gif");
-                sendData(p);
-            }
-            else if (pathstring.EndsWith(".png"))
-            {
-                p.WriteSuccess("image/png");
-                sendData(p);
-            }
-            else if (pathstring.EndsWith(".ico"))
-            {
-                p.WriteSuccess("image/x-icon");
-                sendData(p);
-            }
-            else if (pathstring.EndsWith(".svg"))
-            {
-                p.WriteSuccess("image/svg+xml");
-                sendData(p);
-            }
-            else if (querystring.Length > 0) //TODO: currently we either serve files or process query parameters
+            else if (querystring != null && querystring.Length > 0) //TODO: currently we either serve files or process query parameters
             {
                 NameValueCollection col = HttpUtility.ParseQueryString(querystring);
                 String device = col["dev"];
                 String command = col["cmd"];
+                String language = p.HttpHeaders["Accept-Language"].ToString();
+                language = language.Split(',')[0];
+
+                
+
                 if (device != null && command != null)
                 {
                     // TODO: clean this mess up
@@ -620,7 +621,7 @@ namespace IGS.Server.WebServer
                     if (col["val"] != null)
                         value = col["val"];
                     String clientIp = ((IPEndPoint)p.Socket.Client.RemoteEndPoint).Address.ToString();
-                    OnRequest(new HttpEventArgs(clientIp, device, command, value, p));
+                    OnRequest(new HttpEventArgs(clientIp, device, command, value, language, p));
 
                 } else {
                     p.WriteFailure();
@@ -628,7 +629,7 @@ namespace IGS.Server.WebServer
             }
             else
             {
-                p.WriteFailure();
+                p.WriteRedirect(String.Format("Http://{0}:{1}/index.html", LocalIP, Port), 302);
             }
 
         }
@@ -649,12 +650,14 @@ namespace IGS.Server.WebServer
             OnPOSTRequest(new HttpEventArgs(clientIp, data, p));
         }
 
+      
         /// <summary>
         ///     Sends the requested file to the client
         ///     <param name="p">the HttpProcessor</param>
         /// </summary>
         private void sendData(HttpProcessor p)
         {
+            //TODO: Write Flexible Header usage
             String pathstring = null;
             int iqs = p.HttpUrl.IndexOf("?");
             if (iqs == -1)
@@ -665,8 +668,19 @@ namespace IGS.Server.WebServer
             {
                 pathstring = p.HttpUrl.Substring(0, iqs);
             }
+            Debug.WriteLine("send Data: " + pathstring);
+
+
+            bool continueSending = responseToFileRequest(p, pathstring);
+
+            if (!continueSending)
+            {
+                return;
+            }
+
 
             //TODO: make httproot configurable
+
             if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\" + pathstring))
             {
                 using (
@@ -690,9 +704,120 @@ namespace IGS.Server.WebServer
         /// <param name="p">the HttpProcessor processing the connection with the client.</param>
         /// <param name="msg">the response</param>
         public override void SendResponse(HttpProcessor p, String msg)
-        {
-            
+        { 
             p.OutputStream.Write(msg);
         }
+
+
+        public bool isFileEnding(string pathstring)
+        {
+            string ending = getFileEnding(pathstring);
+
+            switch (ending)
+            {
+                case ".html":
+                    return true;
+                case ".css":
+                    return true;
+                case ".js":
+                    return true;
+                case ".json":
+                    return true;
+                case ".map":
+                    return true;
+                case ".jpg":
+                    return true;
+                case ".gif":
+                    return true;
+                case ".png":
+                    return true;
+                case ".ico":
+                    return true;
+                case ".svg":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        private string getFileEnding(string s)
+        {
+            string[] pathDotSplit = s.Split('.');
+            return "." + pathDotSplit[pathDotSplit.Length - 1];
+        }
+
+        private bool responseToFileRequest(HttpProcessor p, string pathString)
+        {
+            string fileEnding = getFileEnding(pathString);
+
+            switch (fileEnding)
+            {
+                case ".html":
+                    p.WriteSuccess("text/html");
+                    return true;
+                case ".css":
+                    p.WriteSuccess("text/css");
+                    return true;
+                case ".js":
+                    if (pathString.Equals("js/globalize/globalize.js"))
+                    {
+                        string gloablizeRerout = getLocalizationPath(p, pathString);
+                        p.WriteRedirect(gloablizeRerout, 302);
+                        return false;
+                    }
+                    p.WriteSuccess("text/javascript");
+                    return true;
+                case ".json":
+                    p.WriteSuccess("application/json");
+                    return true;
+                case ".map":
+                    p.WriteSuccess("application/octet-stream");
+                    return true;
+                case ".jpg":
+                    p.WriteSuccess("image/jpg");
+                    return true;
+                case ".gif":
+                    p.WriteSuccess("image/gif");
+                    return true;
+                case ".png":
+                    p.WriteSuccess("image/png");
+                    return true;
+                case ".ico":
+                    p.WriteSuccess("image/x-icon");
+                    return true;
+                case ".svg":
+                    p.WriteSuccess("image/svg+xml");
+                    return true;
+                default:
+                    p.WriteFailure();
+                    return false;
+            }
+        }
+
+        public string getLocalizationPath(HttpProcessor p, string pathString)
+        {
+            string language = p.HttpHeaders["Accept-Language"].ToString();
+            language = language.Split(',')[0];
+           
+            if(pathString == "js/globalize/globalize.js")
+            {
+                string baseServerGlobalize = "http://" + LocalIP + ":" + Port + "/js/globalize/";
+                string globalizeServerPath = AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\js\\globalize\\" + language + "\\globalize.js";
+               
+                if (File.Exists(globalizeServerPath))
+                { 
+                    return baseServerGlobalize + language + "/globalize.js";
+                } else
+                {
+                    return baseServerGlobalize + "default" + "/globalize.js"; 
+                }
+            } else
+            {
+                return "";
+            }
+
+        }
+
+       
     }
 }
