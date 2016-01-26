@@ -97,7 +97,7 @@ namespace IGS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("2.4")]
+        [global::System.Configuration.DefaultSettingValueAttribute("3.95")]
         public double KinectPosX {
             get {
                 return ((double)(this["KinectPosX"]));
@@ -133,7 +133,7 @@ namespace IGS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("-8")]
         public short KinectTiltAngle {
             get {
                 return ((short)(this["KinectTiltAngle"]));

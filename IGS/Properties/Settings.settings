@@ -21,7 +21,7 @@
       <Value Profile="(Default)">5.58</Value>
     </Setting>
     <Setting Name="KinectPosX" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">2.4</Value>
+      <Value Profile="(Default)">3.95</Value>
     </Setting>
     <Setting Name="KinectPosY" Type="System.Double" Scope="User">
       <Value Profile="(Default)">1.8</Value>
@@ -30,7 +30,7 @@
       <Value Profile="(Default)">0.3</Value>
     </Setting>
     <Setting Name="KinectTiltAngle" Type="System.Int16" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">-8</Value>
     </Setting>
     <Setting Name="KinectHorizontalAngle" Type="System.Int16" Scope="User">
       <Value Profile="(Default)">0</Value>
