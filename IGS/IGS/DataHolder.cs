@@ -142,7 +142,6 @@ namespace IGS.Server.IGS
         /// </summary>
         public bool SetTrackedSkeleton(String wlanAdr, int bodyID)
         {
-
             foreach (User u in _users)
             {
                 if (u.WlanAdr == wlanAdr)
@@ -153,7 +152,6 @@ namespace IGS.Server.IGS
             }
 
             return false;
-
         }
 
         /// <summary>
@@ -166,8 +164,6 @@ namespace IGS.Server.IGS
         /// </summary>
         public bool DelUser(String wlanAdr)
         {
-
-
             for (int i = 0; i < _users.Count; i++)
             {
                 if (_users[i].WlanAdr == wlanAdr)
@@ -176,7 +172,6 @@ namespace IGS.Server.IGS
                     return true;
                 }
             }
-
             return false;
         }
 
@@ -208,7 +203,6 @@ namespace IGS.Server.IGS
         /// </summary>
         public User GetUserByIp(String wlanAdr)
         {
-
             foreach (User u in _users)
             {
                 if (u.WlanAdr == wlanAdr)
@@ -216,7 +210,6 @@ namespace IGS.Server.IGS
                     return u;
                 }
             }
-
             return null;
         }
 
@@ -225,30 +218,29 @@ namespace IGS.Server.IGS
         ///     Adds a given device to the device list.
         ///     <param name="dev">The device which will be added to the list.</param>
         /// </summary>
-        public void AddDevice(Device dev)
+        public bool AddDevice(Device dev)
         {
-
-            for (int i = 0; i < _devices.Count; i++)
-            {
-                if (_devices[i].Id == dev.Id)
-                {
-                    return;
-                }
-            }
+            if (checkForSameDevID(dev.Id))
+                return false;
 
             checkAndWriteColorForNewDevice(dev);
             _deviceStorageHandling.addDevice(dev);
             _devices.Add(dev);
+
+            return true;
         }
 
-        public void AddDevice(string type, string name, string address, string port)
+        public bool AddDevice(string type, string name, string address, string port)
         {
             Device newDevice = devProducer.produceDevice(type, name, address, port, _devices);
+
+            if (checkForSameDevID(newDevice.Id))
+                return false;
 
             checkAndWriteColorForNewDevice(newDevice);
             _devices.Add(newDevice);
             _deviceStorageHandling.addDevice(newDevice);
-
+            return true;
         }
         /// <summary>
         ///     Returns a device with its id.
@@ -267,7 +259,6 @@ namespace IGS.Server.IGS
                     return dev;
                 }
             }
-
             return null;
         }
 
@@ -279,7 +270,6 @@ namespace IGS.Server.IGS
         /// </summary>
         public bool DelTrackedSkeleton(int id)
         {
-
             foreach (User u in _users)
             {
                 if (u.SkeletonId == id)
@@ -288,9 +278,7 @@ namespace IGS.Server.IGS
                     return true;
                 }
             }
-
             return false;
-
         }
 
         /// <summary>
@@ -314,13 +302,10 @@ namespace IGS.Server.IGS
                     _devices[i].CommandString = newCommandString;
                 }
             }
-
-
         }
 
         public void change_PlugWise_Adress(string host, string port, string path)
         {
-            
             string completeAdr = _environmentHandler.getPWAdress();
             change_PlugWise_Adress(completeAdr);
             logger.enqueueEntry(String.Format("New PlugwiseAdress: {0}", completeAdr));
@@ -355,13 +340,8 @@ namespace IGS.Server.IGS
 
         public void checkAndWriteColorForNewDevice(Device dev)
         {
-            foreach (Device d in Devices)
-            {
-                if (d.Name.Equals(dev.Name))
-                {
-                    return;
-                }
-            }
+            if (checkForSameDevID(dev.Id))
+                return;
 
             dev.color = pickRandomColor();
 
@@ -379,6 +359,17 @@ namespace IGS.Server.IGS
             Ball coord = new Ball(wrist, double.Parse(radius));
             this.getDeviceByID(devId).Form.Add(coord);
             return _deviceStorageHandling.addDeviceCoord(devId, coord);
+        }
+
+        private bool checkForSameDevID(String id)
+        {
+            foreach(Device d in Devices)
+            {
+                if (d.Id == id)
+                    return true;
+            }
+
+            return false;
         }
     }
 }

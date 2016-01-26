@@ -126,6 +126,7 @@
     <Compile Include="Devices\Connection.cs" />
     <Compile Include="Devices\Device.cs" />
     <Compile Include="Devices\DevKinect.cs" />
+    <Compile Include="Devices\ExternalDevice.cs" />
     <Compile Include="Devices\HTTP.cs" />
     <Compile Include="Devices\NecLcdMonitorMultiSyncV421.cs" />
     <Compile Include="Devices\Plugwise.cs" />
