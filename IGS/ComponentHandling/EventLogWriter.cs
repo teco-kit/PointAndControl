@@ -9,12 +9,10 @@ namespace IGS.ComponentHandling
 { 
     public class EventLogWriter
     {
-        private volatile bool _shouldStop;
         public ConcurrentQueue<EventLogger.logEntry> eventQueue { get; set; }
         public IEventlogFormat format { get; set; }
         public EventLogWriter(ConcurrentQueue<EventLogger.logEntry> queue, IEventlogFormat logFormat)
         {
-            _shouldStop = false;
             eventQueue = queue;
             format = logFormat;
         }
@@ -31,12 +29,5 @@ namespace IGS.ComponentHandling
             }
            
         }
-
-        public void requestStop()
-        {
-            _shouldStop = true;
-        }
-
-
     }
 }

@@ -431,6 +431,10 @@ namespace IGS.Server.IGS
                         args.P.WriteRedirect(retStr, 301);
                         break;
 
+                    case "deleteDevice":
+                        retStr = Data.deleteDevice(devId);
+                        break;
+
                     default:
                         // assumes that correct device was selected
                         // executeOnlineLearning(devId, wlanAdr);

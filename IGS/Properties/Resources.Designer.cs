@@ -97,6 +97,24 @@ namespace IGS.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Device deleted.
+        /// </summary>
+        internal static string DevDeleted {
+            get {
+                return ResourceManager.GetString("DevDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device Not Found. Deletion failed.
+        /// </summary>
+        internal static string DevNotFoundDeletion {
+            get {
+                return ResourceManager.GetString("DevNotFoundDeletion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Activation of gesturecontrol failed.
         /// </summary>
         internal static string GesturecontrolError {

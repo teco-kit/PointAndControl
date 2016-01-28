@@ -192,4 +192,10 @@ Befehl konnte nicht ausgeführt werden</value>
   <data name="SpecifiedDeviceNotFound" xml:space="preserve">
     <value>Spezifizierted Gerät wurde nicht gefunden</value>
   </data>
+  <data name="DevDeleted" xml:space="preserve">
+    <value>Gerät wurde entfernt</value>
+  </data>
+  <data name="DevNotFoundDeletion" xml:space="preserve">
+    <value>Gerät wurde nicht gefunden. Entfernen fehlgeschlagen</value>
+  </data>
 </root>

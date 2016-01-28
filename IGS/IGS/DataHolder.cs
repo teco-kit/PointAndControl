@@ -390,5 +390,24 @@ namespace IGS.Server.IGS
             string[] split = dev.GetType().ToString().Split('.');
             return split[split.Length - 1];
         }
+
+        public string deleteDevice(String id)
+        {
+            String retStr = Properties.Resources.DevNotFoundDeletion;
+            
+            foreach(Device d in Devices)
+            {
+                if (d.Id == id)
+                {
+                    _deviceStorageHandling.deleteDevice(d.Id);
+                    Devices.Remove(d);
+                    retStr = Properties.Resources.DevDeleted;
+                    break;
+                }
+            }
+
+            return retStr;
+
+        }
     }
 }

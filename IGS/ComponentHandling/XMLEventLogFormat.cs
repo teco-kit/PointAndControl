@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,10 +14,13 @@ namespace IGS.ComponentHandling
     {
         private string logPath;
         private const string FILE_ENDING = ".xml";
+        private bool writeOccupied { get; set; }
+        Stopwatch threshold = new Stopwatch();
 
         public XMLEventLogFormat(string lPath)
         {
             logPath = lPath;
+            writeOccupied = false;
         }
 
         public List<EventLogger.logEntry> read()

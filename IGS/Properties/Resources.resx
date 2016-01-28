@@ -190,4 +190,10 @@ Command could not be executed</value>
   <data name="SpecifiedDeviceNotFound" xml:space="preserve">
     <value>Specified device not found</value>
   </data>
+  <data name="DevDeleted" xml:space="preserve">
+    <value>Device deleted</value>
+  </data>
+  <data name="DevNotFoundDeletion" xml:space="preserve">
+    <value>Device Not Found. Deletion failed</value>
+  </data>
 </root>
