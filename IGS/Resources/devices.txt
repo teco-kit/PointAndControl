@@ -20,8 +20,8 @@
       "port": null,
       "connection": {
         "$type": "IGS.Server.Devices.Tcp, IGS",
-        "Port": 5050,
-        "Ip": "192.168.1.1"
+        "Port": 7142,
+        "Ip": "129.13.169.178"
       },
       "skelPositions": {
         "$type": "System.Collections.Generic.List`1[[System.Windows.Media.Media3D.Point3D[], PresentationCore]], mscorlib",

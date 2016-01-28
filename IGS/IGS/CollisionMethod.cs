@@ -64,9 +64,11 @@ namespace IGS.Server.IGS
             }
 
             //change position of device in dataHolder
-            List<Ball> balls = new List<Ball>();
-            balls.Add(new Ball(position, 0.3f));
-            dev.Form = balls;
+            //List<Ball> balls = new List<Ball>();
+            //balls.Add(new Ball(position, 0.3f));
+            //dev.Form = balls;
+
+            Data.addDeviceCoordinates(dev.Id, "0,3", position);
 
             //add new location to xml
             //TODO: disabled for testing, should be handled in dataHolder
