@@ -250,32 +250,47 @@ namespace IGS
             if (deviceList != null)
             {
                 ModelVisual3D model = new ModelVisual3D();
-                for (int i = 0; i < deviceList.Count; i++)
+                foreach(Device dev in deviceList)
                 {
-                    for (int j = 0; j < deviceList[i].Form.Count; j++)
+                    foreach(Ball ball in dev.Form)
                     {
-                        Point3D center = new Point3D();
-                        Point3D vec = deviceList[i].Form[j].Center;
-                        double rad = deviceList[i].Form[j].Radius;
-
-                        HelixToolkit.Wpf.SphereVisual3D sphere = new HelixToolkit.Wpf.SphereVisual3D();
-
-                        center.X = vec.X;
-                        center.Y = vec.Y;
-                        center.Z = vec.Z;
-
-                        Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.Gray));
-
-                        sphere.Center = center;
+                        SphereVisual3D sphere = new SphereVisual3D();
+                        Color c = Color.FromArgb(dev.color.A, dev.color.R, dev.color.G, dev.color.B);
+                        Material mat = new DiffuseMaterial(new SolidColorBrush(c));
+                        sphere.Center = ball.Center;
                         sphere.Material = mat;
-                        sphere.Radius = rad;
-                        sphere.Visible = true;
+                        sphere.Radius = ball.Radius;
                         sphere.PhiDiv = 13;
                         sphere.ThetaDiv = 13;
 
                         model.Children.Add(sphere);
                     }
                 }
+
+                //for (int i = 0; i < deviceList.Count; i++)
+                //{
+                //    for (int j = 0; j < deviceList[i].Form.Count; j++)
+                //    {
+                       
+                //        Point3D center = deviceList[i].Form[j].Center;
+                //        double rad = deviceList[i].Form[j].Radius;
+
+                //        HelixToolkit.Wpf.SphereVisual3D sphere = new HelixToolkit.Wpf.SphereVisual3D();
+
+                        
+
+                //        Material mat = new DiffuseMaterial(new SolidColorBrush(Colors.Gray));
+
+                //        sphere.Center = center;
+                //        sphere.Material = mat;
+                //        sphere.Radius = rad;
+                //        sphere.Visible = true;
+                //        sphere.PhiDiv = 13;
+                //        sphere.ThetaDiv = 13;
+
+                //        model.Children.Add(sphere);
+                //    }
+                //}
                 mainViewport.Children.Add(model);
             }
         }

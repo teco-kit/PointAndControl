@@ -719,8 +719,6 @@ public partial class MainWindow
     /// </summary>
     private void fillFieldsGUI()
     {
-
-
         Plugwise_host.Text = _igs.Data._environmentHandler.getPWHost();
         Plugwise_port.Text = _igs.Data._environmentHandler.getPWPort();
         Plugwise_path.Text = _igs.Data._environmentHandler.getPWPath();

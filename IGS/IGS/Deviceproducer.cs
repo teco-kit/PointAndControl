@@ -29,7 +29,6 @@ namespace IGS.IGS
                                                            address, port);
                 return ((Device)instance);
             }
-
             return null;
         }
     }

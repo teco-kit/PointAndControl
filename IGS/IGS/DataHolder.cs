@@ -230,17 +230,17 @@ namespace IGS.Server.IGS
             return true;
         }
 
-        public bool AddDevice(string type, string name, string address, string port)
+        public string AddDevice(string type, string name, string address, string port)
         {
             Device newDevice = devProducer.produceDevice(type, name, address, port, _devices);
 
             if (checkForSameDevID(newDevice.Id))
-                return false;
+                return "";
 
             checkAndWriteColorForNewDevice(newDevice);
             _devices.Add(newDevice);
             _deviceStorageHandling.addDevice(newDevice);
-            return true;
+            return newDevice.Id;
         }
         /// <summary>
         ///     Returns a device with its id.
@@ -290,18 +290,31 @@ namespace IGS.Server.IGS
 
             String[] splitted;
 
-            for (int i = 0; i < _devices.Count; i++)
+            foreach(Device dev in Devices)
             {
-                if (_devices[i].Id.Contains("Plugwise"))
+                if (getDeviceType(dev).Equals("Plugwise"))
                 {
-                    splitted = _devices[i].CommandString.Split('/',
+                    splitted = dev.CommandString.Split('/',
                         ':');
 
                     String newCommandString = input + splitted[6];
 
-                    _devices[i].CommandString = newCommandString;
+                    dev.CommandString = newCommandString;
                 }
             }
+
+            //for (int i = 0; i < _devices.Count; i++)
+            //{
+            //    if (_devices[i].Id.Contains("Plugwise"))
+            //    {
+            //        splitted = _devices[i].CommandString.Split('/',
+            //            ':');
+
+            //        String newCommandString = input + splitted[6];
+
+            //        _devices[i].CommandString = newCommandString;
+            //    }
+            //}
         }
 
         public void change_PlugWise_Adress(string host, string port, string path)
@@ -370,6 +383,12 @@ namespace IGS.Server.IGS
             }
 
             return false;
+        }
+
+        public string getDeviceType(Device dev)
+        {
+            string[] split = dev.GetType().ToString().Split('.');
+            return split[split.Length - 1];
         }
     }
 }

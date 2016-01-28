@@ -313,6 +313,7 @@ namespace IGS.Server.IGS
                         if (parameters.Length == 4)
                         {
                             success = true;
+
                             msg = AddDevice(parameters[0], parameters[1], parameters[2], parameters[3]);
                             break;
                         }
@@ -330,8 +331,9 @@ namespace IGS.Server.IGS
                         {
                             success = true;
 
-                            String[] type = device.Id.Split('_');
-                            String newDeviceId = AddDevice(type[0], parameters[1], device.address, device.port);
+                            String type = Data.getDeviceType(device);
+                            //String[] type = device.Id.Split('_');
+                            String newDeviceId = AddDevice(type, parameters[1], device.address, device.port);
 
                             // attach to return string
                             retStr += ",\"deviceId\":\"" + newDeviceId + "\"";
@@ -507,6 +509,44 @@ namespace IGS.Server.IGS
             return ret;
         }
 
+        ///// <summary>
+        /////     Adds a new device to the device list and updates the deviceConfiguration part of the config.xml.
+        /////     <param name="parameter">
+        /////         Parameter of the device which should be added.
+        /////         Parameter: Type, Name, Id, Form, Address
+        /////     </param>
+        /////     <returns>returns a response string what result the process had</returns>
+        ///// </summary>
+        //public String AddDevice(String type, String name, String address, String port)
+        //{
+        //    String retStr = "";
+
+        //    int count = 1;
+        //    for (int i = 0; i < Data.Devices.Count; i++)
+        //    {
+        //        String[] devId = Data.Devices[i].Id.Split('_');
+        //        if (devId[0] == type)
+        //            count++;
+        //    }
+        //    string idparam = type + "_" + count;
+
+        //    // TODO: for testing we do not wand to add the device to XML
+        //    // XMLComponentHandler.addDeviceToXML(parameter, count);
+
+        //    Type typeObject = Type.GetType("IGS.Server.Devices." + type);
+        //    if (typeObject != null)
+        //    {
+        //        object instance = Activator.CreateInstance(typeObject, name, idparam, new List<Ball>(),
+        //                                                   address, port);
+        //        Data.AddDevice(((Device)instance));
+        //        retStr = idparam;
+
+        //        return retStr;
+        //    }
+            
+        //    return retStr;
+        //}
+
         /// <summary>
         ///     Adds a new device to the device list and updates the deviceConfiguration part of the config.xml.
         ///     <param name="parameter">
@@ -519,33 +559,16 @@ namespace IGS.Server.IGS
         {
             String retStr = "";
 
-            int count = 1;
-            for (int i = 0; i < Data.Devices.Count; i++)
+            string answer = Data.AddDevice(type, name, address, port);
+
+            if(answer != "")
             {
-                String[] devId = Data.Devices[i].Id.Split('_');
-                if (devId[0] == type)
-                    count++;
+                retStr = answer;
             }
-            string idparam = type + "_" + count;
 
-            // TODO: for testing we do not wand to add the device to XML
-            // XMLComponentHandler.addDeviceToXML(parameter, count);
-
-            Type typeObject = Type.GetType("IGS.Server.Devices." + type);
-            if (typeObject != null)
-            {
-                object instance = Activator.CreateInstance(typeObject, name, idparam, new List<Ball>(),
-                                                           address, port);
-                Data.AddDevice(((Device)instance));
-                retStr = idparam;
-
-                return retStr;
-            }
-            
             return retStr;
         }
-        
-        
+
         /// <summary>
         /// this method intializes the representation of the kinect camera used for positioning and 
         /// visualization by reading the information out of the config.xml
