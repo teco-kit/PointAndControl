@@ -292,6 +292,7 @@
     <Resource Include="Resources\HttpRoot\img\icons\Ventilator.png" />
     <Resource Include="Resources\HttpRoot\img\icons\XBox.png" />
     <Content Include="Resources\HttpRoot\css\screen.css" />
+    <Resource Include="Resources\HttpRoot\img\icons\NecLcdMonitorMultiSyncV421_1.png" />
     <Content Include="Resources\HttpRoot\js\screen.js" />
     <Content Include="Resources\HttpRoot\screen.html" />
     <Content Include="Resources\HttpRoot\img\living-lab-map.svg" />

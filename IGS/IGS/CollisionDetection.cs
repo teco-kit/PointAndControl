@@ -88,7 +88,7 @@ namespace IGS.Server.IGS
                     }
                 }
             }
-
+            
             return currDev;
         }
 

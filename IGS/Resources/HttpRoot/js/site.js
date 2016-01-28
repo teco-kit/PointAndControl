@@ -334,7 +334,7 @@ var activateGestureControl = function () {
 
         if (data.success) {
             vibrate(500);
-            $(':mobile-pagecontainer').pagecontainer('change', '#interaction');
+            $(':mobile-pagecontainer').pagecontainer('change', '#point');
         }
     });
 }
