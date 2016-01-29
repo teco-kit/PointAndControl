@@ -294,12 +294,12 @@ namespace IGS.Server.IGS
             {
                 if (getDeviceType(dev).Equals("Plugwise"))
                 {
-                    splitted = dev.CommandString.Split('/',
+                    splitted = dev.commandString.Split('/',
                         ':');
 
                     String newCommandString = input + splitted[6];
 
-                    dev.CommandString = newCommandString;
+                    dev.commandString = newCommandString;
                 }
             }
 

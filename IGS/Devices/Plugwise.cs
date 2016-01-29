@@ -30,7 +30,7 @@ namespace IGS.Server.Devices
             connection = new Http(Convert.ToInt32(port), "127.0.0.1");
             _commandString += address;
 
-            CommandString = _commandString;
+            commandString = _commandString;
         }
 
         /// <summary>
@@ -54,11 +54,11 @@ namespace IGS.Server.Devices
             {
 
                 case "on":
-                    if (connection.Send(CommandString + "/on").StartsWith("{\n  \"plugwise\": {\n    \"state\":"))
+                    if (connection.Send(commandString + "/on").StartsWith("{\n  \"plugwise\": {\n    \"state\":"))
                         response = "true";
                     break;
                 case "off":
-                    if (connection.Send(CommandString + "/off").StartsWith("{\n  \"plugwise\": {\n    \"state\":"))
+                    if (connection.Send(commandString + "/off").StartsWith("{\n  \"plugwise\": {\n    \"state\":"))
                         response = "true";
                     break;
             }

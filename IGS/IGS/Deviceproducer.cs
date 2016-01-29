@@ -11,12 +11,14 @@ namespace IGS.IGS
         public Device produceDevice(string type, string name, string address, string port, List<Device> devices)
         {
             int count = 0;
-            for (int i = 0; i < devices.Count; i++)
+
+            foreach(Device dev in devices)
             {
-                String[] devId = devices[i].Id.Split('_');
-                if (devId[0] == type)
+                string devType = getDeviceType(dev);
+                if (devType == type)
                     count++;
             }
+
             string idparam = type + "_" + count;
 
             // TODO: for testing we do not wand to add the device to XML
@@ -30,6 +32,12 @@ namespace IGS.IGS
                 return ((Device)instance);
             }
             return null;
+        }
+
+        public string getDeviceType(Device dev)
+        {
+            string[] split = dev.GetType().ToString().Split('.');
+            return split[split.Length - 1];
         }
     }
 }

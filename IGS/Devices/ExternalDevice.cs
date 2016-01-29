@@ -12,7 +12,7 @@ namespace IGS.Devices
         public ExternalDevice(String name, String id, List<Ball> form, String address, String port) : base(name, id, form)
         {
             connection = new Http(Convert.ToInt32(port), address);
-            CommandString = "";
+            commandString = "";
         }
 
         public override string Transmit(string cmdId, string value)

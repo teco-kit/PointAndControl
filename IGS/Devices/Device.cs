@@ -34,6 +34,13 @@ namespace IGS.Server.Devices
         ///     <returns>Returns the name of the device</returns>
         public String Name { get; set; }
 
+        ///     The ID of the device.
+        ///     With the "set"-method the ID of the device can be set.
+        ///     With the "get"-method the ID of the device can be returned.
+        ///     <returns>Returns the ID of the device</returns>
+        public String Id { get; set; }
+
+        public String path { get; set; }
         /// <summary>
         ///     Die Form des Geräts wird durch einen oder mehrere Ballkörper,
         ///     welche in einer Liste gespeichert werden, dargestellt.
@@ -41,21 +48,24 @@ namespace IGS.Server.Devices
         ///     Mit der "get"-Methode kann die Liste zurückgegeben werden.
         ///     <returns>Gibt die Liste der Bälle zurück.</returns>
         /// </summary>
-        public List<Ball> Form { get; set; }
+        /// 
+        public Connection connection { get; set; }
 
-        ///     The ID of the device.
-        ///     With the "set"-method the ID of the device can be set.
-        ///     With the "get"-method the ID of the device can be returned.
-        ///     <returns>Returns the ID of the device</returns>
-        public String Id { get; set; }
-
-        public String CommandString { get; set; }
 
         public String address { get; set; }
 
         public String port { get; set; }
 
-        public Connection connection { get; set; }
+        public String commandString { get; set; }
+
+        public List<Ball> Form { get; set; }
+
+      
+
+
+
+
+        
 
 
         /// <summary>
