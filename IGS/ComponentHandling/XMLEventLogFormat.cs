@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
@@ -13,10 +15,13 @@ namespace IGS.ComponentHandling
     {
         private string logPath;
         private const string FILE_ENDING = ".xml";
+        private Stopwatch timeoutTimer { get; set; }
+
 
         public XMLEventLogFormat(string lPath)
         {
             logPath = lPath;
+            timeoutTimer = new Stopwatch(); 
         }
 
         public List<EventLogger.logEntry> read()
@@ -92,9 +97,45 @@ namespace IGS.ComponentHandling
 
             root.AppendChild(newEntry);
 
-            docConfig.Save(logPath + FILE_ENDING);
+            bool writeSuccess = false;
+            bool writeFailure = false;
+
+            while (writeSuccess == false && writeFailure == false)
+            {
+                writeSuccess = trySave(docConfig);
+                if (writeSuccess == false && !timeoutTimer.IsRunning == false)
+                {
+                    timeoutTimer.Start();
+                }
+                else if (writeSuccess == false && timeoutTimer.IsRunning == true && timeoutTimer.ElapsedMilliseconds > 2000)
+                {
+                    writeFailure = true;
+                }
+            }
+
+            timeoutTimer.Reset();
+
+            if (writeFailure == true)
+            {
+                //handle a failure behavor
+                Console.WriteLine("Log locked for 2 seconds");
+                return false;
+            }
 
             return true;
+        }
+
+
+        private bool trySave(XmlDocument docConfig)
+        {
+            try
+            {
+                docConfig.Save(logPath + FILE_ENDING);
+                return true;
+            } catch (IOException)
+            {
+                return false;
+            }
         }
     }
 }
