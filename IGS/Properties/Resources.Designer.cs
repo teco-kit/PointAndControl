@@ -152,6 +152,15 @@ namespace IGS.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No IP and Port given for communication. Device not created.
+        /// </summary>
+        internal static string IPPortMissing {
+            get {
+                return ResourceManager.GetString("IPPortMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No Coordinates added.
         /// </summary>
         internal static string NoCoordAdded {
@@ -211,6 +220,15 @@ namespace IGS.Properties {
         internal static string NoUserInImage {
             get {
                 return ResourceManager.GetString("NoUserInImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to For that command values are needed, but not transmitted.
+        /// </summary>
+        internal static string NoValues {
+            get {
+                return ResourceManager.GetString("NoValues", resourceCulture);
             }
         }
         
@@ -301,6 +319,15 @@ namespace IGS.Properties {
         internal static string UnknownError {
             get {
                 return ResourceManager.GetString("UnknownError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Needed Parameter for the request not found: {0}.
+        /// </summary>
+        internal static string WrongParameter {
+            get {
+                return ResourceManager.GetString("WrongParameter", resourceCulture);
             }
         }
     }

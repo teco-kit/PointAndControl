@@ -78,7 +78,7 @@ namespace IGS.Server.Devices
 
         public String[] splitPathToIPAndPort()
         {
-            String ipAndPortPattern = "[1-9]{1,3}[.]{1}[0-9]{1,3}[.]{1}[0-9]{1,3}[.]{1}[1-9]{0,9}[:]{1}[0-9]{1,5}";
+            String ipAndPortPattern = "[1-9]{1,3}[.]{1}[0-9]{1,3}[.]{1}[0-9]{1,3}[.]{1}[1-9]{0,3}[:]{1}[0-9]{1,5}";
 
             Regex regex = new Regex(ipAndPortPattern);
 
@@ -87,6 +87,15 @@ namespace IGS.Server.Devices
             String[] ipAndPort = ipPort.Split(':');
 
             return ipAndPort;
+        }
+
+        public static bool checkForIpAndPort(String s)
+        {
+            String ipAndPortPattern = "[1-9]{1,3}[.]{1}[0-9]{1,3}[.]{1}[0-9]{1,3}[.]{1}[1-9]{0,3}[:]{1}[0-9]{1,5}";
+            Regex regex = new Regex(ipAndPortPattern);
+
+            return regex.IsMatch(s);
+
         }
     }
 }

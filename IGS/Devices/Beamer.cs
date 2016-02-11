@@ -12,27 +12,11 @@ namespace IGS.Server.Devices
         private readonly String _commandString;
 
         /// <summary>
-        ///     Constructor of a beamer object.
-        ///     <param name="id">ID of the object for identifying it</param>
-        ///     <param name="name">Userdefined name of the device</param>
-        ///     <param name="form">Shape of the device in the room</param>
-        ///     <param name="address">IP-adress of the device</param>
-        ///     <param name="port">Port of the device</param>
-        /// </summary>
-        //public Beamer(String name, String id, List<Ball> form, String address, String port)
-        //    : base(name, id, form)
-        //{
-        //    connection = new Http(Convert.ToInt32(port), address);
-
-        //}
-
-        /// <summary>
         ///     Constructor of a boxee object.
         ///     <param name="id">ID of the object for identifying it</param>
         ///     <param name="name">Userdefined name of the device</param>
         ///     <param name="form">Shape of the device in the room</param>
-        ///     <param name="address">IP-adress of the device</param>
-        ///     <param name="port">Port of the device</param>
+        ///     <param name="path">The Path to communicate with the device</param>  
         /// </summary>
         public Beamer(String name, String id, List<Ball> form, String path)
             : base(name, id, path, form)

@@ -17,29 +17,11 @@ namespace IGS.Server.Devices
             private readonly String _absolutePathToKodi = "C:\\Program Files (x86)\\Kodi\\Kodi.exe"; //TODO: this is not nice;
 
             /// <summary>
-            ///     Constructor of a XBMC object.
-            ///     <param name="id">ID of the object for identifying it</param>
-            ///     <param name="name">Userdefined name of the device</param>
-            ///     <param name="form">Shape of the device in the room</param>
-            ///     <param name="address">IP-adress of the device</param>
-            ///     <param name="port">Port of the device</param>
-            /// </summary>
-            //public Kodi(String name, String id, List<Ball> form,String address,String port)
-            //    : base(name, id, form)
-            //{
-            //    this.address = address;
-            //    this.port = port;
-            //    connection = new Http(Convert.ToInt32(port), address);
-            //    this._commandString = "http://" + connection.Ip + ":" + connection.Port + "/jsonrpc?request=";
-            //}
-
-            /// <summary>
             ///     Constructor of a boxee object.
             ///     <param name="id">ID of the object for identifying it</param>
             ///     <param name="name">Userdefined name of the device</param>
             ///     <param name="form">Shape of the device in the room</param>
-            ///     <param name="address">IP-adress of the device</param>
-            ///     <param name="port">Port of the device</param>
+            ///     <param name="path">The Path to communicate with the device</param>       
             /// </summary>
             public Kodi(String name, String id, List<Ball> form, String path)
                 : base(name, id, path, form)

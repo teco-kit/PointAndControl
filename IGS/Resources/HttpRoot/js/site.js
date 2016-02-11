@@ -35,7 +35,10 @@ var toast = function (msg) {
 }
 
 var logMessage = function (message) {
-    $.getJSON('/?dev=server&cmd=log&val=' + message, function (data) { });
+	
+	var value = {"logMSG":message};
+	
+    $.getJSON('/?dev=server&cmd=log&val=' + JSON.stringify(value), function (data) { });
 }
 
 var updateProgressBar = function (curVectors, minVectors) {
@@ -104,8 +107,10 @@ var changeDevicePosition = function (deviceId) {
 var addDeviceFromList = function () {
     if ($('#newdevicedd').val() == "")
         return;
-
-    $.getJSON('/?dev=server&cmd=addDeviceFromList&val=' + $('#newdevicedd').val() + ':' + $('#newdevicename').val(), function (data) {
+	
+	var value ={"Id":$('#newdevicedd').val(), "Name":$('#newdevicename').val()};
+	
+    $.getJSON('/?dev=server&cmd=addDeviceFromList&val=' + JSON.stringify(value), function (data) {
 
         if (!data) {
             return;
@@ -125,8 +130,9 @@ var addDeviceFromList = function () {
 var clearDeviceVectors = function () {
     if (editDevice == "")
         return;
-
-    $.getJSON('/?dev=server&cmd=resetDeviceVectorList&val=' + editDevice, function (data) {
+	var value = {"Id":editDevice};
+	
+    $.getJSON('/?dev=server&cmd=resetDeviceVectorList&val=' + JSON.stringify(value), function (data) {
 
         if (!data) {
             return;
@@ -151,7 +157,9 @@ var addDeviceVector = function () {
     if (editDevice == "")
         return;
 
-    $.getJSON('/?dev=server&cmd=addDeviceVector&val=' + editDevice, function (data) {
+	var value = {"Id":editDevice};
+	
+    $.getJSON('/?dev=server&cmd=addDeviceVector&val=' + JSON.stringify(value), function (data) {
 
         if (!data) {
             return;
@@ -180,7 +188,9 @@ var saveDevicePosition = function () {
     if (editDevice == "")
         return;
 
-    $.getJSON('/?dev=server&cmd=setDevicePosition&val=' + editDevice, function (data) {
+	var value = {"Id":editDevice};
+	
+    $.getJSON('/?dev=server&cmd=setDevicePosition&val=' + JSON.stringify(value), function (data) {
 
         if (!data) {
             return;
@@ -334,7 +344,7 @@ var activateGestureControl = function () {
 
         if (data.success) {
             vibrate(500);
-            $(':mobile-pagecontainer').pagecontainer('change', '#interaction');
+            $(':mobile-pagecontainer').pagecontainer('change', '#point');
         }
     });
 }

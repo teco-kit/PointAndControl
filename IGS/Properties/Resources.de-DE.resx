@@ -201,4 +201,10 @@ Befehl konnte nicht ausgeführt werden</value>
   <data name="SameDevIDEx" xml:space="preserve">
     <value>Ein Gerät mit der übergebenen oder erstellten ID existiert bereits</value>
   </data>
+  <data name="IPPortMissing" xml:space="preserve">
+    <value>Es wurde keine IP und Port übergeben. Geräteerstellung fehlgeschlagen</value>
+  </data>
+  <data name="NoValues" xml:space="preserve">
+    <value>Für diesen Befehl werden weitere Werte benötigt, die jedoch nicht übermittelt wurden</value>
+  </data>
 </root>

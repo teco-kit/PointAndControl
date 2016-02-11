@@ -199,4 +199,13 @@ Command could not be executed</value>
   <data name="SameDevIDEx" xml:space="preserve">
     <value>A device with the given or created Device ID does already exist</value>
   </data>
+  <data name="IPPortMissing" xml:space="preserve">
+    <value>No IP and Port given for communication. Device not created</value>
+  </data>
+  <data name="NoValues" xml:space="preserve">
+    <value>For that command values are needed, but not transmitted</value>
+  </data>
+  <data name="WrongParameter" xml:space="preserve">
+    <value>Needed Parameter for the request not found: {0}</value>
+  </data>
 </root>

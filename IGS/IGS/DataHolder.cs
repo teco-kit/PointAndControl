@@ -62,10 +62,10 @@ namespace IGS.Server.IGS
 
             //TODO: this is testing only
             // create a list of devices to add to the system
-            //_newDevices.Add(new Kodi("MediaCenter", "", "Kodi_0", null, "127.0.0.1", "8081"));
-            //_newDevices.Add(new Plugwise("Ventilator", "Plugwise_0", null, "127.0.0.1", "8080"));
-            //_newDevices.Add(new Plugwise("Stehlampe", "Plugwise_1", null, "127.0.0.1", "8080"));
-            //_newDevices.Add(new Boxee("XBox", "Boxee_0", null, "127.0.0.1", "8080"));
+            //_newDevices.Add(new Kodi("MediaCenter", "Kodi_0", null, "127.0.0.1:8081"));
+            //_newDevices.Add(new Plugwise("Ventilator", "Plugwise_0", null, "127.0.0.1:8080"));
+            //_newDevices.Add(new Plugwise("Stehlampe", "Plugwise_1", null, "127.0.0.1:8080"));
+            //_newDevices.Add(new Boxee("XBox", "Boxee_0", null, "127.0.0.1:8080"));
 
             _users = new List<User>();
             logger = eventLogger;
@@ -230,35 +230,20 @@ namespace IGS.Server.IGS
             return true;
         }
 
-        //public string AddDevice(string type, string name, string address, string port)
-        //{
-        //    Device newDevice = devProducer.produceDevice(type, name, address, port, _devices);
-
-        //    if (checkForSameDevID(newDevice.Id))
-        //        return "";
-
-        //    checkAndWriteColorForNewDevice(newDevice);
-        //    _devices.Add(newDevice);
-        //    _deviceStorageHandling.addDevice(newDevice);
-        //    return newDevice.Id;
-        //}
-
         public string AddDevice(string type, string id, string name, string path)
         {
-            if(type == "externalDevice" && id != "")
-            {
-                return "Id zu externalDevice fehlt"; // temporary errorhandlig for coding
-            }
+
+            if (checkForSameDevID(id))
+                return Properties.Resources.SameDevIDEx;
+
+            if (!Device.checkForIpAndPort(path) && type != "ExternalDevice")
+                return Properties.Resources.UnknownError;
+
             Device newDevice = devProducer.produceDevice(type, id, name, path, _devices);
 
             if (newDevice == null)
-            {
                 return Properties.Resources.UnknownError;
-            }
-            else if (checkForSameDevID(newDevice.Id))
-            {
-                return Properties.Resources.SameDevIDEx;
-            }
+            
 
             checkAndWriteColorForNewDevice(newDevice);
             _devices.Add(newDevice);
@@ -332,6 +317,7 @@ namespace IGS.Server.IGS
             string completeAdr = _environmentHandler.getPWAdress();
             change_PlugWise_Adress(completeAdr);
             logger.enqueueEntry(String.Format("New PlugwiseAdress: {0}", completeAdr));
+            
         }
 
         public Color pickRandomColor()
@@ -395,7 +381,7 @@ namespace IGS.Server.IGS
             return false;
         }
 
-        public string getDeviceType(Device dev)
+        public static string getDeviceType(Device dev)
         {
             string[] split = dev.GetType().ToString().Split('.');
             return split[split.Length - 1];
