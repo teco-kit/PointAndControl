@@ -56,22 +56,18 @@
                      TextWrapping="Wrap" Height="30" />
             <TextBox x:Name="deviceIdentifier" Margin="26,100,124,509" Grid.Row="1"
                      TextWrapping="Wrap" Height="30" />
-            <TextBox x:Name="DeviceAdress" Margin="26,135,124,474" Grid.Row="1"
+            <TextBox x:Name="DevicePath" Margin="26,135,124,474" Grid.Row="1"
                      TextWrapping="Wrap" Height="30" />
-            <TextBox x:Name="DevicePort" Margin="26,170,124,439" Grid.Row="1"
-                     TextWrapping="Wrap"
-                     RenderTransformOrigin="-0.125,4.087" Height="30" />
             <Button x:Name="CreateDeviceButton" Content="Create Device"
                     Margin="26,205,123,403" Grid.Row="1"
                     Click="CreateDeviceButton_Click"/>
             <Label x:Name="IgsControl" Content="IGS Control" Margin="25,10,22,10" RenderTransformOrigin="-0.553,0.115"
                    FontSize="18" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch" />
             <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Left" Height="639"
-                    VerticalAlignment="Top" Width="275" Margin="-5,0,0,0" Grid.Row="1" />
+                    VerticalAlignment="Top" Width="275" Margin="0,71,-5,0" Grid.RowSpan="2" />
             <Label x:Name="Type_Label" Content="Typ" HorizontalAlignment="Left" Margin="157,65,0,0" Grid.Row="1" VerticalAlignment="Top" Width="98" Height="28"/>
             <Label x:Name="Name_Label" Content="Name" HorizontalAlignment="Left" Margin="157,100,0,0" Grid.Row="1" VerticalAlignment="Top" Width="98" Height="28"/>
-            <Label x:Name="Adresse_Label" Content="Adresse" HorizontalAlignment="Left" Margin="157,135,0,0" Grid.Row="1" VerticalAlignment="Top" Width="98" Height="28"/>
-            <Label x:Name="Port_Label" Content="Port" HorizontalAlignment="Left" Margin="157,170,0,0" Grid.Row="1" VerticalAlignment="Top" Width="98" Height="28"/>
+            <Label x:Name="Adresse_Label" Content="Path" HorizontalAlignment="Left" Margin="157,135,0,0" Grid.Row="1" VerticalAlignment="Top" Width="98" Height="28"/>
             <TextBox x:Name="Plugwise_host" Margin="26,437,123,172" Grid.Row="1"
             	TextWrapping="Wrap"
             	RenderTransformOrigin="-0.125,4.087" Height="30" />

@@ -1,26 +1,44 @@
 ﻿using IGS.Server.Devices;
 using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace IGS.IGS
 {
     class Deviceproducer
     {
+        private readonly List<String> internalDevices = new List<string>{ "Boxee", "Beamer", "Kodi", "Plugwise", "XBMCv11", "NecLcdMonitorMultiSyncV421" };
         public Deviceproducer() { }
 
-        public Device produceDevice(string type, string name, string address, string port, List<Device> devices)
+
+        public Device produceDevice(string type, string id, string name, string path, List<Device> devices)
         {
-            int count = 0;
-
-            foreach(Device dev in devices)
+            int count = 1;
+         
+            string idparam = "";
+            if (type != "ExternalDevice" && id == "")
             {
-                string devType = getDeviceType(dev);
-                if (devType == type)
-                    count++;
+                foreach (Device dev in devices)
+                {
+                    string devType = getDeviceType(dev);
+                    if (devType == type)
+                        count++;
+                }
+                idparam = type + "_" + count;
             }
-
-            string idparam = type + "_" + count;
-
+            else if (type == "ExternalDevice")
+            {
+                if(id == "")
+                {
+                    idparam = id;
+                } else
+                {
+                    //generateExternalDevice ID 
+                }
+            } else 
+            {
+                return null;
+            }
             // TODO: for testing we do not wand to add the device to XML
             // XMLComponentHandler.addDeviceToXML(parameter, count);
 
@@ -28,11 +46,15 @@ namespace IGS.IGS
             if (typeObject != null)
             {
                 object instance = Activator.CreateInstance(typeObject, name, idparam, new List<Ball>(),
-                                                           address, port);
+                                                           path);
                 return ((Device)instance);
             }
+
             return null;
         }
+
+        
+
 
         public string getDeviceType(Device dev)
         {

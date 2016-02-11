@@ -35,6 +35,7 @@ namespace IGS.Server.Devices
         /// </summary>
         public String Ip { get; set; }
 
+        
         /// <summary>
         ///     Sends the command in the implemented manner.
         ///     <param name="command">command which should be send</param>

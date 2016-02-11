@@ -9,6 +9,7 @@ using System.Diagnostics;
 using IGS.Classifier;
 using System.Threading;
 using IGS.ComponentHandling;
+using Newtonsoft.Json;
 
 namespace IGS.Server.IGS
 {
@@ -196,7 +197,13 @@ namespace IGS.Server.IGS
             String devId = args.Dev;
             String cmd = args.Cmd;
             String value = args.Val;
-            String[] parameters = value.Split(':');
+            //String[] parameters = value.Split(':');
+            Dictionary<String, String> parameters = deserializeValueDict(value);
+            if(parameters == null)
+            {
+                Console.WriteLine("No Values Contained"); //Temporary ErrorHandling
+            }
+
             String wlanAdr = args.ClientIp;
             String lang = args.Language;
 
@@ -310,11 +317,13 @@ namespace IGS.Server.IGS
                         break;
 
                     case "addDevice":
-                        if (parameters.Length == 4)
+                        if (parameters.Count == 4)
                         {
                             success = true;
+                            
+                            msg = AddDevice(parameters);
 
-                            msg = AddDevice(parameters[0], parameters[1], parameters[2], parameters[3]);
+                            //msg = AddDevice(parameters[0], parameters[1], parameters[2], parameters[3]);
                             break;
                         }
 
@@ -325,7 +334,8 @@ namespace IGS.Server.IGS
 
                     case "addDeviceFromList":
                         // find device in newDevices list
-                        device = Data.newDevices.Find(d => d.Id.Equals(parameters[0]));
+                        
+                        device = Data.newDevices.Find(d => d.Id.Equals(getDevIDFromDict(parameters)));
 
                         if (device != null)
                         {
@@ -333,7 +343,7 @@ namespace IGS.Server.IGS
 
                             String type = Data.getDeviceType(device);
                             //String[] type = device.Id.Split('_');
-                            String newDeviceId = AddDevice(type, parameters[1], device.address, device.port);
+                            String newDeviceId = AddDevice(type, "", getDevNameFromDict(parameters), device.Path);
 
                             // attach to return string
                             retStr += ",\"deviceId\":\"" + newDeviceId + "\"";
@@ -345,7 +355,7 @@ namespace IGS.Server.IGS
                         break;
 
                     case "resetDeviceVectorList":
-                        device = Data.getDeviceByID(parameters[0]);
+                        device = Data.getDeviceByID(getDevIDFromDict(parameters));
 
                         if (device == null)
                         {
@@ -361,7 +371,7 @@ namespace IGS.Server.IGS
                         break;
 
                     case "addDeviceVector":
-                        device = Data.getDeviceByID(parameters[0]);
+                        device = Data.getDeviceByID(getDevIDFromDict(parameters));
 
                         if (device == null)
                         {
@@ -383,7 +393,7 @@ namespace IGS.Server.IGS
                         break;
                      
                     case "setDevicePosition":
-                        device = Data.getDeviceByID(parameters[0]);
+                        device = Data.getDeviceByID(getDevIDFromDict(parameters));
 
                         if (device == null)
                         {
@@ -393,6 +403,21 @@ namespace IGS.Server.IGS
 
                         success = true;
                         msg = coreMethods.train(device);
+                        break;
+
+                    case "deleteDevice":
+
+                        device = Data.getDeviceByID(getDevIDFromDict(parameters));
+
+                        if (device == null)
+                        {
+                            msg = Properties.Resources.DevNotFoundDeletion;
+                            break;
+                        }
+
+                        msg = Data.deleteDevice(device.Id);
+                        success = true;
+
                         break;
 
                     case "popup":
@@ -438,7 +463,7 @@ namespace IGS.Server.IGS
                     default:
                         // assumes that correct device was selected
                         // executeOnlineLearning(devId, wlanAdr);
-                        retStr = Data.getDeviceByID(devId).Transmit(cmd, value);
+                        retStr = Data.getDeviceByID(devId).Transmit(cmd, getControlValueFromDict(parameters));
 
                         break;
                 }
@@ -522,16 +547,26 @@ namespace IGS.Server.IGS
         ///     </param>
         ///     <returns>returns a response string what result the process had</returns>
         /// </summary>
-        public String AddDevice(String type, String name, String address, String port)
+        public String AddDevice(String type, String ID, String name, String path)
         {
+            //TODO: make to correct format
             String retStr = "";
 
-            string answer = Data.AddDevice(type, name, address, port);
+            string answer = Data.AddDevice(type,ID, name, path);
 
             if(answer != "")
             {
                 retStr = answer;
             }
+
+            return retStr;
+        }
+
+        public String AddDevice(Dictionary<String, String> jsonVals)
+        {
+            String retStr = "";
+
+            retStr = createDeviceFromJsonValue(jsonVals);
 
             return retStr;
         }
@@ -582,6 +617,91 @@ namespace IGS.Server.IGS
 
             return controlPath;
         }
+
+        public Dictionary<String, String> deserializeValueDict(String jsonString)
+        {
+            try {
+                Dictionary<String, String> values = JsonConvert.DeserializeObject<Dictionary<String, String>>(jsonString);
+                return values;
+            } catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        public String createDeviceFromJsonValue(Dictionary<String, String> values)
+        {
+            String type;
+            String name;
+            String id;
+            String path;
+            String retStr = "";
+
+            if (values.TryGetValue("Type", out type) && 
+                values.TryGetValue("Name", out name) && 
+                values.TryGetValue("Id", out id) && 
+                values.TryGetValue("Path", out path))
+            {
+                    retStr = Data.AddDevice(type, id, name, path);
+            };
+
+            return retStr;
+        }
+
+        public String getDevIDFromDict(Dictionary<String, String> values)
+        {
+            String id;
+            if (values.TryGetValue("Id", out id))
+            {
+                return id;
+            }
+
+            return "";
+        }
+
+        public String getDevNameFromDict(Dictionary<String, String> values)
+        {
+            String name;
+
+            if (values.TryGetValue("Name", out name))
+            {
+                return name;
+            }
+
+            return "";
+        }
+
+        public String getControlValueFromDict(Dictionary<String, String> values)
+        {
+            String cntrlValue;
+
+            if(values.TryGetValue("controlValue", out cntrlValue))
+            {
+                return cntrlValue;
+            }
+
+            return "";
+        }
+
+        public String getLogMSGFromDict(Dictionary<String,String> values)
+        {
+            String logMSG;
+
+            if(values.TryGetValue("logMSG", out logMSG))
+            {
+                return logMSG;
+            }
+
+            return "";
+
+        }
+
+        public void createDevices()
+        {
+            
+        }
+
+        
     }
 
 }

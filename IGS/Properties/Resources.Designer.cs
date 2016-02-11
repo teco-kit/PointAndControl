@@ -242,6 +242,15 @@ namespace IGS.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A device with the given or created Device ID does already exist.
+        /// </summary>
+        internal static string SameDevIDEx {
+            get {
+                return ResourceManager.GetString("SameDevIDEx", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specified device not found.
         /// </summary>
         internal static string SpecifiedDeviceNotFound {

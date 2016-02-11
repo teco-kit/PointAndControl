@@ -3,6 +3,7 @@ using IGS.Server.Location;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Text.RegularExpressions;
 using System.Windows.Media.Media3D;
 
 namespace IGS.Server.Devices
@@ -20,11 +21,12 @@ namespace IGS.Server.Devices
         ///     <param name="id">id of a device.</param>
         ///     <param name="form">Shape of a device.</param>
         /// </summary>
-        protected Device(String name, String id, List<Ball> form)
+        protected Device(String name, String id, String path, List<Ball> form)
         {
             Name = name;
             Id = id;
             Form = form;
+            Path = path;
             skelPositions = new List<Point3D[]>();
         }
 
@@ -40,7 +42,7 @@ namespace IGS.Server.Devices
         ///     <returns>Returns the ID of the device</returns>
         public String Id { get; set; }
 
-        public String path { get; set; }
+        public String Path { get; set; }
         /// <summary>
         ///     Die Form des Geräts wird durch einen oder mehrere Ballkörper,
         ///     welche in einer Liste gespeichert werden, dargestellt.
@@ -51,22 +53,9 @@ namespace IGS.Server.Devices
         /// 
         public Connection connection { get; set; }
 
-
-        public String address { get; set; }
-
-        public String port { get; set; }
-
-        public String commandString { get; set; }
+        public String CommandString { get; set; }
 
         public List<Ball> Form { get; set; }
-
-      
-
-
-
-
-        
-
 
         /// <summary>
         ///     The Transmit method is responsible for the correct invocation of a function of the device
@@ -87,5 +76,17 @@ namespace IGS.Server.Devices
 
         public Color color { get; set; }
 
+        public String[] splitPathToIPAndPort()
+        {
+            String ipAndPortPattern = "[1-9]{1,3}[.]{1}[0-9]{1,3}[.]{1}[0-9]{1,3}[.]{1}[1-9]{0,9}[:]{1}[0-9]{1,5}";
+
+            Regex regex = new Regex(ipAndPortPattern);
+
+            String ipPort = regex.Match(Path).ToString();
+
+            String[] ipAndPort = ipPort.Split(':');
+
+            return ipAndPort;
+        }
     }
 }

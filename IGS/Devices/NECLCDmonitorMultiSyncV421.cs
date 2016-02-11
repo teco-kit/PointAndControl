@@ -18,21 +18,26 @@ namespace IGS.Server.Devices
     /// </summary>
     public class NecLcdMonitorMultiSyncV421 : Device
     {
-        /// <summary>
-        ///     Constructor of a LCDTV object.
-        ///     <param name="id">ID of the object for identifying it</param>
-        ///     <param name="name">Userdefined name of the device</param>
-        ///     <param name="form">Shape of the device in the room</param>
-        ///     <param name="address">IP-adress of the device</param>
-        ///     <param name="port">Port of the device</param>
-        /// </summary>
-        public NecLcdMonitorMultiSyncV421(String name, String id, List<Ball> form, String address, String port)
-            : base(name, id, form)
-        {
-            connection = new Tcp(Convert.ToInt32(port), address);
-        }
+        ///// <summary>
+        /////     Constructor of a LCDTV object.
+        /////     <param name="id">ID of the object for identifying it</param>
+        /////     <param name="name">Userdefined name of the device</param>
+        /////     <param name="form">Shape of the device in the room</param>
+        /////     <param name="address">IP-adress of the device</param>
+        /////     <param name="port">Port of the device</param>
+        ///// </summary>
+        //public NecLcdMonitorMultiSyncV421(String name, String id, List<Ball> form, String address, String port)
+        //    : base(name, id, form)
+        //{
+        //    connection = new Tcp(Convert.ToInt32(port), address);
+        //}
 
-      
+        public NecLcdMonitorMultiSyncV421(String name, String id, List<Ball> form, String path)
+            : base(name, id, path, form)
+        {
+            String[] ipAndPort = splitPathToIPAndPort();
+            connection = new Tcp(Convert.ToInt32(ipAndPort[1]), ipAndPort[0]);
+        }
 
         /// <summary>
         ///     The Transmit method is responsible for the correct invocation of a function of the LCDTV

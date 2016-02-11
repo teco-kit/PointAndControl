@@ -197,4 +197,7 @@ Command could not be executed</value>
   <data name="DevNotFoundDeletion" xml:space="preserve">
     <value>Device Not Found. Deletion failed</value>
   </data>
+  <data name="SameDevIDEx" xml:space="preserve">
+    <value>A device with the given or created Device ID does already exist</value>
+  </data>
 </root>

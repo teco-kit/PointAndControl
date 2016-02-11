@@ -268,6 +268,8 @@ namespace IGS.Server.WebServer
             }
             HttpMethod = tokens[0].ToUpper();
             HttpUrl = tokens[1].Trim('/');
+
+            Debug.WriteLine("HttpUrl: {0}", HttpUrl);
             HttpProtocolVersionstring = tokens[2];
 
             Debug.WriteLine("starting: " + request);

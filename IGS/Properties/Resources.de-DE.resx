@@ -198,4 +198,7 @@ Befehl konnte nicht ausgeführt werden</value>
   <data name="DevNotFoundDeletion" xml:space="preserve">
     <value>Gerät wurde nicht gefunden. Entfernen fehlgeschlagen</value>
   </data>
+  <data name="SameDevIDEx" xml:space="preserve">
+    <value>Ein Gerät mit der übergebenen oder erstellten ID existiert bereits</value>
+  </data>
 </root>

@@ -24,30 +24,49 @@ namespace IGS.Server.Devices
             ///     <param name="address">IP-adress of the device</param>
             ///     <param name="port">Port of the device</param>
             /// </summary>
-            public Kodi(String name, String id, List<Ball> form,String address,String port)
-                : base(name, id, form)
-            {
-                this.address = address;
-                this.port = port;
-                connection = new Http(Convert.ToInt32(port), address);
-                this._commandString = "http://" + connection.Ip + ":" + connection.Port + "/jsonrpc?request=";
-            }
+            //public Kodi(String name, String id, List<Ball> form,String address,String port)
+            //    : base(name, id, form)
+            //{
+            //    this.address = address;
+            //    this.port = port;
+            //    connection = new Http(Convert.ToInt32(port), address);
+            //    this._commandString = "http://" + connection.Ip + ":" + connection.Port + "/jsonrpc?request=";
+            //}
 
             /// <summary>
-            ///     The Transmit method is responsible for the correct invocation of a function of the XBMC
-            ///     which is implicated by the "commandID"
-            ///     <param name="cmdId">
-            ///         With the commandID the Transmit-method recieves which command
-            ///         should be send to the device (XBMC)
-            ///     </param>
-            ///     <param name="value">
-            ///         The value belonging to the command
-            ///     </param>
-            ///     <returns>
-            ///     If execution was successful
-            ///     </returns>
+            ///     Constructor of a boxee object.
+            ///     <param name="id">ID of the object for identifying it</param>
+            ///     <param name="name">Userdefined name of the device</param>
+            ///     <param name="form">Shape of the device in the room</param>
+            ///     <param name="address">IP-adress of the device</param>
+            ///     <param name="port">Port of the device</param>
             /// </summary>
-            public override String Transmit(String cmdId,String value)
+            public Kodi(String name, String id, List<Ball> form, String path)
+                : base(name, id, path, form)
+        {
+
+                String[] ipAndPort = splitPathToIPAndPort();
+                connection = new Http(Convert.ToInt32(ipAndPort[1]), ipAndPort[0]);
+
+                _commandString = path;
+            }
+
+
+        /// <summary>
+        ///     The Transmit method is responsible for the correct invocation of a function of the XBMC
+        ///     which is implicated by the "commandID"
+        ///     <param name="cmdId">
+        ///         With the commandID the Transmit-method recieves which command
+        ///         should be send to the device (XBMC)
+        ///     </param>
+        ///     <param name="value">
+        ///         The value belonging to the command
+        ///     </param>
+        ///     <returns>
+        ///     If execution was successful
+        ///     </returns>
+        /// </summary>
+        public override String Transmit(String cmdId,String value)
             {
                 if (cmdId == "on")
                 {

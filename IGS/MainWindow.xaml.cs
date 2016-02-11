@@ -746,7 +746,12 @@ public partial class MainWindow
     /// <param name="e">The MouseButtonEventArgs</param>
     private void CreateDeviceButton_Click(object sender, RoutedEventArgs e)
     {
-        _igs.AddDevice(DeviceType.Text, deviceIdentifier.Text, DeviceAdress.Text, DevicePort.Text);
+        String devType = DeviceType.Text;
+
+        if (devType == "ExternalDevice")
+            return;
+
+        _igs.AddDevice(devType,"", deviceIdentifier.Text, DevicePath.Text);
     }
 
 
