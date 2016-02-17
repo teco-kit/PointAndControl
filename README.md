@@ -30,8 +30,7 @@ You can check your system configuration for the Kinect v2 with the Configuration
 1. **Control:** You can now use the interface to control the device.
 
 ## Customize the Environment
-*General note:*	Currently the software only supports `,` as decimal separator.
-*General IGS environment note:* The environment information is stored in the internal Properties.Settings.settings.   
+*General note:*	Currently the software only supports `,` as decimal separator. 
 #### Server:
 - **Room Representation:** The coordinate system of the room [x,y,z] is based on the default system of the Kinect. This means, when looking at the front of the sensor, x is aligned from the left to the right, y from the floor to the ceiling and z in the direction of the camera. Corresponding: (width, height, depth) = (x,y,z). 
 - **Change the room measurements:** Enter the width, height, and depth of the room in the fields above the “set room” button and confirm.
@@ -50,14 +49,14 @@ You can check your system configuration for the Kinect v2 with the Configuration
   - Microsoft Kinect for Windows v.2 SDK public preview version 1409
   - .Net Framework 4.5
   - Helix toolkit (NuGet or [GitHub](https://github.com/helix-toolkit/helix-toolkit))
-  - Newtonsoft JSON.net (NuGet or [GitHub](https://github.com/JamesNK/Newtonsoft.Json))
+  - Newtonsoft Json.NET (NuGet or [GitHub](https://github.com/JamesNK/Newtonsoft.Json))
 - An empty device.txt will be created in the output folder if not present (this file will be used to save the devices).
 - The folder `Resources` contains stuff like an example device.txt and the `HttpRoot`. It is copied to the output folder during the build process.	To disable this functionality, go to: IGS Properties -> Build Events and edit the post-build event commandline.
 
 ## Licenses 
 - **3D Framework:** [Helix Toolkit](https://github.com/helix-toolkit/helix-toolkit/) [MIT License] 
 - **Webserver:** [The Code Project Open License (CPOL)](http://www.codeproject.com/info/cpol10.aspx)
-- **JSON Framework**[Newtonsoft JSON.Net] (http://www.newtonsoft.com/json)[MIT Licence]
+- **JSON Framework:** [Newtonsoft Json.NET] (http://www.newtonsoft.com/json)[MIT Licence]
 - **IGS** [MIT License]
 
 
