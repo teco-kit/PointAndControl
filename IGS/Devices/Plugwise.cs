@@ -14,24 +14,24 @@ namespace IGS.Server.Devices
     public class Plugwise : Device
     {
         private readonly String _commandString = "http://cumulus.teco.edu:5000/plugwise/";
-     
+
 
         /// <summary>
         ///     Constructor of a plugwise object.
         ///     <param name="id">ID of the object for identifying it</param>
         ///     <param name="name">Userdefined name of the device</param>
         ///     <param name="form">Shape of the device in the room</param>
-        ///     <param name="address">IP-adress of the device</param>
-        ///     <param name="port">Port of the device</param>
+        ///     <param name="path">The Path to communicate with the device</param>  
         /// </summary>
-        public Plugwise(String name, String id, List<Ball> form, String address, String port)
-            : base(name, id, form)
-        {
-            connection = new Http(Convert.ToInt32(port), "127.0.0.1");
-            _commandString += address;
 
+        public Plugwise(String name, String id, List<Ball> form, String path)
+                : base(name, id, path, form)
+            {
+            String[] ipAndPort = splitPathToIPAndPort();
+            connection = new Http(Convert.ToInt32(ipAndPort[1]), "127.0.0.1");
+            _commandString += ipAndPort[0];
             CommandString = _commandString;
-        }
+            }
 
         /// <summary>
         ///     The Transmit method is responsible for the correct invocation of a function of the plugwise 

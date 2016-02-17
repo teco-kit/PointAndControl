@@ -114,7 +114,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ComponentHandling\DeviceStorageFileHandlerJSON.cs" />
-    <Compile Include="ComponentHandling\DeviceStorageFileHandlerXML.cs" />
     <Compile Include="ComponentHandling\EnvironmentInfoHandler.cs" />
     <Compile Include="ComponentHandling\EventLogger.cs" />
     <Compile Include="ComponentHandling\EventLogWriter.cs" />
@@ -126,6 +125,7 @@
     <Compile Include="Devices\Connection.cs" />
     <Compile Include="Devices\Device.cs" />
     <Compile Include="Devices\DevKinect.cs" />
+    <Compile Include="Devices\ExternalDevice.cs" />
     <Compile Include="Devices\HTTP.cs" />
     <Compile Include="Devices\NecLcdMonitorMultiSyncV421.cs" />
     <Compile Include="Devices\Plugwise.cs" />

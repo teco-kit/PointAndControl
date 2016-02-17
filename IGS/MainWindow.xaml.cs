@@ -274,7 +274,7 @@ public partial class MainWindow
         this.imageSourceSkeleton = new DrawingImage(this._drawingGroup);
 
        
-      
+        
     }
 
     /// <summary>
@@ -388,35 +388,9 @@ public partial class MainWindow
 
                     }
 
-                    //TODO: move update logic to 3Dview
                     if (_3Dview != null)
                     {
                         _3Dview.updateSkeletons(_igs.Tracker.Bodies); 
-                    //    // check if trackedskeletons of counter == shown skeletons in 3D
-                    //    int[] notFound = new int[6];
-                    //    bool foundID = false;
-
-                    //    for (int j = 0; j < _3Dview.IDList.Count; j++)
-                    //    {
-
-                    //        for (int i = 0; i < _igs.Tracker.Bodies.Count; i++)
-                    //        {
-                    //            if (_3Dview.IDList[j] == _igs.Tracker.Bodies[i].Id)
-                    //            {
-                    //                foundID = true;
-                    //                break;
-                    //            }
-                    //        }
-
-                    //        if (foundID == false)
-                    //        {
-                    //            _3Dview.mainViewport.Children.Remove(_3Dview.skelList[j]);
-                    //            _3Dview.mainViewport.Children.Remove(_3Dview.skelRayList[j]);
-                    //            _3Dview.IDList[j] = -1;
-                    //            _3Dview.IDListNullSpaces[j] = true;
-                    //        }
-                    //        foundID = false;
-                    //    }
                     }
 
                 }
@@ -719,8 +693,6 @@ public partial class MainWindow
     /// </summary>
     private void fillFieldsGUI()
     {
-
-
         Plugwise_host.Text = _igs.Data._environmentHandler.getPWHost();
         Plugwise_port.Text = _igs.Data._environmentHandler.getPWPort();
         Plugwise_path.Text = _igs.Data._environmentHandler.getPWPath();
@@ -748,7 +720,9 @@ public partial class MainWindow
     /// <param name="e">The MouseButtonEventArgs</param>
     private void CreateDeviceButton_Click(object sender, RoutedEventArgs e)
     {
-        _igs.AddDevice(DeviceType.Text, deviceIdentifier.Text, DeviceAdress.Text, DevicePort.Text);
+        String devType = DeviceType.Text;
+
+        _igs.AddDevice(devType,"", deviceIdentifier.Text, DevicePath.Text);
     }
 
 

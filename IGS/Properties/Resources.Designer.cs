@@ -97,6 +97,24 @@ namespace IGS.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Device deleted.
+        /// </summary>
+        internal static string DevDeleted {
+            get {
+                return ResourceManager.GetString("DevDeleted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device Not Found. Deletion failed.
+        /// </summary>
+        internal static string DevNotFoundDeletion {
+            get {
+                return ResourceManager.GetString("DevNotFoundDeletion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Activation of gesturecontrol failed.
         /// </summary>
         internal static string GesturecontrolError {
@@ -130,6 +148,15 @@ namespace IGS.Properties {
         internal static string InvalidCommand {
             get {
                 return ResourceManager.GetString("InvalidCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No IP and Port given for communication. Device not created.
+        /// </summary>
+        internal static string IPPortMissing {
+            get {
+                return ResourceManager.GetString("IPPortMissing", resourceCulture);
             }
         }
         
@@ -197,6 +224,15 @@ namespace IGS.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to For that command values are needed, but not transmitted.
+        /// </summary>
+        internal static string NoValues {
+            get {
+                return ResourceManager.GetString("NoValues", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please register yourself at the system first.
         /// </summary>
         internal static string RegistrationRequest {
@@ -220,6 +256,15 @@ namespace IGS.Properties {
         internal static string RoomLeft {
             get {
                 return ResourceManager.GetString("RoomLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A device with the given or created Device ID does already exist.
+        /// </summary>
+        internal static string SameDevIDEx {
+            get {
+                return ResourceManager.GetString("SameDevIDEx", resourceCulture);
             }
         }
         
@@ -274,6 +319,15 @@ namespace IGS.Properties {
         internal static string UnknownError {
             get {
                 return ResourceManager.GetString("UnknownError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Needed Parameter for the request not found: {0}.
+        /// </summary>
+        internal static string WrongParameter {
+            get {
+                return ResourceManager.GetString("WrongParameter", resourceCulture);
             }
         }
     }

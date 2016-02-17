@@ -82,16 +82,27 @@ namespace IGS.ComponentHandling
             return devs;
         }
 
-
-        public void replaceExistingDevices(List<Device> devices)
-        {
-            writeDevicesToFile(devices);
-        }
-
         private void writeDevicesToFile(List<Device> devices)
         { 
             string devicesString = JsonConvert.SerializeObject(devices, Formatting.Indented, setting);
             File.WriteAllText(DEVICE_SAVE_PATH, devicesString);
+        }
+
+        public void deleteDevice(String id)
+        {
+            List<Device> devs = readDevices();
+
+            foreach(Device device in devs)
+            {
+                if(device.Id == id)
+                {
+                    devs.Remove(device);
+                    break;
+                }
+            }
+
+            writeDevicesToFile(devs);
+
         }
 
         

@@ -62,10 +62,10 @@ namespace IGS.Server.IGS
 
             //TODO: this is testing only
             // create a list of devices to add to the system
-            _newDevices.Add(new Kodi("MediaCenter", "Kodi_0", null, "127.0.0.1", "8081"));
-            _newDevices.Add(new Plugwise("Ventilator", "Plugwise_0", null, "127.0.0.1", "8080"));
-            _newDevices.Add(new Plugwise("Stehlampe", "Plugwise_1", null, "127.0.0.1", "8080"));
-            _newDevices.Add(new Boxee("XBox", "Boxee_0", null, "127.0.0.1", "8080"));
+            //_newDevices.Add(new Kodi("MediaCenter", "Kodi_0", null, "127.0.0.1:8081"));
+            //_newDevices.Add(new Plugwise("Ventilator", "Plugwise_0", null, "127.0.0.1:8080"));
+            //_newDevices.Add(new Plugwise("Stehlampe", "Plugwise_1", null, "127.0.0.1:8080"));
+            //_newDevices.Add(new Boxee("XBox", "Boxee_0", null, "127.0.0.1:8080"));
 
             _users = new List<User>();
             logger = eventLogger;
@@ -130,6 +130,8 @@ namespace IGS.Server.IGS
 
             User createdUser = new User(wlanAdr);
             Users.Add(createdUser);
+            Console.WriteLine("User added");
+
             return true;
         }
 
@@ -142,7 +144,6 @@ namespace IGS.Server.IGS
         /// </summary>
         public bool SetTrackedSkeleton(String wlanAdr, int bodyID)
         {
-
             foreach (User u in _users)
             {
                 if (u.WlanAdr == wlanAdr)
@@ -153,7 +154,6 @@ namespace IGS.Server.IGS
             }
 
             return false;
-
         }
 
         /// <summary>
@@ -166,8 +166,6 @@ namespace IGS.Server.IGS
         /// </summary>
         public bool DelUser(String wlanAdr)
         {
-
-
             for (int i = 0; i < _users.Count; i++)
             {
                 if (_users[i].WlanAdr == wlanAdr)
@@ -176,7 +174,6 @@ namespace IGS.Server.IGS
                     return true;
                 }
             }
-
             return false;
         }
 
@@ -208,7 +205,6 @@ namespace IGS.Server.IGS
         /// </summary>
         public User GetUserByIp(String wlanAdr)
         {
-
             foreach (User u in _users)
             {
                 if (u.WlanAdr == wlanAdr)
@@ -216,7 +212,6 @@ namespace IGS.Server.IGS
                     return u;
                 }
             }
-
             return null;
         }
 
@@ -225,30 +220,37 @@ namespace IGS.Server.IGS
         ///     Adds a given device to the device list.
         ///     <param name="dev">The device which will be added to the list.</param>
         /// </summary>
-        public void AddDevice(Device dev)
+        public bool AddDevice(Device dev)
         {
-
-            for (int i = 0; i < _devices.Count; i++)
-            {
-                if (_devices[i].Id == dev.Id)
-                {
-                    return;
-                }
-            }
+            if (checkForSameDevID(dev.Id))
+                return false;
 
             checkAndWriteColorForNewDevice(dev);
             _deviceStorageHandling.addDevice(dev);
             _devices.Add(dev);
+
+            return true;
         }
 
-        public void AddDevice(string type, string name, string address, string port)
+        public string AddDevice(string type, string id, string name, string path)
         {
-            Device newDevice = devProducer.produceDevice(type, name, address, port, _devices);
+
+            if (checkForSameDevID(id))
+                return Properties.Resources.SameDevIDEx;
+
+            if (!Device.checkForIpAndPort(path) && type != "ExternalDevice")
+                return Properties.Resources.UnknownError;
+
+            Device newDevice = devProducer.produceDevice(type, id, name, path, _devices);
+
+            if (newDevice == null)
+                return Properties.Resources.UnknownError;
+            
 
             checkAndWriteColorForNewDevice(newDevice);
             _devices.Add(newDevice);
             _deviceStorageHandling.addDevice(newDevice);
-
+            return newDevice.Id;
         }
         /// <summary>
         ///     Returns a device with its id.
@@ -267,7 +269,6 @@ namespace IGS.Server.IGS
                     return dev;
                 }
             }
-
             return null;
         }
 
@@ -279,7 +280,6 @@ namespace IGS.Server.IGS
         /// </summary>
         public bool DelTrackedSkeleton(int id)
         {
-
             foreach (User u in _users)
             {
                 if (u.SkeletonId == id)
@@ -288,9 +288,7 @@ namespace IGS.Server.IGS
                     return true;
                 }
             }
-
             return false;
-
         }
 
         /// <summary>
@@ -302,28 +300,26 @@ namespace IGS.Server.IGS
 
             String[] splitted;
 
-            for (int i = 0; i < _devices.Count; i++)
+            foreach(Device dev in Devices)
             {
-                if (_devices[i].Id.Contains("Plugwise"))
+                if (getDeviceType(dev).Equals("Plugwise"))
                 {
-                    splitted = _devices[i].CommandString.Split('/',
+                    splitted = dev.CommandString.Split('/',
                         ':');
 
                     String newCommandString = input + splitted[6];
 
-                    _devices[i].CommandString = newCommandString;
+                    dev.CommandString = newCommandString;
                 }
             }
-
-
         }
 
         public void change_PlugWise_Adress(string host, string port, string path)
         {
-            
             string completeAdr = _environmentHandler.getPWAdress();
             change_PlugWise_Adress(completeAdr);
             logger.enqueueEntry(String.Format("New PlugwiseAdress: {0}", completeAdr));
+            
         }
 
         public Color pickRandomColor()
@@ -355,13 +351,8 @@ namespace IGS.Server.IGS
 
         public void checkAndWriteColorForNewDevice(Device dev)
         {
-            foreach (Device d in Devices)
-            {
-                if (d.Name.Equals(dev.Name))
-                {
-                    return;
-                }
-            }
+            if (checkForSameDevID(dev.Id))
+                return;
 
             dev.color = pickRandomColor();
 
@@ -379,6 +370,42 @@ namespace IGS.Server.IGS
             Ball coord = new Ball(wrist, double.Parse(radius));
             this.getDeviceByID(devId).Form.Add(coord);
             return _deviceStorageHandling.addDeviceCoord(devId, coord);
+        }
+
+        private bool checkForSameDevID(String id)
+        {
+            foreach(Device d in Devices)
+            {
+                if (d.Id == id)
+                    return true;
+            }
+
+            return false;
+        }
+
+        public static string getDeviceType(Device dev)
+        {
+            string[] split = dev.GetType().ToString().Split('.');
+            return split[split.Length - 1];
+        }
+
+        public string deleteDevice(String id)
+        {
+            String retStr = Properties.Resources.DevNotFoundDeletion;
+            
+            foreach(Device d in Devices)
+            {
+                if (d.Id == id)
+                {
+                    _deviceStorageHandling.deleteDevice(d.Id);
+                    Devices.Remove(d);
+                    retStr = Properties.Resources.DevDeleted;
+                    break;
+                }
+            }
+
+            return retStr;
+
         }
     }
 }

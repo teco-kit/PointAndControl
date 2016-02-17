@@ -4,38 +4,45 @@
     {
       "$type": "IGS.Server.Devices.NecLcdMonitorMultiSyncV421, IGS",
       "Name": "TV",
-      "Form": {
-        "$type": "System.Collections.Generic.List`1[[IGS.Server.Devices.Ball, IGS]], mscorlib",
-        "$values": [
-          {
-            "$type": "IGS.Server.Devices.Ball, IGS",
-            "Center": "3.88,1.44,0.26",
-            "Radius": 0.4
-          }
-        ]
-      },
       "Id": "NecLcdMonitorMultiSyncV421_1",
-      "CommandString": null,
-      "address": null,
-      "port": null,
+      "Path": "129.13.169.178:7142",
       "connection": {
         "$type": "IGS.Server.Devices.Tcp, IGS",
         "Port": 7142,
         "Ip": "129.13.169.178"
       },
+      "CommandString": null,
+      "Form": {
+        "$type": "System.Collections.Generic.List`1[[IGS.Server.Devices.Ball, IGS]], mscorlib",
+        "$values": [
+		  {	
+            "$type": "IGS.Server.Devices.Ball, IGS",
+            "Center": "3.88,1.44,0.26",
+            "Radius": 0.4
+          }
+		]
+      },
       "skelPositions": {
         "$type": "System.Collections.Generic.List`1[[System.Windows.Media.Media3D.Point3D[], PresentationCore]], mscorlib",
         "$values": []
       },
-      "color": "ButtonFace"
+      "color": "Gray"
     },
     {
       "$type": "IGS.Server.Devices.Boxee, IGS",
       "Name": "Hifi",
+      "Id": "Boxee_1",
+      "Path": "192.168.1.1:5050",
+      "connection": {
+        "$type": "IGS.Server.Devices.Http, IGS",
+        "Port": 5050,
+        "Ip": "192.168.1.1"
+      },
+      "CommandString": null,
       "Form": {
         "$type": "System.Collections.Generic.List`1[[IGS.Server.Devices.Ball, IGS]], mscorlib",
         "$values": [
-          {
+		   {
             "$type": "IGS.Server.Devices.Ball, IGS",
             "Center": "4.91,1.93,0.26",
             "Radius": 0.09
@@ -45,142 +52,137 @@
             "Center": "2.49,1.93,0.26",
             "Radius": 0.09
           }
-        ]
-      },
-      "Id": "Boxee_1",
-      "CommandString": null,
-      "address": null,
-      "port": null,
-      "connection": {
-        "$type": "IGS.Server.Devices.Http, IGS",
-        "Port": 5050,
-        "Ip": "192.168.1.1"
+		  ]
       },
       "skelPositions": {
         "$type": "System.Collections.Generic.List`1[[System.Windows.Media.Media3D.Point3D[], PresentationCore]], mscorlib",
         "$values": []
       },
-      "color": "ActiveCaption"
+      "color": "GrayText"
     },
     {
       "$type": "IGS.Server.Devices.Boxee, IGS",
       "Name": "XBox",
+      "Id": "Boxee_2",
+      "Path": "192.168.1.1:5050",
+      "connection": {
+        "$type": "IGS.Server.Devices.Http, IGS",
+        "Port": 5050,
+        "Ip": "192.168.1.1"
+      },
+      "CommandString": null,
       "Form": {
         "$type": "System.Collections.Generic.List`1[[IGS.Server.Devices.Ball, IGS]], mscorlib",
         "$values": [
-          {
+		  {
             "$type": "IGS.Server.Devices.Ball, IGS",
             "Center": "3.56,0.22,0.25",
             "Radius": 0.14
           }
-        ]
-      },
-      "Id": "Boxee_2",
-      "CommandString": null,
-      "address": null,
-      "port": null,
-      "connection": {
-        "$type": "IGS.Server.Devices.Http, IGS",
-        "Port": 5050,
-        "Ip": "192.168.1.1"
+		]
       },
       "skelPositions": {
         "$type": "System.Collections.Generic.List`1[[System.Windows.Media.Media3D.Point3D[], PresentationCore]], mscorlib",
         "$values": []
       },
-      "color": "CornflowerBlue"
+      "color": "SeaShell"
     },
     {
       "$type": "IGS.Server.Devices.Boxee, IGS",
       "Name": "PC",
-      "Form": {
-        "$type": "System.Collections.Generic.List`1[[IGS.Server.Devices.Ball, IGS]], mscorlib",
-        "$values": [
-          {
-            "$type": "IGS.Server.Devices.Ball, IGS",
-            "Center": "4.01,0.22,0.3",
-            "Radius": 0.2
-          }
-        ]
-      },
       "Id": "Boxee_3",
-      "CommandString": null,
-      "address": null,
-      "port": null,
+      "Path": "192.168.1.1:5050",
       "connection": {
         "$type": "IGS.Server.Devices.Http, IGS",
         "Port": 5050,
         "Ip": "192.168.1.1"
       },
+      "CommandString": null,
+      "Form": {
+        "$type": "System.Collections.Generic.List`1[[IGS.Server.Devices.Ball, IGS]], mscorlib",
+        "$values": [
+		  {
+            "$type": "IGS.Server.Devices.Ball, IGS",
+            "Center": "4.01,0.22,0.3",
+            "Radius": 0.2
+          }
+		]
+      },
       "skelPositions": {
         "$type": "System.Collections.Generic.List`1[[System.Windows.Media.Media3D.Point3D[], PresentationCore]], mscorlib",
         "$values": []
       },
-      "color": "Aquamarine"
+      "color": "Honeydew"
     },
     {
       "$type": "IGS.Server.Devices.Plugwise, IGS",
       "Name": "Plug",
+      "Id": "Plugwise_1",
+      "Path": "192.168.1.1:5050",
+      "connection": {
+        "$type": "IGS.Server.Devices.Http, IGS",
+        "Port": 5050,
+        "Ip": "127.0.0.1"
+      },
+      "CommandString": "http://cumulus.teco.edu:5000/plugwise/192.168.1.1",
       "Form": {
         "$type": "System.Collections.Generic.List`1[[IGS.Server.Devices.Ball, IGS]], mscorlib",
         "$values": [
-          {
+		  {
             "$type": "IGS.Server.Devices.Ball, IGS",
             "Center": "6.35,0.74,1.3",
             "Radius": 0.07
           }
-        ]
-      },
-      "Id": "Plugwise_1",
-      "CommandString": "http://cumulus.teco.edu:5000/plugwise/192.168.1.1",
-      "address": null,
-      "port": null,
-      "connection": {
-        "$type": "IGS.Server.Devices.Http, IGS",
-        "Port": 5050,
-        "Ip": "127.0.0.1"
+		]
       },
       "skelPositions": {
         "$type": "System.Collections.Generic.List`1[[System.Windows.Media.Media3D.Point3D[], PresentationCore]], mscorlib",
         "$values": []
       },
-      "color": "LightBlue"
+      "color": "MistyRose"
     },
     {
       "$type": "IGS.Server.Devices.Plugwise, IGS",
-      "Name": "Readinglamp",
+      "Name": "ReadingLamp",
+      "Id": "Plugwise_2",
+      "Path": "192.168.1.1:5050",
+      "connection": {
+        "$type": "IGS.Server.Devices.Http, IGS",
+        "Port": 5050,
+        "Ip": "127.0.0.1"
+      },
+      "CommandString": "http://cumulus.teco.edu:5000/plugwise/192.168.1.1",
       "Form": {
         "$type": "System.Collections.Generic.List`1[[IGS.Server.Devices.Ball, IGS]], mscorlib",
         "$values": [
-          {
+		  {
             "$type": "IGS.Server.Devices.Ball, IGS",
             "Center": "5,0.9,3.3",
             "Radius": 0.15
           }
-        ]
-      },
-      "Id": "Plugwise_2",
-      "CommandString": "http://cumulus.teco.edu:5000/plugwise/192.168.1.1",
-      "address": null,
-      "port": null,
-      "connection": {
-        "$type": "IGS.Server.Devices.Http, IGS",
-        "Port": 5050,
-        "Ip": "127.0.0.1"
+		]
       },
       "skelPositions": {
         "$type": "System.Collections.Generic.List`1[[System.Windows.Media.Media3D.Point3D[], PresentationCore]], mscorlib",
         "$values": []
       },
-      "color": "CadetBlue"
+      "color": "White"
     },
     {
       "$type": "IGS.Server.Devices.Plugwise, IGS",
       "Name": "Roomlighting",
+      "Id": "Plugwise_3",
+      "Path": "192.168.1.1:5050",
+      "connection": {
+        "$type": "IGS.Server.Devices.Http, IGS",
+        "Port": 5050,
+        "Ip": "127.0.0.1"
+      },
+      "CommandString": "http://cumulus.teco.edu:5000/plugwise/192.168.1.1",
       "Form": {
         "$type": "System.Collections.Generic.List`1[[IGS.Server.Devices.Ball, IGS]], mscorlib",
         "$values": [
-          {
+		  {
             "$type": "IGS.Server.Devices.Ball, IGS",
             "Center": "3.32,2.69,2.22",
             "Radius": 0.75
@@ -190,22 +192,13 @@
             "Center": "1.26,2.69,2.22",
             "Radius": 0.04
           }
-        ]
-      },
-      "Id": "Plugwise_3",
-      "CommandString": "http://cumulus.teco.edu:5000/plugwise/192.168.1.1",
-      "address": null,
-      "port": null,
-      "connection": {
-        "$type": "IGS.Server.Devices.Http, IGS",
-        "Port": 5050,
-        "Ip": "127.0.0.1"
+		]
       },
       "skelPositions": {
         "$type": "System.Collections.Generic.List`1[[System.Windows.Media.Media3D.Point3D[], PresentationCore]], mscorlib",
         "$values": []
       },
-      "color": "DarkOliveGreen"
+      "color": "Purple"
     }
   ]
 }
