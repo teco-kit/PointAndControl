@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IGS.Devices
+namespace IGS.Server.Devices
 {
     class ExternalDevice : Device
     {
@@ -20,10 +20,7 @@ namespace IGS.Devices
         /// </summary>
         public ExternalDevice(String name, String id, List<Ball> form, String path)
             : base(name, id, path, form)
-        {
-            String[] ipAndPort = splitPathToIPAndPort();
-            connection = new Http(Convert.ToInt32(ipAndPort[1]), ipAndPort[0]);
-
+        { 
             _commandString = path;
         }
 

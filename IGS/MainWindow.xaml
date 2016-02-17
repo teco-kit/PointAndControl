@@ -53,11 +53,11 @@
                    RenderTransformOrigin="0.474,1.077" Height="36" Width="270" FontSize="14"
                    UseLayoutRounding="False" HorizontalContentAlignment="Center" Margin="0,0,0,603" Grid.Row="1" />
             <TextBox x:Name="DeviceType" Margin="26,65,124,544" Grid.Row="1"
-                     TextWrapping="Wrap" Height="30" />
+                     TextWrapping="Wrap" Height="40" />
             <TextBox x:Name="deviceIdentifier" Margin="26,100,124,509" Grid.Row="1"
-                     TextWrapping="Wrap" Height="30" />
+                     TextWrapping="Wrap" Height="40" />
             <TextBox x:Name="DevicePath" Margin="26,135,124,474" Grid.Row="1"
-                     TextWrapping="Wrap" Height="30" />
+                     TextWrapping="Wrap" Height="40" />
             <Button x:Name="CreateDeviceButton" Content="Create Device"
                     Margin="26,205,123,403" Grid.Row="1"
                     Click="CreateDeviceButton_Click"/>

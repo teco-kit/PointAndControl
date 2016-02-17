@@ -12,18 +12,16 @@ The Point-and-Control application makes use of the Microsoft Kinect to enable Po
 - Windows 8, Windows 8.1, or Windows Embedded 8
 - Kinect 4 Windows v2,  SDK/Runtime Environment
 - .Net Framework 4.5
-- Smartphone with Android OS >= 2.3
+- Smartphone with HTML5 compliant Browser 
 
 You can check your system configuration for the Kinect v2 with the Configuration Verifier Tool: http://go.microsoft.com/fwlink/?LinkID=513889
 
 ## Running the IGS
 1. Make sure Requirements are met and everything is installed.
-1. Install the IGS Android app via the IGS.apk in the IGS/Resources directory.
-1. Start IGS server
-1. Start android App
-1. Click on the wrench icon
-1. Enter hostname/IP
-1. The app will connect and the console should display an output
+1. Start IGS server, when started the server IP and Port should be promted in the console window
+1. Start Browser on smartphone
+1. Enter in Browser adress line ip and port like promted in console window before
+1. The main page of the IGS-Control should be opened
 1. The system is now ready to use 
 
 ## Using the IGS
@@ -33,18 +31,18 @@ You can check your system configuration for the Kinect v2 with the Configuration
 
 ## Customize the Environment
 *General note:*	Currently the software only supports `,` as decimal separator.
+*General IGS environment note:* The environment information is stored in the internal Properties.Settings.settings.   
 #### Server:
 - **Room Representation:** The coordinate system of the room [x,y,z] is based on the default system of the Kinect. This means, when looking at the front of the sensor, x is aligned from the left to the right, y from the floor to the ceiling and z in the direction of the camera. Corresponding: (width, height, depth) = (x,y,z). 
 - **Change the room measurements:** Enter the width, height, and depth of the room in the fields above the “set room” button and confirm.
-- **Add a Device through the server GUI:** Enter the type (only included types), the name which will be displayed on the app, IP and port of the device in the respective fields and click add device. The console should confirm „device added to device configuration and device list“.
+- **Add a Device through the server GUI:** Enter the type (only included types), the name which will be displayed on the app, A communication path of the device (for the implemented device the path must contain an [ip:port] format) in the respective fields and click add device. The console should confirm „device added to device configuration and device list“.
 - **Change the plugwise address for every plugwise device in the room:** Enter host, port and path strings in the respective fields and push the “Change PW address” button.
 - **Set the coordinates of the Kinect sensor in the room:** By default the Kinect sensor is aligned with the room coordinate system (T° = H° = 0). Configure the Kinect sensor position in the room by inserting the x, y, z coordinates in the room and the and its tilt (T°) and horizontal angle (H°) in degrees. H° defines the direction the Kinect sensor is facing with respect to the z-axis. Attention (!!): the Kinect representation must be set correctly to transform the coordinates from the camera to the room coordinate system. Please check the graphical output after repositioning the Kinect sensor.
 - **Using the 3Dview:** Press the “Activate 3D view” button in the Server GUI to open the 3D view. The view displays the room walls, as well as grey balls representing the device positions. The blue box is the Kinect representation. When gesture control is activated for a user, a green skeleton and a blue ray will appear. The ray is the direction the person is pointing.
 
-#### App:
+#### Smartphone control:
 - **Using the device list:** Push on the “Überspringen” button at the bottom initial screen. A list with all available devices will be shown. Touch one device to get to its control screen.
-- **Add a device through the App:** Go to the device list and push the “New Dev” field in the upper right corner. Insert the device specifics as described above and submit.
-- **Add coordinates to a specific device:** Activate the gesture control and select the device, for which you want to add coordinates, via the device list. At the bottom of the app you can type in the trigger radius of the device. After entring a value, hold your right hand where the device is and touch “Koordinaten hinzufügen”. The action will be confirmed by a popup message: “Koordinaten hizugefügt”. Now those coordinates for the device are added and it can be selected by pointing. More than one coordinate for a device can be added to create a more fine grained representation.
+- **Add coordinates to a specific device:** Activate the gesture control and push "Überspringen" at the bottom of the control. The list of all devices will be shown. In the upper right corner push "Bearbeiten" and click on the device you want to add the coordinates for. Point on the device and click the big button in the middle of the screen saying "Position durch Zeigen bestimmen". This procedure has to be repeated at least three times from different angels to the device. After these repetitions push the button "Position speichern" at the bottom of the screen. The new position of the device will be calculated and added to the device.
 	
 ## Working with the Code
 - Programming language is C#
@@ -52,13 +50,16 @@ You can check your system configuration for the Kinect v2 with the Configuration
   - Microsoft Kinect for Windows v.2 SDK public preview version 1409
   - .Net Framework 4.5
   - Helix toolkit (NuGet or [GitHub](https://github.com/helix-toolkit/helix-toolkit))
-- An empty `configuration.xml` will be created in the output folder if not present.
-- The folder `Resources` contains stuff like an example `configuration.xml`, the `igs.apk` and the `HttpRoot`. It is copied to the output folder during the build process.	To disable this functionality, go to: IGS Properties -> Build Events and edit the post-build event commandline.
+  - Newtonsoft JSON.net (NuGet or [GitHub](https://github.com/JamesNK/Newtonsoft.Json))
+- An empty device.txt will be created in the output folder if not present (this file will be used to save the devices).
+- The folder `Resources` contains stuff like an example device.txt and the `HttpRoot`. It is copied to the output folder during the build process.	To disable this functionality, go to: IGS Properties -> Build Events and edit the post-build event commandline.
 
 ## Licenses 
 - **3D Framework:** [Helix Toolkit](https://github.com/helix-toolkit/helix-toolkit/) [MIT License] 
 - **Webserver:** [The Code Project Open License (CPOL)](http://www.codeproject.com/info/cpol10.aspx)
+- **JSON Framework**[Newtonsoft JSON.Net] (http://www.newtonsoft.com/json)[MIT Licence]
 - **IGS** [MIT License]
+
 
 The MIT Licencense (MIT)
 

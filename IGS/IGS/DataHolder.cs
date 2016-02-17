@@ -130,6 +130,8 @@ namespace IGS.Server.IGS
 
             User createdUser = new User(wlanAdr);
             Users.Add(createdUser);
+            Console.WriteLine("User added");
+
             return true;
         }
 

@@ -206,4 +206,7 @@ Command could not be executed</value>
   <data name="NoValues" xml:space="preserve">
     <value>For that command values are needed, but not transmitted</value>
   </data>
+  <data name="WrongParameter" xml:space="preserve">
+    <value>Needed Parameter for the request not found: {0}</value>
+  </data>
 </root>

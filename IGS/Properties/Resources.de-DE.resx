@@ -207,4 +207,7 @@ Befehl konnte nicht ausgeführt werden</value>
   <data name="NoValues" xml:space="preserve">
     <value>Für diesen Befehl werden weitere Werte benötigt, die jedoch nicht übermittelt wurden</value>
   </data>
+  <data name="WrongParameter" xml:space="preserve">
+    <value>Der für die Anfrage benötigte Parameter wurde nicht gefunden: {0}</value>
+  </data>
 </root>
