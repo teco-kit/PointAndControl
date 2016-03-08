@@ -25,12 +25,12 @@ namespace IGS.Server.Devices
             /// </summary>
             public Kodi(String name, String id, List<Ball> form, String path)
                 : base(name, id, path, form)
-        {
+            {
 
                 String[] ipAndPort = splitPathToIPAndPort();
                 connection = new Http(Convert.ToInt32(ipAndPort[1]), ipAndPort[0]);
 
-                _commandString = path;
+                _commandString = putPrefixHTTP(path);
             }
 
 
@@ -117,16 +117,16 @@ namespace IGS.Server.Devices
                 } 
                 if (action != "")
                     response = connection.Send(_commandString +
-                        "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"Input.ExecuteAction\",\"params\":{\"action\":\"" + action + "\"}}");
+                        "/jsonrpc?request={\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"Input.ExecuteAction\",\"params\":{\"action\":\"" + action + "\"}}");
 
                 if (cmdId == "off")
                     response = connection.Send(_commandString +
-                        "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"Application.Quit\"}");
+                        "/jsonrpc?request={\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"Application.Quit\"}");
 
                 //ugly hack for keyboard input
                 if (cmdId.Length == 1)
                     response = connection.Send(_commandString + 
-                        "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"Input.SendText\",\"params\":{\"text\":\"" + cmdId + "\"}}");
+                        "/jsonrpc?request={\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"Input.SendText\",\"params\":{\"text\":\"" + cmdId + "\"}}");
                 else
                     response = "False";
 

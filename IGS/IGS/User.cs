@@ -11,7 +11,6 @@ namespace IGS.Server.IGS
     {
         private int _skeletonId = -1;
 
-        //public WallProjectionSample lastClassDevSample { get; set; }
         /// <summary>
         ///     Constructor of a userobject
         ///     <param name="wlanAdr">wlan adress of a user.</param>
@@ -21,9 +20,7 @@ namespace IGS.Server.IGS
             WlanAdr = wlanAdr;
             Errors = "";
             TrackingState = false;
-            //lastChosenDeviceID = "";
-            //lastClassDevSample = null;
-            //deviceIDChecked = true;
+
         }
 
         

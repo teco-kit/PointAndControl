@@ -227,12 +227,6 @@ namespace IGS.Server.IGS
                 // return JSON formatted message
                 args.P.WriteSuccess("application/json");
                 retStr = "{\"cmd\":\"" + cmd + "\"";
-                
-                if (cmd != "addUser" && cmd != "popup")
-                {
-                    // notify online learner that no control command was sent
-                    // onlineNoSucces(devId, wlanAdr);
-                }
 
                 switch (cmd)
                 {
@@ -516,7 +510,7 @@ namespace IGS.Server.IGS
                 switch (cmd)
                 {
                     case "getControlPath":
-                        //onlineNoSucces(devId, wlanAdr);
+ 
                         retStr = getControlPagePathHttp(devId);
                         // redirect to device control path
                         args.P.WriteRedirect(retStr, 301);
@@ -527,8 +521,6 @@ namespace IGS.Server.IGS
                         break;
 
                     default:
-                        // assumes that correct device was selected
-                        // executeOnlineLearning(devId, wlanAdr);
                         Device dev = Data.getDeviceByID(devId);
                         if (dev.connection != null)
                         {

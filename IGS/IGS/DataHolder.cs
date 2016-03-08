@@ -316,6 +316,7 @@ namespace IGS.Server.IGS
 
         public void change_PlugWise_Adress(string host, string port, string path)
         {
+            _environmentHandler.writePWcomponents(host, port, path);
             string completeAdr = _environmentHandler.getPWAdress();
             change_PlugWise_Adress(completeAdr);
             logger.enqueueEntry(String.Format("New PlugwiseAdress: {0}", completeAdr));

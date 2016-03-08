@@ -199,6 +199,27 @@
         "$values": []
       },
       "color": "Purple"
+    },
+    {
+      "$type": "IGS.Server.Devices.Kodi, IGS",
+      "Name": "Kod",
+      "Id": "Kodi_1",
+      "Path": "192.168.1.2:8081",
+      "connection": {
+        "$type": "IGS.Server.Devices.Http, IGS",
+        "Port": 8081,
+        "Ip": "192.168.1.2"
+      },
+      "CommandString": null,
+      "Form": {
+        "$type": "System.Collections.Generic.List`1[[IGS.Server.Devices.Ball, IGS]], mscorlib",
+        "$values": []
+      },
+      "skelPositions": {
+        "$type": "System.Collections.Generic.List`1[[System.Windows.Media.Media3D.Point3D[], PresentationCore]], mscorlib",
+        "$values": []
+      },
+      "color": "MediumBlue"
     }
   ]
 }

@@ -29,7 +29,9 @@ namespace IGS.Server.Devices
             {
             String[] ipAndPort = splitPathToIPAndPort();
             connection = new Http(Convert.ToInt32(ipAndPort[1]), "127.0.0.1");
-            _commandString += ipAndPort[0];
+
+            _commandString += getPlugId();
+
             CommandString = _commandString;
             }
 
@@ -63,6 +65,20 @@ namespace IGS.Server.Devices
                     break;
             }
             return response;
+        }
+
+        public string getPlugId()
+        {
+            String[] splitArray = Path.Split('/');
+            
+
+            if(splitArray.Length != 1)
+            {
+                return Id = Path.Split('/')[1];
+            }
+
+            return "NoPlugwiseID";
+
         }
     }
 }

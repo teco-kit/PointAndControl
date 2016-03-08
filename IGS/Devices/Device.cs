@@ -95,7 +95,11 @@ namespace IGS.Server.Devices
             Regex regex = new Regex(ipAndPortPattern);
 
             return regex.IsMatch(s);
+        }
 
+        public string putPrefixHTTP(string post)
+        {
+            return "http://" + post;
         }
     }
 }

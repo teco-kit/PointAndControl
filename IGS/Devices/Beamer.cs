@@ -24,7 +24,7 @@ namespace IGS.Server.Devices
             String[] ipAndPort = splitPathToIPAndPort();
             connection = new Http(Convert.ToInt32(ipAndPort[1]), ipAndPort[0]);
 
-            _commandString = path;
+            _commandString = putPrefixHTTP(path);
         }
 
         /// <summary>

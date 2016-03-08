@@ -26,14 +26,6 @@ namespace IGS.IGS
             {
                 //Uses LINQ to findall devices with the object type == given type. Counts the result list and increases it by one
                 idparam = type + '_' + (devices.FindAll(q => DataHolder.getDeviceType(q) == type).Count + 1);
-
-                //foreach (Device dev in devices)
-                //{
-                //    string devType = DataHolder.getDeviceType(dev);
-                //    if (devType == type)
-                //        count++;
-                //}
-                ////idparam = type + "_" + count;
             }
 
             Type typeObject = Type.GetType("IGS.Server.Devices." + type);

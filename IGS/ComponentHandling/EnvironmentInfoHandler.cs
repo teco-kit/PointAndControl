@@ -26,16 +26,16 @@ namespace IGS.ComponentHandling
 
         public void writePWpath(string path)
         {
-            Properties.Settings.Default.PWHost = path;
+            Properties.Settings.Default.PWPath = path;
             Properties.Settings.Default.Save();
         }
 
         public void writePWcomponents(string host, string port, string path)
         {
-            Properties.Settings.Default.PWHost = host;
-            Properties.Settings.Default.PWPort = port;
-            Properties.Settings.Default.PWHost = path;
-            Properties.Settings.Default.Save();
+            writePWHost(host);
+            writePWPort(port);
+            writePWpath(path);
+  
         }
 
         public string getPWHost()
