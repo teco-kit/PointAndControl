@@ -74,7 +74,7 @@ namespace IGS.Server.Devices
 
             if(splitArray.Length != 1)
             {
-                return Id = Path.Split('/')[1];
+                return Path.Split('/')[1];
             }
 
             return "NoPlugwiseID";
