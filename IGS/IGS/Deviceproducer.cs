@@ -1,10 +1,9 @@
 ﻿using IGS.Server.Devices;
-using IGS.Server.IGS;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace IGS.IGS
+namespace IGS.Server.IGS
 {
     class Deviceproducer
     {

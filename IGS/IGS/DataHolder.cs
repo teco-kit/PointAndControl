@@ -5,7 +5,6 @@ using System;
 using System.Drawing;
 using IGS.Classifier;
 using IGS.ComponentHandling;
-using IGS.IGS;
 using System.Windows.Media.Media3D;
 
 namespace IGS.Server.IGS
