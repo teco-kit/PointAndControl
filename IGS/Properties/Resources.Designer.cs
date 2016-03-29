@@ -161,6 +161,15 @@ namespace IGS.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Kinect placement changed.
+        /// </summary>
+        internal static string KinectPlacementChanged {
+            get {
+                return ResourceManager.GetString("KinectPlacementChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No Coordinates added.
         /// </summary>
         internal static string NoCoordAdded {
@@ -233,6 +242,15 @@ namespace IGS.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Plugwise-Path changed.
+        /// </summary>
+        internal static string PWCompChange {
+            get {
+                return ResourceManager.GetString("PWCompChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please register yourself at the system first.
         /// </summary>
         internal static string RegistrationRequest {
@@ -256,6 +274,15 @@ namespace IGS.Properties {
         internal static string RoomLeft {
             get {
                 return ResourceManager.GetString("RoomLeft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Measures of the room were changed.
+        /// </summary>
+        internal static string RoommeasuresChanged {
+            get {
+                return ResourceManager.GetString("RoommeasuresChanged", resourceCulture);
             }
         }
         

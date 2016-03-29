@@ -54,5 +54,18 @@ namespace IGS.Server.Devices
         ///     With the "get"-method the tilting degree can be returned.
         ///     <returns>Returns the tilting degree</returns>
         public double tiltingDegree { get; set; }
+
+        public bool setKinectCoords(Point3D center)
+        {
+            if(center!= null)
+            {
+                ball.Center = center;
+                return true;
+            } else
+            {
+                return false;
+            }
+        }
+
     }
 }

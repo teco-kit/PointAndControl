@@ -36,6 +36,8 @@ namespace IGS.Server.IGS
 
         private EventLogger logger { get; set; }
 
+       
+
         /// <summary>
         ///     Constructor for the DataHolder
         ///     <param name="devices">The devices for the DataHolder know at initialization</param>
@@ -45,6 +47,7 @@ namespace IGS.Server.IGS
 
             _newDevices = new List<Device>();
             _deviceStorageHandling = new DeviceStorageFileHandlerJSON();
+            
             _environmentHandler = new EnvironmentInfoHandler();
             devProducer = new Deviceproducer();
 
@@ -294,7 +297,7 @@ namespace IGS.Server.IGS
         /// Publishes the given adress to all plugwise devices
         /// </summary>
         /// <param name="input">the new adress for all plugwises</param>
-        public void change_PlugWise_Adress(String input)
+        private void change_PlugWise_Adress(String input)
         {
 
             String[] splitted;
@@ -315,11 +318,29 @@ namespace IGS.Server.IGS
 
         public void change_PlugWise_Adress(string host, string port, string path)
         {
+            getRemainingPlugComponents(host, port, path); 
             _environmentHandler.writePWcomponents(host, port, path);
             string completeAdr = _environmentHandler.getPWAdress();
             change_PlugWise_Adress(completeAdr);
             logger.enqueueEntry(String.Format("New PlugwiseAdress: {0}", completeAdr));
-            
+        }
+
+        private void getRemainingPlugComponents(string host, string port, string path)
+        {
+            if(host == null || host == "")
+            {
+                host = _environmentHandler.getPWHost();
+            }
+
+            if (port == null || port == "")
+            {
+                port = _environmentHandler.getPWPort();
+            }
+
+            if (path == null || path == "")
+            {
+                path = _environmentHandler.getPWPath();
+            }
         }
 
         public Color pickRandomColor()
@@ -405,7 +426,35 @@ namespace IGS.Server.IGS
             }
 
             return retStr;
+        }
+
+        public void changeRoomSizeRemote(String width, String height, String depth)
+        {
+            Double parsedWidth;
+            Double parsedHeight;
+            Double parsedDepth;
+
+            if(!Double.TryParse(width, out parsedWidth))
+            {
+                parsedWidth = _environmentHandler.getRoomWidht();
+            }
+
+            if(!Double.TryParse(height, out parsedHeight))
+            {
+                parsedHeight = _environmentHandler.getRoomHeight();
+            }
+
+            if(!Double.TryParse(depth, out parsedDepth))
+            {
+                parsedDepth = _environmentHandler.getRoomDepth();
+            }
+
+            changeRoomSize(parsedWidth, parsedHeight, parsedDepth);
 
         }
+
+        
+
+
     }
 }

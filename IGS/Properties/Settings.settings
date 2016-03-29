@@ -29,10 +29,10 @@
     <Setting Name="KinectPosZ" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0.3</Value>
     </Setting>
-    <Setting Name="KinectTiltAngle" Type="System.Int16" Scope="User">
+    <Setting Name="KinectTiltAngle" Type="System.Double" Scope="User">
       <Value Profile="(Default)">-8</Value>
     </Setting>
-    <Setting Name="KinectHorizontalAngle" Type="System.Int16" Scope="User">
+    <Setting Name="KinectHorizontalAngle" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="EventLog" Type="System.Collections.Specialized.StringCollection" Scope="User">

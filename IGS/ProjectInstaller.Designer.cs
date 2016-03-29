@@ -39,8 +39,9 @@
             // 
             // serviceInstaller1
             // 
+            this.serviceInstaller1.Description = "Point and Control Server Service";
+            this.serviceInstaller1.DisplayName = "Point and Control";
             this.serviceInstaller1.ServiceName = "IGSService";
-            this.serviceInstaller1.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             // 
             // ProjectInstaller
             // 

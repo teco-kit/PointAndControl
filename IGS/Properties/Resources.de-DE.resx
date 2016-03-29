@@ -210,4 +210,13 @@ Befehl konnte nicht ausgeführt werden</value>
   <data name="WrongParameter" xml:space="preserve">
     <value>Der für die Anfrage benötigte Parameter wurde nicht gefunden: {0}</value>
   </data>
+  <data name="PWCompChange" xml:space="preserve">
+    <value>Plugwise Pfad geändert</value>
+  </data>
+  <data name="KinectPlacementChanged" xml:space="preserve">
+    <value>Platzierung der Kinect verändert</value>
+  </data>
+  <data name="RoommeasuresChanged" xml:space="preserve">
+    <value>Die Maße des Raumes wurden geändert</value>
+  </data>
 </root>

@@ -209,4 +209,13 @@ Command could not be executed</value>
   <data name="WrongParameter" xml:space="preserve">
     <value>Needed Parameter for the request not found: {0}</value>
   </data>
+  <data name="PWCompChange" xml:space="preserve">
+    <value>Plugwise-Path changed</value>
+  </data>
+  <data name="KinectPlacementChanged" xml:space="preserve">
+    <value>Kinect placement changed</value>
+  </data>
+  <data name="RoommeasuresChanged" xml:space="preserve">
+    <value>Measures of the room were changed</value>
+  </data>
 </root>

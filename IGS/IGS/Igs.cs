@@ -491,6 +491,36 @@ namespace IGS.Server.IGS
                             retStr += ",\"trackingId\":" + user.SkeletonId;
                         }
                         break;
+                    case "setPlugwisePath":
+                        success = setPlugwiseComponents(parameters);
+                        if (success)
+                        {
+                            msg = Properties.Resources.PWCompChange;
+                        } else
+                        {
+                            msg = Properties.Resources.UnknownError;
+                        }
+                        break;
+                    case "setPlugwiseComponents":
+                        success = setKinectPositionWithDict(parameters);
+                        if (success)
+                        {
+                            msg = Properties.Resources.KinectPlacementChanged;
+                        } else
+                        {
+                            msg = "";
+                        }
+                        break;
+                    case "setRoomMeasures":
+                        success = setRoomMeasures(parameters);
+                        if (success)
+                        {
+                            msg = Properties.Resources.RoommeasuresChanged;
+                        } else
+                        {
+                            msg = "";
+                        }
+                        break;
                 }
 
                 // finalize JSON response
@@ -721,7 +751,141 @@ namespace IGS.Server.IGS
                 retVal = String.Format(Properties.Resources.WrongParameter, value);
                 return false;
             }
-        }    
+        }
+
+        
+
+        private bool setPlugwiseComponents(Dictionary<string,string> values)
+        {
+            String host;
+            String port;
+            String path;
+
+
+            if(!getValueFromDict(values, "host", out host))
+            {
+                host = null;
+            }
+            
+            if(!getValueFromDict(values, "port", out port))
+            {
+                port = null;
+            }
+
+            if(!getValueFromDict(values, "path", out path))
+            {
+                path = null;
+            }
+              
+            Data.change_PlugWise_Adress(host, port, path);
+
+            return true;
+        }
+
+        private bool setKinectPositionWithDict(Dictionary<String,String> values)
+        {
+            String x;
+            String y;
+            String z;
+            String horizontal;
+            String tilt;
+
+
+
+            if (!getValueFromDict(values, "x", out x))
+                x = "NotChanged";
+
+            if (!getValueFromDict(values, "y", out y))
+                y = "NotChanged";
+
+            if (!getValueFromDict(values, "z", out z))
+                z = "NotChanged";
+
+            if (!getValueFromDict(values, "horizontal", out horizontal))
+                horizontal = "NotChanged";
+
+            if (!getValueFromDict(values, "tilt", out tilt))
+                tilt = "NotChannged";
+
+            return setKinect(x, y, z, horizontal, tilt);
+
+           
+        }
+
+        public bool setKinect(String x, String y, String z, String horizontal, String tilt)
+        {
+            double parsedX; 
+            double parsedY;
+            double parsedZ;
+            double parsedHorizontal;
+            double parsedTilt;
+            bool changed = false;
+
+
+            if(Double.TryParse(x, out parsedX) &&
+               Double.TryParse(y, out parsedY) &&
+               Double.TryParse(z, out parsedZ))
+            {
+                Point3D newCenter = new Point3D(parsedX, parsedY, parsedZ);
+
+                IGSKinect.setKinectCoords(newCenter);
+
+                Transformer.transVector = (Vector3D)newCenter;
+                Data._environmentHandler.setKinectCoordsOnly(parsedX, parsedY, parsedZ);
+                changed = true;
+            }
+
+            if(Double.TryParse(horizontal, out parsedHorizontal))
+            {
+                IGSKinect.roomOrientation = parsedHorizontal;
+                Data._environmentHandler.setKinectHorizontalAnlge(parsedHorizontal);
+                changed = true;
+            }
+
+            if(Double.TryParse(tilt, out parsedTilt))
+            {
+                IGSKinect.tiltingDegree = parsedTilt;
+                Data._environmentHandler.setKinectTiltAngle(parsedTilt);
+                changed = true;
+            }
+
+
+            if (Tracker.Sensor != null && changed)
+            {
+                Transformer.calculateRotationMatrix(IGSKinect.tiltingDegree, IGSKinect.roomOrientation);
+            }
+
+            logger.enqueueEntry(String.Format("Placement of Kinect Changed| X:{0}, Y:{1}, Z:{2}, Horizontal:{3}, Tilt:{4}", x, y, z, horizontal, tilt));
+
+            return changed;
+        }
+
+        public bool setRoomMeasures(Dictionary<String, String> values)
+        {
+            String width;
+            String height;
+            String depth;
+
+            if (!getValueFromDict(values, "width", out width))
+                width = "NotChanged";
+
+            if (!getValueFromDict(values, "height", out height))
+                height = "NotChanged";
+
+            if (!getValueFromDict(values, "depth", out depth))
+                depth = "NotChanged";
+
+
+            Data.changeRoomSizeRemote(width, height, depth);
+
+            logger.enqueueEntry(String.Format("Roomsize Changed| width:{0}, height:{1}, depth:{2}", width, height, depth));
+
+            return true;
+
+        }
+
+
+
     }
 
 }
