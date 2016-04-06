@@ -138,6 +138,7 @@
     <Compile Include="Devices\XBMCv11.cs" />
     <Compile Include="Helperclasses\CoordTransform.cs" />
     <Compile Include="Helperclasses\IgsMath.cs" />
+    <Compile Include="Helperclasses\JSON_ParameterReader.cs" />
     <Compile Include="Helperclasses\Ray3D.cs" />
     <Compile Include="IGSService.cs">
       <SubType>Component</SubType>
@@ -145,6 +146,7 @@
     <Compile Include="IGSService.Designer.cs">
       <DependentUpon>IGSService.cs</DependentUpon>
     </Compile>
+    <Compile Include="IGSStarter.cs" />
     <Compile Include="IGS\Deviceproducer.cs" />
     <Compile Include="IGS\Initializer.cs" />
     <Compile Include="Helperclasses\XMLComponentHandler.cs" />

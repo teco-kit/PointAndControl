@@ -296,6 +296,15 @@ namespace IGS.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Server will be shut down.
+        /// </summary>
+        internal static string ServerShutDown {
+            get {
+                return ResourceManager.GetString("ServerShutDown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Specified device not found.
         /// </summary>
         internal static string SpecifiedDeviceNotFound {
@@ -328,6 +337,15 @@ namespace IGS.Properties {
         internal static string TCPConnFailure {
             get {
                 return ResourceManager.GetString("TCPConnFailure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please type a command!.
+        /// </summary>
+        internal static string TypeConsoleCommand {
+            get {
+                return ResourceManager.GetString("TypeConsoleCommand", resourceCulture);
             }
         }
         

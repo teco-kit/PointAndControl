@@ -10,6 +10,7 @@ using IGS.Classifier;
 using System.Threading;
 using IGS.ComponentHandling;
 using Newtonsoft.Json;
+using IGS.Helperclasses;
 
 namespace IGS.Server.IGS
 {
@@ -43,12 +44,13 @@ namespace IGS.Server.IGS
 
 
             createIGSKinect();
-
+            json_paramReader = new JSON_ParameterReader();
             this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Center);
             this.classification = new ClassificationHandler(Transformer, Data);
             this.coreMethods = new CollisionMethod(Data, Tracker, Transformer);
             logger = eventLogger;
-        
+            isRunning = true;
+            
         }
 
 
@@ -97,6 +99,11 @@ namespace IGS.Server.IGS
 
         public EnvironmentInfoHandler environmentHandler { get; set; }
 
+        public bool isRunning { get; set; }
+
+        public bool cancellationRequest { get; set; }
+
+        private JSON_ParameterReader json_paramReader { get; set; }
 
 
 
@@ -131,6 +138,9 @@ namespace IGS.Server.IGS
             Debug.WriteLine("server_Request");
             String str = InterpretCommand(sender, e);
             Server.SendResponse(e.P, str);
+
+            if (cancellationRequest)
+                shutDown();
         }
         
         /// <summary>
@@ -197,7 +207,7 @@ namespace IGS.Server.IGS
             String devId = args.Dev;
             String cmd = args.Cmd;
             String value = args.Val;
-            Dictionary<String, String> parameters = deserializeValueDict(value);
+            Dictionary<String, String> parameters = json_paramReader.deserializeValueDict(value);
 
             String wlanAdr = args.ClientIp;
             String lang = args.Language;
@@ -218,6 +228,7 @@ namespace IGS.Server.IGS
                 Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo(lang);
                 Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(lang);
             }
+
 
             if (cmd != "popup" && cmd != "pollDevice")
                 logger.enqueueEntry(String.Format("Command arrived! devID: {0}; cmdID: {1}; value: {2}; wlanAdr: {3}", devId, cmd, value, wlanAdr));
@@ -311,7 +322,7 @@ namespace IGS.Server.IGS
                         break;
 
                     case "addDevice":
-                        if (parameters.Count == 4)
+                        if (parameters != null && parameters.Count == 4)
                         {
                             success = true;
                             
@@ -340,7 +351,7 @@ namespace IGS.Server.IGS
                             break;
                         }
 
-                        if(!getValueFromDict(parameters, "Id", out paramDevId))
+                        if(!json_paramReader.getDevID(parameters, out paramDevId))
                         {
                             msg = paramDevId;
                             break;
@@ -351,7 +362,7 @@ namespace IGS.Server.IGS
                         if (device != null)
                         {
                             success = true;
-                            if (!getValueFromDict(parameters, "Name", out paramDevName))
+                            if (!json_paramReader.getDevName(parameters, out paramDevName))
                             {
                                 msg = paramDevName;
                                 break;
@@ -377,7 +388,7 @@ namespace IGS.Server.IGS
                             break;
                         }
 
-                        if (!getValueFromDict(parameters, "Id", out paramDevId))
+                        if (!json_paramReader.getDevID(parameters, out paramDevId))
                         {
                             msg = paramDevId;
                             break;
@@ -406,7 +417,7 @@ namespace IGS.Server.IGS
                             break;
                         }
 
-                        if (!getValueFromDict(parameters, "Id", out paramDevId))
+                        if (!json_paramReader.getDevID(parameters, out paramDevId))
                         {
                             msg = paramDevId;
                             break;
@@ -441,7 +452,7 @@ namespace IGS.Server.IGS
                             break;
                         }
 
-                        if(!getValueFromDict(parameters, "Id", out paramDevId))
+                        if(!json_paramReader.getDevID(parameters, out paramDevId))
                         {
                             msg = paramDevId;
                             break;
@@ -461,7 +472,7 @@ namespace IGS.Server.IGS
 
                     case "deleteDevice":
 
-                        if (!getValueFromDict(parameters, "Id", out paramDevId))
+                        if (!json_paramReader.getDevID(parameters, out paramDevId))
                         {
                             msg = paramDevId;
                             break;
@@ -521,6 +532,16 @@ namespace IGS.Server.IGS
                             msg = "";
                         }
                         break;
+
+                    case "shutDown":
+                        success = true;
+
+                        msg = Properties.Resources.ServerShutDown;
+
+                        break;
+
+
+
                 }
 
                 // finalize JSON response
@@ -661,11 +682,12 @@ namespace IGS.Server.IGS
             String path;
             String retStr = "";
 
-            if (values.TryGetValue("Type", out type) &&
-                values.TryGetValue("Name", out name) &&
-                values.TryGetValue("Path", out path))
+            //if (values.TryGetValue("Type", out type) &&
+            //    values.TryGetValue("Name", out name) &&
+            //    values.TryGetValue("Path", out path))
+            if (json_paramReader.getDevNameTypePath(values, out type, out name, out path))
             {
-                if (values.TryGetValue("Id", out id))
+                if (json_paramReader.getDevID(values, out id))
                 {
                     retStr = Data.AddDevice(type, id, name, path);
                 } else
@@ -729,54 +751,30 @@ namespace IGS.Server.IGS
             return controlPath;
         }
 
-        private Dictionary<String, String> deserializeValueDict(String jsonString)
-        {
-            try {
-                Dictionary<String, String> values = JsonConvert.DeserializeObject<Dictionary<String, String>>(jsonString);
-                return values;
-            } catch (Exception e)
-            {
-                return null;
-            }
-        }
-
-        public bool getValueFromDict(Dictionary<String, String> values, String value, out String retVal)
-        {
-            if (values.TryGetValue(value, out retVal))
-            {
-                return true;
-            }
-            else
-            {
-                retVal = String.Format(Properties.Resources.WrongParameter, value);
-                return false;
-            }
-        }
-
-        
-
-        private bool setPlugwiseComponents(Dictionary<string,string> values)
+        private bool setPlugwiseComponents(Dictionary<string, string> values)
         {
             String host;
             String port;
             String path;
 
+            json_paramReader.getPlugwiseComponents(values, out host, out port, out path);
 
-            if(!getValueFromDict(values, "host", out host))
-            {
-                host = null;
-            }
             
-            if(!getValueFromDict(values, "port", out port))
-            {
-                port = null;
-            }
+            //if (!getValueFromDict(values, "host", out host))
+            //{
+            //    host = null;
+            //}
 
-            if(!getValueFromDict(values, "path", out path))
-            {
-                path = null;
-            }
-              
+            //if (!getValueFromDict(values, "port", out port))
+            //{
+            //    port = null;
+            //}
+
+            //if (!getValueFromDict(values, "path", out path))
+            //{
+            //    path = null;
+            //}
+
             Data.change_PlugWise_Adress(host, port, path);
 
             return true;
@@ -790,22 +788,22 @@ namespace IGS.Server.IGS
             String horizontal;
             String tilt;
 
+            json_paramReader.getKinectPosition(values, out x, out y, out z, out horizontal, out tilt);
 
+            //if (!getValueFromDict(values, "x", out x))
+            //    x = "NotChanged";
 
-            if (!getValueFromDict(values, "x", out x))
-                x = "NotChanged";
+            //if (!getValueFromDict(values, "y", out y))
+            //    y = "NotChanged";
 
-            if (!getValueFromDict(values, "y", out y))
-                y = "NotChanged";
+            //if (!getValueFromDict(values, "z", out z))
+            //    z = "NotChanged";
 
-            if (!getValueFromDict(values, "z", out z))
-                z = "NotChanged";
+            //if (!getValueFromDict(values, "horizontal", out horizontal))
+            //    horizontal = "NotChanged";
 
-            if (!getValueFromDict(values, "horizontal", out horizontal))
-                horizontal = "NotChanged";
-
-            if (!getValueFromDict(values, "tilt", out tilt))
-                tilt = "NotChannged";
+            //if (!getValueFromDict(values, "tilt", out tilt))
+            //    tilt = "NotChannged";
 
             return setKinect(x, y, z, horizontal, tilt);
 
@@ -866,25 +864,30 @@ namespace IGS.Server.IGS
             String height;
             String depth;
 
-            if (!getValueFromDict(values, "width", out width))
-                width = "NotChanged";
+            //if (!getValueFromDict(values, "width", out width))
+            //    width = "NotChanged";
 
-            if (!getValueFromDict(values, "height", out height))
-                height = "NotChanged";
+            //if (!getValueFromDict(values, "height", out height))
+            //    height = "NotChanged";
 
-            if (!getValueFromDict(values, "depth", out depth))
-                depth = "NotChanged";
+            //if (!getValueFromDict(values, "depth", out depth))
+            //    depth = "NotChanged";
 
+            json_paramReader.getRoomMeasures(values, out width, out height, out depth);
 
             Data.changeRoomSizeRemote(width, height, depth);
-
             logger.enqueueEntry(String.Format("Roomsize Changed| width:{0}, height:{1}, depth:{2}", width, height, depth));
 
             return true;
-
         }
 
+        public bool shutDown()
+        {
+            Tracker.ShutDown();
+            isRunning = false;
 
+            return true;
+        }
 
     }
 

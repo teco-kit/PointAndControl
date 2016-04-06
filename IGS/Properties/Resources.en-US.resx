@@ -218,4 +218,10 @@ Command could not be executed</value>
   <data name="RoommeasuresChanged" xml:space="preserve">
     <value>Measures of the room were changed</value>
   </data>
+  <data name="ServerShutDown" xml:space="preserve">
+    <value>Server will be shut down</value>
+  </data>
+  <data name="TypeConsoleCommand" xml:space="preserve">
+    <value>Please type a command!</value>
+  </data>
 </root>

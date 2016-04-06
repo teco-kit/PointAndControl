@@ -4,22 +4,44 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading.Tasks;
+using IGS.Server.IGS;
+using System.Threading;
 
 namespace IGS
 {
-    static class Program
+    class Program
     {
+
+      
+        
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
-        static void Main()
+        static void Main(string[] args)
         {
-            ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[]
+             
+            IGSStarter starter = new IGSStarter(Initializer.InitializeIgs());
+            String command;
+
+            while (starter.igsRunning)
             {
-                new IGSService()
-            };
-            ServiceBase.Run(ServicesToRun);
+                Console.WriteLine(Properties.Resources.TypeConsoleCommand);
+
+                command = Console.ReadLine();
+
+                switch (command) {
+
+                    case "stop":
+                        starter.stopIGSConsoleCmd();
+                        Console.WriteLine(Properties.Resources.ServerShutDown);
+                        break;
+
+                    default:
+                        break;
+                }
+
+            }
         }
+
     }
 }

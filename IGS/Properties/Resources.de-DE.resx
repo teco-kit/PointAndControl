@@ -219,4 +219,10 @@ Befehl konnte nicht ausgeführt werden</value>
   <data name="RoommeasuresChanged" xml:space="preserve">
     <value>Die Maße des Raumes wurden geändert</value>
   </data>
+  <data name="ServerShutDown" xml:space="preserve">
+    <value>Der Server wird beendet</value>
+  </data>
+  <data name="TypeConsoleCommand" xml:space="preserve">
+    <value>Bitte geben Sie einen Befehl ein</value>
+  </data>
 </root>
