@@ -79,6 +79,15 @@ namespace IGS.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Calculation error, please try again.
+        /// </summary>
+        internal static string CalculationError {
+            get {
+                return ResourceManager.GetString("CalculationError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Command arrived! devID: {0}; cmdID: {1}; value: {2}, wlanAdr:{3}.
         /// </summary>
         internal static string CmdArrivedLog {
@@ -166,6 +175,15 @@ namespace IGS.Properties {
         internal static string KinectPlacementChanged {
             get {
                 return ResourceManager.GetString("KinectPlacementChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More vectors needed for calculation.
+        /// </summary>
+        internal static string MoreVectorsRequired {
+            get {
+                return ResourceManager.GetString("MoreVectorsRequired", resourceCulture);
             }
         }
         

@@ -11,23 +11,23 @@ namespace IGS
 {
     class Program
     {
-
-      
-        
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         static void Main(string[] args)
         {
              
-            IGSStarter starter = new IGSStarter(Initializer.InitializeIgs());
+            IGSStarter starter = new IGSStarter();
+            starter.igsStart();
+
+
             String command;
 
             while (starter.igsRunning)
             {
-                Console.WriteLine(Properties.Resources.TypeConsoleCommand);
+                //Console.WriteLine(Properties.Resources.TypeConsoleCommand);
 
-                command = Console.ReadLine();
+                command = "";
 
                 switch (command) {
 
@@ -39,7 +39,6 @@ namespace IGS
                     default:
                         break;
                 }
-
             }
         }
 

@@ -16,17 +16,18 @@ namespace IGS
         private Igs igs;
 
 
-        public IGSStarter(Igs igs)
+        public IGSStarter()
         {
             igsRunning = false;
             tokenSource = new CancellationTokenSource();
             igsCancellationToken = tokenSource.Token;
-            this.igs = igs;
+           
         }
 
 
         public async void igsStart()
         {
+            igsRunning = true;
             try
             {
                 await Task.Run(() =>
@@ -39,8 +40,9 @@ namespace IGS
                     }
                 });
                 igsRunning = false;
+                Environment.Exit(1);
             }
-            catch (OperationCanceledException e)
+            catch (OperationCanceledException)
             {
                 igs.shutDown();
                 igsRunning = false;

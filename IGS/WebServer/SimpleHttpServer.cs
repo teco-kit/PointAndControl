@@ -579,7 +579,6 @@ namespace IGS.Server.WebServer
         public override void HandleGetRequest(HttpProcessor p)
         {
 
-            //TODO: full localization testing
             string querystring = null;
             string pathstring = null;
             // check query part of string

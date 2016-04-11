@@ -225,4 +225,10 @@ Befehl konnte nicht ausgeführt werden</value>
   <data name="TypeConsoleCommand" xml:space="preserve">
     <value>Bitte geben Sie einen Befehl ein</value>
   </data>
+  <data name="CalculationError" xml:space="preserve">
+    <value>Berechnungsfehler, bitte versuchen Sie es erneut</value>
+  </data>
+  <data name="MoreVectorsRequired" xml:space="preserve">
+    <value>Es werden mehr Vektoren für die Berechnung benötigt</value>
+  </data>
 </root>

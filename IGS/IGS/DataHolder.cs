@@ -386,10 +386,19 @@ namespace IGS.Server.IGS
             logger.enqueueEntry(String.Format("Room rezized to: Width: {0}, Depth: {1}, Height {2}", width, depth, height));
         }
 
-        public String addDeviceCoordinates(String devId, String radius, Point3D wrist)
+        public String addDeviceCoordinates(String devId, String radius, Point3D position)
         {
-            Ball coord = new Ball(wrist, double.Parse(radius));
+            Ball coord = new Ball(position, double.Parse(radius));
             this.getDeviceByID(devId).Form.Add(coord);
+            return _deviceStorageHandling.addDeviceCoord(devId, coord);
+        }
+
+        public String changeDeviceCoordinates(String devId, String radius, Point3D position)
+        {
+            Ball coord = new Ball(position, double.Parse(radius));
+            Device dev = getDeviceByID(devId);
+            dev.Form.Clear();
+            dev.Form.Add(coord);
             return _deviceStorageHandling.addDeviceCoord(devId, coord);
         }
 

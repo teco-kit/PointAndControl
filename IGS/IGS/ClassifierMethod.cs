@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 using Microsoft.Kinect;
+using IGS.ComponentHandling;
 
 namespace IGS.Server.IGS
 {
@@ -21,13 +22,15 @@ namespace IGS.Server.IGS
         public UserTracker tracker { get; set; }
         public CoordTransform transformer { get; set; }
 
+        private EventLogger logger { get; set; }
 
-        public ClassifierMethod(ClassificationHandler handler, UserTracker tracker, DataHolder data, CoordTransform transform)
+        public ClassifierMethod(ClassificationHandler handler, UserTracker tracker, DataHolder data, CoordTransform transform, EventLogger eLogger)
         {
             this.classificationHandler = handler;
             this.data = data;
             this.tracker = tracker;
             this.transformer = transform;
+            logger = eLogger;
         }
 
         public String train(Device dev)
@@ -61,7 +64,7 @@ namespace IGS.Server.IGS
                 sample = classificationHandler.classify(sample);
 
                 Console.WriteLine("Classified: " + sample.sampledeviceIdentifier);
-                XMLComponentHandler.writeLogEntry("Device classified to" + sample.sampledeviceIdentifier);
+                logger.enqueueEntry("Device classified to" + sample.sampledeviceIdentifier);
                 //Body body = tracker.GetBodyById(usr.SkeletonId);
                 //XMLSkeletonJointRecords.writeUserJointsToXmlFile(tempUser, Data.GetDeviceByName(sample.sampledeviceIdentifier), body);
                 //XMLComponentHandler.writeUserJointsPerSelectClick(body);

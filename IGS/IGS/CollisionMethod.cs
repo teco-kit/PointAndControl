@@ -1,4 +1,5 @@
-﻿using IGS.Server.Devices;
+﻿using IGS.ComponentHandling;
+using IGS.Server.Devices;
 using IGS.Server.Kinect;
 using IGS.Server.Location;
 using System;
@@ -25,14 +26,17 @@ namespace IGS.Server.IGS
         ///     Stores CoordTransform to be able to acces its data or functions.\n
         /// </summary>
         public CoordTransform Transformer { get; set; }
+
+        private EventLogger logger { get; set; }
     
-        public CollisionMethod(DataHolder data, UserTracker tracker, CoordTransform transformer)
+        public CollisionMethod(DataHolder data, UserTracker tracker, CoordTransform transformer, EventLogger eLogger)
         {
             this.Data = data;
             this.Tracker = tracker;
             this.Transformer = transformer;
 
             this.locator = new Locator();
+            this.logger = eLogger;
         }
 
         public List<Device> chooseDevice(User usr)
@@ -50,7 +54,7 @@ namespace IGS.Server.IGS
 
             //calculate new Position
             if (dev.skelPositions.Count < Locator.MIN_NUMBER_OF_VECTORS)
-                return "Mehr Vektoren für die Berechnung benötigt";
+                return Properties.Resources.MoreVectorsRequired;
 
             Point3D position = locator.getDeviceLocation(dev.skelPositions);
 
@@ -60,19 +64,11 @@ namespace IGS.Server.IGS
             if (position.Equals(new Point3D(Double.NaN, Double.NaN, Double.NaN)))
             {
                 //error: advise user to try again
-                return "Berechnungsfehler. Bitte erneut versuchen.";
+                return Properties.Resources.CalculationError;
             }
 
             //change position of device in dataHolder
-            //List<Ball> balls = new List<Ball>();
-            //balls.Add(new Ball(position, 0.3f));
-            //dev.Form = balls;
-
             Data.addDeviceCoordinates(dev.Id, "0,3", position);
-
-            //add new location to xml
-            //TODO: disabled for testing, should be handled in dataHolder
-            //String result = xmlChangeDeviceLocation(tempDevice, position);
 
             return "Gerät " + dev.Name + " wurde neu plaziert";
         }

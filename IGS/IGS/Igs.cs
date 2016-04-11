@@ -11,6 +11,7 @@ using System.Threading;
 using IGS.ComponentHandling;
 using Newtonsoft.Json;
 using IGS.Helperclasses;
+using IGS.IGS.JsonCommunication;
 
 namespace IGS.Server.IGS
 {
@@ -47,8 +48,9 @@ namespace IGS.Server.IGS
             json_paramReader = new JSON_ParameterReader();
             this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Center);
             this.classification = new ClassificationHandler(Transformer, Data);
-            this.coreMethods = new CollisionMethod(Data, Tracker, Transformer);
+            
             logger = eventLogger;
+            this.coreMethods = new CollisionMethod(Data, Tracker, Transformer, logger);
             isRunning = true;
             
         }
@@ -208,7 +210,7 @@ namespace IGS.Server.IGS
             String cmd = args.Cmd;
             String value = args.Val;
             Dictionary<String, String> parameters = json_paramReader.deserializeValueDict(value);
-
+            JsonResponse response;
             String wlanAdr = args.ClientIp;
             String lang = args.Language;
 
@@ -682,9 +684,6 @@ namespace IGS.Server.IGS
             String path;
             String retStr = "";
 
-            //if (values.TryGetValue("Type", out type) &&
-            //    values.TryGetValue("Name", out name) &&
-            //    values.TryGetValue("Path", out path))
             if (json_paramReader.getDevNameTypePath(values, out type, out name, out path))
             {
                 if (json_paramReader.getDevID(values, out id))

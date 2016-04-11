@@ -153,6 +153,10 @@
     <Compile Include="IGS\CollisionMethod.cs" />
     <Compile Include="IGS\CoreMethods.cs" />
     <Compile Include="IGS\ClassifierMethod.cs" />
+    <Compile Include="IGS\JsonCommunication\JsonResponse.cs" />
+    <Compile Include="IGS\JsonCommunication\JsonResponseAddVector.cs" />
+    <Compile Include="IGS\JsonCommunication\JsonResponseDeviceId.cs" />
+    <Compile Include="IGS\JsonCommunication\JsonResponseTrackingId.cs" />
     <Compile Include="Kinect\MedianJointFilter.cs" />
     <Compile Include="Kinect\SkeletonJointFilter.cs" />
     <Compile Include="Kinect\TrackingStateEventArgs.cs" />

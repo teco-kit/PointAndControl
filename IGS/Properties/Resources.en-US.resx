@@ -224,4 +224,10 @@ Command could not be executed</value>
   <data name="TypeConsoleCommand" xml:space="preserve">
     <value>Please type a command!</value>
   </data>
+  <data name="CalculationError" xml:space="preserve">
+    <value>Calculation error, please try again</value>
+  </data>
+  <data name="MoreVectorsRequired" xml:space="preserve">
+    <value>More vectors needed for calculation</value>
+  </data>
 </root>

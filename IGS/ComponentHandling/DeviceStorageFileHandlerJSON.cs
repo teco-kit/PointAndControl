@@ -60,6 +60,29 @@ namespace IGS.ComponentHandling
             return Properties.Resources.NoCoordAdded;
         }
 
+        public string changeDeviceCoord(string devId, Ball ball)
+        {
+            List<Device> devices = readDevices();
+
+            if (devices == null || devices.Count == 0)
+                return Properties.Resources.SpecifiedDeviceNotFound;
+
+            foreach (Device dev in devices)
+            {
+                if (dev.Id == devId)
+                {
+                    dev.Form.Clear();
+                    dev.Form.Add(ball);
+                    writeDevicesToFile(devices);
+                    return Properties.Resources.CoordinatesAdded;
+                }
+            }
+
+
+
+            return Properties.Resources.NoCoordAdded;
+        }
+
         public List<Device> readDevices()
         {
             if (!File.Exists(DEVICE_SAVE_PATH))
