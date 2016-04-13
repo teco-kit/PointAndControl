@@ -9,9 +9,8 @@ using System.Diagnostics;
 using IGS.Classifier;
 using System.Threading;
 using IGS.ComponentHandling;
-using Newtonsoft.Json;
 using IGS.Helperclasses;
-using IGS.IGS.JsonCommunication;
+
 
 namespace IGS.Server.IGS
 {
@@ -210,7 +209,7 @@ namespace IGS.Server.IGS
             String cmd = args.Cmd;
             String value = args.Val;
             Dictionary<String, String> parameters = json_paramReader.deserializeValueDict(value);
-            JsonResponse response;
+            JsonResponse response = new JsonResponse();
             String wlanAdr = args.ClientIp;
             String lang = args.Language;
 
@@ -241,6 +240,8 @@ namespace IGS.Server.IGS
                 args.P.WriteSuccess("application/json");
                 retStr = "{\"cmd\":\"" + cmd + "\"";
 
+                response.addCmd(cmd);
+
                 switch (cmd)
                 {
                     case "addUser":
@@ -250,9 +251,12 @@ namespace IGS.Server.IGS
                         {
                             if (Tracker.isKinectAvailable())
                             {
-                                retStr += ",\"trackingId\":" + SkeletonIdToUser(wlanAdr);
+                                response.addTrackingId(SkeletonIdToUser(wlanAdr));
+
+                                //retStr += ",\"trackingId\":" + SkeletonIdToUser(wlanAdr);
                             } else
                             {
+                                
                                 msg = Properties.Resources.NoKinAvailable;
                             }
                         }
@@ -282,7 +286,8 @@ namespace IGS.Server.IGS
                                 msg = Properties.Resources.NoUserInImage;
 
                             // attach tracking state
-                            retStr += ",\"trackingId\":" + id;
+                            //retStr += ",\"trackingId\":" + id;
+                            response.addTrackingId(id);
                             break;
                         }
 
@@ -308,19 +313,22 @@ namespace IGS.Server.IGS
                         List<Device> foundDevices = coreMethods.chooseDevice(user);
                         if (foundDevices.Count > 0)
                             success = true;
-                        retStr += "," + MakeDeviceString(foundDevices);
+                        //retStr += "," + MakeDeviceString(foundDevices);
+                        response.addDevices(MakeDeviceString(foundDevices));
                         break;
 
                         
                     case "list":
                         success = true;
-                        retStr += "," + MakeDeviceString(Data.Devices);
+                        //retStr += "," + MakeDeviceString(Data.Devices);
+                        response.addDevices(MakeDeviceString(Data.Devices));
                         break;
 
                     case "discoverDevices":
                         success = true;
                         // Data.newDevices = discoverDevices();
-                        retStr += "," + MakeDeviceString(Data.newDevices);
+                        //retStr += "," + MakeDeviceString(Data.newDevices);
+                        response.addDevices(MakeDeviceString(Data.newDevices));
                         break;
 
                     case "addDevice":
@@ -374,10 +382,13 @@ namespace IGS.Server.IGS
                             String newDeviceId = AddDevice(type, "", paramDevName, device.Path);
 
                             // attach to return string
-                            retStr += ",\"deviceId\":\"" + newDeviceId + "\"";
+                            //retStr += ",\"deviceId\":\"" + newDeviceId + "\"";
 
+                            
+                            
                             // remove from new devices list
                             Data.newDevices.Remove(device);
+                            response.addDeviceId(newDeviceId);
                         }
 
                         break;
@@ -408,7 +419,9 @@ namespace IGS.Server.IGS
                         device.skelPositions = new List<Point3D[]>();
 
                         //attach vector numbers
-                        retStr += ",\"vectorCount\":" + device.skelPositions.Count + ",\"vectorMin\":" + coreMethods.getMinVectorsPerDevice();
+                        //retStr += ",\"vectorCount\":" + device.skelPositions.Count + ",\"vectorMin\":" + coreMethods.getMinVectorsPerDevice();
+
+                        response.addVectorMinAndCount(device.skelPositions.Count, coreMethods.getMinVectorsPerDevice());
                         break;
 
                     case "addDeviceVector":
@@ -443,7 +456,8 @@ namespace IGS.Server.IGS
                         msg = addDeviceVector(device, user);
 
                         //attach vector numbers 
-                        retStr += ",\"vectorCount\":" + device.skelPositions.Count + ",\"vectorMin\":" + coreMethods.getMinVectorsPerDevice();
+                        //retStr += ",\"vectorCount\":" + device.skelPositions.Count + ",\"vectorMin\":" + coreMethods.getMinVectorsPerDevice();
+                        response.addVectorMinAndCount(device.skelPositions.Count, coreMethods.getMinVectorsPerDevice());
                         break;
                      
                     case "setDevicePosition":
@@ -501,7 +515,8 @@ namespace IGS.Server.IGS
                             user.ClearErrors();
 
                             // attach tracking state
-                            retStr += ",\"trackingId\":" + user.SkeletonId;
+                            //retStr += ",\"trackingId\":" + user.SkeletonId;
+                            response.addTrackingId(user.SkeletonId);
                         }
                         break;
                     case "setPlugwisePath":
@@ -545,9 +560,10 @@ namespace IGS.Server.IGS
 
 
                 }
-
+                response.addSuccess(success);
+                response.addMsg(msg);
                 // finalize JSON response
-                retStr += ",\"success\":" + success.ToString().ToLower() + ",\"msg\":\"" + msg + "\"}";
+                //retStr += ",\"success\":" + success.ToString().ToLower() + ",\"msg\":\"" + msg + "\"}";
                 
 
                 if ((cmd != "popup" || msg != "") && (cmd != "pollDevice"))
@@ -555,7 +571,8 @@ namespace IGS.Server.IGS
                     logger.enqueueEntry(String.Format("Respronse to '{0}' : {1}", cmd, retStr));
                 }
 
-                return retStr;
+                //return retStr;
+                return response.serialize();
 
             }
             else if (Data.getDeviceByID(devId) != null && cmd != null)
@@ -563,42 +580,53 @@ namespace IGS.Server.IGS
                 switch (cmd)
                 {
                     case "getControlPath":
- 
-                        retStr = getControlPagePathHttp(devId);
+
+                        response.addReturnString(getControlPagePathHttp(devId));
+                        //retStr = getControlPagePathHttp(devId);
                         // redirect to device control path
-                        args.P.WriteRedirect(retStr, 301);
+                        //args.P.WriteRedirect(retStr, 301);
+                        args.P.WriteRedirect(response.getReturnString(), 301);
                         break;
 
                     case "deleteDevice":
-                        retStr = Data.deleteDevice(devId);
+                        //retStr = Data.deleteDevice(devId);
+                        response.addReturnString(devId);
                         break;
 
                     default:
                         Device dev = Data.getDeviceByID(devId);
                         if (dev.connection != null)
                         {
-                            retStr = dev.Transmit(cmd, value);
+                            //retStr = dev.Transmit(cmd, value);
+                            response.addReturnString(dev.Transmit(cmd, value));
                         }
                         break;
                 }
 
                 logger.enqueueEntry(String.Format("Response to Request {0} : {1} ", cmd, retStr));
-                return retStr;
+                //return retStr;
+                return response.serialize();
             }
             else
             {
                 // TODO: JSON response
                 retStr = Properties.Resources.UnknownError;
                 logger.enqueueEntry(String.Format("Response to Request {0} : {1}", cmd, retStr));
-                return retStr;
+                //return retStr;
+
+                response.addReturnString(retStr);
+
+                return response.serialize();
+
+
             }
+            
         }
 
 
         private String MakeDeviceString(IEnumerable<Device> devices)
         {
             String result = "\"devices\":[";
-
             if (devices != null)
             {
                 Device[] deviceList = devices.ToArray<Device>();
