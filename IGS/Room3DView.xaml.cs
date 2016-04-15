@@ -117,6 +117,39 @@ namespace IGS
             FillRoom();
         }
 
+        public Room3DView(List<Device> devices, CoordTransform transformator)
+        {
+            this.transformator = transformator;
+            skelList = new List<ModelVisual3D>();
+            boneListInitList = new List<Boolean>();
+            IDList = new List<long>();
+            ballListsList = new List<List<SphereVisual3D>>();
+            boneListsList = new List<List<PipeVisual3D>>();
+            aktualizations = new int[6];
+            IDListNullSpaces = new List<bool>();
+            skelRayList = new List<PipeVisual3D>();
+            for (int i = 0; i < 6; i++)
+            {
+                skelList.Add(new ModelVisual3D());
+                IDList.Add(-1);
+                IDListNullSpaces.Add(true);
+                boneListInitList.Add(false);
+                ballListsList.Add(initBalls());
+                aktualizations[i] = 0;
+                skelRayList.Add(new PipeVisual3D());
+                boneListsList.Add(new List<PipeVisual3D>());
+            }
+            lastSkeletonAktualized = 0;
+
+            kinect = new ModelVisual3D();
+
+            InitializeComponent();
+            //fillRoomWithColoredSamples(list, devices);
+
+            deviceList = devices;
+            FillRoom();
+        }
+
         /// <summary>
         /// Creating a triangle with three given points and a calculated normal 
         /// to create the room. 

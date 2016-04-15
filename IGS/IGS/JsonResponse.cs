@@ -16,8 +16,8 @@ namespace IGS.Server.IGS
         const string VEC_MIN = "vectorMin";
         const string DEVICE_ID = "deviceId";
         const string TRACKING_ID = "trackingId";
-        const string RETURN_VALUE = "returnString";
-        const string DEVICES = "deviceString";
+        const string RETURN_VALUE = "retStr";
+        const string DEVICES = "devices";
 
         public Dictionary<String, String> container { get; }
 

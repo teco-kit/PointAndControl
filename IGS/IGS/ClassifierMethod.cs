@@ -26,7 +26,7 @@ namespace IGS.Server.IGS
 
         public ClassifierMethod(ClassificationHandler handler, UserTracker tracker, DataHolder data, CoordTransform transform, EventLogger eLogger)
         {
-            this.classificationHandler = handler;
+            this.classificationHandler = new ClassificationHandler(transform, data);
             this.data = data;
             this.tracker = tracker;
             this.transformer = transform;
@@ -37,13 +37,9 @@ namespace IGS.Server.IGS
         {
             String s = "";
 
-            //TODO: validate that this function still works as intended
-
-            //Vector3D[] vecs = transformer.transformJointCoords(tracker.getMedianFilteredCoordinates(usr.SkeletonId));
             foreach (Point3D[] vecs in dev.skelPositions)
             {
                 s += classificationHandler.calculateWallProjectionSampleAndLearn(vecs, dev.Id);
-                //XMLSkeletonJointRecords.writeClassifiedDeviceToLastSelect(dev);
             }
 
             return s;
@@ -70,15 +66,18 @@ namespace IGS.Server.IGS
                 //XMLComponentHandler.writeUserJointsPerSelectClick(body);
 
 
-                //TODO: check why we need to do this
+                //TODO: check why we need to do this 
+                //ANSWER: NUML Returns the Label of the Classification in all uppercases and without extra like "_" (Partitioner of DeviceType_Number) - Decapsulate needed for Comparison of DeviceID and Returned Label    
                 String decapsulate = "";
 
                 foreach (Device d in data.Devices)
                 {
-                    decapsulate = d.Id.Replace("_", "");
+                    decapsulate = decapsulateID(d.Id);
+
                     if (sample.sampledeviceIdentifier.ToLower() == decapsulate.ToLower())
                     {
                         dev.Add(d);
+                        break;
                     }
                 }
             }
@@ -89,6 +88,11 @@ namespace IGS.Server.IGS
         public int getMinVectorsPerDevice()
         {
             return 10;
+        }
+
+        private String decapsulateID(String id)
+        {
+            return id.Replace("_", "");
         }
 
     }

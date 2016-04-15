@@ -114,7 +114,6 @@ namespace IGS.Classifier
 
                     }
                 }
-                Console.WriteLine("Going into trainClassifier");
                 trainClassifier();
         }
 
@@ -125,7 +124,7 @@ namespace IGS.Classifier
 
             trainingSamples.Add(sample);
 
-            if (trainingSetSize > 0 && trainingSamples.Count > trainingSetSize && trainingSetSize != -1)
+            if (trainingSetSize > 0 && trainingSamples.Count > trainingSetSize)
             {
                 Random r = new Random();
                 int half = (int)Math.Floor((double)(trainingSamples.Count / 2));

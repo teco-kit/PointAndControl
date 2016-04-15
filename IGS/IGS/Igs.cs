@@ -6,14 +6,24 @@ using IGS.Server.WebServer;
 using IGS.Server.Devices;
 using IGS.Server.Kinect;
 using System.Diagnostics;
-using IGS.Classifier;
 using System.Threading;
 using IGS.ComponentHandling;
 using IGS.Helperclasses;
-
+using Newtonsoft.Json;
 
 namespace IGS.Server.IGS
 {
+
+    public class dev
+    {
+        public String id { get; set; }
+        public String name { get; set; }
+        public dev (Device d)
+        {
+            id = d.Id;
+            name = d.Name;
+        }
+    }
     /// <summary>
     ///     This class takes place of the design pattern fassade. It encapsulates the different subsystems and combines the different interfaces which can be called by the HttpServer.
     ///     The IGS is the central control unit and passes on the tasks.
@@ -46,7 +56,7 @@ namespace IGS.Server.IGS
             createIGSKinect();
             json_paramReader = new JSON_ParameterReader();
             this.Transformer = new CoordTransform(IGSKinect.tiltingDegree, IGSKinect.roomOrientation, IGSKinect.ball.Center);
-            this.classification = new ClassificationHandler(Transformer, Data);
+            
             
             logger = eventLogger;
             this.coreMethods = new CollisionMethod(Data, Tracker, Transformer, logger);
@@ -92,7 +102,7 @@ namespace IGS.Server.IGS
         /// </summary>
         public CoordTransform Transformer { get; set; }
 
-        public ClassificationHandler classification { get; set; }
+ 
 
         ICoreMethods coreMethods { get; set; }
 
@@ -336,24 +346,14 @@ namespace IGS.Server.IGS
                         break;
 
                     case "addDevice":
-                        if (parameters != null && parameters.Count == 4)
+                        if (parameters == null)
                         {
-                            success = true;
-                            
-                            if(parameters == null)
-                            {
-                                msg = Properties.Resources.NoValues;
-                                break;
-                            }
-                               
-
-                            msg = AddDevice(parameters);
-
+                            msg = Properties.Resources.NoValues;
                             break;
                         }
 
-                        msg = Properties.Resources.AddDeviceError;
-
+                        msg = AddDevice(parameters);
+                        success = true;
 
                         break;
 
@@ -494,7 +494,7 @@ namespace IGS.Server.IGS
 
                         if (!json_paramReader.getDevID(parameters, out paramDevId))
                         {
-                            msg = paramDevId;
+                            msg = Properties.Resources.DevNotFoundDeletion;
                             break;
                         }
 
@@ -508,7 +508,6 @@ namespace IGS.Server.IGS
 
                         msg = Data.deleteDevice(device.Id);
                         success = true;
-
                         break;
 
                     case "popup":
@@ -533,7 +532,7 @@ namespace IGS.Server.IGS
                             msg = Properties.Resources.UnknownError;
                         }
                         break;
-                    case "setPlugwiseComponents":
+                    case "setKinectComponents":
                         success = setKinectPositionWithDict(parameters);
                         if (success)
                         {
@@ -631,6 +630,7 @@ namespace IGS.Server.IGS
         private String MakeDeviceString(IEnumerable<Device> devices)
         {
             String result = "\"devices\":[";
+            List<dev> d = new List<dev>();
             if (devices != null)
             {
                 Device[] deviceList = devices.ToArray<Device>();
@@ -639,6 +639,7 @@ namespace IGS.Server.IGS
                     if (i != 0)
                         result += ",";
                     result += "{\"id\":\"" + deviceList[i].Id + "\", \"name\":\"" + deviceList[i].Name + "\"}";
+
                 }
             }
             result += "]";
@@ -715,6 +716,7 @@ namespace IGS.Server.IGS
             String id;
             String path;
             String retStr = "";
+
 
             if (json_paramReader.getDevNameTypePath(values, out type, out name, out path))
             {

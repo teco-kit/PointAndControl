@@ -72,19 +72,19 @@ namespace IGS.Helperclasses
 
         public bool getDevID(Dictionary<String, String> values, out String paramDevId)
         {
-            return getValueFromDict(values, "Id", out paramDevId);
+            return getValueFromDict(values, "id", out paramDevId);
         }
 
         public bool getDevName(Dictionary<String, String> values, out String paramDevName)
         {
-            return getValueFromDict(values, "Name", out paramDevName);
+            return getValueFromDict(values, "name", out paramDevName);
         }
 
         public bool getDevNameTypePath(Dictionary<String, String> values, out String type, out String name, out String path)
         {
-            if(values.TryGetValue("Type", out type) &&
-                values.TryGetValue("Name", out name) &&
-                values.TryGetValue("Path", out path))
+            if(values.TryGetValue("type", out type) &&
+                values.TryGetValue("name", out name) &&
+                values.TryGetValue("path", out path))
             {
                 return true;
             } else

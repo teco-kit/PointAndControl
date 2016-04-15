@@ -21,13 +21,11 @@ namespace IGS
             starter.igsStart();
 
 
-            String command;
+            String command = "";
 
             while (starter.igsRunning)
             {
-                //Console.WriteLine(Properties.Resources.TypeConsoleCommand);
-                
-                command = "";
+                Console.WriteLine(Properties.Resources.TypeConsoleCommand);
 
                 command = Console.ReadLine();
 
