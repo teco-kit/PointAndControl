@@ -231,4 +231,16 @@ Befehl konnte nicht ausgeführt werden</value>
   <data name="MoreVectorsRequired" xml:space="preserve">
     <value>Es werden mehr Vektoren für die Berechnung benötigt</value>
   </data>
+  <data name="String1" xml:space="preserve">
+    <value>Nutzer mit der Wlan-Adress {0} wurde hinzugefügt</value>
+  </data>
+  <data name="UserExists" xml:space="preserve">
+    <value>Nutzer mit der Wlan-Adress {0} existiert bereits</value>
+  </data>
+  <data name="AdditionalDevCoords" xml:space="preserve">
+    <value>Dem Gerät {0} wurde eine neue Position hinzugefügt</value>
+  </data>
+  <data name="DevCoordsReplaced" xml:space="preserve">
+    <value>Das Gerät {0} wurde neu positioniert</value>
+  </data>
 </root>

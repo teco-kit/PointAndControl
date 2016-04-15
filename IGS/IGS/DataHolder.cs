@@ -36,7 +36,7 @@ namespace IGS.Server.IGS
 
         private EventLogger logger { get; set; }
 
-       
+
 
         /// <summary>
         ///     Constructor for the DataHolder
@@ -119,13 +119,13 @@ namespace IGS.Server.IGS
         ///     and adds the user to the user-list.
         ///     <param name="wlanAdr"> Used to identify and to add a user</param>
         /// </summary>
-        /// //TODO: change return value to something more meaningful
         public bool AddUser(String wlanAdr)
         {
             foreach (User u in _users)
             {
                 if (u.WlanAdr == wlanAdr)
                 {
+                    //return Properties.Resources.UserExists;
                     return false;
                 }
             }
@@ -133,9 +133,29 @@ namespace IGS.Server.IGS
             User createdUser = new User(wlanAdr);
             Users.Add(createdUser);
             Console.WriteLine("User added");
-
             return true;
+            //return Properties.Resources.UserAdded;
         }
+
+        public string AddUser(String wlanAdr, out bool success)
+        {
+            foreach (User u in _users)
+            {
+                if (u.WlanAdr == wlanAdr)
+                {
+                    success = false;
+                    return String.Format(Properties.Resources.UserExists, wlanAdr);
+                }
+            }
+
+            User createdUser = new User(wlanAdr);
+            Users.Add(createdUser);
+            Console.WriteLine("User added");
+            success = true;
+            return String.Format(Properties.Resources.UserAdded, wlanAdr);
+        }
+
+
 
         /// <summary>
         ///     The user with the wlan adress wlanAdr will be connected with a bodyID.

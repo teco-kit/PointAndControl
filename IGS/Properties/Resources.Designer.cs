@@ -79,6 +79,15 @@ namespace IGS.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Device {0} got an additional position.
+        /// </summary>
+        internal static string AdditionalDevCoords {
+            get {
+                return ResourceManager.GetString("AdditionalDevCoords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Calculation error, please try again.
         /// </summary>
         internal static string CalculationError {
@@ -102,6 +111,15 @@ namespace IGS.Properties {
         internal static string CoordinatesAdded {
             get {
                 return ResourceManager.GetString("CoordinatesAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device {0} is now located to another position.
+        /// </summary>
+        internal static string DevCoordsReplaced {
+            get {
+                return ResourceManager.GetString("DevCoordsReplaced", resourceCulture);
             }
         }
         
@@ -382,6 +400,24 @@ namespace IGS.Properties {
         internal static string UnknownError {
             get {
                 return ResourceManager.GetString("UnknownError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User with Wlan-Adress {0} was added.
+        /// </summary>
+        internal static string UserAdded {
+            get {
+                return ResourceManager.GetString("UserAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User with Wlan-Adress {0} already exists.
+        /// </summary>
+        internal static string UserExists {
+            get {
+                return ResourceManager.GetString("UserExists", resourceCulture);
             }
         }
         

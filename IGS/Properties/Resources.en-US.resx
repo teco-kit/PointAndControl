@@ -230,4 +230,16 @@ Command could not be executed</value>
   <data name="MoreVectorsRequired" xml:space="preserve">
     <value>More vectors needed for calculation</value>
   </data>
+  <data name="UserAdded" xml:space="preserve">
+    <value>User with Wlan-Adress {0} was added</value>
+  </data>
+  <data name="UserExists" xml:space="preserve">
+    <value>User with Wlan-Adress {0} already exists</value>
+  </data>
+  <data name="AdditionalDevCoords" xml:space="preserve">
+    <value>Device {0} got an additional position</value>
+  </data>
+  <data name="DevCoordsReplaced" xml:space="preserve">
+    <value>Device {0} is now located to another position</value>
+  </data>
 </root>

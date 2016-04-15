@@ -26,8 +26,10 @@ namespace IGS
             while (starter.igsRunning)
             {
                 //Console.WriteLine(Properties.Resources.TypeConsoleCommand);
-
+                
                 command = "";
+
+                command = Console.ReadLine();
 
                 switch (command) {
 
@@ -37,7 +39,7 @@ namespace IGS
                         break;
 
                     default:
-                        break;
+                        continue;
                 }
             }
         }

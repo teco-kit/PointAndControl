@@ -46,7 +46,7 @@ namespace IGS.Server.IGS
 
         public String train(Device dev)
         {
-            if (dev == null) return "Gerät nicht gefunden";
+            if (dev == null) return Properties.Resources.SpecifiedDeviceNotFound;
 
             Console.Out.WriteLine("CurrentList length:" + dev.skelPositions.Count);
 
@@ -69,8 +69,9 @@ namespace IGS.Server.IGS
 
             //change position of device in dataHolder
             Data.addDeviceCoordinates(dev.Id, "0,3", position);
+            
 
-            return "Gerät " + dev.Name + " wurde neu plaziert";
+            return String.Format(Properties.Resources.AdditionalDevCoords, dev.Id);
         }
 
         public int getMinVectorsPerDevice()

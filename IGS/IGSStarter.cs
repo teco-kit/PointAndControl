@@ -28,25 +28,26 @@ namespace IGS
         public async void igsStart()
         {
             igsRunning = true;
-            try
-            {
+
                 await Task.Run(() =>
                 {
-                    igs = Initializer.InitializeIgs();
-                    igsRunning = true;
-                    while (igs.isRunning)
+                    try {
+                        igs = Initializer.InitializeIgs();
+                        igsRunning = true;
+                        while (igs.isRunning)
+                        {
+                            igsCancellationToken.ThrowIfCancellationRequested();
+                        }
+                    } catch (OperationCanceledException)
                     {
-                        igsCancellationToken.ThrowIfCancellationRequested();
+                        igs.shutDown();
+                        igsRunning = false;
                     }
                 });
                 igsRunning = false;
                 Environment.Exit(1);
-            }
-            catch (OperationCanceledException)
-            {
-                igs.shutDown();
-                igsRunning = false;
-            }
+            
+
         }
 
         public void stopIGSConsoleCmd()

@@ -172,6 +172,11 @@ namespace IGS.Server.IGS
             return Data.AddUser(wlanAdr);
         }
 
+        public string AddUser(String wlanAdr, out bool success)
+        {
+            return Data.AddUser(wlanAdr, out success);
+        }
+
         /// <summary>
         ///     This method fetches the id of the skeleton from the user currently perfoming the gesture to register.
         ///     This id will be set in the UserObject which is through its WLAN-adress unique.
@@ -245,8 +250,8 @@ namespace IGS.Server.IGS
                 switch (cmd)
                 {
                     case "addUser":
-                        success = AddUser(wlanAdr);
-
+                        //success = AddUser(wlanAdr);
+                        AddUser(wlanAdr, out success);
                         if (Data.GetUserByIp(wlanAdr) != null)
                         {
                             if (Tracker.isKinectAvailable())
@@ -256,7 +261,6 @@ namespace IGS.Server.IGS
                                 //retStr += ",\"trackingId\":" + SkeletonIdToUser(wlanAdr);
                             } else
                             {
-                                
                                 msg = Properties.Resources.NoKinAvailable;
                             }
                         }
@@ -761,6 +765,7 @@ namespace IGS.Server.IGS
                 return Properties.Resources.RegistrationRequest;
 
             Point3D[] vectors = Transformer.transformJointCoords(Tracker.GetCoordinates(user.SkeletonId));
+
             dev.skelPositions.Add(vectors);
 
             return String.Format(Properties.Resources.AddDevVec, dev.skelPositions.Count, coreMethods.getMinVectorsPerDevice());
