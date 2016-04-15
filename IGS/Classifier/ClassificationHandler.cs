@@ -60,9 +60,9 @@ namespace IGS.Classifier
                 {
 
                     XMLComponentHandler.writeWallProjectionSampleToXML(sample);
-                    Point3D p = new Point3D(vectors[2].X, vectors[2].Y, vectors[2].Z);
-                    XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
-                    XMLComponentHandler.writeSampleToXML(vectors, sample.sampledeviceIdentifier);
+                    //Point3D p = new Point3D(vectors[2].X, vectors[2].Y, vectors[2].Z);
+                    //XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
+                    //XMLComponentHandler.writeSampleToXML(vectors, sample.sampledeviceIdentifier);
 
                     knnClassifier.addSampleAndLearn(sample);
 
