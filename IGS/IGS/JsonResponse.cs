@@ -20,9 +20,7 @@ namespace IGS.Server.IGS
         const string DEVICES = "deviceString";
 
         public Dictionary<String, String> container { get; }
-
-
-
+        
         public JsonResponse(String setCmd, bool setSuccess, String setMsg)
         {
             container = new Dictionary<string, string>();
