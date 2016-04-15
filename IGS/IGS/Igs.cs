@@ -629,7 +629,7 @@ namespace IGS.Server.IGS
 
         private String MakeDeviceString(IEnumerable<Device> devices)
         {
-            String result = "\"devices\":[";
+            String result = "[";
             List<dev> d = new List<dev>();
             if (devices != null)
             {
@@ -720,7 +720,7 @@ namespace IGS.Server.IGS
 
             if (json_paramReader.getDevNameTypePath(values, out type, out name, out path))
             {
-                if (json_paramReader.getDevID(values, out id))
+                if (json_paramReader.getDevID(values, out id) && !id.Equals(""))
                 {
                     retStr = Data.AddDevice(type, id, name, path);
                 } else
@@ -778,9 +778,16 @@ namespace IGS.Server.IGS
         {
             String controlPath = "";
 
-            Type t = Data.getDeviceByID(id).GetType();
+            String t = DataHolder.getDeviceType(Data.getDeviceByID(id));
 
-            controlPath = "http://" + Server.LocalIP + ":8080" + "/" + t.Name + "/" + "index.html?dev=" + id;
+            if (t.Equals("ExternalDevice"))
+            {
+                controlPath = Data.getDeviceByID(id).Path;
+            }
+            else
+            {
+                controlPath = "http://" + Server.LocalIP + ":8080" + "/" + t + "/" + "index.html?dev=" + id;
+            }
 
             return controlPath;
         }

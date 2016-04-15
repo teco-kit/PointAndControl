@@ -19,7 +19,7 @@ namespace IGS.Server.IGS
         const string RETURN_VALUE = "retStr";
         const string DEVICES = "devices";
 
-        public Dictionary<String, String> container { get; }
+        public Dictionary<String, String> container { get; private set; }
         
         public JsonResponse(String setCmd, bool setSuccess, String setMsg)
         {

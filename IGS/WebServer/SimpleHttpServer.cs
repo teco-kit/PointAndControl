@@ -613,17 +613,11 @@ namespace IGS.Server.WebServer
                 String language = p.HttpHeaders["Accept-Language"].ToString();
                 language = language.Split(',')[0];
 
-                
-
                 if (device != null && command != null)
                 {
-                    // TODO: clean this mess up
-                    String value = "";
-                    if (col["val"] != null)
-                        value = col["val"];
+                    String value = (col["val"] != null)? col["val"] : "";
                     String clientIp = ((IPEndPoint)p.Socket.Client.RemoteEndPoint).Address.ToString();
                     OnRequest(new HttpEventArgs(clientIp, device, command, value, language, p));
-
                 } else {
                     p.WriteFailure();
                 }
@@ -645,8 +639,6 @@ namespace IGS.Server.WebServer
             p.OutputStream.WriteLine("<a href=/test>return</a><p>");
             p.OutputStream.WriteLine("postbody: <pre>{0}</pre>", data);
             String clientIp = ((IPEndPoint)p.Socket.Client.RemoteEndPoint).Address.ToString();
-
-
 
             OnPOSTRequest(new HttpEventArgs(clientIp, data, p));
         }
@@ -671,16 +663,12 @@ namespace IGS.Server.WebServer
             }
             Debug.WriteLine("send Data: " + pathstring);
 
-
             bool continueSending = responseToFileRequest(p, pathstring);
 
             if (!continueSending)
             {
                 return;
             }
-
-
-            //TODO: make httproot configurable
 
             if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\" + pathstring))
             {

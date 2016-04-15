@@ -103,8 +103,28 @@ var changeDevicePosition = function (deviceId) {
     $(':mobile-pagecontainer').pagecontainer('change', '#locate');
 }
 
+var addDevice = function () {
+    var newDevice = { "id": $('#newdeviceid').val(), "name": $('#newdevicename').val(), "path": $('#newdeviceurl').val(), "type": $('#newdevicetype').val() };
 
-var addDeviceFromList = function () {
+    $.getJSON('/?dev=server&cmd=addDevice&val=' + JSON.stringify(newDevice), function (data) {
+
+        if (!data) {
+            return;
+        }
+
+        if (data.success) {
+            toast("Gerät hinzugefügt")
+
+            // set position for new device
+            changeDevicePosition(data.deviceId)
+        }
+
+        //TODO: check response          
+    });
+}
+
+
+var updateDeviceFromList = function () {
     if ($('#newdevicedd').val() == "")
         return;
 	
@@ -256,10 +276,10 @@ var updateDeviceList = function () {
         }
 
         // store device list for later use
-        deviceList = data.devices;
+        deviceList = eval(data.devices);
 
-        for (var i = 0; i < data.devices.length; i++) {
-            var device = data.devices[i];
+        for (var i = 0; i < deviceList.length; i++) {
+            var device = deviceList[i];
             var target;
             if (editMode)
                 target = '"javascript:changeDevicePosition(\'' + device.id + '\');"';
@@ -504,7 +524,7 @@ $(function (event) {
 
     // add device from dialogue
     $('#adddevicebutton').on('click', function (event) {
-        addDeviceFromList();
+        addDevice();
     });
 
 
@@ -526,7 +546,7 @@ $(function (event) {
         }
 
         if (hash == '#adddevice') {
-            updateNewDeviceDD(event);
+            //updateNewDeviceDD(event);
         }
 
         if (hash == '#ar') {
