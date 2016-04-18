@@ -765,7 +765,6 @@ namespace IGS.Server.IGS
         {
             String controlPath = "";
 
-            //String t = DataHolder.getDeviceType(Data.getDeviceByID(id));
             String t = Data.getDeviceByID(id).GetType().Name;
 
             if (t.Equals("ExternalDevice"))
@@ -881,6 +880,11 @@ namespace IGS.Server.IGS
             isRunning = false;
 
             return true;
+        }
+
+        public void addDevicePerArray(String[] arr)
+        {
+            Data.AddDevice(arr[0], arr[1], arr[2], arr[3]);
         }
 
     }
