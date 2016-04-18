@@ -116,6 +116,8 @@ namespace IGS.Server.IGS
 
         private JSON_ParameterReader json_paramReader { get; set; }
 
+        private readonly List<String> deviceTypes = Device.getAllDerivedDeviceTypes();
+
 
 
         /// <summary>
@@ -253,14 +255,14 @@ namespace IGS.Server.IGS
             {
                 // return JSON formatted message
                 args.P.WriteSuccess("application/json");
-                retStr = "{\"cmd\":\"" + cmd + "\"";
+
 
                 response.addCmd(cmd);
 
                 switch (cmd)
                 {
                     case "addUser":
-                        //success = AddUser(wlanAdr);
+
                         AddUser(wlanAdr, out success);
                         if (Data.GetUserByIp(wlanAdr) != null)
                         {
@@ -268,7 +270,7 @@ namespace IGS.Server.IGS
                             {
                                 response.addTrackingId(SkeletonIdToUser(wlanAdr));
 
-                                //retStr += ",\"trackingId\":" + SkeletonIdToUser(wlanAdr);
+                               
                             } else
                             {
                                 msg = Properties.Resources.NoKinAvailable;
@@ -300,7 +302,6 @@ namespace IGS.Server.IGS
                                 msg = Properties.Resources.NoUserInImage;
 
                             // attach tracking state
-                            //retStr += ",\"trackingId\":" + id;
                             response.addTrackingId(id);
                             break;
                         }
@@ -327,21 +328,19 @@ namespace IGS.Server.IGS
                         List<Device> foundDevices = coreMethods.chooseDevice(user);
                         if (foundDevices.Count > 0)
                             success = true;
-                        //retStr += "," + MakeDeviceString(foundDevices);
+
                         response.addDevices(MakeDeviceString(foundDevices));
                         break;
 
                         
                     case "list":
                         success = true;
-                        //retStr += "," + MakeDeviceString(Data.Devices);
                         response.addDevices(MakeDeviceString(Data.Devices));
                         break;
 
                     case "discoverDevices":
                         success = true;
                         // Data.newDevices = discoverDevices();
-                        //retStr += "," + MakeDeviceString(Data.newDevices);
                         response.addDevices(MakeDeviceString(Data.newDevices));
                         break;
 
@@ -385,11 +384,6 @@ namespace IGS.Server.IGS
 
                             String newDeviceId = AddDevice(type, "", paramDevName, device.Path);
 
-                            // attach to return string
-                            //retStr += ",\"deviceId\":\"" + newDeviceId + "\"";
-
-                            
-                            
                             // remove from new devices list
                             Data.newDevices.Remove(device);
                             response.addDeviceId(newDeviceId);
@@ -423,8 +417,6 @@ namespace IGS.Server.IGS
                         device.skelPositions = new List<Point3D[]>();
 
                         //attach vector numbers
-                        //retStr += ",\"vectorCount\":" + device.skelPositions.Count + ",\"vectorMin\":" + coreMethods.getMinVectorsPerDevice();
-
                         response.addVectorMinAndCount(device.skelPositions.Count, coreMethods.getMinVectorsPerDevice());
                         break;
 
@@ -460,7 +452,6 @@ namespace IGS.Server.IGS
                         msg = addDeviceVector(device, user);
 
                         //attach vector numbers 
-                        //retStr += ",\"vectorCount\":" + device.skelPositions.Count + ",\"vectorMin\":" + coreMethods.getMinVectorsPerDevice();
                         response.addVectorMinAndCount(device.skelPositions.Count, coreMethods.getMinVectorsPerDevice());
                         break;
                      
@@ -518,7 +509,6 @@ namespace IGS.Server.IGS
                             user.ClearErrors();
 
                             // attach tracking state
-                            //retStr += ",\"trackingId\":" + user.SkeletonId;
                             response.addTrackingId(user.SkeletonId);
                         }
                         break;
@@ -560,13 +550,17 @@ namespace IGS.Server.IGS
 
                         break;
 
+                    case "getDeviceTypes":
+                        success = true;
 
+                        response.addDeviceTypes(getDeviceTypeJSON());
+
+                        break;
 
                 }
                 response.addSuccess(success);
                 response.addMsg(msg);
-                // finalize JSON response
-                //retStr += ",\"success\":" + success.ToString().ToLower() + ",\"msg\":\"" + msg + "\"}";
+               
                 
 
                 if ((cmd != "popup" || msg != "") && (cmd != "pollDevice"))
@@ -574,7 +568,6 @@ namespace IGS.Server.IGS
                     logger.enqueueEntry(String.Format("Respronse to '{0}' : {1}", cmd, retStr));
                 }
 
-                //return retStr;
                 return response.serialize();
 
             }
@@ -585,14 +578,12 @@ namespace IGS.Server.IGS
                     case "getControlPath":
 
                         response.addReturnString(getControlPagePathHttp(devId));
-                        //retStr = getControlPagePathHttp(devId);
-                        // redirect to device control path
-                        //args.P.WriteRedirect(retStr, 301);
+
                         args.P.WriteRedirect(response.getReturnString(), 301);
                         break;
 
                     case "deleteDevice":
-                        //retStr = Data.deleteDevice(devId);
+
                         response.addReturnString(devId);
                         break;
 
@@ -600,21 +591,21 @@ namespace IGS.Server.IGS
                         Device dev = Data.getDeviceByID(devId);
                         if (dev.connection != null)
                         {
-                            //retStr = dev.Transmit(cmd, value);
+
                             response.addReturnString(dev.Transmit(cmd, value));
                         }
                         break;
                 }
 
                 logger.enqueueEntry(String.Format("Response to Request {0} : {1} ", cmd, retStr));
-                //return retStr;
+
                 return response.serialize();
             }
             else
             {
                 retStr = Properties.Resources.UnknownError;
                 logger.enqueueEntry(String.Format("Response to Request {0} : {1}", cmd, retStr));
-                //return retStr;
+
 
                 response.addReturnString(retStr);
 
@@ -819,7 +810,7 @@ namespace IGS.Server.IGS
            
         }
 
-        public bool setKinect(String x, String y, String z, String horizontal, String tilt)
+        private bool setKinect(String x, String y, String z, String horizontal, String tilt)
         {
             double parsedX; 
             double parsedY;
@@ -867,7 +858,7 @@ namespace IGS.Server.IGS
             return changed;
         }
 
-        public bool setRoomMeasures(Dictionary<String, String> values)
+        private bool setRoomMeasures(Dictionary<String, String> values)
         {
             String width;
             String height;
@@ -879,6 +870,11 @@ namespace IGS.Server.IGS
             logger.enqueueEntry(String.Format("Roomsize Changed| width:{0}, height:{1}, depth:{2}", width, height, depth));
 
             return true;
+        }
+
+        private String getDeviceTypeJSON()
+        {
+            return JsonConvert.SerializeObject(deviceTypes, Formatting.Indented);
         }
 
         public bool shutDown()

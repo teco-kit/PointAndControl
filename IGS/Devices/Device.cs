@@ -3,6 +3,7 @@ using IGS.Server.Location;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Media.Media3D;
 
@@ -100,6 +101,29 @@ namespace IGS.Server.Devices
         public string putPrefixHTTP(string post)
         {
             return "http://" + post;
+        }
+
+        //Code from User "Yahoo Serious" on Stackoverflow: http://stackoverflow.com/questions/857705/get-all-derived-types-of-a-type (Date: 18.04.2016 - 09:16 am UTC+1)
+        public static List<String> getAllDerivedDeviceTypes()
+        {
+            
+            var listOfBs = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
+                            from assemblyType in domainAssembly.GetTypes()
+                            where typeof(Device).IsAssignableFrom(assemblyType)
+                            select assemblyType).ToArray();
+
+            List<String> result = new List<string>();
+
+            foreach (var t in listOfBs)
+            {
+                if (!t.Name.Equals("Device"))
+                {
+                    result.Add(t.Name);
+                }
+                
+            }
+
+            return result;
         }
     }
 }

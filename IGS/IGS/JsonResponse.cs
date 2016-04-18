@@ -18,6 +18,7 @@ namespace IGS.Server.IGS
         const string TRACKING_ID = "trackingId";
         const string RETURN_VALUE = "retStr";
         const string DEVICES = "devices";
+        const string DEVICETYPES = "deviceTypes";
 
         public Dictionary<String, String> container { get; private set; }
         
@@ -134,5 +135,10 @@ namespace IGS.Server.IGS
                 container.Add(DEVICES, devices);
         }
 
+        public void addDeviceTypes(String types)
+        {
+            if (!container.ContainsKey(DEVICETYPES))
+                container.Add(DEVICETYPES, types);
+        }
     }
 }
