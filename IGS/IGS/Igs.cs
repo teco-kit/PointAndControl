@@ -14,11 +14,11 @@ using Newtonsoft.Json;
 namespace IGS.Server.IGS
 {
 
-    public class dev
+    public class leanDevRepresentation
     {
         public String id { get; set; }
         public String name { get; set; }
-        public dev (Device d)
+        public leanDevRepresentation (Device d)
         {
             id = d.Id;
             name = d.Name;
@@ -380,7 +380,7 @@ namespace IGS.Server.IGS
                                 msg = paramDevName;
                                 break;
                             }
-                            String type = DataHolder.getDeviceType(device);
+                            String type = device.GetType().Name;
 
                             String newDeviceId = AddDevice(type, "", paramDevName, device.Path);
 
@@ -619,20 +619,17 @@ namespace IGS.Server.IGS
 
         private String MakeDeviceString(IEnumerable<Device> devices)
         {
-            String result = "[";
-            List<dev> d = new List<dev>();
+            
+            List<leanDevRepresentation> d = new List<leanDevRepresentation>();
             if (devices != null)
             {
-                Device[] deviceList = devices.ToArray<Device>();
-                for (int i = 0; i < deviceList.Length; i++)
-                {
-                    if (i != 0)
-                        result += ",";
-                    result += "{\"id\":\"" + deviceList[i].Id + "\", \"name\":\"" + deviceList[i].Name + "\"}";
+                List<Device> deviceList = devices.ToList();
 
-                }
+                deviceList.ForEach(x => d.Add(new leanDevRepresentation(x)));
             }
-            result += "]";
+            
+            String result = JsonConvert.SerializeObject(d, Formatting.Indented);
+
             return result;
         }
 
@@ -768,7 +765,8 @@ namespace IGS.Server.IGS
         {
             String controlPath = "";
 
-            String t = DataHolder.getDeviceType(Data.getDeviceByID(id));
+            //String t = DataHolder.getDeviceType(Data.getDeviceByID(id));
+            String t = Data.getDeviceByID(id).GetType().Name;
 
             if (t.Equals("ExternalDevice"))
             {

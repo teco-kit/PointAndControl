@@ -317,7 +317,8 @@ namespace IGS.Server.IGS
 
             foreach(Device dev in Devices)
             {
-                if (getDeviceType(dev).Equals("Plugwise"))
+                //if (getDeviceType(dev).Equals("Plugwise"))
+                if(dev.GetType().Name.Equals("Plugwise"))
                 {
                     splitted = dev.CommandString.Split('/',
                         ':');
@@ -424,12 +425,6 @@ namespace IGS.Server.IGS
             }
 
             return false;
-        }
-
-        public static string getDeviceType(Device dev)
-        {
-            string[] split = dev.GetType().ToString().Split('.');
-            return split[split.Length - 1];
         }
 
         public string deleteDevice(String id)
