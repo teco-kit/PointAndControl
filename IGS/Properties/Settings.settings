@@ -35,8 +35,8 @@
     <Setting Name="KinectHorizontalAngle" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="EventLog" Type="System.Collections.Specialized.StringCollection" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="KodiPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\\Program Files (x86)\\Kodi\\Kodi.exe</Value>
     </Setting>
   </Settings>
 </SettingsFile>

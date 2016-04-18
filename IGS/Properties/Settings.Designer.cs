@@ -157,12 +157,13 @@ namespace IGS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Specialized.StringCollection EventLog {
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\\\Program Files (x86)\\\\Kodi\\\\Kodi.exe")]
+        public string KodiPath {
             get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["EventLog"]));
+                return ((string)(this["KodiPath"]));
             }
             set {
-                this["EventLog"] = value;
+                this["KodiPath"] = value;
             }
         }
     }

@@ -68,10 +68,10 @@ namespace IGS.Server.IGS
             }
 
             //change position of device in dataHolder
-            Data.addDeviceCoordinates(dev.Id, "0,3", position);
-            
 
-            return String.Format(Properties.Resources.AdditionalDevCoords, dev.Id);
+            Data.changeDeviceCoordinates(dev.Id, "0,3", position);
+
+            return String.Format(Properties.Resources.DevCoordsReplaced, dev.Id);
         }
 
         public int getMinVectorsPerDevice()

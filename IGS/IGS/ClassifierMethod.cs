@@ -66,7 +66,7 @@ namespace IGS.Server.IGS
                 //XMLComponentHandler.writeUserJointsPerSelectClick(body);
 
 
-                //TODO: check why we need to do this 
+                
                 //ANSWER: NUML Returns the Label of the Classification in all uppercases and without extra like "_" (Partitioner of DeviceType_Number) - Decapsulate needed for Comparison of DeviceID and Returned Label    
                 String decapsulate = "";
 

@@ -612,7 +612,6 @@ namespace IGS.Server.IGS
             }
             else
             {
-                // TODO: JSON response
                 retStr = Properties.Resources.UnknownError;
                 logger.enqueueEntry(String.Format("Response to Request {0} : {1}", cmd, retStr));
                 //return retStr;
@@ -800,22 +799,6 @@ namespace IGS.Server.IGS
 
             json_paramReader.getPlugwiseComponents(values, out host, out port, out path);
 
-            
-            //if (!getValueFromDict(values, "host", out host))
-            //{
-            //    host = null;
-            //}
-
-            //if (!getValueFromDict(values, "port", out port))
-            //{
-            //    port = null;
-            //}
-
-            //if (!getValueFromDict(values, "path", out path))
-            //{
-            //    path = null;
-            //}
-
             Data.change_PlugWise_Adress(host, port, path);
 
             return true;
@@ -830,21 +813,6 @@ namespace IGS.Server.IGS
             String tilt;
 
             json_paramReader.getKinectPosition(values, out x, out y, out z, out horizontal, out tilt);
-
-            //if (!getValueFromDict(values, "x", out x))
-            //    x = "NotChanged";
-
-            //if (!getValueFromDict(values, "y", out y))
-            //    y = "NotChanged";
-
-            //if (!getValueFromDict(values, "z", out z))
-            //    z = "NotChanged";
-
-            //if (!getValueFromDict(values, "horizontal", out horizontal))
-            //    horizontal = "NotChanged";
-
-            //if (!getValueFromDict(values, "tilt", out tilt))
-            //    tilt = "NotChannged";
 
             return setKinect(x, y, z, horizontal, tilt);
 
@@ -904,15 +872,6 @@ namespace IGS.Server.IGS
             String width;
             String height;
             String depth;
-
-            //if (!getValueFromDict(values, "width", out width))
-            //    width = "NotChanged";
-
-            //if (!getValueFromDict(values, "height", out height))
-            //    height = "NotChanged";
-
-            //if (!getValueFromDict(values, "depth", out depth))
-            //    depth = "NotChanged";
 
             json_paramReader.getRoomMeasures(values, out width, out height, out depth);
 
