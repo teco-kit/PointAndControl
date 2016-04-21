@@ -1,11 +1,10 @@
 ﻿using IGS;
-using IGS.ComponentHandling;
-using IGS.Server.IGS;
-using IGS.Server.Kinect;
 using Microsoft.Kinect;
+using PointAndControl.ComponentHandling;
+using PointAndControl.Kinect;
+using PointAndControl.MainComponents;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -103,7 +102,7 @@ public partial class MainWindow
     /// </summary>
     private readonly Brush handLassoBrush = new SolidColorBrush(Color.FromArgb(128, 0, 0, 255));
 
-    private Igs _igs;
+    private PointAndControlMain pointAndControlMain;
     private WriteableBitmap bitmap = null;
 
     /// <summary>
@@ -246,29 +245,29 @@ public partial class MainWindow
         _3dviewIsAktive = false;
         _ifSkeletonisBuild = false;
 
-        _igs = Initializer.InitializeIgs();
+        pointAndControlMain = Initializer.InitializeIgs();
 
-        logger = _igs.logger;
+        logger = pointAndControlMain.logger;
         fillFieldsGUI();
 
-        this.coordinateMapper = _igs.Tracker.Sensor.CoordinateMapper;
-        _igs.devInit = true;
+        this.coordinateMapper = pointAndControlMain.Tracker.Sensor.CoordinateMapper;
+        pointAndControlMain.devInit = true;
 
-        _sensor = _igs.Tracker.Sensor;
+        _sensor = pointAndControlMain.Tracker.Sensor;
         if (_sensor != null)
         {
-            this.multiFrameReader = _igs.Tracker.Sensor.OpenMultiSourceFrameReader(FrameSourceTypes.Color | FrameSourceTypes.Body);
+            this.multiFrameReader = pointAndControlMain.Tracker.Sensor.OpenMultiSourceFrameReader(FrameSourceTypes.Color | FrameSourceTypes.Body);
             this.multiFrameReader.MultiSourceFrameArrived += this.Reader_MultiSourceFrameArrived;
         }
 
-        FrameDescription ColorframeDescription = _igs.Tracker.Sensor.ColorFrameSource.FrameDescription;
+        FrameDescription ColorframeDescription = pointAndControlMain.Tracker.Sensor.ColorFrameSource.FrameDescription;
         // allocate space to put the pixels being received
         this.pixels = new byte[ColorframeDescription.Width * ColorframeDescription.Height * this.bytesPerPixel];
         // create the bitmap to display
         this.bitmap = new WriteableBitmap(ColorframeDescription.Width, ColorframeDescription.Height, 96.0, 96.0, PixelFormats.Bgr32, null);
 
         // query frame description for skeleton display
-        FrameDescription depthFrameDescription = _igs.Tracker.Sensor.DepthFrameSource.FrameDescription;
+        FrameDescription depthFrameDescription = pointAndControlMain.Tracker.Sensor.DepthFrameSource.FrameDescription;
         this.displayWidth = depthFrameDescription.Width;
         this.displayHeight = depthFrameDescription.Height;
         this.imageSourceSkeleton = new DrawingImage(this._drawingGroup);
@@ -284,7 +283,7 @@ public partial class MainWindow
     /// <param name="mouseButtonEventArgs"></param>
     private void WindowClosing(object sender, MouseButtonEventArgs mouseButtonEventArgs)
     {
-        _igs.Tracker.ShutDown();
+        pointAndControlMain.Tracker.ShutDown();
         Environment.Exit(1);
     }
 
@@ -332,7 +331,7 @@ public partial class MainWindow
             }
         }
 
-        //TODO: review this to check drawing of bodies - colorFrame and bodyFrame have different sizes and aspect ratios
+        //TODO: review this to check drawing of bodies - colorFrame and bodyFrame have different sizes and aspect ratios - Minor Priority
         if (bodyFrame != null)
         {
             using (bodyFrame)
@@ -349,7 +348,7 @@ public partial class MainWindow
                     {
                         foreach (Body body in bodies)
                         {
-                            foreach (TrackedSkeleton ts in _igs.Tracker.Bodies)
+                            foreach (TrackedSkeleton ts in pointAndControlMain.Tracker.Bodies)
                             {
                                 if ((int)body.TrackingId == ts.Id)
                                 {
@@ -390,7 +389,7 @@ public partial class MainWindow
 
                     if (_3Dview != null)
                     {
-                        _3Dview.updateSkeletons(_igs.Tracker.Bodies); 
+                        _3Dview.updateSkeletons(pointAndControlMain.Tracker.Bodies); 
                     }
 
                 }
@@ -540,7 +539,7 @@ public partial class MainWindow
     private void Change_Plugwise_Adress_Button_Click(object sender, RoutedEventArgs e)
     {
 
-        _igs.Data.change_PlugWise_Adress(Plugwise_host.Text, Plugwise_port.Text, Plugwise_path.Text);
+        pointAndControlMain.Data.change_PlugWise_Adress(Plugwise_host.Text, Plugwise_port.Text, Plugwise_path.Text);
 
     }
 
@@ -553,14 +552,14 @@ public partial class MainWindow
     /// <param name="e">The RoutedEventArgs</param>
     private void _3DViewButton_Click(object sender, RoutedEventArgs e)
     {
-        _3Dview = new Room3DView(_igs.Data.Devices, _igs.Transformer);
-        _3Dview.SetKinectCamera(_igs.IGSKinect);
+        _3Dview = new Room3DView(pointAndControlMain.Data.Devices, pointAndControlMain.Transformer);
+        _3Dview.SetKinectCamera(pointAndControlMain.IGSKinect);
         _3Dview.ClipToBounds = false;
         _3Dview.mainViewport.Effect = null;
 
-        _3Dview.createRoom(_igs.Data._environmentHandler.getRoomWidht(),
-                           _igs.Data._environmentHandler.getRoomHeight(),
-                           _igs.Data._environmentHandler.getRoomDepth());
+        _3Dview.createRoom(pointAndControlMain.Data._environmentHandler.getRoomWidht(),
+                           pointAndControlMain.Data._environmentHandler.getRoomHeight(),
+                           pointAndControlMain.Data._environmentHandler.getRoomDepth());
         _3Dview.Show();
     }
 
@@ -592,10 +591,10 @@ public partial class MainWindow
         newPosition[4] = Hdeg;
 
         oldPlace = "Old Koords: " +
-            "X: " + _igs.IGSKinect.ball.Center.X + " " +
-            "Y: " + _igs.IGSKinect.ball.Center.Y + " " +
-            "Z: " + _igs.IGSKinect.ball.Center.Z + " " +
-            "H°: " + _igs.IGSKinect.roomOrientation;
+            "X: " + pointAndControlMain.IGSKinect.ball.Center.X + " " +
+            "Y: " + pointAndControlMain.IGSKinect.ball.Center.Y + " " +
+            "Z: " + pointAndControlMain.IGSKinect.ball.Center.Z + " " +
+            "H°: " + pointAndControlMain.IGSKinect.roomOrientation;
 
         newPlace = "New Koords: " +
             "X: " + x + " " +
@@ -609,21 +608,21 @@ public partial class MainWindow
         double orientation = double.Parse(Hdeg);
         double tilt = double.Parse(Tdeg);
 
-        _igs.Data._environmentHandler.setCompleteKinect(i_X, i_Y, i_Z, short.Parse(Tdeg), short.Parse(Hdeg));
+        pointAndControlMain.Data._environmentHandler.setCompleteKinect(i_X, i_Y, i_Z, short.Parse(Tdeg), short.Parse(Hdeg));
         Point3D newCenter = new Point3D(i_X, i_Y, i_Z);
 
-        _igs.IGSKinect.roomOrientation = orientation;
-        _igs.IGSKinect.ball.Center = newCenter;
+        pointAndControlMain.IGSKinect.roomOrientation = orientation;
+        pointAndControlMain.IGSKinect.ball.Center = newCenter;
 
-        if (_igs.Tracker.Sensor != null)
+        if (pointAndControlMain.Tracker.Sensor != null)
         {
-            _igs.Transformer.calculateRotationMatrix(tilt, _igs.IGSKinect.roomOrientation);
+            pointAndControlMain.Transformer.calculateRotationMatrix(tilt, pointAndControlMain.IGSKinect.roomOrientation);
         }
-        _igs.Transformer.transVector = (Vector3D)newCenter;
+        pointAndControlMain.Transformer.transVector = (Vector3D)newCenter;
 
         if (_3Dview != null)
         {
-            _3Dview.SetKinectCamera(_igs.IGSKinect);
+            _3Dview.SetKinectCamera(pointAndControlMain.IGSKinect);
         }
 
         logger.enqueueEntry(String.Format("Placement of Kinect changed from: {0} to: {1}", oldPlace, newPlace));
@@ -652,8 +651,8 @@ public partial class MainWindow
         height = double.Parse(Room_Height.Text);
 
 
-        _igs.Data._environmentHandler.setRoomMeasures(width, height, depth);
-        _igs.Data.changeRoomSize(width, height, depth);
+        pointAndControlMain.Data._environmentHandler.setRoomMeasures(width, height, depth);
+        pointAndControlMain.Data.changeRoomSize(width, height, depth);
         if (_3Dview != null)
         {
             _3Dview.createRoom(width, depth, height);
@@ -693,21 +692,21 @@ public partial class MainWindow
     /// </summary>
     private void fillFieldsGUI()
     {
-        Plugwise_host.Text = _igs.Data._environmentHandler.getPWHost();
-        Plugwise_port.Text = _igs.Data._environmentHandler.getPWPort();
-        Plugwise_path.Text = _igs.Data._environmentHandler.getPWPath();
+        Plugwise_host.Text = pointAndControlMain.Data._environmentHandler.getPWHost();
+        Plugwise_port.Text = pointAndControlMain.Data._environmentHandler.getPWPort();
+        Plugwise_path.Text = pointAndControlMain.Data._environmentHandler.getPWPath();
 
 
-        Kinect_X.Text = _igs.Data._environmentHandler.getKinectPosX().ToString();
-        Kinect_Y.Text = _igs.Data._environmentHandler.getKinectPosY().ToString();
-        Kinect_Z.Text = _igs.Data._environmentHandler.getKinectPosZ().ToString();
-        Kinect_TiltAngle_Textbox.Text = _igs.Data._environmentHandler.getKinectTiltAngle().ToString();
-        Kinect_Roomorientation.Text = _igs.Data._environmentHandler.getKinecHorizontalAngle().ToString();
+        Kinect_X.Text = pointAndControlMain.Data._environmentHandler.getKinectPosX().ToString();
+        Kinect_Y.Text = pointAndControlMain.Data._environmentHandler.getKinectPosY().ToString();
+        Kinect_Z.Text = pointAndControlMain.Data._environmentHandler.getKinectPosZ().ToString();
+        Kinect_TiltAngle_Textbox.Text = pointAndControlMain.Data._environmentHandler.getKinectTiltAngle().ToString();
+        Kinect_Roomorientation.Text = pointAndControlMain.Data._environmentHandler.getKinecHorizontalAngle().ToString();
 
 
-        Room_Width.Text = _igs.Data._environmentHandler.getRoomWidht().ToString();
-        Room_Height.Text = _igs.Data._environmentHandler.getRoomHeight().ToString();
-        Room_Depth.Text = _igs.Data._environmentHandler.getRoomDepth().ToString();
+        Room_Width.Text = pointAndControlMain.Data._environmentHandler.getRoomWidht().ToString();
+        Room_Height.Text = pointAndControlMain.Data._environmentHandler.getRoomHeight().ToString();
+        Room_Depth.Text = pointAndControlMain.Data._environmentHandler.getRoomDepth().ToString();
     }
 
     /// <summary>
@@ -722,7 +721,7 @@ public partial class MainWindow
     {
         String devType = DeviceType.Text;
 
-        _igs.AddDevice(devType,"", deviceIdentifier.Text, DevicePath.Text);
+        pointAndControlMain.AddDevice(devType,"", deviceIdentifier.Text, DevicePath.Text);
     }
 
 

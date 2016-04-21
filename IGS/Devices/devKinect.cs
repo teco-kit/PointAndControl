@@ -1,13 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using IGS.Server.Kinect;
 using System.Windows.Media.Media3D;
-using System.Windows.Media;
 
-namespace IGS.Server.Devices
+namespace PointAndControl.Devices
 {
     /// <summary>
     /// This class represents a kinect camera with a name, a place in the room, its tilting angle and its horizontal view(roomOrientation).

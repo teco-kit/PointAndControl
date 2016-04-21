@@ -6,11 +6,11 @@ using System.Windows;
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die mit einer Assembly verknüpft sind.
 
-[assembly: AssemblyTitle("IGS")]
+[assembly: AssemblyTitle("PointAndControl")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("TECO")]
-[assembly: AssemblyProduct("IGS")]
+[assembly: AssemblyProduct("PointAndControl")]
 [assembly: AssemblyCopyright("Copyright © KIT 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

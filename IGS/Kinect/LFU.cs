@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
-namespace IGS.Server.Kinect
+namespace PointAndControl.Kinect
 {
     /// <summary>
     ///     This class LFU implements a concrete replacement strategy.

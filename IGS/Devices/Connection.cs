@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IGS.Server.Devices
+namespace PointAndControl.Devices
 {
     /// <summary>
     ///     Abstract class which implements the connection to the devices

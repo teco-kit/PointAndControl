@@ -1,20 +1,11 @@
-﻿using IGS.Classifier;
-using IGS.Server.Devices;
-using IGS.Server.IGS;
-using Microsoft.Kinect;
+﻿using PointAndControl.Classifier;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 using System.Xml;
-using System.Xml.Linq;
 
 
-namespace IGS.Helperclasses
+namespace PointAndControl.Helperclasses
 {
     static class XMLComponentHandler
     {

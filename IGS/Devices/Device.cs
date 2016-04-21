@@ -1,13 +1,11 @@
-﻿using IGS.Classifier;
-using IGS.Server.Location;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Media.Media3D;
 
-namespace IGS.Server.Devices
+namespace PointAndControl.Devices
 {
     /// <summary>
     ///     The abstract class represents a device with a name, a shape made out of balls(spheres), 

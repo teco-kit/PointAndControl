@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace IGS.Server.Kinect
+namespace PointAndControl.Kinect
 {
     public delegate void TrackingStateEventHandler(object sender, TrackingStateEventArgs e);
 

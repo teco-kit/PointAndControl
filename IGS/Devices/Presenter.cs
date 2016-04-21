@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 
 
-namespace IGS.Server.Devices
+namespace PointAndControl.Devices
 {
     class Presenter : Device
     {

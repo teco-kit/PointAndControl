@@ -1,0 +1,404 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{92C1D454-D0B5-484E-BAA9-9764653BDD21}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>PointAndControl</RootNamespace>
+    <AssemblyName>PointAndControl</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+    <PublishUrl>veröffentlichen\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>PointAndControl.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>Always</RunPostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Resources\HttpRoot\favicon.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="HelixToolkit, Version=2015.1.706.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+      <HintPath>..\packages\HelixToolkit.2015.1.706\lib\portable-net4+sl4+wp71+win8\HelixToolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="HelixToolkit.Wpf, Version=2015.1.706.0, Culture=neutral, PublicKeyToken=52aa3500039caf0d, processorArchitecture=MSIL">
+      <HintPath>..\packages\HelixToolkit.Wpf.2015.1.706\lib\net45\HelixToolkit.Wpf.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Kinect, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Kinect.2.0.1410.19000\lib\net45\Microsoft.Kinect.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Kinect.Tools, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=AMD64">
+      <HintPath>..\packages\Microsoft.Kinect.Tools.x64.2.0.1410.19000\lib\net45\Microsoft.Kinect.Tools.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="numl, Version=0.8.24.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\numl.0.8.24.0\lib\net40\numl.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration.Install" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="ComponentHandling\DeviceStorageFileHandlerJSON.cs" />
+    <Compile Include="ComponentHandling\EnvironmentInfoHandler.cs" />
+    <Compile Include="ComponentHandling\EventLogger.cs" />
+    <Compile Include="ComponentHandling\EventLogWriter.cs" />
+    <Compile Include="ComponentHandling\IEventlogFormat.cs" />
+    <Compile Include="ComponentHandling\XMLEventLogFormat.cs" />
+    <Compile Include="Devices\Ball.cs" />
+    <Compile Include="Devices\Beamer.cs" />
+    <Compile Include="Devices\Boxee.cs" />
+    <Compile Include="Devices\Connection.cs" />
+    <Compile Include="Devices\Device.cs" />
+    <Compile Include="Devices\DevKinect.cs" />
+    <Compile Include="Devices\ExternalDevice.cs" />
+    <Compile Include="Devices\HTTP.cs" />
+    <Compile Include="Devices\NecLcdMonitorMultiSyncV421.cs" />
+    <Compile Include="Devices\Plugwise.cs" />
+    <Compile Include="Devices\Presenter.cs" />
+    <Compile Include="Devices\TCP.cs" />
+    <Compile Include="Devices\Kodi.cs" />
+    <Compile Include="Devices\XBMCv11.cs" />
+    <Compile Include="Helperclasses\CoordTransform.cs" />
+    <Compile Include="Helperclasses\IgsMath.cs" />
+    <Compile Include="Helperclasses\JSON_ParameterReader.cs" />
+    <Compile Include="Helperclasses\Ray3D.cs" />
+    <Compile Include="PointAndControlStarter.cs" />
+    <Compile Include="MainComponents\Deviceproducer.cs" />
+    <Compile Include="MainComponents\Initializer.cs" />
+    <Compile Include="Helperclasses\XMLComponentHandler.cs" />
+    <Compile Include="MainComponents\CollisionMethod.cs" />
+    <Compile Include="MainComponents\CoreMethods.cs" />
+    <Compile Include="MainComponents\ClassifierMethod.cs" />
+    <Compile Include="MainComponents\JsonResponse.cs" />
+    <Compile Include="Kinect\MedianJointFilter.cs" />
+    <Compile Include="Kinect\SkeletonJointFilter.cs" />
+    <Compile Include="Kinect\TrackingStateEventArgs.cs" />
+    <Compile Include="Classifier\KNNClassifier.cs" />
+    <Compile Include="Classifier\PointingSample.cs" />
+    <Compile Include="Classifier\Room.cs" />
+    <Compile Include="Classifier\ClassificationHandler.cs" />
+    <Compile Include="Classifier\WPSampleCalculator.cs" />
+    <Compile Include="Classifier\WallProjectionAndPositionSample.cs" />
+    <Compile Include="Classifier\WallProjectionSample.cs" />
+    <Compile Include="Locator\Bobyqa.cs" />
+    <Compile Include="Locator\Cobyla.cs" />
+    <Compile Include="Locator\Locator.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\Resources.de-DE.Designer.cs">
+      <DependentUpon>Resources.de-DE.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Properties\Resources.en-US.Designer.cs">
+      <DependentUpon>Resources.en-US.resx</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Room3DView.xaml.cs">
+      <DependentUpon>Room3DView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="Webserver\SimpleHttpServer.cs" />
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainComponents\CollisionDetection.cs" />
+    <Compile Include="MainComponents\DataHolder.cs" />
+    <Compile Include="MainComponents\PointAndControlMain.cs" />
+    <Compile Include="MainComponents\User.cs" />
+    <Compile Include="Kinect\Gesture.cs" />
+    <Compile Include="Kinect\HandsUp.cs" />
+    <Compile Include="Kinect\KinectUserEventArgs.cs" />
+    <Compile Include="Kinect\LFU.cs" />
+    <Compile Include="Kinect\ReplacementStrategy.cs" />
+    <Compile Include="Kinect\TrackedSkeleton.cs" />
+    <Compile Include="Kinect\UserTracker.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.de-DE.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.de-DE.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.en-US.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+    <None Include="Resources\HttpRoot\Boxee\img\Thumbs.db" />
+    <None Include="Resources\HttpRoot\manifest.json" />
+    <None Include="Resources\HttpRoot\js\jquery.mobile-1.4.5.min.map" />
+    <None Include="Resources\HttpRoot\XBMCv11\img\Thumbs.db" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\HttpRoot\Kodi\img\back.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\bg.jpg" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\down.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\left.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\mute.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\pause.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\play.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\right.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\select.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\stop.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\up.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\voldown.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\volup.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\off.gif" />
+    <Resource Include="Resources\HttpRoot\Kodi\img\on.gif" />
+    <Resource Include="Resources\HttpRoot\img\icons\AppleTV.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Boxee_1.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Boxee_2.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Boxee_3.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Boxee_4.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Buecherregal.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Chromecast.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Heizung.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Kaffeemaschine.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Kodi_1.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Kodi_2.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Kodi_3.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Lampge.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Mikrowelle.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Multimediacenter.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_1.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_10.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_11.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_12.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_13.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_2.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_3.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_4.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_5.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_6.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_7.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_8.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Plugwise_9.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\PS4.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Rolladen.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Stereoanlange.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\TV.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\Ventilator.png" />
+    <Resource Include="Resources\HttpRoot\img\icons\XBox.png" />
+    <Content Include="Resources\HttpRoot\css\screen.css" />
+    <Resource Include="Resources\HttpRoot\img\icons\NecLcdMonitorMultiSyncV421_1.png" />
+    <Content Include="Resources\HttpRoot\js\screen.js" />
+    <Content Include="Resources\HttpRoot\screen.html" />
+    <Content Include="Resources\HttpRoot\img\living-lab-map.svg" />
+    <Content Include="Resources\HttpRoot\js\adapter.js" />
+    <Content Include="Resources\HttpRoot\Kodi\index.html" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\back.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\bg.jpg" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\down.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\left.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\mute.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\pause.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\play.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\right.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\select.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\stop.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\up.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\voldown.gif" />
+    <Resource Include="Resources\HttpRoot\Boxee\img\volup.gif" />
+    <Resource Include="Resources\HttpRoot\favicon.ico" />
+    <Resource Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\img\mute.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\back.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\bg.jpg" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\down.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\left.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\mute.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\pause.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\play.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\right.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\select.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\stop.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\up.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\voldown.gif" />
+    <Resource Include="Resources\HttpRoot\XBMCv11\img\volup.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\HttpRoot\Boxee\index.html" />
+    <Content Include="Resources\HttpRoot\css\remote.css" />
+    <Content Include="Resources\HttpRoot\css\site.css" />
+    <Resource Include="Resources\HttpRoot\css\themes\default\images\ajax-loader.gif" />
+    <Content Include="Resources\HttpRoot\css\themes\default\jquery.mobile-1.4.5.min.css" />
+    <Resource Include="Resources\HttpRoot\img\ic_launcher.png" />
+    <Resource Include="Resources\HttpRoot\img\selectdevice.gif" />
+    <Resource Include="Resources\HttpRoot\img\activate.png" />
+    <Resource Include="Resources\HttpRoot\img\remote_bg.jpg" />
+    <Content Include="Resources\HttpRoot\index.html" />
+    <Content Include="Resources\HttpRoot\js\jquery.min.js" />
+    <Content Include="Resources\HttpRoot\js\jquery.mobile-1.4.5.min.js" />
+    <Content Include="Resources\HttpRoot\js\remote.js" />
+    <Content Include="Resources\HttpRoot\js\site.js" />
+    <Content Include="Resources\HttpRoot\NecLcdMonitorMultiSyncV421\index.html" />
+    <Content Include="Resources\HttpRoot\Plugwise\index.html" />
+    <Content Include="Resources\HttpRoot\Presenter\index.html" />
+    <Content Include="Resources\HttpRoot\XBMCv11\index.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="VBIDE">
+      <Guid>{0002E157-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>5</VersionMajor>
+      <VersionMinor>3</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Room3DView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>XCOPY "$(ProjectDir)Resources\HttpRoot" "$(TargetDir)\HttpRoot\" /S /Y
+COPY "$(ProjectDir)Resources\devices.txt" "$(TargetDir)\" /Y</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+  </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

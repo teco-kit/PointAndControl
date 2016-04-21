@@ -14,7 +14,7 @@ using System.Diagnostics;
 // simple HTTP explanation
 // http://www.jmarshall.com/easy/http/
 
-namespace IGS.Server.WebServer
+namespace PointAndControl.WebServer
 {
     /// <summary>
     ///     This class contains the Arguments of a HTTP event     /// </summary>

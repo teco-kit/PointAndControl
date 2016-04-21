@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace IGS.Server.Devices
+namespace PointAndControl.Devices
 {
     class XBMCv11 : Device
     {

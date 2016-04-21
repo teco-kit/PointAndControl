@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using HelixToolkit.Wpf;
 using System.Windows.Media.Media3D;
-using System.Drawing;
-using IGS.Helperclasses;
-using IGS.Server.IGS;
 
-namespace IGS.Classifier
+namespace PointAndControl.Classifier
 {
     public class Room
     {

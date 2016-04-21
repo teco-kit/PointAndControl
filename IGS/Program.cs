@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
-using IGS.Server.IGS;
-using System.Threading;
 
-namespace IGS
+namespace PointAndControl
 {
     class Program
     {
@@ -17,13 +10,13 @@ namespace IGS
         static void Main(string[] args)
         {
              
-            IGSStarter starter = new IGSStarter();
+            PointAndControlStarter starter = new PointAndControlStarter();
             starter.igsStart();
 
 
             String command = "";
 
-            while (starter.igsRunning)
+            while (starter.pncRunning)
             {
                 Console.WriteLine(Properties.Resources.TypeConsoleCommand);
 

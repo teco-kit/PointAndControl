@@ -5,11 +5,11 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using HelixToolkit.Wpf;
-using IGS.Server.Devices;
 using Microsoft.Kinect;
-using IGS.Server.IGS;
-using IGS.Classifier;
-using IGS.Server.Kinect;
+using PointAndControl.Classifier;
+using PointAndControl.Helperclasses;
+using PointAndControl.Devices;
+using PointAndControl.Kinect;
 
 namespace IGS
 {
