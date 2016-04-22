@@ -11,7 +11,7 @@ The Point-and-Control application makes use of the Microsoft Kinect to enable Po
 - USB 3.0 controller dedicated to the Kinect sensor
 - at least 4 GB RAM
 - Graphics card that supports DirectX 11
-- Windows 8, Windows 8.1, or Windows Embedded 8
+- Windows 8, Windows 8.1,  Windows Embedded 8 , or higher
 - Kinect 4 Windows v2,  SDK/Runtime Environment
 - .Net Framework 4.5
 - Smartphone with HTML5 compliant Browser 
