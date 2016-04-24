@@ -1,6 +1,7 @@
 # Point and Control
 
 [![Build status](https://ci.appveyor.com/api/projects/status/24i5xtbcmjm15i0e/branch/master?svg=true)](https://ci.appveyor.com/project/berningm/pointandcontrol/branch/master)
+[![Code Climate](https://codeclimate.com/github/teco-kit/PointAndControl/badges/gpa.svg)](https://codeclimate.com/github/teco-kit/PointAndControl)
 
 ## Introduction
 The Point-and-Control application makes use of the Microsoft Kinect to enable Point&Click interaction for the control of appliances in smart environments. A backend server determines through collision detection which device the user is pointing at and sends the respective control interface to the user’s smartphone. Any commands the user issues are then sent back to the server which in turn controls the appliance.
