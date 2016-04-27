@@ -114,26 +114,24 @@ namespace PointAndControl.MainComponents
             {
                 Initializer.createWallProjectionSampleXMLFile();
             }
-            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\samples.xml"))
-            {
-                Initializer.createSampleXMLFIle();
-            }
+            //if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\samples.xml"))
+            //{
+            //    Initializer.createSampleXMLFIle();
+            //}
 
-            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionAndPositionSamples.xml"))
-            {
-                Initializer.createWallProjectionAndPositionSampleXMLFile();
-            }
-            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelect.xml"))
-            {
-                Initializer.createLogFilePerSelect();
-            }
-            if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelectSmoothed.xml"))
-            {
-                Initializer.createLogFilePerSelectSmoothed();
-            }
+            //if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionAndPositionSamples.xml"))
+            //{
+            //    Initializer.createWallProjectionAndPositionSampleXMLFile();
+            //}
+            //if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelect.xml"))
+            //{
+            //    Initializer.createLogFilePerSelect();
+            //}
+            //if (!File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\BA_REICHE_LogFilePerSelectSmoothed.xml"))
+            //{
+            //    Initializer.createLogFilePerSelectSmoothed();
+            //}
         }
-
-
 
         public static void createWallProjectionSampleXMLFile()
         {

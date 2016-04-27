@@ -404,6 +404,7 @@ namespace PointAndControl.MainComponents
         {
             Ball coord = new Ball(position, double.Parse(radius));
             this.getDeviceByID(devId).Form.Add(coord);
+
             return _deviceStorageHandling.addDeviceCoord(devId, coord);
         }
 
@@ -413,7 +414,8 @@ namespace PointAndControl.MainComponents
             Device dev = getDeviceByID(devId);
             dev.Form.Clear();
             dev.Form.Add(coord);
-            return _deviceStorageHandling.addDeviceCoord(devId, coord);
+            return _deviceStorageHandling.changeDeviceCoord(devId, coord);
+            //return _deviceStorageHandling.addDeviceCoord(devId, coord);
         }
 
         private bool checkForSameDevID(String id)

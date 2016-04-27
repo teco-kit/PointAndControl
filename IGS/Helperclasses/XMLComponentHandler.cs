@@ -195,6 +195,7 @@ namespace PointAndControl.Helperclasses
         public static void writeWallProjectionSampleToXML(WallProjectionSample sample)
         {
             XmlDocument docConfig = new XmlDocument();
+
             docConfig.Load(AppDomain.CurrentDomain.BaseDirectory + "\\WallProjectionSamples.xml");
             XmlNode node = docConfig.SelectSingleNode("/devices");
 
@@ -637,26 +638,5 @@ namespace PointAndControl.Helperclasses
             docConfig.Save(AppDomain.CurrentDomain.BaseDirectory + "\\"+ path + ".xml");
             return;
         }
-      
-        public static void writeLogEntry(String entry)
-        {
-            String path = AppDomain.CurrentDomain.BaseDirectory + "\\program_log.xml";
-            XmlDocument docCOnfig = new XmlDocument();
-            docCOnfig.Load(path);
-
-            XmlNode logNode = docCOnfig.SelectSingleNode("/log");
-
-            XmlElement xmlLogEntry = docCOnfig.CreateElement("entry");
-            xmlLogEntry.SetAttribute("time", DateTime.Now.ToString("HH:mm:ss.fff"));
-            xmlLogEntry.SetAttribute("date", DateTime.Now.ToShortDateString());
-            XmlElement xmlEntryString = docCOnfig.CreateElement("msg");
-            xmlEntryString.InnerText = entry;
-
-            xmlLogEntry.AppendChild(xmlEntryString);
-            logNode.AppendChild(xmlLogEntry);
-            docCOnfig.Save(path);
-
-        }  
-
     }
 }

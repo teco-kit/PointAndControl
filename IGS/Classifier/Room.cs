@@ -74,6 +74,9 @@ namespace PointAndControl.Classifier
             createRoomWalls();
         }
 
+
+              //Early try to calculate nearest-neighbor-texture for faster klassifikation for selection attempts
+
         //    public void calculateDeviceAreas(KNNClassifier knn, DataHolder data)
         //    {
 
@@ -217,10 +220,6 @@ namespace PointAndControl.Classifier
 
         //        XMLComponentHandler.writeLogEntry("Calculated Device BMP");
         //    }
-
-
-
-
         //}
 
 

@@ -128,7 +128,7 @@ var updateDeviceFromList = function () {
     if ($('#newdevicedd').val() == "")
         return;
 	
-	var value ={"Id":$('#newdevicedd').val(), "Name":$('#newdevicename').val()};
+	var value ={"id":$('#newdevicedd').val(), "name":$('#newdevicename').val()};
 	
     $.getJSON('/?dev=server&cmd=addDeviceFromList&val=' + JSON.stringify(value), function (data) {
 
@@ -150,7 +150,7 @@ var updateDeviceFromList = function () {
 var clearDeviceVectors = function () {
     if (editDevice == "")
         return;
-	var value = {"Id":editDevice};
+	var value = {"id":editDevice};
 	
     $.getJSON('/?dev=server&cmd=resetDeviceVectorList&val=' + JSON.stringify(value), function (data) {
 
@@ -177,7 +177,7 @@ var addDeviceVector = function () {
     if (editDevice == "")
         return;
 
-	var value = {"Id":editDevice};
+	var value = {"id":editDevice};
 	
     $.getJSON('/?dev=server&cmd=addDeviceVector&val=' + JSON.stringify(value), function (data) {
 
@@ -208,7 +208,7 @@ var saveDevicePosition = function () {
     if (editDevice == "")
         return;
 
-	var value = {"Id":editDevice};
+	var value = {"id":editDevice};
 	
     $.getJSON('/?dev=server&cmd=setDevicePosition&val=' + JSON.stringify(value), function (data) {
 
@@ -383,7 +383,9 @@ var selectDevice = function () {
             if (supportsVibrate) {
                 //disable vibration for test navigator.vibrate(500);
             }
-            window.location.assign('/?dev=' + data.devices[0].id + '&cmd=getControlPath');
+            var tmpDevices = eval(data.devices);
+            //window.location.assign('/?dev=' + data.devices[0].id + '&cmd=getControlPath');
+            window.location.assign('/?dev=' + tmpDevices[0].id + '&cmd=getControlPath');
         }
     });
 }

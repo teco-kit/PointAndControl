@@ -61,7 +61,7 @@ namespace PointAndControl.MainComponents
             logger = eventLogger;
             this.coreMethods = new CollisionMethod(Data, Tracker, Transformer, logger);
             isRunning = true;
-            
+           
         }
 
 
@@ -115,10 +115,6 @@ namespace PointAndControl.MainComponents
         public bool cancellationRequest { get; set; }
 
         private JSON_ParameterReader json_paramReader { get; set; }
-
-        private readonly List<String> deviceTypes = Device.getAllDerivedDeviceTypes();
-
-
 
         /// <summary>
         /// 
@@ -237,7 +233,6 @@ namespace PointAndControl.MainComponents
             Boolean success = false;
 
             String paramDevId;
-            String paramDevName;
 
 
 
@@ -356,40 +351,40 @@ namespace PointAndControl.MainComponents
 
                         break;
 
-                    case "addDeviceFromList":
-                        // find device in newDevices list
-                        if (parameters == null)
-                        {
-                            msg = Properties.Resources.NoValues;
-                            break;
-                        }
+                    //case "addDeviceFromList":
+                    //    // find device in newDevices list
+                    //    if (parameters == null)
+                    //    {
+                    //        msg = Properties.Resources.NoValues;
+                    //        break;
+                    //    }
 
-                        if(!json_paramReader.getDevID(parameters, out paramDevId))
-                        {
-                            msg = paramDevId;
-                            break;
-                        }
+                    //    if(!json_paramReader.getDevID(parameters, out paramDevId))
+                    //    {
+                    //        msg = paramDevId;
+                    //        break;
+                    //    }
 
-                        device = Data.newDevices.Find(d => d.Id.Equals(paramDevId));
+                    //    device = Data.newDevices.Find(d => d.Id.Equals(paramDevId));
 
-                        if (device != null)
-                        {
-                            success = true;
-                            if (!json_paramReader.getDevName(parameters, out paramDevName))
-                            {
-                                msg = paramDevName;
-                                break;
-                            }
-                            String type = device.GetType().Name;
+                    //    if (device != null)
+                    //    {
+                    //        success = true;
+                    //        if (!json_paramReader.getDevName(parameters, out paramDevName))
+                    //        {
+                    //            msg = paramDevName;
+                    //            break;
+                    //        }
+                    //        String type = device.GetType().Name;
 
-                            String newDeviceId = AddDevice(type, "", paramDevName, device.Path);
+                    //        String newDeviceId = AddDevice(type, "", paramDevName, device.Path);
 
-                            // remove from new devices list
-                            Data.newDevices.Remove(device);
-                            response.addDeviceId(newDeviceId);
-                        }
+                    //        // remove from new devices list
+                    //        Data.newDevices.Remove(device);
+                    //        response.addDeviceId(newDeviceId);
+                    //    }
 
-                        break;
+                    //    break;
 
                     case "resetDeviceVectorList":
 
@@ -512,43 +507,37 @@ namespace PointAndControl.MainComponents
                             response.addTrackingId(user.SkeletonId);
                         }
                         break;
-                    case "setPlugwisePath":
-                        success = setPlugwiseComponents(parameters);
-                        if (success)
-                        {
-                            msg = Properties.Resources.PWCompChange;
-                        } else
-                        {
-                            msg = Properties.Resources.UnknownError;
-                        }
-                        break;
-                    case "setKinectComponents":
-                        success = setKinectPositionWithDict(parameters);
-                        if (success)
-                        {
-                            msg = Properties.Resources.KinectPlacementChanged;
-                        } else
-                        {
-                            msg = "";
-                        }
-                        break;
-                    case "setRoomMeasures":
-                        success = setRoomMeasures(parameters);
-                        if (success)
-                        {
-                            msg = Properties.Resources.RoommeasuresChanged;
-                        } else
-                        {
-                            msg = "";
-                        }
-                        break;
-
-                    case "shutDown":
-                        success = true;
-
-                        msg = Properties.Resources.ServerShutDown;
-
-                        break;
+                    //Already implemented but not yet used
+                    //case "setPlugwisePath":
+                    //    success = setPlugwiseComponents(parameters);
+                    //    if (success)
+                    //    {
+                    //        msg = Properties.Resources.PWCompChange;
+                    //    } else
+                    //    {
+                    //        msg = Properties.Resources.UnknownError;
+                    //    }
+                    //    break;
+                    //case "setKinectComponents":
+                    //    success = setKinectPositionWithDict(parameters);
+                    //    if (success)
+                    //    {
+                    //        msg = Properties.Resources.KinectPlacementChanged;
+                    //    } else
+                    //    {
+                    //        msg = "";
+                    //    }
+                    //    break;
+                    //case "setRoomMeasures":
+                    //    success = setRoomMeasures(parameters);
+                    //    if (success)
+                    //    {
+                    //        msg = Properties.Resources.RoommeasuresChanged;
+                    //    } else
+                    //    {
+                    //        msg = "";
+                    //    }
+                    //    break;
 
                     case "getDeviceTypes":
                         success = true;
@@ -582,16 +571,10 @@ namespace PointAndControl.MainComponents
                         args.P.WriteRedirect(response.getReturnString(), 301);
                         break;
 
-                    case "deleteDevice":
-
-                        response.addReturnString(devId);
-                        break;
-
                     default:
                         Device dev = Data.getDeviceByID(devId);
                         if (dev.connection != null)
                         {
-
                             response.addReturnString(dev.Transmit(cmd, value));
                         }
                         break;
@@ -645,7 +628,7 @@ namespace PointAndControl.MainComponents
         }
 
 
-
+        //TODO: Delete this Method
         /// <summary>
         /// Adds a new coordinates and radius for a specified device by reading the wrist position of the user 
         /// who wants to add them
@@ -867,7 +850,7 @@ namespace PointAndControl.MainComponents
 
         private String getDeviceTypeJSON()
         {
-            return JsonConvert.SerializeObject(deviceTypes, Formatting.Indented);
+            return JsonConvert.SerializeObject(Device.getAllDerivedDeviceTypesAsStrings().ToArray(), Formatting.Indented);
         }
 
         public bool shutDown()
