@@ -24,6 +24,7 @@ namespace PointAndControl.MainComponents
             xmlFilesControl();
             EventLogger logger = new EventLogger();
             PointAndControlMain igs = new PointAndControlMain(InitializeDataholder(logger), InitializeUserTracker(new HandsUp(), new Lfu()), InitializeHttpServer(),logger);
+            igs.isRunning = true;
             return igs;
         }
 

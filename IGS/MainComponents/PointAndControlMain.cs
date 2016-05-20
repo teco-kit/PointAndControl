@@ -60,7 +60,7 @@ namespace PointAndControl.MainComponents
             
             logger = eventLogger;
             this.coreMethods = new CollisionMethod(Data, Tracker, Transformer, logger);
-            isRunning = true;
+            
            
         }
 
@@ -264,8 +264,6 @@ namespace PointAndControl.MainComponents
                             if (Tracker.isKinectAvailable())
                             {
                                 response.addTrackingId(SkeletonIdToUser(wlanAdr));
-
-                               
                             } else
                             {
                                 msg = Properties.Resources.NoKinAvailable;
@@ -276,6 +274,10 @@ namespace PointAndControl.MainComponents
 
                     case "close":
                         success = DelUser(wlanAdr);
+                        if (!success)
+                        {
+                            msg = Properties.Resources.UserNotExists;
+                        }
                         break;
 
                     case "activateGestureCtrl":
@@ -324,19 +326,19 @@ namespace PointAndControl.MainComponents
                         if (foundDevices.Count > 0)
                             success = true;
 
-                        response.addDevices(MakeDeviceString(foundDevices));
+                        response.addDevices(foundDevices);
                         break;
 
                         
                     case "list":
                         success = true;
-                        response.addDevices(MakeDeviceString(Data.Devices));
+                        response.addDevices(Data.Devices);
                         break;
 
                     case "discoverDevices":
                         success = true;
                         // Data.newDevices = discoverDevices();
-                        response.addDevices(MakeDeviceString(Data.newDevices));
+                        response.addDevices(Data.newDevices);
                         break;
 
                     case "addDevice":
@@ -409,7 +411,7 @@ namespace PointAndControl.MainComponents
                         }
 
                         success = true;
-                        device.skelPositions = new List<Point3D[]>();
+                        device.skelPositions.Clear();
 
                         //attach vector numbers
                         response.addVectorMinAndCount(device.skelPositions.Count, coreMethods.getMinVectorsPerDevice());
@@ -600,7 +602,7 @@ namespace PointAndControl.MainComponents
         }
 
 
-        private String MakeDeviceString(IEnumerable<Device> devices)
+        public static String MakeDeviceString(IEnumerable<Device> devices)
         {
             
             List<leanDevRepresentation> d = new List<leanDevRepresentation>();
@@ -626,35 +628,6 @@ namespace PointAndControl.MainComponents
         {
             return Data.DelUser(wlanAdr);
         }
-
-
-        //TODO: Delete this Method
-        /// <summary>
-        /// Adds a new coordinates and radius for a specified device by reading the wrist position of the user 
-        /// who wants to add them
-        /// <param name="devId">the device to which the coordinate and radius should be added</param>
-        /// <param name="wlanAdr">The wlan adress of the user who wants to add the coordinates and radius</param>
-        /// <param name="radius">The radius specified by the user</param>
-        /// <returns>A response string if the add process was successful</returns>
-        /// </summary>
-        private String AddDeviceCoord(String devId, String wlanAdr, String radius)
-        {
-            String ret = Properties.Resources.NoCoordAdded;
-
-            double isDouble;
-            if (!double.TryParse(radius, out isDouble) || String.IsNullOrEmpty(radius)) return ret += ",\n" + Properties.Resources.NoRadiusWrongFormat;
-
-
-            if (Tracker.Bodies.Count != 0)
-            {
-                Point3D wrist = Transformer.transformJointCoords(Tracker.getMedianFilteredCoordinates(Data.GetUserByIp(wlanAdr).SkeletonId))[1];
-
-               ret = Data.addDeviceCoordinates(devId, radius, wrist); 
-            }
-
-            return ret;
-        }
-
 
         /// <summary>
         ///     Adds a new device to the device list and updates the deviceConfiguration part of the config.xml.
@@ -859,11 +832,6 @@ namespace PointAndControl.MainComponents
             isRunning = false;
 
             return true;
-        }
-
-        public void addDevicePerArray(String[] arr)
-        {
-            Data.AddDevice(arr[0], arr[1], arr[2], arr[3]);
         }
 
     }

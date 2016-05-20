@@ -243,4 +243,7 @@ Befehl konnte nicht ausgeführt werden</value>
   <data name="DevCoordsReplaced" xml:space="preserve">
     <value>Das Gerät {0} wurde neu positioniert</value>
   </data>
+  <data name="UserNotExists" xml:space="preserve">
+    <value>Benutzer mit der Adresse {0} nicht registriert</value>
+  </data>
 </root>

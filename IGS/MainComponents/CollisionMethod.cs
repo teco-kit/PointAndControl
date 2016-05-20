@@ -72,7 +72,7 @@ namespace PointAndControl.MainComponents
 
             Data.changeDeviceCoordinates(dev.Id, "0,3", position);
 
-            return String.Format(Properties.Resources.DevCoordsReplaced, dev.Id);
+            return String.Format(Properties.Resources.DevCoordsReplaced, dev.Name);
         }
 
         public int getMinVectorsPerDevice()

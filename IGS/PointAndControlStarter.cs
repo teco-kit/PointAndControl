@@ -24,7 +24,6 @@ namespace PointAndControl
 
         public async void igsStart()
         {
-            pncRunning = true;
 
                 await Task.Run(() =>
                 {

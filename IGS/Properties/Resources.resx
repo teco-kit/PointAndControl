@@ -241,4 +241,7 @@ Command could not be executed</value>
   <data name="DevCoordsReplaced" xml:space="preserve">
     <value>Device {0} is now located to another position</value>
   </data>
+  <data name="UserNotExists" xml:space="preserve">
+    <value>User with Address {0} not registered</value>
+  </data>
 </root>

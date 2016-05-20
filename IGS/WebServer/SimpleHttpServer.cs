@@ -488,7 +488,17 @@ namespace PointAndControl.WebServer
             Console.WriteLine(String.Format(Properties.Resources.StartingHTTPServer, LocalIP.ToString(),Port));
 
             _listener = new TcpListener(LocalIP, Port);
-            _listener.Start();
+            try
+            {
+                _listener.Start();
+            } catch (SocketException)
+            {
+                Console.WriteLine("Port already in use, please type another one");
+                Console.Write("Port: ");
+                Port = int.Parse(Console.ReadLine());
+                _listener = new TcpListener(LocalIP, Port);
+                _listener.Start();
+            }
             while (is_active)
             {
                 TcpClient s = _listener.AcceptTcpClient();

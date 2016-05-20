@@ -131,7 +131,7 @@ namespace PointAndControl.Helperclasses
                 Dictionary<String, String> values = JsonConvert.DeserializeObject<Dictionary<String, String>>(jsonString);
                 return values;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return null;
             }

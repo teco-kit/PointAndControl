@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using PointAndControl.Devices;
 
 namespace PointAndControl.MainComponents
 {
@@ -20,7 +21,7 @@ namespace PointAndControl.MainComponents
         const string DEVICES = "devices";
         const string DEVICETYPES = "deviceTypes";
 
-        public Dictionary<String, String> container { get; private set; }
+        private Dictionary<String, String> container { get; set; }
         
         public JsonResponse(String setCmd, bool setSuccess, String setMsg)
         {
@@ -133,6 +134,12 @@ namespace PointAndControl.MainComponents
         {
             if (!container.ContainsKey(DEVICES))
                 container.Add(DEVICES, devices);
+        }
+
+        public void addDevices(IEnumerable<Device> devices)
+        {
+            if (!container.ContainsKey(DEVICES))
+                container.Add(DEVICES, PointAndControlMain.MakeDeviceString(devices));
         }
 
         public void addDeviceTypes(String types)

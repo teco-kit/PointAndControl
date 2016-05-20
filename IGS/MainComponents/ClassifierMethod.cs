@@ -37,7 +37,7 @@ namespace PointAndControl.MainComponents
                 s += classificationHandler.calculateWallProjectionSampleAndLearn(vecs, dev.Id);
             }
 
-            return s;
+            return String.Format(Properties.Resources.AdditionalDevCoords, dev.Name);
 
         }
 

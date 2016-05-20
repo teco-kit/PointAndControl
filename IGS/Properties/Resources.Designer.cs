@@ -422,6 +422,15 @@ namespace PointAndControl.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User with Address {0} not registered.
+        /// </summary>
+        internal static string UserNotExists {
+            get {
+                return ResourceManager.GetString("UserNotExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Needed Parameter for the request not found: {0}.
         /// </summary>
         internal static string WrongParameter {

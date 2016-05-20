@@ -15,6 +15,11 @@ namespace PointAndControl.ComponentHandling
         public XMLEventLogFormat(string lPath)
         {
             logPath = lPath;
+            if (!File.Exists(logPath + FILE_ENDING))
+            {
+                XElement cleanNode = new XElement("log");
+                cleanNode.Save(logPath + FILE_ENDING);
+            }
         }
 
         public List<EventLogger.logEntry> read()
@@ -46,14 +51,15 @@ namespace PointAndControl.ComponentHandling
 
         public EventLogger.logEntry readSpecifiedEntry(int nr)
         {
-            if (!File.Exists(logPath + FILE_ENDING))
-            {
-
-            }
 
             XmlDocument docConfig = new XmlDocument();
             docConfig.Load(logPath + FILE_ENDING);
             XmlNode root = docConfig.SelectSingleNode("/log");
+
+            //if(root.ChildNodes.Count < nr - 1)
+            //{
+            //    return null;
+            //}
 
             XmlNode lookedFor = root.ChildNodes[nr - 1];
 
@@ -75,11 +81,6 @@ namespace PointAndControl.ComponentHandling
         //TODO: If spinLoad or spinSave fails, better behaviour could be implemented
         public bool write(EventLogger.logEntry writeString)
         {
-            if (!File.Exists(logPath + FILE_ENDING))
-            {
-                XElement cleanNode = new XElement("log");
-                cleanNode.Save(logPath + FILE_ENDING);
-            }
 
             XmlDocument docConfig = new XmlDocument();
 

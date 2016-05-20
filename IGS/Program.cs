@@ -15,7 +15,10 @@ namespace PointAndControl
 
 
             String command = "";
+            while (!starter.pncRunning)
+            {
 
+            }
             while (starter.pncRunning)
             {
                 Console.WriteLine(Properties.Resources.TypeConsoleCommand);
@@ -28,32 +31,7 @@ namespace PointAndControl
                         starter.stopIGSConsoleCmd();
                         Console.WriteLine(Properties.Resources.ServerShutDown);
                         break;
-                    case "addDevice":
-                        Console.WriteLine("Write Components as Promted - type break to stop");
 
-                        String[] input = new string[] {"Type", "Id", "Name", "URL" };
-                        int counter = 0;
-                        bool broke = false;
-
-                        while (counter < input.Length)
-                        {
-                            Console.WriteLine(input[counter]);
-                            input[counter] = Console.ReadLine();
-                            if (input[counter].Equals("break"))
-                            {
-                                broke = true;
-                                break;
-                            }
-                                
-                        }
-
-                        if (!broke)
-                        {
-                            //call addDevice
-                        }
-
-                        break;
-                        
                     default:
                         continue;
                 }
