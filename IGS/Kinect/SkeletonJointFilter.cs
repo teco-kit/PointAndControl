@@ -1,12 +1,7 @@
-﻿using Microsoft.Kinect;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows.Media.Media3D;
 
-namespace IGS.Kinect
+namespace PointAndControl.Kinect
 {
     interface ISkeletonJointFilter
     {

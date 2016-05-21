@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Text;
 
-namespace IGS.Server.Devices
+namespace PointAndControl.Devices
 {
     /// <summary>
     ///     This class specializes the device class to the class LCDTV

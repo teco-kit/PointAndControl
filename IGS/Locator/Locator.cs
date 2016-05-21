@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using PointAndControl.Helperclasses;
+using System;
 using System.Collections.Generic;
 using System.Windows.Media.Media3D;
-using IGS.Helperclasses;
 
-namespace IGS.Server.Location
+namespace PointAndControl.Location
 {
     public class Locator
     {

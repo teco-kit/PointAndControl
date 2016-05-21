@@ -2,9 +2,8 @@
 using System.Linq;
 using Microsoft.Kinect;
 using System.Diagnostics;
-using System;
 
-namespace IGS.Server.Kinect
+namespace PointAndControl.Kinect
 {
     /// <summary>
     ///     The class HandsUp implements a concrete gesture.

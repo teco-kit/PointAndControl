@@ -26,7 +26,7 @@
 using System;
 using System.IO;
 
-namespace IGS.Server.Location
+namespace PointAndControl.Location
 {
     /// <summary>
     /// Representation of supported exit statuses from the Bobyqa algorithm.

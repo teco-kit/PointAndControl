@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace IGS.Properties {
+namespace PointAndControl.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace IGS.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("IGS.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PointAndControl.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -79,6 +79,24 @@ namespace IGS.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Device {0} got an additional position.
+        /// </summary>
+        internal static string AdditionalDevCoords {
+            get {
+                return ResourceManager.GetString("AdditionalDevCoords", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Calculation error, please try again.
+        /// </summary>
+        internal static string CalculationError {
+            get {
+                return ResourceManager.GetString("CalculationError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Command arrived! devID: {0}; cmdID: {1}; value: {2}, wlanAdr:{3}.
         /// </summary>
         internal static string CmdArrivedLog {
@@ -93,6 +111,15 @@ namespace IGS.Properties {
         internal static string CoordinatesAdded {
             get {
                 return ResourceManager.GetString("CoordinatesAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Device {0} is now located to another position.
+        /// </summary>
+        internal static string DevCoordsReplaced {
+            get {
+                return ResourceManager.GetString("DevCoordsReplaced", resourceCulture);
             }
         }
         
@@ -157,6 +184,24 @@ namespace IGS.Properties {
         internal static string IPPortMissing {
             get {
                 return ResourceManager.GetString("IPPortMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Kinect placement changed.
+        /// </summary>
+        internal static string KinectPlacementChanged {
+            get {
+                return ResourceManager.GetString("KinectPlacementChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to More vectors needed for calculation.
+        /// </summary>
+        internal static string MoreVectorsRequired {
+            get {
+                return ResourceManager.GetString("MoreVectorsRequired", resourceCulture);
             }
         }
         
@@ -233,6 +278,15 @@ namespace IGS.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Plugwise-Path changed.
+        /// </summary>
+        internal static string PWCompChange {
+            get {
+                return ResourceManager.GetString("PWCompChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please register yourself at the system first.
         /// </summary>
         internal static string RegistrationRequest {
@@ -260,11 +314,29 @@ namespace IGS.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Measures of the room were changed.
+        /// </summary>
+        internal static string RoommeasuresChanged {
+            get {
+                return ResourceManager.GetString("RoommeasuresChanged", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A device with the given or created Device ID does already exist.
         /// </summary>
         internal static string SameDevIDEx {
             get {
                 return ResourceManager.GetString("SameDevIDEx", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server will be shut down.
+        /// </summary>
+        internal static string ServerShutDown {
+            get {
+                return ResourceManager.GetString("ServerShutDown", resourceCulture);
             }
         }
         
@@ -305,6 +377,15 @@ namespace IGS.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please type a command!.
+        /// </summary>
+        internal static string TypeConsoleCommand {
+            get {
+                return ResourceManager.GetString("TypeConsoleCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Device unknown.
         /// </summary>
         internal static string UnknownDev {
@@ -319,6 +400,33 @@ namespace IGS.Properties {
         internal static string UnknownError {
             get {
                 return ResourceManager.GetString("UnknownError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User with Wlan-Adress {0} was added.
+        /// </summary>
+        internal static string UserAdded {
+            get {
+                return ResourceManager.GetString("UserAdded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User with Wlan-Adress {0} already exists.
+        /// </summary>
+        internal static string UserExists {
+            get {
+                return ResourceManager.GetString("UserExists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User with Address {0} not registered.
+        /// </summary>
+        internal static string UserNotExists {
+            get {
+                return ResourceManager.GetString("UserNotExists", resourceCulture);
             }
         }
         

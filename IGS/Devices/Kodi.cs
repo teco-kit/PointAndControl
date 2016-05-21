@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Timers;
 
-namespace IGS.Server.Devices
+namespace PointAndControl.Devices
 {
     class Kodi : Device
     {
@@ -14,7 +13,7 @@ namespace IGS.Server.Devices
 
          
             private readonly String _commandString;
-            private readonly String _absolutePathToKodi = "C:\\Program Files (x86)\\Kodi\\Kodi.exe"; //TODO: this is not nice;
+            public String _absolutePathToKodi { get; set; }
 
             /// <summary>
             ///     Constructor of a boxee object.
@@ -155,6 +154,12 @@ namespace IGS.Server.Devices
                     process.Kill();
                 }
             }
+
+        public void setKodiPath(String path)
+        {
+            _absolutePathToKodi = path;
+            
+        }
         }
     }
 

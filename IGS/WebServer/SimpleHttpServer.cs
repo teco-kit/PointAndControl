@@ -14,7 +14,7 @@ using System.Diagnostics;
 // simple HTTP explanation
 // http://www.jmarshall.com/easy/http/
 
-namespace IGS.Server.WebServer
+namespace PointAndControl.WebServer
 {
     /// <summary>
     ///     This class contains the Arguments of a HTTP event     /// </summary>
@@ -488,7 +488,17 @@ namespace IGS.Server.WebServer
             Console.WriteLine(String.Format(Properties.Resources.StartingHTTPServer, LocalIP.ToString(),Port));
 
             _listener = new TcpListener(LocalIP, Port);
-            _listener.Start();
+            try
+            {
+                _listener.Start();
+            } catch (SocketException)
+            {
+                Console.WriteLine("Port already in use, please type another one");
+                Console.Write("Port: ");
+                Port = int.Parse(Console.ReadLine());
+                _listener = new TcpListener(LocalIP, Port);
+                _listener.Start();
+            }
             while (is_active)
             {
                 TcpClient s = _listener.AcceptTcpClient();
@@ -579,7 +589,6 @@ namespace IGS.Server.WebServer
         public override void HandleGetRequest(HttpProcessor p)
         {
 
-            //TODO: full localization testing
             string querystring = null;
             string pathstring = null;
             // check query part of string
@@ -614,17 +623,11 @@ namespace IGS.Server.WebServer
                 String language = p.HttpHeaders["Accept-Language"].ToString();
                 language = language.Split(',')[0];
 
-                
-
                 if (device != null && command != null)
                 {
-                    // TODO: clean this mess up
-                    String value = "";
-                    if (col["val"] != null)
-                        value = col["val"];
+                    String value = (col["val"] != null)? col["val"] : "";
                     String clientIp = ((IPEndPoint)p.Socket.Client.RemoteEndPoint).Address.ToString();
                     OnRequest(new HttpEventArgs(clientIp, device, command, value, language, p));
-
                 } else {
                     p.WriteFailure();
                 }
@@ -646,8 +649,6 @@ namespace IGS.Server.WebServer
             p.OutputStream.WriteLine("<a href=/test>return</a><p>");
             p.OutputStream.WriteLine("postbody: <pre>{0}</pre>", data);
             String clientIp = ((IPEndPoint)p.Socket.Client.RemoteEndPoint).Address.ToString();
-
-
 
             OnPOSTRequest(new HttpEventArgs(clientIp, data, p));
         }
@@ -672,16 +673,12 @@ namespace IGS.Server.WebServer
             }
             Debug.WriteLine("send Data: " + pathstring);
 
-
             bool continueSending = responseToFileRequest(p, pathstring);
 
             if (!continueSending)
             {
                 return;
             }
-
-
-            //TODO: make httproot configurable
 
             if (File.Exists(AppDomain.CurrentDomain.BaseDirectory + "\\HttpRoot\\" + pathstring))
             {

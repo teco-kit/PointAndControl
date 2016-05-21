@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IGS.Server.Kinect
+namespace PointAndControl.Kinect
 {
     /// <summary>
     ///     Dieses Event wird getriggert wenn sich ein getracktes Skelett das Sichtfeld der Kinect vollständig verlassen hat.

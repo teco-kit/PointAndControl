@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IGS.Server.Kinect
+namespace PointAndControl.Kinect
 {
     /// <summary>
     ///     This class reperesents a tracked skeleton and additional the number of interactions with the kinect. 

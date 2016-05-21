@@ -103,12 +103,32 @@ var changeDevicePosition = function (deviceId) {
     $(':mobile-pagecontainer').pagecontainer('change', '#locate');
 }
 
+var addDevice = function () {
+    var newDevice = { "id": $('#newdeviceid').val(), "name": $('#newdevicename').val(), "path": $('#newdeviceurl').val(), "type": $('#newdevicetype').val() };
 
-var addDeviceFromList = function () {
+    $.getJSON('/?dev=server&cmd=addDevice&val=' + JSON.stringify(newDevice), function (data) {
+
+        if (!data) {
+            return;
+        }
+
+        if (data.success) {
+            toast("Gerät hinzugefügt")
+
+            // set position for new device
+            changeDevicePosition(data.deviceId)
+        }
+
+        //TODO: check response          
+    });
+}
+
+
+var updateDeviceFromList = function () {
     if ($('#newdevicedd').val() == "")
         return;
 	
-	var value ={"Id":$('#newdevicedd').val(), "Name":$('#newdevicename').val()};
+	var value ={"id":$('#newdevicedd').val(), "name":$('#newdevicename').val()};
 	
     $.getJSON('/?dev=server&cmd=addDeviceFromList&val=' + JSON.stringify(value), function (data) {
 
@@ -130,7 +150,7 @@ var addDeviceFromList = function () {
 var clearDeviceVectors = function () {
     if (editDevice == "")
         return;
-	var value = {"Id":editDevice};
+	var value = {"id":editDevice};
 	
     $.getJSON('/?dev=server&cmd=resetDeviceVectorList&val=' + JSON.stringify(value), function (data) {
 
@@ -157,7 +177,7 @@ var addDeviceVector = function () {
     if (editDevice == "")
         return;
 
-	var value = {"Id":editDevice};
+	var value = {"id":editDevice};
 	
     $.getJSON('/?dev=server&cmd=addDeviceVector&val=' + JSON.stringify(value), function (data) {
 
@@ -188,7 +208,7 @@ var saveDevicePosition = function () {
     if (editDevice == "")
         return;
 
-	var value = {"Id":editDevice};
+	var value = {"id":editDevice};
 	
     $.getJSON('/?dev=server&cmd=setDevicePosition&val=' + JSON.stringify(value), function (data) {
 
@@ -256,10 +276,10 @@ var updateDeviceList = function () {
         }
 
         // store device list for later use
-        deviceList = data.devices;
+        deviceList = eval(data.devices);
 
-        for (var i = 0; i < data.devices.length; i++) {
-            var device = data.devices[i];
+        for (var i = 0; i < deviceList.length; i++) {
+            var device = deviceList[i];
             var target;
             if (editMode)
                 target = '"javascript:changeDevicePosition(\'' + device.id + '\');"';
@@ -363,7 +383,9 @@ var selectDevice = function () {
             if (supportsVibrate) {
                 //disable vibration for test navigator.vibrate(500);
             }
-            window.location.assign('/?dev=' + data.devices[0].id + '&cmd=getControlPath');
+            var tmpDevices = eval(data.devices);
+            //window.location.assign('/?dev=' + data.devices[0].id + '&cmd=getControlPath');
+            window.location.assign('/?dev=' + tmpDevices[0].id + '&cmd=getControlPath');
         }
     });
 }
@@ -504,7 +526,7 @@ $(function (event) {
 
     // add device from dialogue
     $('#adddevicebutton').on('click', function (event) {
-        addDeviceFromList();
+        addDevice();
     });
 
 
@@ -526,7 +548,7 @@ $(function (event) {
         }
 
         if (hash == '#adddevice') {
-            updateNewDeviceDD(event);
+            //updateNewDeviceDD(event);
         }
 
         if (hash == '#ar') {

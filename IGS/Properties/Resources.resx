@@ -208,4 +208,40 @@ Command could not be executed</value>
   <data name="WrongParameter" xml:space="preserve">
     <value>Needed Parameter for the request not found: {0}</value>
   </data>
+  <data name="PWCompChange" xml:space="preserve">
+    <value>Plugwise-Path changed</value>
+  </data>
+  <data name="KinectPlacementChanged" xml:space="preserve">
+    <value>Kinect placement changed</value>
+  </data>
+  <data name="RoommeasuresChanged" xml:space="preserve">
+    <value>Measures of the room were changed</value>
+  </data>
+  <data name="ServerShutDown" xml:space="preserve">
+    <value>Server will be shut down</value>
+  </data>
+  <data name="TypeConsoleCommand" xml:space="preserve">
+    <value>Please type a command!</value>
+  </data>
+  <data name="CalculationError" xml:space="preserve">
+    <value>Calculation error, please try again</value>
+  </data>
+  <data name="MoreVectorsRequired" xml:space="preserve">
+    <value>More vectors needed for calculation</value>
+  </data>
+  <data name="UserAdded" xml:space="preserve">
+    <value>User with Wlan-Adress {0} was added</value>
+  </data>
+  <data name="UserExists" xml:space="preserve">
+    <value>User with Wlan-Adress {0} already exists</value>
+  </data>
+  <data name="AdditionalDevCoords" xml:space="preserve">
+    <value>Device {0} got an additional position</value>
+  </data>
+  <data name="DevCoordsReplaced" xml:space="preserve">
+    <value>Device {0} is now located to another position</value>
+  </data>
+  <data name="UserNotExists" xml:space="preserve">
+    <value>User with Address {0} not registered</value>
+  </data>
 </root>

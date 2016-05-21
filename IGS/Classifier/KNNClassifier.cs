@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using numl;
-using numl.Supervised;
 using numl.Supervised.KNN;
 using numl.Model;
-using IGS.Helperclasses;
-using System.Drawing;
 
 
-namespace IGS.Classifier
+namespace PointAndControl.Classifier
 {
     public class KNNClassifier
     {
@@ -114,7 +108,6 @@ namespace IGS.Classifier
 
                     }
                 }
-                Console.WriteLine("Going into trainClassifier");
                 trainClassifier();
         }
 

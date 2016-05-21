@@ -1,16 +1,10 @@
-﻿using IGS.Helperclasses;
+﻿using PointAndControl.Helperclasses;
+using PointAndControl.MainComponents;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
-using IGS.Server.IGS;
-using System.Threading;
-using System.IO;
-using System.Diagnostics;
 
-namespace IGS.Classifier
+namespace PointAndControl.Classifier
 {
     public class ClassificationHandler 
     {
@@ -60,9 +54,9 @@ namespace IGS.Classifier
                 {
 
                     XMLComponentHandler.writeWallProjectionSampleToXML(sample);
-                    Point3D p = new Point3D(vectors[2].X, vectors[2].Y, vectors[2].Z);
-                    XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
-                    XMLComponentHandler.writeSampleToXML(vectors, sample.sampledeviceIdentifier);
+                    //Point3D p = new Point3D(vectors[2].X, vectors[2].Y, vectors[2].Z);
+                    //XMLComponentHandler.writeWallProjectionAndPositionSampleToXML(new WallProjectionAndPositionSample(sample, p));
+                    //XMLComponentHandler.writeSampleToXML(vectors, sample.sampledeviceIdentifier);
 
                     knnClassifier.addSampleAndLearn(sample);
 

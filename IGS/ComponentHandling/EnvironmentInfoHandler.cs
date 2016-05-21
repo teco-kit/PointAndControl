@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace IGS.ComponentHandling
+﻿namespace PointAndControl.ComponentHandling
 {
     public class EnvironmentInfoHandler
     {
@@ -136,7 +130,7 @@ namespace IGS.ComponentHandling
             return Properties.Settings.Default.KinectTiltAngle;
         }
 
-        public void setKinectTiltAngle(short tAngle)
+        public void setKinectTiltAngle(double tAngle)
         {
             Properties.Settings.Default.KinectTiltAngle = tAngle;
             Properties.Settings.Default.Save();
@@ -147,7 +141,7 @@ namespace IGS.ComponentHandling
             return Properties.Settings.Default.KinectHorizontalAngle;
         }
         
-        public void setKinectHorizontalAnlge(short hAngle)
+        public void setKinectHorizontalAnlge(double hAngle)
         {
             Properties.Settings.Default.KinectHorizontalAngle = hAngle;
             Properties.Settings.Default.Save();
@@ -159,13 +153,20 @@ namespace IGS.ComponentHandling
             Properties.Settings.Default.Save();
         }
 
-        public void setCompleteKinect(double kinX, double kinY, double kinZ, short tAngle, short hAngle)
+        public void setCompleteKinect(double kinX, double kinY, double kinZ, double tAngle, double hAngle)
         {
             setKinectPosX(kinX);
             setKinectPosY(kinY);
             setKinectPosZ(kinZ);
             setKinectTiltAngle(tAngle);
             setKinectHorizontalAnlge(hAngle);
+        }
+
+        public void setKinectCoordsOnly(double kinX, double kinY, double kinZ)
+        {
+            setKinectPosX(kinX);
+            setKinectPosY(kinY);
+            setKinectPosZ(kinZ);
         }
 
        

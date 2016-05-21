@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace IGS.Server.Kinect
+namespace PointAndControl.Kinect
 {
     public class TrackingStateEventArgs : EventArgs
     {

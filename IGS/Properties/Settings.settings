@@ -1,5 +1,5 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="IGS.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="PointAndControl.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="PWHost" Type="System.String" Scope="User">
@@ -29,14 +29,14 @@
     <Setting Name="KinectPosZ" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0.3</Value>
     </Setting>
-    <Setting Name="KinectTiltAngle" Type="System.Int16" Scope="User">
+    <Setting Name="KinectTiltAngle" Type="System.Double" Scope="User">
       <Value Profile="(Default)">-8</Value>
     </Setting>
-    <Setting Name="KinectHorizontalAngle" Type="System.Int16" Scope="User">
+    <Setting Name="KinectHorizontalAngle" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="EventLog" Type="System.Collections.Specialized.StringCollection" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="KodiPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\\Program Files (x86)\\Kodi\\Kodi.exe</Value>
     </Setting>
   </Settings>
 </SettingsFile>

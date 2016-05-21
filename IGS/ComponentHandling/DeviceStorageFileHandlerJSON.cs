@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using IGS.Server.Devices;
 using Newtonsoft.Json;
 using System.IO;
-using Newtonsoft.Json.Linq;
-using System.Runtime.Serialization;
+using PointAndControl.Devices;
 
-namespace IGS.ComponentHandling
+namespace PointAndControl.ComponentHandling
 {
     public class DeviceStorageFileHandlerJSON
     {
@@ -56,6 +51,29 @@ namespace IGS.ComponentHandling
             }
 
            
+
+            return Properties.Resources.NoCoordAdded;
+        }
+
+        public string changeDeviceCoord(string devId, Ball ball)
+        {
+            List<Device> devices = readDevices();
+
+            if (devices == null || devices.Count == 0)
+                return Properties.Resources.SpecifiedDeviceNotFound;
+
+            foreach (Device dev in devices)
+            {
+                if (dev.Id == devId)
+                {
+                    dev.Form.Clear();
+                    dev.Form.Add(ball);
+                    writeDevicesToFile(devices);
+                    return Properties.Resources.CoordinatesAdded;
+                }
+            }
+
+
 
             return Properties.Resources.NoCoordAdded;
         }

@@ -1,12 +1,11 @@
-﻿using IGS.Classifier;
-using IGS.Server.Location;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Media.Media3D;
 
-namespace IGS.Server.Devices
+namespace PointAndControl.Devices
 {
     /// <summary>
     ///     The abstract class represents a device with a name, a shape made out of balls(spheres), 
@@ -76,6 +75,8 @@ namespace IGS.Server.Devices
 
         public Color color { get; set; }
 
+        public static IEnumerable<Type> deviceTypes = getAllDerivedDeviceTypes();
+
         public String[] splitPathToIPAndPort()
         {
             String ipAndPortPattern = "[1-9]{1,3}[.]{1}[0-9]{1,3}[.]{1}[0-9]{1,3}[.]{1}[1-9]{0,3}[:]{1}[0-9]{1,5}";
@@ -101,5 +102,36 @@ namespace IGS.Server.Devices
         {
             return "http://" + post;
         }
+
+        //Base-Code from User "Yahoo Serious" on Stackoverflow: http://stackoverflow.com/questions/857705/get-all-derived-types-of-a-type 
+        //Date: 18.04.2016 - 09:16 am UTC+1
+        public static IEnumerable<Type> getAllDerivedDeviceTypes()
+        {
+            var listOfBs = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
+                            from assemblyType in domainAssembly.GetTypes()
+                            where typeof(Device).IsAssignableFrom(assemblyType)
+                            select assemblyType).ToArray();
+
+            return listOfBs;
+        }
+
+        public static List<String> getAllDerivedDeviceTypesAsStrings()
+        {
+            IEnumerable<Type> types = Device.deviceTypes;
+            List<String> result = new List<string>();
+
+            foreach (var t in types)
+            {
+                if (!t.Name.Equals("Device"))
+                {
+                    result.Add(t.Name);
+                }
+                
+            }
+
+            return result;
+        }
+
+        
     }
 }

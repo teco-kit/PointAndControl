@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Kinect;
 
-namespace IGS.Server.Kinect
+namespace PointAndControl.Kinect
 {
     /// <summary>
     ///     This abstract class defines a gesture. 

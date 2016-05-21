@@ -27,7 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace IGS.Server.Location
+namespace PointAndControl.Location
 {
     #region DELEGATES
 

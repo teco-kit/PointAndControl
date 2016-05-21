@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media.Media3D;
 
-namespace IGS.Server.Devices
+namespace PointAndControl.Devices
 {
     /// <summary>
     ///     The class ball presents a ballform, used to represent devices (their coordinates and radius in the room) as spheres and for the 

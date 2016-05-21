@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace IGS.Properties {
+namespace PointAndControl.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
@@ -134,9 +134,9 @@ namespace IGS.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("-8")]
-        public short KinectTiltAngle {
+        public double KinectTiltAngle {
             get {
-                return ((short)(this["KinectTiltAngle"]));
+                return ((double)(this["KinectTiltAngle"]));
             }
             set {
                 this["KinectTiltAngle"] = value;
@@ -146,9 +146,9 @@ namespace IGS.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public short KinectHorizontalAngle {
+        public double KinectHorizontalAngle {
             get {
-                return ((short)(this["KinectHorizontalAngle"]));
+                return ((double)(this["KinectHorizontalAngle"]));
             }
             set {
                 this["KinectHorizontalAngle"] = value;
@@ -157,12 +157,13 @@ namespace IGS.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Specialized.StringCollection EventLog {
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\\\Program Files (x86)\\\\Kodi\\\\Kodi.exe")]
+        public string KodiPath {
             get {
-                return ((global::System.Collections.Specialized.StringCollection)(this["EventLog"]));
+                return ((string)(this["KodiPath"]));
             }
             set {
-                this["EventLog"] = value;
+                this["KodiPath"] = value;
             }
         }
     }

@@ -3,17 +3,11 @@ using System.IO;
 using System.Linq;
 using System.Windows.Media.Media3D;
 using Microsoft.Kinect;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using IGS.Kinect;
-using IGS.Helperclasses;
-using System.Diagnostics;
 
-namespace IGS.Server.Kinect
+namespace PointAndControl.Kinect
 {
     /// <summary>
-    ///     This class represents the management of the kinect internal data and provides them for the igs.
+    ///     This class represents the management of the kinect internal data and provides them for the pncMain.
     ///     Part of the design pattern: subject(KinectUserEvent)
     ///     @author Sven Ochs
     /// </summary>

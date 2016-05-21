@@ -2,26 +2,24 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace IGS.ComponentHandling
-{ 
+namespace PointAndControl.ComponentHandling
+{
     public class XMLEventLogFormat : IEventlogFormat
     {
         private string logPath;
         private const string FILE_ENDING = ".xml";
-        private Stopwatch timeoutTimer { get; set; }
-
 
         public XMLEventLogFormat(string lPath)
         {
             logPath = lPath;
-            timeoutTimer = new Stopwatch(); 
+            if (!File.Exists(logPath + FILE_ENDING))
+            {
+                XElement cleanNode = new XElement("log");
+                cleanNode.Save(logPath + FILE_ENDING);
+            }
         }
 
         public List<EventLogger.logEntry> read()
@@ -31,13 +29,13 @@ namespace IGS.ComponentHandling
             {
                 return entries;
             }
-           
+
             XmlDocument docConfig = new XmlDocument();
             docConfig.Load(logPath + FILE_ENDING);
             XmlNode root = docConfig.SelectSingleNode("/log");
 
-            
-            foreach(XmlNode entry in root.ChildNodes)
+
+            foreach (XmlNode entry in root.ChildNodes)
             {
                 EventLogger.logEntry lEntry = new EventLogger.logEntry();
 
@@ -48,19 +46,20 @@ namespace IGS.ComponentHandling
             }
 
             return entries;
-            
+
         }
 
         public EventLogger.logEntry readSpecifiedEntry(int nr)
         {
-            if (!File.Exists(logPath + FILE_ENDING))
-            {
-                
-            }
 
             XmlDocument docConfig = new XmlDocument();
             docConfig.Load(logPath + FILE_ENDING);
             XmlNode root = docConfig.SelectSingleNode("/log");
+
+            //if(root.ChildNodes.Count < nr - 1)
+            //{
+            //    return null;
+            //}
 
             XmlNode lookedFor = root.ChildNodes[nr - 1];
 
@@ -70,7 +69,7 @@ namespace IGS.ComponentHandling
             entry.logText = lookedFor.Value;
 
             return entry;
-            
+
         }
 
         public void setLogPath(string logPath)
@@ -78,46 +77,30 @@ namespace IGS.ComponentHandling
             this.logPath = logPath;
         }
 
+
+        //TODO: If spinLoad or spinSave fails, better behaviour could be implemented
         public bool write(EventLogger.logEntry writeString)
         {
-            if(!File.Exists(logPath + FILE_ENDING))
-            {
-                XElement cleanNode = new XElement("log");
-                cleanNode.Save(logPath + FILE_ENDING);
-            }
 
             XmlDocument docConfig = new XmlDocument();
-            docConfig.Load(logPath + FILE_ENDING);
+
+            if (!spinLoad(docConfig))
+            {
+                Console.WriteLine("Log locked for 2 seconds");
+                return false;
+            }
+
             XmlNode root = docConfig.SelectSingleNode("/log");
 
             XmlElement newEntry = docConfig.CreateElement("Entry");
-            
+
             newEntry.SetAttribute("Date_And_Time", writeString.dt.ToString());
             newEntry.InnerText = writeString.logText;
 
             root.AppendChild(newEntry);
 
-            bool writeSuccess = false;
-            bool writeFailure = false;
-
-            while (writeSuccess == false && writeFailure == false)
+            if (!spinSave(docConfig))
             {
-                writeSuccess = trySave(docConfig);
-                if (writeSuccess == false && !timeoutTimer.IsRunning == false)
-                {
-                    timeoutTimer.Start();
-                }
-                else if (writeSuccess == false && timeoutTimer.IsRunning == true && timeoutTimer.ElapsedMilliseconds > 2000)
-                {
-                    writeFailure = true;
-                }
-            }
-
-            timeoutTimer.Reset();
-
-            if (writeFailure == true)
-            {
-                //handle a failure behavor
                 Console.WriteLine("Log locked for 2 seconds");
                 return false;
             }
@@ -125,17 +108,59 @@ namespace IGS.ComponentHandling
             return true;
         }
 
-
+        //TODO: trySave and tryLoad and spinSave and spinLoad nearly the same - decide if Interface or deciderVariable should be used to fuse them
         private bool trySave(XmlDocument docConfig)
         {
             try
             {
                 docConfig.Save(logPath + FILE_ENDING);
-                return true;
-            } catch (IOException)
+            }
+            catch (IOException)
             {
                 return false;
             }
+            return true;
+        }
+
+        private bool tryLoad(XmlDocument docConfig)
+        {
+            try
+            {
+                docConfig.Load(logPath + FILE_ENDING);
+            }
+            catch (IOException)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        private bool spinLoad(XmlDocument docConfig)
+        {
+            bool success = false;
+            Stopwatch watch = new Stopwatch();
+
+            watch.Start();
+            while (!success && watch.ElapsedMilliseconds <= 2000)
+            {
+                success = tryLoad(docConfig);
+            }
+
+            return success;
+        }
+
+        private bool spinSave(XmlDocument docConfig)
+        {
+            bool success = false;
+            Stopwatch watch = new Stopwatch();
+
+            watch.Start();
+            while (!success && watch.ElapsedMilliseconds <= 2000)
+            {
+                success = trySave(docConfig);
+            }
+
+            return success;
         }
     }
 }

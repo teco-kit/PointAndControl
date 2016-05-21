@@ -5,11 +5,11 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
 using HelixToolkit.Wpf;
-using IGS.Server.Devices;
 using Microsoft.Kinect;
-using IGS.Server.IGS;
-using IGS.Classifier;
-using IGS.Server.Kinect;
+using PointAndControl.Classifier;
+using PointAndControl.Helperclasses;
+using PointAndControl.Devices;
+using PointAndControl.Kinect;
 
 namespace IGS
 {
@@ -110,6 +110,39 @@ namespace IGS
          
             kinect = new ModelVisual3D();
            
+            InitializeComponent();
+            //fillRoomWithColoredSamples(list, devices);
+
+            deviceList = devices;
+            FillRoom();
+        }
+
+        public Room3DView(List<Device> devices, CoordTransform transformator)
+        {
+            this.transformator = transformator;
+            skelList = new List<ModelVisual3D>();
+            boneListInitList = new List<Boolean>();
+            IDList = new List<long>();
+            ballListsList = new List<List<SphereVisual3D>>();
+            boneListsList = new List<List<PipeVisual3D>>();
+            aktualizations = new int[6];
+            IDListNullSpaces = new List<bool>();
+            skelRayList = new List<PipeVisual3D>();
+            for (int i = 0; i < 6; i++)
+            {
+                skelList.Add(new ModelVisual3D());
+                IDList.Add(-1);
+                IDListNullSpaces.Add(true);
+                boneListInitList.Add(false);
+                ballListsList.Add(initBalls());
+                aktualizations[i] = 0;
+                skelRayList.Add(new PipeVisual3D());
+                boneListsList.Add(new List<PipeVisual3D>());
+            }
+            lastSkeletonAktualized = 0;
+
+            kinect = new ModelVisual3D();
+
             InitializeComponent();
             //fillRoomWithColoredSamples(list, devices);
 

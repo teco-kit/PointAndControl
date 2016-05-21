@@ -1,13 +1,8 @@
-﻿using IGS.Helperclasses;
-using Microsoft.Kinect;
-using System;
+﻿using PointAndControl.Helperclasses;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media.Media3D;
 
-namespace IGS.Kinect
+namespace PointAndControl.Kinect
 {
     public class MedianJointFilter : ISkeletonJointFilter
     {
