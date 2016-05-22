@@ -267,6 +267,8 @@ namespace PointAndControl.MainComponents
             _deviceStorageHandling.addDevice(newDevice);
             return newDevice.Id;
         }
+
+
         /// <summary>
         ///     Returns a device with its id.
         ///     <param name="id">Is used to identify a device.</param>
@@ -286,6 +288,8 @@ namespace PointAndControl.MainComponents
             }
             return null;
         }
+
+ 
 
         /// <summary>
         ///     Deletes the associated bodyID from the through ID implicated user.
@@ -387,6 +391,9 @@ namespace PointAndControl.MainComponents
         public void checkAndWriteColorForNewDevice(Device dev)
         {
             if (checkForSameDevID(dev.Id))
+                return;
+
+            if (dev.color != null)
                 return;
 
             dev.color = pickRandomColor();

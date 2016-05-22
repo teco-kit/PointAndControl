@@ -10,6 +10,7 @@ using PointAndControl.Kinect;
 using PointAndControl.WebServer;
 using PointAndControl.ComponentHandling;
 using PointAndControl.Helperclasses;
+using PointAndControl.ThirdPartyRepos;
 
 namespace PointAndControl.MainComponents
 {
@@ -60,8 +61,7 @@ namespace PointAndControl.MainComponents
             
             logger = eventLogger;
             this.coreMethods = new CollisionMethod(Data, Tracker, Transformer, logger);
-            
-           
+
         }
 
 
@@ -543,11 +543,9 @@ namespace PointAndControl.MainComponents
 
                     case "getDeviceTypes":
                         success = true;
-
                         response.addDeviceTypes(getDeviceTypeJSON());
 
                         break;
-
                 }
                 response.addSuccess(success);
                 response.addMsg(msg);
@@ -595,10 +593,7 @@ namespace PointAndControl.MainComponents
                 response.addReturnString(retStr);
 
                 return response.serialize();
-
-
             }
-            
         }
 
 
@@ -608,6 +603,8 @@ namespace PointAndControl.MainComponents
             List<leanDevRepresentation> d = new List<leanDevRepresentation>();
             if (devices != null)
             {
+                //List<Device> deviceList = devices.Where(device => !device.isRepoDevice() ).ToList();
+
                 List<Device> deviceList = devices.ToList();
 
                 deviceList.ForEach(x => d.Add(new leanDevRepresentation(x)));

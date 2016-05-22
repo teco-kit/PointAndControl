@@ -180,6 +180,7 @@
       <DependentUpon>Room3DView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
+    <Compile Include="ThirdPartyRepos\OpenHABTranslator.cs" />
     <Compile Include="Webserver\SimpleHttpServer.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>

@@ -27,6 +27,7 @@ namespace PointAndControl.Devices
             Form = form;
             Path = path;
             skelPositions = new List<Point3D[]>();
+            childDevices = new List<Device>();
         }
 
         ///     Name of the device.
@@ -77,6 +78,8 @@ namespace PointAndControl.Devices
 
         public static IEnumerable<Type> deviceTypes = getAllDerivedDeviceTypes();
 
+        public List<Device> childDevices { get; set; }
+
         public String[] splitPathToIPAndPort()
         {
             String ipAndPortPattern = "[1-9]{1,3}[.]{1}[0-9]{1,3}[.]{1}[0-9]{1,3}[.]{1}[1-9]{0,3}[:]{1}[0-9]{1,5}";
@@ -104,7 +107,7 @@ namespace PointAndControl.Devices
         }
 
         //Base-Code from User "Yahoo Serious" on Stackoverflow: http://stackoverflow.com/questions/857705/get-all-derived-types-of-a-type 
-        //Date: 18.04.2016 - 09:16 am UTC+1
+        //AccessDate: 18.04.2016 - 09:16 am UTC+1
         public static IEnumerable<Type> getAllDerivedDeviceTypes()
         {
             var listOfBs = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
@@ -132,6 +135,15 @@ namespace PointAndControl.Devices
             return result;
         }
 
-        
+        public bool isRepoDevice()
+        {
+            if(childDevices.Count() != 0)
+            {
+                return true;
+            } else
+            {
+                return false;
+            }
+        }       
     }
 }
