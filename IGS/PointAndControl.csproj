@@ -71,6 +71,10 @@
       <HintPath>..\packages\HelixToolkit.Wpf.2015.1.706\lib\net45\HelixToolkit.Wpf.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Kinect, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.Kinect.2.0.1410.19000\lib\net45\Microsoft.Kinect.dll</HintPath>
@@ -87,8 +91,29 @@
       <HintPath>..\packages\numl.0.8.24.0\lib\net40\numl.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="SuperSocket.Common, Version=1.6.0.4, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
+      <HintPath>..\packages\SuperWebSocket.0.9.0.2\lib\net40\SuperSocket.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SuperSocket.Facility, Version=1.5.3.0, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
+      <HintPath>..\packages\SuperWebSocketNETServer.0.8\lib\net45\SuperSocket.Facility.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SuperSocket.SocketBase, Version=1.6.0.4, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
+      <HintPath>..\packages\SuperWebSocket.0.9.0.2\lib\net40\SuperSocket.SocketBase.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SuperSocket.SocketEngine, Version=1.6.0.4, Culture=neutral, PublicKeyToken=6c80000676988ebb, processorArchitecture=MSIL">
+      <HintPath>..\packages\SuperWebSocket.0.9.0.2\lib\net40\SuperSocket.SocketEngine.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="SuperWebSocket, Version=0.9.0.0, Culture=neutral, PublicKeyToken=7ba53b9a7cef5d1c, processorArchitecture=MSIL">
+      <HintPath>..\packages\SuperWebSocket.0.9.0.2\lib\net40\SuperWebSocket.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Configuration.Install" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -180,6 +205,7 @@
       <DependentUpon>Room3DView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
+    <Compile Include="Webserver\KinectImagePublisher.cs" />
     <Compile Include="Webserver\SimpleHttpServer.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
@@ -233,6 +259,10 @@
     </None>
     <AppDesigner Include="Properties\" />
     <None Include="Resources\HttpRoot\Boxee\img\Thumbs.db" />
+    <None Include="Resources\HttpRoot\KinectImageView\Web.config" />
+    <None Include="Resources\HttpRoot\KinectImageView\Web.Debug.config" />
+    <None Include="Resources\HttpRoot\Locator_changePosition\img\Thumbs.db" />
+    <None Include="Resources\HttpRoot\Locator_createNewDevice\img\Thumbs.db" />
     <None Include="Resources\HttpRoot\manifest.json" />
     <None Include="Resources\HttpRoot\js\jquery.mobile-1.4.5.min.map" />
     <None Include="Resources\HttpRoot\XBMCv11\img\Thumbs.db" />
@@ -290,9 +320,50 @@
     <Resource Include="Resources\HttpRoot\img\icons\TV.png" />
     <Resource Include="Resources\HttpRoot\img\icons\Ventilator.png" />
     <Resource Include="Resources\HttpRoot\img\icons\XBox.png" />
+    <Resource Include="Resources\devices.txt" />
     <Content Include="Resources\HttpRoot\css\screen.css" />
     <Resource Include="Resources\HttpRoot\img\icons\NecLcdMonitorMultiSyncV421_1.png" />
     <Content Include="Resources\HttpRoot\js\screen.js" />
+    <Content Include="Resources\HttpRoot\KinectImageView\kinect.js" />
+    <Content Include="Resources\HttpRoot\KinectImageView\TestPage.html" />
+    <Content Include="Resources\HttpRoot\Locator_changePosition\css\screen.css" />
+    <Resource Include="Resources\HttpRoot\Locator_changePosition\img\audio.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_changePosition\img\back.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_changePosition\img\bg.jpg" />
+    <Resource Include="Resources\HttpRoot\Locator_changePosition\img\down.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_changePosition\img\left.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_changePosition\img\mute.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_changePosition\img\off.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_changePosition\img\on.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_changePosition\img\pause.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_changePosition\img\play.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_changePosition\img\right.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_changePosition\img\select.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_changePosition\img\src.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_changePosition\img\stop.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_changePosition\img\up.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_changePosition\img\voldown.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_changePosition\img\volup.gif" />
+    <Content Include="Resources\HttpRoot\Locator_changePosition\index.html" />
+    <Content Include="Resources\HttpRoot\Locator_createNewDevice\css\screen.css" />
+    <Resource Include="Resources\HttpRoot\Locator_createNewDevice\img\audio.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_createNewDevice\img\back.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_createNewDevice\img\bg.jpg" />
+    <Resource Include="Resources\HttpRoot\Locator_createNewDevice\img\down.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_createNewDevice\img\left.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_createNewDevice\img\mute.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_createNewDevice\img\off.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_createNewDevice\img\on.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_createNewDevice\img\pause.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_createNewDevice\img\play.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_createNewDevice\img\right.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_createNewDevice\img\select.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_createNewDevice\img\src.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_createNewDevice\img\stop.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_createNewDevice\img\up.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_createNewDevice\img\voldown.gif" />
+    <Resource Include="Resources\HttpRoot\Locator_createNewDevice\img\volup.gif" />
+    <Content Include="Resources\HttpRoot\Locator_createNewDevice\index.html" />
     <Content Include="Resources\HttpRoot\screen.html" />
     <Content Include="Resources\HttpRoot\img\living-lab-map.svg" />
     <Content Include="Resources\HttpRoot\js\adapter.js" />

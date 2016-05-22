@@ -452,7 +452,7 @@ namespace PointAndControl.WebServer
         /// <summary>
         ///     The port the server uses.
         /// </summary>
-        protected int Port;
+        public int Port;
 
         /// <summary>
         ///     Constructor for the HttpServer.

@@ -113,6 +113,7 @@ namespace PointAndControl.Kinect
             //    reader = Sensor.BodyFrameSource.OpenReader();
             //    break;
             //}
+
             Sensor = KinectSensor.GetDefault();
             _bodiesLastFrame = new Body[6];
             if (Sensor == null) return;

@@ -10,6 +10,8 @@ using PointAndControl.Kinect;
 using PointAndControl.WebServer;
 using PointAndControl.ComponentHandling;
 using PointAndControl.Helperclasses;
+using PointAndControl.Webserver;
+using System.Threading.Tasks;
 
 namespace PointAndControl.MainComponents
 {
@@ -60,7 +62,9 @@ namespace PointAndControl.MainComponents
             
             logger = eventLogger;
             this.coreMethods = new CollisionMethod(Data, Tracker, Transformer, logger);
-            
+            kinectImagePublisher = new KinectImagePublisher(Tracker.Sensor, Tracker.Bodies);
+            startKinectImagePublisher();
+
            
         }
 
@@ -115,6 +119,11 @@ namespace PointAndControl.MainComponents
         public bool cancellationRequest { get; set; }
 
         private JSON_ParameterReader json_paramReader { get; set; }
+
+        private KinectImagePublisher kinectImagePublisher { get; set; }
+
+        private CancellationTokenSource imagePublisherCTokenSource { get; set; }
+        private CancellationToken imagePublisherCToken { get; set; }
 
         /// <summary>
         /// 
@@ -545,7 +554,11 @@ namespace PointAndControl.MainComponents
                         success = true;
 
                         response.addDeviceTypes(getDeviceTypeJSON());
-
+                        
+                        break;
+                    case "getKinectImagePage":
+                        String pagePath = getImageViewPath();
+                        args.P.WriteRedirect(pagePath, 302);
                         break;
 
                 }
@@ -725,10 +738,15 @@ namespace PointAndControl.MainComponents
             }
             else
             {
-                controlPath = "http://" + Server.LocalIP + ":8080" + "/" + t + "/" + "index.html?dev=" + id;
+                controlPath = "http://" + Server.LocalIP + ":" + Server.Port + "/" + t + "/" + "index.html?dev=" + id;
             }
 
             return controlPath;
+        }
+
+        public String getImageViewPath()
+        {
+            return "http://" + Server.LocalIP + ":" + Server.Port + "/KinectImageView/TestPage.html";
         }
 
         private bool setPlugwiseComponents(Dictionary<string, string> values)
@@ -828,10 +846,34 @@ namespace PointAndControl.MainComponents
 
         public bool shutDown()
         {
+            imagePublisherCTokenSource.Cancel();
             Tracker.ShutDown();
             isRunning = false;
 
             return true;
+        }
+
+        public async void startKinectImagePublisher()
+        {
+            imagePublisherCTokenSource = new CancellationTokenSource();
+            imagePublisherCToken = imagePublisherCTokenSource.Token;
+
+            await Task.Run(() =>
+            {
+                try
+                {
+                    kinectImagePublisher.start();
+                    while (kinectImagePublisher.serverRunning)
+                    {
+                        imagePublisherCToken.ThrowIfCancellationRequested();
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    kinectImagePublisher.stop();
+                }
+
+            });
         }
 
     }
