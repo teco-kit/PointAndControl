@@ -6,6 +6,7 @@ using System.Windows.Media.Media3D;
 using PointAndControl.Devices;
 using PointAndControl.Classifier;
 using PointAndControl.ComponentHandling;
+using PointAndControl.ThirdPartyRepos;
 
 namespace PointAndControl.MainComponents
 {
@@ -35,6 +36,8 @@ namespace PointAndControl.MainComponents
         private Deviceproducer devProducer { get; set; }
 
         private EventLogger logger { get; set; }
+
+        private List<IRepoDeviceReader> repoAccessors { get; set; }
 
 
 
@@ -256,7 +259,7 @@ namespace PointAndControl.MainComponents
             if (!Device.checkForIpAndPort(path) && type != "ExternalDevice")
                 return Properties.Resources.UnknownError;
 
-            Device newDevice = devProducer.produceDevice(type, id, name, path, _devices);
+            Device newDevice = devProducer.produceDevice(type, id, name, path, getCompleteDeviceList());
 
             if (newDevice == null)
                 return Properties.Resources.UnknownError;
@@ -268,12 +271,83 @@ namespace PointAndControl.MainComponents
             return newDevice.Id;
         }
 
+        public string AddDevice(string type, string id, string name, string path, string repoID)
+        {
+            if (checkForSameDevID(id))
+                return Properties.Resources.SameDevIDEx;
+
+            if (name == null)
+                name = "";
+
+            Device repoDevice = getDeviceByID(repoID);
+
+            
+
+            if(repoDevice == null || !OpenHabRepo.isRepo(repoDevice))
+            {
+                return "RepoDevice not found"; //TODO: Create good response and localize ist
+            }
+
+            if (repoDevice.hasParent())
+                return "Device cant be added to a childDevice"; //TODO: Create good Response and localize it
+
+            Device newDevice = devProducer.produceDevice(type, id, name, path, getCompleteDeviceList());
+
+            if (newDevice == null)
+                return Properties.Resources.UnknownError;
+
+            checkAndWriteColorForNewDevice(newDevice);
+            newDevice.addParent(repoDevice);
+            ((OpenHabRepo)repoDevice).childDevices.Add(newDevice);
+
+            return newDevice.Id;
+
+        }
+
+        public string AddDevice(string type, string id, string name, string path, OpenHabRepo repoDevice)
+        {
+            if (checkForSameDevID(id))
+                return Properties.Resources.SameDevIDEx;
+
+            if (name == null)
+                name = "";
+
+            if (repoDevice.hasParent())
+                return "Device cant be added to a childDevice"; //TODO: Create good Response and localize it
+
+            Device newDevice = devProducer.produceDevice(type, id, name, path, getCompleteDeviceList());
+
+            if (newDevice == null)
+                return Properties.Resources.UnknownError;
+
+            checkAndWriteColorForNewDevice(newDevice);
+            newDevice.addParent(repoDevice);
+            repoDevice.childDevices.Add(newDevice);
+
+            return newDevice.Id;
+
+        }
+
 
         /// <summary>
         ///     Returns a device with its id.
         ///     <param name="id">Is used to identify a device.</param>
         ///     <returns>Returns the deviceobject. If no device with the id exists NULL will be returned<returns>
         /// </summary>
+        //public Device getDeviceByID(String id)
+        //{
+        //    if (id == null || id == "")
+        //        return null;
+
+        //    foreach (Device dev in _devices)
+        //    {
+        //        if (dev.Id == id)
+        //        {
+        //            return dev;
+        //        }
+        //    }
+        //    return null;
+        //}
         public Device getDeviceByID(String id)
         {
             if (id == null || id == "")
@@ -285,11 +359,37 @@ namespace PointAndControl.MainComponents
                 {
                     return dev;
                 }
+
+                if (OpenHabRepo.isRepo(dev))
+                {
+                    foreach(Device childDev in ((OpenHabRepo)dev).childDevices)
+                    {
+                        if (childDev.Id == id)
+                        {
+                            return childDev;
+                        }
+                    }
+                }              
             }
             return null;
         }
 
- 
+        public List<Device> getCompleteDeviceList()
+        {
+            List<Device> returnList = new List<Device>();
+            
+            foreach(Device dev in _devices)
+            {
+                if (OpenHabRepo.isRepo(dev))
+                    ((OpenHabRepo)dev).childDevices.ForEach(x => returnList.Add(x));
+                else
+                {
+                    returnList.Add(dev);
+                } 
+            }
+
+            return returnList;
+        }
 
         /// <summary>
         ///     Deletes the associated bodyID from the through ID implicated user.
@@ -316,10 +416,9 @@ namespace PointAndControl.MainComponents
         /// <param name="input">the new adress for all plugwises</param>
         private void change_PlugWise_Adress(String input)
         {
-
             String[] splitted;
 
-            foreach(Device dev in Devices)
+            foreach(Device dev in getCompleteDeviceList())
             {
                 //if (getDeviceType(dev).Equals("Plugwise"))
                 if(dev.GetType().Name.Equals("Plugwise"))
@@ -427,26 +526,31 @@ namespace PointAndControl.MainComponents
 
         private bool checkForSameDevID(String id)
         {
-            foreach(Device d in Devices)
-            {
-                if (d.Id == id)
-                    return true;
-            }
-
-            return false;
+            return getCompleteDeviceList().Exists(x => x.Id == id);
         }
 
         public string deleteDevice(String id)
         {
+            Device tempDev;
             String retStr = Properties.Resources.DevNotFoundDeletion;
             
-            foreach(Device d in Devices)
+            foreach(Device d in getCompleteDeviceList())
             {
                 if (d.Id == id)
                 {
-                    _deviceStorageHandling.deleteDevice(d.Id);
-                    Devices.Remove(d);
-                    retStr = Properties.Resources.DevDeleted;
+                    if (d.hasParent())
+                    {
+                        tempDev = d;
+                        Device parent = getDeviceByID(tempDev.parentID);
+                        ((OpenHabRepo)parent).childDevices.Remove(d);
+                        _deviceStorageHandling.updateDevice(parent);
+                        retStr = Properties.Resources.DevDeleted;
+                    } else
+                    {
+                        _deviceStorageHandling.deleteDevice(d.Id);
+                        Devices.Remove(d);
+                        retStr = Properties.Resources.DevDeleted;
+                    }
                     break;
                 }
             }
@@ -476,11 +580,11 @@ namespace PointAndControl.MainComponents
             }
 
             changeRoomSize(parsedWidth, parsedHeight, parsedDepth);
-
         }
 
-        
-
-
+        public List<Device> getDevicesWithoutAssignedName()
+        {
+            return getCompleteDeviceList().FindAll(dev => dev.GetType().Name == "ExternalDevice" && ((ExternalDevice)dev).hasAssignedName == false);
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace PointAndControl.ComponentHandling
+﻿using System.Collections.Specialized;
+
+namespace PointAndControl.ComponentHandling
 {
     public class EnvironmentInfoHandler
     {
@@ -169,7 +171,6 @@
             setKinectPosZ(kinZ);
         }
 
-       
         /// <summary>
         /// Builds the regular adresses for the plugwises with the passed components
         /// </summary>

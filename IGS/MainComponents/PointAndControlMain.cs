@@ -62,6 +62,8 @@ namespace PointAndControl.MainComponents
             logger = eventLogger;
             this.coreMethods = new CollisionMethod(Data, Tracker, Transformer, logger);
 
+            Data.AddDevice(new OpenHabRepo("TestOHR", "OpenHabRepo_0", "192.168.1.3:8090", new List<Ball>(), data));
+
         }
 
 
@@ -332,7 +334,7 @@ namespace PointAndControl.MainComponents
                         
                     case "list":
                         success = true;
-                        response.addDevices(Data.Devices);
+                        response.addDevices(Data.getCompleteDeviceList());
                         break;
 
                     case "discoverDevices":
@@ -605,7 +607,7 @@ namespace PointAndControl.MainComponents
             {
                 //List<Device> deviceList = devices.Where(device => !device.isRepoDevice() ).ToList();
 
-                List<Device> deviceList = devices.ToList();
+                List<Device> deviceList = devices.Where(dev => OpenHabRepo.isRepo(dev) == false).ToList();
 
                 deviceList.ForEach(x => d.Add(new leanDevRepresentation(x)));
             }
@@ -713,12 +715,12 @@ namespace PointAndControl.MainComponents
         public String getControlPagePathHttp(String id)
         {
             String controlPath = "";
-
-            String t = Data.getDeviceByID(id).GetType().Name;
+            Device dev = Data.getDeviceByID(id);
+            String t = dev.GetType().Name;
 
             if (t.Equals("ExternalDevice"))
             {
-                controlPath = Data.getDeviceByID(id).Path;
+                controlPath = dev.Path;
             }
             else
             {
@@ -830,7 +832,6 @@ namespace PointAndControl.MainComponents
 
             return true;
         }
-
     }
 
 }

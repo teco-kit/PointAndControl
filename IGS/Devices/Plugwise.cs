@@ -24,7 +24,7 @@ namespace PointAndControl.Devices
         ///     <param name="path">The Path to communicate with the device</param>  
         /// </summary>
 
-        public Plugwise(String name, String id, List<Ball> form, String path)
+        public Plugwise(String name, String id, String path, List<Ball> form)
                 : base(name, id, path, form)
             {
             String[] ipAndPort = splitPathToIPAndPort();

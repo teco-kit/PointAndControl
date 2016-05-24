@@ -59,7 +59,7 @@ namespace PointAndControl.ComponentHandling
         {
             List<Device> devices = readDevices();
 
-            if (devices == null || devices.Count == 0)
+            if (devices == null || devices.Count == 0 || devices.Exists(d => d.Id == devId))
                 return Properties.Resources.SpecifiedDeviceNotFound;
 
             foreach (Device dev in devices)
@@ -72,10 +72,24 @@ namespace PointAndControl.ComponentHandling
                     return Properties.Resources.CoordinatesAdded;
                 }
             }
-
-
-
             return Properties.Resources.NoCoordAdded;
+        }
+
+        public string updateDevice(Device dev)
+        {
+            List<Device> devices = readDevices();
+
+            if (devices == null || devices.Count == 0 || devices.Exists(d => d.Id == dev.Id))
+                return Properties.Resources.SpecifiedDeviceNotFound;
+
+            int index = devices.FindIndex(d => dev.Id == d.Id);
+
+            if (index < 0)
+                return "";
+
+            devices[index] = dev;
+
+            return "";
         }
 
         public List<Device> readDevices()

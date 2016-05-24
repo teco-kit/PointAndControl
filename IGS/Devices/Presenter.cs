@@ -19,7 +19,7 @@ namespace PointAndControl.Devices
         ///     <param name="form">Shape of the device in the room</param>
         ///     <param name="path">The Path to communicate with the device</param>  
         /// </summary>
-        public Presenter(String name, String id, List<Ball> form, String path)
+        public Presenter(String name, String id, String path, List<Ball> form)
             : base(name, id, path, form)
         {
             String[] ipAndPort = splitPathToIPAndPort();

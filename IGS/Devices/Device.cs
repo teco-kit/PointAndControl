@@ -27,7 +27,8 @@ namespace PointAndControl.Devices
             Form = form;
             Path = path;
             skelPositions = new List<Point3D[]>();
-            childDevices = new List<Device>();
+
+            parentID = null;
         }
 
         ///     Name of the device.
@@ -74,11 +75,11 @@ namespace PointAndControl.Devices
 
         public List<Point3D[]> skelPositions { get; set; }
 
+        public string parentID { get; set; }
+
         public Color color { get; set; }
 
-        public static IEnumerable<Type> deviceTypes = getAllDerivedDeviceTypes();
-
-        public List<Device> childDevices { get; set; }
+        public static List<Type> deviceTypes = getAllDerivedDeviceTypes();
 
         public String[] splitPathToIPAndPort()
         {
@@ -108,14 +109,14 @@ namespace PointAndControl.Devices
 
         //Base-Code from User "Yahoo Serious" on Stackoverflow: http://stackoverflow.com/questions/857705/get-all-derived-types-of-a-type 
         //AccessDate: 18.04.2016 - 09:16 am UTC+1
-        public static IEnumerable<Type> getAllDerivedDeviceTypes()
+        public static List<Type> getAllDerivedDeviceTypes()
         {
             var listOfBs = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
                             from assemblyType in domainAssembly.GetTypes()
                             where typeof(Device).IsAssignableFrom(assemblyType)
                             select assemblyType).ToArray();
 
-            return listOfBs;
+            return listOfBs.ToList();
         }
 
         public static List<String> getAllDerivedDeviceTypesAsStrings()
@@ -135,15 +136,14 @@ namespace PointAndControl.Devices
             return result;
         }
 
-        public bool isRepoDevice()
+        public bool hasParent()
         {
-            if(childDevices.Count() != 0)
-            {
-                return true;
-            } else
-            {
-                return false;
-            }
-        }       
+            return parentID != null;
+        }
+
+        public void addParent(Device dev)
+        {
+            parentID = dev.Id;
+        }
     }
 }

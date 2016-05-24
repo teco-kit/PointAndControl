@@ -42,7 +42,7 @@ namespace PointAndControl.MainComponents
 
         public List<Device> chooseDevice(User usr)
         {
-            return usr != null ? CollisionDetection.Calculate(Data.Devices, Transformer.transformJointCoords(Tracker.GetCoordinates(usr.SkeletonId))) : null;
+            return usr != null ? CollisionDetection.Calculate(Data.getCompleteDeviceList(), Transformer.transformJointCoords(Tracker.GetCoordinates(usr.SkeletonId))) : null;
         }
 
         public String train(Device dev)

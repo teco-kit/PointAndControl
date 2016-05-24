@@ -40,8 +40,7 @@ namespace PointAndControl.MainComponents
 
             if (typeObject != null)
             {
-                object instance = Activator.CreateInstance(typeObject, name, idparam, new List<Ball>(),
-                                                           path);
+                object instance = Activator.CreateInstance(typeObject, name, idparam, path, new List<Ball>());
                 return ((Device)instance);
             }
 

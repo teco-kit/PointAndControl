@@ -15,24 +15,24 @@ namespace PointAndControl.ThirdPartyRepos
         public bool isTopSitemap { get; set; }
         public string sitemapName { get; set; }
         public string itemName { get; set; }
-        public OpenHABDeviceTranslation(){}
+        public OpenHABDeviceTranslation()
+        {}
     }
-    class OpenHABTranslator
+    public class OpenHABDeviceReader : IRepoDeviceReader
     {
         const string APPSITEMAP = "/openhab.app?sitemap=";
         public List<Device> devices { get; set; }
         string URL { get; set; } 
         string restURL { get; set; }
-        public OpenHABTranslator(String baseUrl)
+        public OpenHABDeviceReader(String baseUrl)
         {
             devices = new List<Device>();
             URL = baseUrl;
             restURL = URL + "/rest/sitemaps";
-            read();
         }
 
 
-        private void readSitemapEntryPoint()
+        private void startReadSitemaps()
         {
             string entrySitemaps = getRestSitemaps(restURL);
             if (entrySitemaps == "")
@@ -77,10 +77,10 @@ namespace PointAndControl.ThirdPartyRepos
                     case "name":
                         translation.sitemapName = n.InnerText;
                         break;
-                    case "label":
-                        break;
-                    case "link":
-                        break;
+                    //case "label":
+                    //    break;
+                    //case "link":
+                    //    break;
                     case "homepage":
                         readHomepage(n, translation);
                         break;
@@ -97,12 +97,12 @@ namespace PointAndControl.ThirdPartyRepos
             {
                 switch (n.Name)
                 {
-                    case "id":
-                        break;
-                    case "title":
-                        break;
-                    case "link":
-                        break;
+                    //case "id":
+                    //    break;
+                    //case "title":
+                    //    break;
+                    //case "link":
+                    //    break;
                     case "leaf":
                         leaf = bool.Parse(n.InnerText);
                         break;
@@ -121,14 +121,14 @@ namespace PointAndControl.ThirdPartyRepos
             {
                 switch (n.Name)
                 {
-                    case "widgetId":
-                        break;
-                    case "type":
-                        break;
-                    case "label":
-                        break;
-                    case "icon":
-                        break;
+                    //case "widgetId":
+                    //    break;
+                    //case "type":
+                    //    break;
+                    //case "label":
+                    //    break;
+                    //case "icon":
+                    //    break;
                     case "widget":
                         readWidget(n, translation);
                         break;
@@ -161,10 +161,10 @@ namespace PointAndControl.ThirdPartyRepos
                     case "name":
                         translation.itemName = n.InnerText;
                         break;
-                    case "state":
-                        break;
-                    case "link":
-                        break;
+                    //case "state":
+                    //    break;
+                    //case "link":
+                    //    break;
                     default:
                         continue;
                 }
@@ -183,14 +183,14 @@ namespace PointAndControl.ThirdPartyRepos
                         translation.isTopSitemap = false;
                         translation.sitemapName = n.InnerText;
                         break;
-                    case "title":
-                        break;
-                    case "icon":
-                        break;
-                    case "link":
-                        break;
-                    case "leaf":
-                        break;
+                    //case "title":
+                    //    break;
+                    //case "icon":
+                    //    break;
+                    //case "link":
+                    //    break;
+                    //case "leaf":
+                    //    break;
                     case "widget":
                         readWidget(n, translation);
                         break;
@@ -214,6 +214,7 @@ namespace PointAndControl.ThirdPartyRepos
         private string getRestSitemaps(string pointingURL)
         {
             string responseFromServer = "";
+
             WebRequest request = WebRequest.Create(pointingURL);
             request.Credentials = CredentialCache.DefaultCredentials;
             try
@@ -255,10 +256,11 @@ namespace PointAndControl.ThirdPartyRepos
             return doc;
         }
 
-        public void read()
+        public List<Device> read()
         {
             devices.Clear();
-            readSitemapEntryPoint();
+            startReadSitemaps();
+            return devices;
         }
 
         private void addDevice(OpenHABDeviceTranslation translation)
@@ -266,7 +268,7 @@ namespace PointAndControl.ThirdPartyRepos
             if (devices.Exists(device => translation.itemName == device.Id))
                 return;
 
-            devices.Add(new ExternalDevice(translation.itemName, translation.itemName, new List<Ball>(), generateAppPath(translation)));
+            devices.Add(new ExternalDevice(translation.itemName, translation.itemName, generateAppPath(translation), new List<Ball>()));
         }
        
     }

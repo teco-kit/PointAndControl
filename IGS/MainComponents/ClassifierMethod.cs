@@ -65,7 +65,7 @@ namespace PointAndControl.MainComponents
                 //ANSWER: NUML Returns the Label of the Classification in all uppercases and without extra like "_" (Partitioner of DeviceType_Number) - Decapsulate needed for Comparison of DeviceID and Returned Label    
                 String decapsulate = "";
 
-                foreach (Device d in data.Devices)
+                foreach (Device d in data.getCompleteDeviceList())
                 {
                     decapsulate = decapsulateID(d.Id);
 
