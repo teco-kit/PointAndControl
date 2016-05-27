@@ -15,6 +15,10 @@ namespace PointAndControl.ComponentHandling
         {
             setting = new JsonSerializerSettings();
             setting.TypeNameHandling = TypeNameHandling.All;
+            setting.TypeNameAssemblyFormat = System.Runtime.Serialization.Formatters.FormatterAssemblyStyle.Full;
+            setting.ObjectCreationHandling = ObjectCreationHandling.Replace;
+            setting.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
+
         }
 
         public void addDevice(Device dev)
@@ -79,7 +83,7 @@ namespace PointAndControl.ComponentHandling
         {
             List<Device> devices = readDevices();
 
-            if (devices == null || devices.Count == 0 || devices.Exists(d => d.Id == dev.Id))
+            if (devices == null || devices.Count == 0 || !devices.Exists(d => d.Id == dev.Id))
                 return Properties.Resources.SpecifiedDeviceNotFound;
 
             int index = devices.FindIndex(d => dev.Id == d.Id);
@@ -88,7 +92,7 @@ namespace PointAndControl.ComponentHandling
                 return "";
 
             devices[index] = dev;
-
+            writeDevicesToFile(devices);
             return "";
         }
 

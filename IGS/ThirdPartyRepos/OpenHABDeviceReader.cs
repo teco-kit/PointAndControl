@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using PointAndControl.Devices;
 using System.Net;
 using System.IO;
 using System.Xml;
 
 namespace PointAndControl.ThirdPartyRepos
-{
-    class OpenHABDeviceTranslation
+{ 
+     class OpenHABDeviceTranslation
     {
         public bool isTopSitemap { get; set; }
         public string sitemapName { get; set; }
@@ -20,13 +17,14 @@ namespace PointAndControl.ThirdPartyRepos
     }
     public class OpenHABDeviceReader : IRepoDeviceReader
     {
-        const string APPSITEMAP = "/openhab.app?sitemap=";
-        public List<Device> devices { get; set; }
-        string URL { get; set; } 
-        string restURL { get; set; }
+        private const string APPSITEMAP = "/openhab.app?sitemap=";
+        private List<ExternalDevice> devices { get; set; }
+        private string URL { get; set; } 
+        private string restURL { get; set; }
+        private Connection connection { get; set; }
         public OpenHABDeviceReader(String baseUrl)
         {
-            devices = new List<Device>();
+            devices = new List<ExternalDevice>();
             URL = baseUrl;
             restURL = URL + "/rest/sitemaps";
         }
@@ -226,13 +224,18 @@ namespace PointAndControl.ThirdPartyRepos
 
                 reader.Close();
                 response.Close();
-            } catch (WebException)
+            }
+            catch (WebException)
             {
                 Console.WriteLine("Could not connect to server, probably not started");
             }
-            
+
 
             return responseFromServer;
+
+            // String response = connection.Send(pointingURL);
+
+        
         }
 
         private XmlNode findLinkAndRetrieveSitemapNode(XmlNode sitemap)
@@ -256,7 +259,7 @@ namespace PointAndControl.ThirdPartyRepos
             return doc;
         }
 
-        public List<Device> read()
+        public List<ExternalDevice> read()
         {
             devices.Clear();
             startReadSitemaps();

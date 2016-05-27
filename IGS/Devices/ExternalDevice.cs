@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PointAndControl.Devices
 {
-    class ExternalDevice : Device
+    public class ExternalDevice : Device
     {
         private readonly String _commandString;
         public bool hasAssignedName { get; set; }
@@ -27,11 +27,6 @@ namespace PointAndControl.Devices
             else
                 hasAssignedName = true;
 
-        }
-
-        public override string Transmit(string cmdId, string value)
-        {
-            throw new NotImplementedException();
         }
 
         public void assignName(String name)

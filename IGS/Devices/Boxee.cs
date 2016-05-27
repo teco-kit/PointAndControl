@@ -14,7 +14,7 @@ namespace PointAndControl.Devices
     ///     Play, pause, stop
     ///     Textentry
     /// </summary>
-    public class Boxee : Device
+    public class Boxee : NativeTransmittingDevice
     {
         private readonly String _commandString;
 

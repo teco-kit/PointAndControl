@@ -16,7 +16,7 @@ namespace PointAndControl.Devices
     ///     Audio Input ("audio")(Audio 1 PC ("1"), Audio 2 "2", Audio 3 "3", HDMI "4")
     ///     @author Christopher Baumgärtner
     /// </summary>
-    public class NecLcdMonitorMultiSyncV421 : Device
+    public class NecLcdMonitorMultiSyncV421 : NativeTransmittingDevice
     {
         /// <summary>
         ///     Constructor of a LCDTV object.

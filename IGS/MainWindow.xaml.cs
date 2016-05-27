@@ -552,7 +552,7 @@ public partial class MainWindow
     /// <param name="e">The RoutedEventArgs</param>
     private void _3DViewButton_Click(object sender, RoutedEventArgs e)
     {
-        _3Dview = new Room3DView(pointAndControlMain.Data.Devices, pointAndControlMain.Transformer);
+        _3Dview = new Room3DView(pointAndControlMain.Data.getDevices(), pointAndControlMain.Transformer);
         _3Dview.SetKinectCamera(pointAndControlMain.IGSKinect);
         _3Dview.ClipToBounds = false;
         _3Dview.mainViewport.Effect = null;

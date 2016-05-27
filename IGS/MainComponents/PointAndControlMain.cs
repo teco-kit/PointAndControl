@@ -61,9 +61,6 @@ namespace PointAndControl.MainComponents
             
             logger = eventLogger;
             this.coreMethods = new CollisionMethod(Data, Tracker, Transformer, logger);
-
-            Data.AddDevice(new OpenHabRepo("TestOHR", "OpenHabRepo_0", "192.168.1.3:8090", new List<Ball>(), data));
-
         }
 
 
@@ -575,9 +572,9 @@ namespace PointAndControl.MainComponents
 
                     default:
                         Device dev = Data.getDeviceByID(devId);
-                        if (dev.connection != null)
+                        if (dev.connection != null && NativeTransmittingDevice.checkIfTransmitting(dev))
                         {
-                            response.addReturnString(dev.Transmit(cmd, value));
+                            response.addReturnString(((NativeTransmittingDevice)dev).Transmit(cmd, value));
                         }
                         break;
                 }
@@ -605,9 +602,7 @@ namespace PointAndControl.MainComponents
             List<leanDevRepresentation> d = new List<leanDevRepresentation>();
             if (devices != null)
             {
-                //List<Device> deviceList = devices.Where(device => !device.isRepoDevice() ).ToList();
-
-                List<Device> deviceList = devices.Where(dev => OpenHabRepo.isRepo(dev) == false).ToList();
+                List<Device> deviceList = devices.Where(dev => RepositoryRepresentation.isRepo(dev) == false).ToList();
 
                 deviceList.ForEach(x => d.Add(new leanDevRepresentation(x)));
             }

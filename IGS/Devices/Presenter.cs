@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace PointAndControl.Devices
 {
-    class Presenter : Device
+    class Presenter : NativeTransmittingDevice
     {
         
         private readonly String _commandString;

@@ -57,7 +57,7 @@
     <StartupObject>PointAndControl.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>Resources\HttpRoot\favicon.ico</ApplicationIcon>
@@ -80,7 +80,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=8.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.8.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="numl, Version=0.8.24.0, Culture=neutral, processorArchitecture=MSIL">
@@ -131,9 +131,13 @@
     <Compile Include="Devices\ExternalDevice.cs" />
     <Compile Include="Devices\HTTP.cs" />
     <Compile Include="Devices\NecLcdMonitorMultiSyncV421.cs" />
-    <Compile Include="Devices\OpenHabRepo.cs" />
+    <Compile Include="Devices\NativeTransmittingDevice.cs" />
+    <Compile Include="MainComponents\DeviceHolder.cs" />
+    <Compile Include="MainComponents\UserHolder.cs" />
+    <Compile Include="ThirdPartyRepos\OpenHabRepo.cs" />
     <Compile Include="Devices\Plugwise.cs" />
     <Compile Include="Devices\Presenter.cs" />
+    <Compile Include="ThirdPartyRepos\RepositoryRepresentation.cs" />
     <Compile Include="Devices\TCP.cs" />
     <Compile Include="Devices\Kodi.cs" />
     <Compile Include="Devices\XBMCv11.cs" />
@@ -387,6 +391,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>XCOPY "$(ProjectDir)Resources\HttpRoot" "$(TargetDir)\HttpRoot\" /S /Y

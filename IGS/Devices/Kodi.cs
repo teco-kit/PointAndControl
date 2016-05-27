@@ -5,7 +5,7 @@ using System.Timers;
 
 namespace PointAndControl.Devices
 {
-    class Kodi : Device
+    class Kodi : NativeTransmittingDevice
     {
             // Dll Import to nudge mouse
             [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint = "SetCursorPos")]

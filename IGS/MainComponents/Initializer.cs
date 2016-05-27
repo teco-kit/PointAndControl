@@ -102,7 +102,6 @@ namespace PointAndControl.MainComponents
         private static DataHolder InitializeDataholder(EventLogger logger)
         {
             DataHolder data = new DataHolder(logger);
-
             return data;
         }
 
@@ -165,5 +164,7 @@ namespace PointAndControl.MainComponents
             root.Add(new XAttribute("Selects", "0"));
             root.Save(AppDomain.CurrentDomain.BaseDirectory + "BA_REICHE_LogFilePerSelectSmoothed.xml");
         }
+
+
     }
 }

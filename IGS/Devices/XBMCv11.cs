@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PointAndControl.Devices
 {
-    class XBMCv11 : Device
+    class XBMCv11 : NativeTransmittingDevice
     {
         
             

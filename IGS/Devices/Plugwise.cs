@@ -11,7 +11,7 @@ namespace PointAndControl.Devices
     ///     Off
     ///     @author Florian Kinn
     /// </summary>
-    public class Plugwise : Device
+    public class Plugwise : NativeTransmittingDevice
     {
         private readonly String _commandString = "http://cumulus.teco.edu:5000/plugwise/";
 

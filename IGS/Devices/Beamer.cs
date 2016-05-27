@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PointAndControl.Devices
 {
-    class Beamer : Device
+    class Beamer : NativeTransmittingDevice
     {
         
         private readonly String _commandString;

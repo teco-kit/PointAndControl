@@ -1,10 +1,12 @@
-﻿using PointAndControl.Devices;
+﻿using PointAndControl.ComponentHandling;
+using PointAndControl.Devices;
+using PointAndControl.ThirdPartyRepos;
 using System;
 using System.Collections.Generic;
 
 namespace PointAndControl.MainComponents
 {
-    class Deviceproducer
+    public class Deviceproducer
     {
         public Deviceproducer() { }
 
@@ -40,8 +42,17 @@ namespace PointAndControl.MainComponents
 
             if (typeObject != null)
             {
-                object instance = Activator.CreateInstance(typeObject, name, idparam, path, new List<Ball>());
-                return ((Device)instance);
+                if(typeObject.IsSubclassOf(typeof(RepositoryRepresentation)))
+                {
+                    object instance = Activator.CreateInstance(typeObject, name, idparam, path, new List<Ball>(), new DeviceHolder());
+                    return ((Device)instance);
+                } else
+                {
+                    object instance = Activator.CreateInstance(typeObject, name, idparam, path, new List<Ball>());
+                    return ((Device)instance);
+                }
+                
+                
             }
 
             return null;

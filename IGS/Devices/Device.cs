@@ -58,21 +58,6 @@ namespace PointAndControl.Devices
 
         public List<Ball> Form { get; set; }
 
-        /// <summary>
-        ///     The Transmit method is responsible for the correct invocation of a function of the device
-        ///     which is implicated by the "commandID"
-        ///     <param name="cmdId">
-        ///         With the commandID the Transmit-method recieves which command
-        ///         should be send to the device 
-        ///     </param>
-        ///     <param name="value">
-        ///         The value belonging to the command
-        ///     </param>
-        ///     <returns>
-        ///     If execution was successful
-        ///     </returns>
-        public abstract String Transmit(String cmdId, String value);
-
         public List<Point3D[]> skelPositions { get; set; }
 
         public string parentID { get; set; }
