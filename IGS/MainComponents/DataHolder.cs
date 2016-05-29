@@ -246,5 +246,15 @@ namespace PointAndControl.MainComponents
         {
             return deviceHolder.getDevicesWithoutAssignedName(); 
         }
+
+        public void updateRepoDevices()
+        {
+            deviceHolder.actualizeAllRepos();
+        }
+
+        public void assignName(string id, string name)
+        {
+            deviceHolder.assignName(id, name);
+        }
     }
 }

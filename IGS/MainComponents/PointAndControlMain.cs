@@ -61,6 +61,8 @@ namespace PointAndControl.MainComponents
             
             logger = eventLogger;
             this.coreMethods = new CollisionMethod(Data, Tracker, Transformer, logger);
+
+            Data.assignName("livingLabPH_Color", "testColor");
         }
 
 
@@ -330,8 +332,11 @@ namespace PointAndControl.MainComponents
 
                         
                     case "list":
-                        success = true;
+
+
+                        Data.updateRepoDevices();
                         response.addDevices(Data.getCompleteDeviceList());
+                        success = true;
                         break;
 
                     case "discoverDevices":

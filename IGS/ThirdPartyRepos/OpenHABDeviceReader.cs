@@ -21,7 +21,6 @@ namespace PointAndControl.ThirdPartyRepos
         private List<ExternalDevice> devices { get; set; }
         private string URL { get; set; } 
         private string restURL { get; set; }
-        private Connection connection { get; set; }
         public OpenHABDeviceReader(String baseUrl)
         {
             devices = new List<ExternalDevice>();
@@ -213,10 +212,11 @@ namespace PointAndControl.ThirdPartyRepos
         {
             string responseFromServer = "";
 
-            WebRequest request = WebRequest.Create(pointingURL);
-            request.Credentials = CredentialCache.DefaultCredentials;
+            
             try
             {
+                WebRequest request = WebRequest.Create(pointingURL);
+                request.Credentials = CredentialCache.DefaultCredentials;
                 WebResponse response = request.GetResponse();
                 Stream dataStream = response.GetResponseStream();
                 StreamReader reader = new StreamReader(dataStream);

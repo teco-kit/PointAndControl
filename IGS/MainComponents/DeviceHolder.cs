@@ -290,7 +290,8 @@ namespace PointAndControl.MainComponents
         }
         public List<Device> getDevicesWithoutAssignedName()
         {
-            return getCompleteDeviceList().FindAll(dev => dev.GetType().Name == "ExternalDevice" && ((ExternalDevice)dev).hasAssignedName == false);
+            return getCompleteDeviceList().Where(dev => dev.GetType().Name == "ExternalDevice" && ((ExternalDevice)dev).hasAssignedName == false).ToList();
+            
         }
 
         private void getRemainingPlugComponents(string host, string port, string path)
@@ -322,6 +323,14 @@ namespace PointAndControl.MainComponents
                 if (!ext.hasAssignedName)
                 {
                     ext.assignName(name);
+
+                    if (ext.hasParent())
+                    {
+                        storageFileHandler.updateDevice(getDeviceByID(ext.parentID));
+                    } else
+                    {
+                        storageFileHandler.updateDevice(ext);
+                    }
                 }
             }
 

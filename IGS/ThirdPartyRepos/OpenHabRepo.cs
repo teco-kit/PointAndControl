@@ -15,7 +15,6 @@ namespace PointAndControl.ThirdPartyRepos
             if (!path.StartsWith("http://"))
                 path = "http://" + path;
             this.setReader(new OpenHABDeviceReader(path));
-           // this.actualizeDevices(this.getReader().read());
         }
 
         
