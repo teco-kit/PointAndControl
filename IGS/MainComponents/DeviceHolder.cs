@@ -170,13 +170,12 @@ namespace PointAndControl.MainComponents
         /// Publishes the given adress to all plugwise devices
         /// </summary>
         /// <param name="input">the new adress for all plugwises</param>
-        private void change_PlugWise_Adress(String input)
+        public void change_PlugWise_Adress(String input)
         {
             String[] splitted;
 
             foreach (Device dev in getCompleteDeviceList())
             {
-                //if (getDeviceType(dev).Equals("Plugwise"))
                 if (dev.GetType().Name.Equals("Plugwise"))
                 {
                     splitted = dev.CommandString.Split('/',

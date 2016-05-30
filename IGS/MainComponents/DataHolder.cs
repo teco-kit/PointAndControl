@@ -53,6 +53,7 @@ namespace PointAndControl.MainComponents
             deviceHolder = new DeviceHolder();
             deviceHolder.initializeDevices();
             deviceHolder.actualizeAllRepos();
+            deviceHolder.change_PlugWise_Adress(_environmentHandler.getPWAdress());
         }
 
         public List<Device> getDevices()

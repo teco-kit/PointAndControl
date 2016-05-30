@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="PWHost" Type="System.String" Scope="User">
-      <Value Profile="(Default)">cloud.teco.edu</Value>
+      <Value Profile="(Default)">129.13.170.9</Value>
     </Setting>
     <Setting Name="PWPort" Type="System.String" Scope="User">
       <Value Profile="(Default)">5000</Value>
