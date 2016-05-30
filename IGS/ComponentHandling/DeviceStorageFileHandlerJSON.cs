@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System.IO;
 using PointAndControl.Devices;
+using PointAndControl.ThirdPartyRepos;
 
 namespace PointAndControl.ComponentHandling
 {
@@ -52,6 +53,13 @@ namespace PointAndControl.ComponentHandling
                     writeDevicesToFile(devices);
                     return Properties.Resources.CoordinatesAdded;
                 }
+                else if (RepositoryRepresentation.isRepo(dev))
+                {
+                    foreach(Device repoDev in ((RepositoryRepresentation)dev).getDevices())
+                    {
+
+                    }
+                }
             }
 
            
@@ -75,6 +83,22 @@ namespace PointAndControl.ComponentHandling
                     writeDevicesToFile(devices);
                     return Properties.Resources.CoordinatesAdded;
                 }
+
+                if (RepositoryRepresentation.isRepo(dev))
+                {
+                    List<Device> tmpList = ((RepositoryRepresentation)dev).getDevices();
+                    int tmpIndex = -1;
+
+                    tmpIndex = tmpList.FindIndex(d => d.Id == devId);
+
+                    if (tmpIndex != -1)
+                    {
+                        tmpList[tmpIndex].Form.Clear();
+                        tmpList[tmpIndex].Form.Add(ball);
+                        updateDevice(dev);
+                        return Properties.Resources.CoordinatesAdded;
+                    }
+                }
             }
             return Properties.Resources.NoCoordAdded;
         }
@@ -83,15 +107,32 @@ namespace PointAndControl.ComponentHandling
         {
             List<Device> devices = readDevices();
 
-            if (devices == null || devices.Count == 0 || !devices.Exists(d => d.Id == dev.Id))
-                return Properties.Resources.SpecifiedDeviceNotFound;
+            if (devices == null || devices.Count == 0)
+                return Properties.Resources.SpecifiedDeviceNotFound;;
+            int mainIndex = -1;
+            int subIndex = -1;
 
-            int index = devices.FindIndex(d => dev.Id == d.Id);
+            mainIndex = devices.FindIndex(d => d.Id == dev.Id);
 
-            if (index < 0)
-                return "";
+            if(mainIndex != -1)
+            {
+                devices[mainIndex] = dev;
+            } else
+            {
+                foreach (Device searchDev in devices)
+                {
+                    if (RepositoryRepresentation.isRepo(searchDev))
+                    {
+                        mainIndex = devices.IndexOf(searchDev);
+                        subIndex = ((RepositoryRepresentation)searchDev).getDevices().FindIndex(d => d.Id == dev.Id);
 
-            devices[index] = dev;
+                        if(subIndex != -1)
+                        {
+                            ((RepositoryRepresentation)devices[mainIndex]).getDevices()[subIndex] = dev;
+                        }
+                    }
+                }
+            }
             writeDevicesToFile(devices);
             return "";
         }

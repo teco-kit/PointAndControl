@@ -205,7 +205,7 @@ namespace PointAndControl.MainComponents
 
         public String changeDeviceCoordinates(String devId, String radius, Point3D position)
         {
-            return changeDeviceCoordinates(devId, radius, position);
+            return deviceHolder.changeDeviceCoordinates(devId, radius, position);
         }
 
         private bool checkForSameDevID(String id)

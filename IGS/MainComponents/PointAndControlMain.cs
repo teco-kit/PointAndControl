@@ -61,8 +61,6 @@ namespace PointAndControl.MainComponents
             
             logger = eventLogger;
             this.coreMethods = new CollisionMethod(Data, Tracker, Transformer, logger);
-
-            Data.assignName("livingLabPH_Color", "testColor");
         }
 
 

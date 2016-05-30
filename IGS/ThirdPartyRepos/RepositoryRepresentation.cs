@@ -55,7 +55,8 @@ namespace PointAndControl.ThirdPartyRepos
 
             addDevices(updateList);
 
-            deviceHolder.storageFileHandler.updateDevice(this);
+            if(tmpList.Count != 0 || updateList.Count != 0)
+                deviceHolder.storageFileHandler.updateDevice(this);
 
         }
 
@@ -82,11 +83,13 @@ namespace PointAndControl.ThirdPartyRepos
 
         private void addDevices(List<ExternalDevice> devsToAdd)
         {
+            if (devsToAdd.Count == 0)
+                return;
             foreach(ExternalDevice dev in devsToAdd)
             {
                 deviceHolder.AddDevice(dev.GetType().Name, dev.Id, dev.Name, dev.Path, this);
             }
-
+            
             return;
         }
     }

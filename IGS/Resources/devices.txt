@@ -1,52 +1,116 @@
 {
-  "$type": "System.Collections.Generic.List`1[[PointAndControl.Devices.Device, PointAndControl, Version=2.0.5993.28509, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+  "$type": "System.Collections.Generic.List`1[[PointAndControl.Devices.Device, PointAndControl, Version=2.0.5994.20750, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
   "$values": [
     {
-      "$type": "PointAndControl.ThirdPartyRepos.OpenHabRepo, PointAndControl, Version=2.0.5993.28509, Culture=neutral, PublicKeyToken=null",
-      "deviceHolder": {
-        "$type": "PointAndControl.MainComponents.DeviceHolder, PointAndControl, Version=2.0.5993.28509, Culture=neutral, PublicKeyToken=null",
-        "devices": {
-          "$type": "System.Collections.Generic.List`1[[PointAndControl.Devices.Device, PointAndControl, Version=2.0.5993.28509, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
-          "$values": [
-            {
-              "$type": "PointAndControl.Devices.ExternalDevice, PointAndControl, Version=2.0.5993.28509, Culture=neutral, PublicKeyToken=null",
-              "hasAssignedName": false,
-              "Name": "livingLabPH_Color",
-              "Id": "livingLabPH_Color",
-              "Path": "http://192.168.1.3:8090/openhab.app?sitemap=tecoDemoHue",
-              "connection": null,
-              "CommandString": null,
-              "Form": {
-                "$type": "System.Collections.Generic.List`1[[PointAndControl.Devices.Ball, PointAndControl, Version=2.0.5993.28509, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
-                "$values": []
-              },
-              "skelPositions": {
-                "$type": "System.Collections.Generic.List`1[[System.Windows.Media.Media3D.Point3D[], PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
-                "$values": []
-              },
-              "parentID": "OpenHabRepo_1",
-              "color": ""
-            }
-          ]
-        },
-        "storageFileHandler": {
-          "$type": "PointAndControl.ComponentHandling.DeviceStorageFileHandlerJSON, PointAndControl, Version=2.0.5993.28509, Culture=neutral, PublicKeyToken=null"
-        },
-        "deviceProducer": {
-          "$type": "PointAndControl.MainComponents.Deviceproducer, PointAndControl, Version=2.0.5993.28509, Culture=neutral, PublicKeyToken=null"
-        },
-        "environmentHandler": {
-          "$type": "PointAndControl.ComponentHandling.EnvironmentInfoHandler, PointAndControl, Version=2.0.5993.28509, Culture=neutral, PublicKeyToken=null"
-        }
+      "$type": "PointAndControl.Devices.NecLcdMonitorMultiSyncV421, PointAndControl, Version=2.0.5994.20750, Culture=neutral, PublicKeyToken=null",
+      "Name": "TV",
+      "Id": "NecLcdMonitorMultiSyncV421_1",
+      "Path": "129.13.169.178:7142",
+      "connection": {
+        "$type": "PointAndControl.Devices.Tcp, PointAndControl, Version=2.0.5994.20750, Culture=neutral, PublicKeyToken=null",
+        "Port": 7142,
+        "Ip": "129.13.169.178"
       },
-      "Name": "OpenHABDemoRepo",
-      "Id": "OpenHabRepo_1",
-      "Path": "192.168.1.3:8090",
-      "connection": null,
       "CommandString": null,
       "Form": {
-        "$type": "System.Collections.Generic.List`1[[PointAndControl.Devices.Ball, PointAndControl, Version=2.0.5993.28509, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+        "$type": "System.Collections.Generic.List`1[[PointAndControl.Devices.Ball, PointAndControl, Version=2.0.5994.20750, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+        "$values": [
+          {
+            "$type": "PointAndControl.Devices.Ball, PointAndControl, Version=2.0.5994.20750, Culture=neutral, PublicKeyToken=null",
+            "Center": "3.3,1.5,-0.3",
+            "Radius": 0.8
+          }
+        ]
+      },
+      "skelPositions": {
+        "$type": "System.Collections.Generic.List`1[[System.Windows.Media.Media3D.Point3D[], PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
         "$values": []
+      },
+      "parentID": null,
+      "color": ""
+    },
+    {
+      "$type": "PointAndControl.Devices.Kodi, PointAndControl, Version=2.0.5994.20750, Culture=neutral, PublicKeyToken=null",
+      "_absolutePathToKodi": null,
+      "Name": "MediaCenter",
+      "Id": "Kodi_1",
+      "Path": "129.13.169.193:8081",
+      "connection": {
+        "$type": "PointAndControl.Devices.Http, PointAndControl, Version=2.0.5994.20750, Culture=neutral, PublicKeyToken=null",
+        "Port": 8081,
+        "Ip": "129.13.169.193"
+      },
+      "CommandString": null,
+      "Form": {
+        "$type": "System.Collections.Generic.List`1[[PointAndControl.Devices.Ball, PointAndControl, Version=2.0.5994.20750, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+        "$values": [
+          {
+            "$type": "PointAndControl.Devices.Ball, PointAndControl, Version=2.0.5994.20750, Culture=neutral, PublicKeyToken=null",
+            "Center": "3.8,0.2,0.2",
+            "Radius": 0.5
+          }
+        ]
+      },
+      "skelPositions": {
+        "$type": "System.Collections.Generic.List`1[[System.Windows.Media.Media3D.Point3D[], PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+        "$values": []
+      },
+      "parentID": null,
+      "color": ""
+    },
+    {
+      "$type": "PointAndControl.Devices.Plugwise, PointAndControl, Version=2.0.5994.20750, Culture=neutral, PublicKeyToken=null",
+      "Name": "Lamp",
+      "Id": "Plugwise_1",
+      "Path": "129.13.169.193:8080/000D6F0000C3A9FC",
+      "connection": {
+        "$type": "PointAndControl.Devices.Http, PointAndControl, Version=2.0.5994.20750, Culture=neutral, PublicKeyToken=null",
+        "Port": 8080,
+        "Ip": "127.0.0.1"
+      },
+      "CommandString": "http://cumulus.teco.edu:5000/plugwise/000D6F0000C3A9FC",
+      "Form": {
+        "$type": "System.Collections.Generic.List`1[[PointAndControl.Devices.Ball, PointAndControl, Version=2.0.5994.20750, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+        "$values": [
+          {
+            "$type": "PointAndControl.Devices.Ball, PointAndControl, Version=2.0.5994.20750, Culture=neutral, PublicKeyToken=null",
+            "Center": "0.55,1,3",
+            "Radius": 0.6
+          },
+          {
+            "$type": "PointAndControl.Devices.Ball, PointAndControl, Version=2.0.5994.20750, Culture=neutral, PublicKeyToken=null",
+            "Center": "0.55,0.5,3",
+            "Radius": 0.6
+          }
+        ]
+      },
+      "skelPositions": {
+        "$type": "System.Collections.Generic.List`1[[System.Windows.Media.Media3D.Point3D[], PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+        "$values": []
+      },
+      "parentID": null,
+      "color": ""
+    },
+    {
+      "$type": "PointAndControl.Devices.Plugwise, PointAndControl, Version=2.0.5994.20750, Culture=neutral, PublicKeyToken=null",
+      "Name": "VDAR Screen",
+      "Id": "Plugwise_2",
+      "Path": "129.13.169.193:8080/000D6F0000D34081",
+      "connection": {
+        "$type": "PointAndControl.Devices.Http, PointAndControl, Version=2.0.5994.20750, Culture=neutral, PublicKeyToken=null",
+        "Port": 8080,
+        "Ip": "127.0.0.1"
+      },
+      "CommandString": "http://cumulus.teco.edu:5000/plugwise/000D6F0000D34081",
+      "Form": {
+        "$type": "System.Collections.Generic.List`1[[PointAndControl.Devices.Ball, PointAndControl, Version=2.0.5994.20750, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+        "$values": [
+          {
+            "$type": "PointAndControl.Devices.Ball, PointAndControl, Version=2.0.5994.20750, Culture=neutral, PublicKeyToken=null",
+            "Center": "6,1.23,5.38",
+            "Radius": 1.0
+          }
+        ]
       },
       "skelPositions": {
         "$type": "System.Collections.Generic.List`1[[System.Windows.Media.Media3D.Point3D[], PresentationCore, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",

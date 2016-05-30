@@ -239,7 +239,19 @@ namespace PointAndControl.MainComponents
         public String addDeviceCoordinates(String devId, String radius, Point3D position)
         {
             Ball coord = new Ball(position, double.Parse(radius));
-            this.getDeviceByID(devId).Form.Add(coord);
+            Device dev = getDeviceByID(devId);
+
+            dev.Form.Add(coord);
+
+            if (dev.hasParent())
+            {
+                Device parent = getDeviceByID(dev.parentID);
+                if (RepositoryRepresentation.isRepo(parent))
+                {
+                    return storageFileHandler.updateDevice(parent);
+                }
+            }
+
 
             return storageFileHandler.addDeviceCoord(devId, coord);
         }
@@ -316,6 +328,9 @@ namespace PointAndControl.MainComponents
         {
             Device dev = getDeviceByID(id);
 
+            if (dev == null)
+                return false;
+
             if (dev.GetType().Name == "ExternalDevice")
             {
                 ExternalDevice ext = (ExternalDevice)dev;
@@ -331,6 +346,8 @@ namespace PointAndControl.MainComponents
                     {
                         storageFileHandler.updateDevice(ext);
                     }
+
+                    return true;
                 }
             }
 
