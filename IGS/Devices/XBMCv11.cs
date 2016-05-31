@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PointAndControl.Devices
 {
-    class XBMCv11 : Device
+    class XBMCv11 : NativeTransmittingDevice
     {
         
             
@@ -32,7 +32,7 @@ namespace PointAndControl.Devices
             ///     <param name="address">IP-adress of the device</param>
             ///     <param name="port">Port of the device</param>
             /// </summary>
-            public XBMCv11(String name, String id, List<Ball> form, String path)
+            public XBMCv11(String name, String id, String path, List<Ball> form)
                 : base(name, id, path, form)
             {
                 String[] ipAndPort = splitPathToIPAndPort();

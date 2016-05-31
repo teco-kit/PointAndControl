@@ -6,6 +6,7 @@ using System.Windows.Media.Media3D;
 using PointAndControl.Devices;
 using PointAndControl.Classifier;
 using PointAndControl.ComponentHandling;
+using PointAndControl.ThirdPartyRepos;
 
 namespace PointAndControl.MainComponents
 {
@@ -15,26 +16,12 @@ namespace PointAndControl.MainComponents
     /// </summary>
     public class DataHolder
     {
-        /// <summary>
-        ///     List of the devices
-        /// </summary>
-        private List<Device> _devices { get; set; }
-
         private List<Device> _newDevices { get; set; }
-
-        /// <summary>
-        ///     List of the users
-        /// </summary>
-        private List<User> _users { get; set; }
-
         public Room _roomModel { get; set; }
-
-        public DeviceStorageFileHandlerJSON _deviceStorageHandling { get; set; }
         public EnvironmentInfoHandler _environmentHandler { get; set; }
-
-        private Deviceproducer devProducer { get; set; }
-
         private EventLogger logger { get; set; }
+        private DeviceHolder deviceHolder { get; set; }
+        private UserHolder userHolder { get; set; }
 
 
 
@@ -44,37 +31,34 @@ namespace PointAndControl.MainComponents
         /// </summary>
         public DataHolder(EventLogger eventLogger)
         {
-
             _newDevices = new List<Device>();
-            _deviceStorageHandling = new DeviceStorageFileHandlerJSON();
             
             _environmentHandler = new EnvironmentInfoHandler();
-            devProducer = new Deviceproducer();
 
-            _devices = _deviceStorageHandling.readDevices();
-
-            change_PlugWise_Adress(_environmentHandler.getPWAdress());
 
             double roomWidth = _environmentHandler.getRoomWidht();
             double roomHeight = _environmentHandler.getRoomHeight();
             double roomDepth = _environmentHandler.getRoomDepth();
             _roomModel = new Room(roomWidth, roomHeight, roomDepth);
 
-            _devices.ForEach(x => x.color = pickRandomColor());
-
-            _users = new List<User>();
             logger = eventLogger;
+
+            initializeDevices(_environmentHandler);
+          
+            userHolder = new UserHolder();
+        }
+        //Remark: Only start the DataHolder deviceHolder with this method, moving the storageFileHandler.readDevices() in the deviceHolder contructor will result in a JSON infinit recursion with RepositoryRepresentations
+        private void initializeDevices(EnvironmentInfoHandler environmentHandler)
+        {
+            deviceHolder = new DeviceHolder();
+            deviceHolder.initializeDevices();
+            deviceHolder.updateAllRepos();
+            deviceHolder.change_PlugWise_Adress(_environmentHandler.getPWAdress());
         }
 
-        /// <summary>
-        ///     With the "set"-method the device list can be set
-        ///     With the "get"-method, the device list can be returned
-        ///     <returns>Returns the list of devices</returns>
-        /// </summary>
-        public List<Device> Devices
+        public List<Device> getDevices()
         {
-            get { return _devices; }
-            set { _devices = value; }
+            return deviceHolder.devices;
         }
 
         /// <summary>
@@ -86,17 +70,6 @@ namespace PointAndControl.MainComponents
         {
             get { return _newDevices; }
             set { _newDevices = value; }
-        }
-
-        /// <summary>
-        ///     With the "set"-method the user list can be set
-        ///     With the "get"-method, the user list can be returned
-        ///     <returns>Returns the list of users</returns>
-        /// </summary>
-        public List<User> Users
-        {
-            get { return _users; }
-            set { _users = value; }
         }
 
         /// <summary>
@@ -114,42 +87,13 @@ namespace PointAndControl.MainComponents
         /// </summary>
         public bool AddUser(String wlanAdr)
         {
-            foreach (User u in _users)
-            {
-                if (u.WlanAdr == wlanAdr)
-                {
-                    //return Properties.Resources.UserExists;
-                    return false;
-                }
-            }
-
-            User createdUser = new User(wlanAdr);
-            Users.Add(createdUser);
-            Console.WriteLine("User added");
-            return true;
-            //return Properties.Resources.UserAdded;
+            return userHolder.AddUser(wlanAdr);
         }
 
         public string AddUser(String wlanAdr, out bool success)
         {
-            foreach (User u in _users)
-            {
-                if (u.WlanAdr == wlanAdr)
-                {
-                    success = false;
-                    return String.Format(Properties.Resources.UserExists, wlanAdr);
-                }
-            }
-
-            User createdUser = new User(wlanAdr);
-            Users.Add(createdUser);
-            Console.WriteLine("User added");
-            success = true;
-            return String.Format(Properties.Resources.UserAdded, wlanAdr);
+            return userHolder.AddUser(wlanAdr, out success);
         }
-
-
-
         /// <summary>
         ///     The user with the wlan adress wlanAdr will be connected with a bodyID.
         ///     <param name="wlanAdr">Used to identify the user.</param>
@@ -159,16 +103,7 @@ namespace PointAndControl.MainComponents
         /// </summary>
         public bool SetTrackedSkeleton(String wlanAdr, int bodyID)
         {
-            foreach (User u in _users)
-            {
-                if (u.WlanAdr == wlanAdr)
-                {
-                    u.SkeletonId = bodyID;
-                    return true;
-                }
-            }
-
-            return false;
+            return userHolder.SetTrackedSkeleton(wlanAdr, bodyID);
         }
 
         /// <summary>
@@ -181,15 +116,7 @@ namespace PointAndControl.MainComponents
         /// </summary>
         public bool DelUser(String wlanAdr)
         {
-            for (int i = 0; i < _users.Count; i++)
-            {
-                if (_users[i].WlanAdr == wlanAdr)
-                {
-                    _users.RemoveAt(i);
-                    return true;
-                }
-            }
-            return false;
+            return userHolder.DelUser(wlanAdr);
         }
 
         /// <summary>
@@ -201,14 +128,7 @@ namespace PointAndControl.MainComponents
         /// </summary>
         public User GetUserBySkeleton(int bodyId)
         {
-            foreach (User u in _users)
-            {
-                if (u.SkeletonId == bodyId)
-                {
-                    return u;
-                }
-            }
-            return null;
+            return userHolder.GetUserBySkeleton(bodyId);
         }
 
         /// <summary>
@@ -220,71 +140,41 @@ namespace PointAndControl.MainComponents
         /// </summary>
         public User GetUserByIp(String wlanAdr)
         {
-            foreach (User u in _users)
-            {
-                if (u.WlanAdr == wlanAdr)
-                {
-                    return u;
-                }
-            }
-            return null;
+            return userHolder.GetUserByIp(wlanAdr);
         }
-
-
         /// <summary>
         ///     Adds a given device to the device list.
         ///     <param name="dev">The device which will be added to the list.</param>
         /// </summary>
         public bool AddDevice(Device dev)
         {
-            if (checkForSameDevID(dev.Id))
-                return false;
-
-            checkAndWriteColorForNewDevice(dev);
-            _deviceStorageHandling.addDevice(dev);
-            _devices.Add(dev);
-
-            return true;
+            return deviceHolder.AddDevice(dev);
         }
 
         public string AddDevice(string type, string id, string name, string path)
         {
-
-            if (checkForSameDevID(id))
-                return Properties.Resources.SameDevIDEx;
-
-            if (!Device.checkForIpAndPort(path) && type != "ExternalDevice")
-                return Properties.Resources.UnknownError;
-
-            Device newDevice = devProducer.produceDevice(type, id, name, path, _devices);
-
-            if (newDevice == null)
-                return Properties.Resources.UnknownError;
-            
-
-            checkAndWriteColorForNewDevice(newDevice);
-            _devices.Add(newDevice);
-            _deviceStorageHandling.addDevice(newDevice);
-            return newDevice.Id;
+            return deviceHolder.AddDevice(type, id, name, path);
         }
-        /// <summary>
-        ///     Returns a device with its id.
-        ///     <param name="id">Is used to identify a device.</param>
-        ///     <returns>Returns the deviceobject. If no device with the id exists NULL will be returned<returns>
-        /// </summary>
+
+        public string AddDevice(string type, string id, string name, string path, string repoID)
+        {
+            return deviceHolder.AddDevice(type, id, name, path, repoID);
+        }
+
+        public string AddDevice(string type, string id, string name, string path, RepositoryRepresentation repoDevice)
+        {
+            return AddDevice(type, id, name, path, repoDevice);
+        }
+
+
         public Device getDeviceByID(String id)
         {
-            if (id == null || id == "")
-                return null;
+            return deviceHolder.getDeviceByID(id);
+        }
 
-            foreach (Device dev in _devices)
-            {
-                if (dev.Id == id)
-                {
-                    return dev;
-                }
-            }
-            return null;
+        public List<Device> getCompleteDeviceList()
+        {
+            return deviceHolder.getCompleteDeviceList();
         }
 
         /// <summary>
@@ -295,103 +185,12 @@ namespace PointAndControl.MainComponents
         /// </summary>
         public bool DelTrackedSkeleton(int id)
         {
-            foreach (User u in _users)
-            {
-                if (u.SkeletonId == id)
-                {
-                    u.SkeletonId = -1;
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Publishes the given adress to all plugwise devices
-        /// </summary>
-        /// <param name="input">the new adress for all plugwises</param>
-        private void change_PlugWise_Adress(String input)
-        {
-
-            String[] splitted;
-
-            foreach(Device dev in Devices)
-            {
-                //if (getDeviceType(dev).Equals("Plugwise"))
-                if(dev.GetType().Name.Equals("Plugwise"))
-                {
-                    splitted = dev.CommandString.Split('/',
-                        ':');
-
-                    String newCommandString = input + splitted[6];
-
-                    dev.CommandString = newCommandString;
-                }
-            }
+            return userHolder.DelTrackedSkeleton(id);
         }
 
         public void change_PlugWise_Adress(string host, string port, string path)
         {
-            getRemainingPlugComponents(host, port, path); 
-            _environmentHandler.writePWcomponents(host, port, path);
-            string completeAdr = _environmentHandler.getPWAdress();
-            change_PlugWise_Adress(completeAdr);
-            logger.enqueueEntry(String.Format("New PlugwiseAdress: {0}", completeAdr));
-        }
-
-        private void getRemainingPlugComponents(string host, string port, string path)
-        {
-            if(host == null || host == "")
-            {
-                host = _environmentHandler.getPWHost();
-            }
-
-            if (port == null || port == "")
-            {
-                port = _environmentHandler.getPWPort();
-            }
-
-            if (path == null || path == "")
-            {
-                path = _environmentHandler.getPWPath();
-            }
-        }
-
-        public Color pickRandomColor()
-        {
-            bool uniqueFound = true;
-
-            Random random = new Random();
-            KnownColor[] names = (KnownColor[])Enum.GetValues(typeof(KnownColor));
-            KnownColor randomColorName = names[random.Next(names.Length)];
-            Color randomColor = Color.FromKnownColor(randomColorName);
-
-            foreach (Device d in Devices)
-            {
-                if (d.color != null)
-                {
-                    if (d.color.Equals(randomColor))
-                    {
-                        uniqueFound = false;
-                    }
-                }
-            }
-            if (uniqueFound == false)
-            {
-                randomColor = pickRandomColor();
-            }
-
-            return randomColor;
-        }
-
-        public void checkAndWriteColorForNewDevice(Device dev)
-        {
-            if (checkForSameDevID(dev.Id))
-                return;
-
-            dev.color = pickRandomColor();
-
-            return;
+            logger.enqueueEntry(deviceHolder.change_PlugWise_Adress(host, port, path));
         }
 
         public void changeRoomSize(double width, double height, double depth)
@@ -402,49 +201,22 @@ namespace PointAndControl.MainComponents
 
         public String addDeviceCoordinates(String devId, String radius, Point3D position)
         {
-            Ball coord = new Ball(position, double.Parse(radius));
-            this.getDeviceByID(devId).Form.Add(coord);
-
-            return _deviceStorageHandling.addDeviceCoord(devId, coord);
+            return deviceHolder.addDeviceCoordinates(devId, radius, position);
         }
 
         public String changeDeviceCoordinates(String devId, String radius, Point3D position)
         {
-            Ball coord = new Ball(position, double.Parse(radius));
-            Device dev = getDeviceByID(devId);
-            dev.Form.Clear();
-            dev.Form.Add(coord);
-            return _deviceStorageHandling.changeDeviceCoord(devId, coord);
-            //return _deviceStorageHandling.addDeviceCoord(devId, coord);
+            return deviceHolder.changeDeviceCoordinates(devId, radius, position);
         }
 
         private bool checkForSameDevID(String id)
         {
-            foreach(Device d in Devices)
-            {
-                if (d.Id == id)
-                    return true;
-            }
-
-            return false;
+            return deviceHolder.checkForSameDevID(id);
         }
 
         public string deleteDevice(String id)
         {
-            String retStr = Properties.Resources.DevNotFoundDeletion;
-            
-            foreach(Device d in Devices)
-            {
-                if (d.Id == id)
-                {
-                    _deviceStorageHandling.deleteDevice(d.Id);
-                    Devices.Remove(d);
-                    retStr = Properties.Resources.DevDeleted;
-                    break;
-                }
-            }
-
-            return retStr;
+            return deviceHolder.deleteDevice(id);
         }
 
         public void changeRoomSizeRemote(String width, String height, String depth)
@@ -469,11 +241,21 @@ namespace PointAndControl.MainComponents
             }
 
             changeRoomSize(parsedWidth, parsedHeight, parsedDepth);
-
         }
 
-        
+        public List<Device> getDevicesWithoutAssignedName()
+        {
+            return deviceHolder.getDevicesWithoutAssignedName(); 
+        }
 
+        public void updateRepoDevices()
+        {
+            deviceHolder.updateAllRepos();
+        }
 
+        public void assignName(string id, string name)
+        {
+            deviceHolder.assignName(id, name);
+        }
     }
 }

@@ -1,20 +1,19 @@
-﻿using PointAndControl.Devices;
+﻿using PointAndControl.ComponentHandling;
+using PointAndControl.Devices;
+using PointAndControl.ThirdPartyRepos;
 using System;
 using System.Collections.Generic;
 
 namespace PointAndControl.MainComponents
 {
-    class Deviceproducer
+    public class Deviceproducer
     {
         public Deviceproducer() { }
 
 
         public Device produceDevice(string type, string id, string name, string path, List<Device> devices)
         {
-            //int count = 1;
-
             string idparam = "";
-
 
             if (id != "")
             {
@@ -22,7 +21,7 @@ namespace PointAndControl.MainComponents
             }
             else
             {
-                //Uses LINQ to findall devices with the object type == given type. Counts the result list and increases it by one
+                //Uses LINQ to find all devices with the object type == given type. Counts the result list and increases it by one
                 idparam = type + '_' + (devices.FindAll(q => q.GetType().Name == type).Count + 1);
             }
 
@@ -40,9 +39,15 @@ namespace PointAndControl.MainComponents
 
             if (typeObject != null)
             {
-                object instance = Activator.CreateInstance(typeObject, name, idparam, new List<Ball>(),
-                                                           path);
-                return ((Device)instance);
+                if(typeObject.IsSubclassOf(typeof(RepositoryRepresentation)))
+                {
+                    object instance = Activator.CreateInstance(typeObject, name, idparam, path, new List<Ball>(), new DeviceHolder());
+                    return ((Device)instance);
+                } else
+                {
+                    object instance = Activator.CreateInstance(typeObject, name, idparam, path, new List<Ball>());
+                    return ((Device)instance);
+                }
             }
 
             return null;

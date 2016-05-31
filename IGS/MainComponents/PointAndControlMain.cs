@@ -10,6 +10,7 @@ using PointAndControl.Kinect;
 using PointAndControl.WebServer;
 using PointAndControl.ComponentHandling;
 using PointAndControl.Helperclasses;
+using PointAndControl.ThirdPartyRepos;
 
 namespace PointAndControl.MainComponents
 {
@@ -60,8 +61,8 @@ namespace PointAndControl.MainComponents
             
             logger = eventLogger;
             this.coreMethods = new CollisionMethod(Data, Tracker, Transformer, logger);
-            
-           
+
+          
         }
 
 
@@ -331,8 +332,11 @@ namespace PointAndControl.MainComponents
 
                         
                     case "list":
+
+
+                        Data.updateRepoDevices();
+                        response.addDevices(Data.getCompleteDeviceList());
                         success = true;
-                        response.addDevices(Data.Devices);
                         break;
 
                     case "discoverDevices":
@@ -509,7 +513,7 @@ namespace PointAndControl.MainComponents
                             response.addTrackingId(user.SkeletonId);
                         }
                         break;
-                    //Already implemented but not yet used
+                    //TODO: Already implemented but no GUI-Interface for these functionalities
                     //case "setPlugwisePath":
                     //    success = setPlugwiseComponents(parameters);
                     //    if (success)
@@ -541,13 +545,13 @@ namespace PointAndControl.MainComponents
                     //    }
                     //    break;
 
+
+                    //TODO: Already implemented but no GUI-Interface for these functionalities 
                     case "getDeviceTypes":
                         success = true;
-
                         response.addDeviceTypes(getDeviceTypeJSON());
 
                         break;
-
                 }
                 response.addSuccess(success);
                 response.addMsg(msg);
@@ -575,9 +579,9 @@ namespace PointAndControl.MainComponents
 
                     default:
                         Device dev = Data.getDeviceByID(devId);
-                        if (dev.connection != null)
+                        if (dev.connection != null && NativeTransmittingDevice.checkIfTransmitting(dev))
                         {
-                            response.addReturnString(dev.Transmit(cmd, value));
+                            response.addReturnString(((NativeTransmittingDevice)dev).Transmit(cmd, value));
                         }
                         break;
                 }
@@ -595,10 +599,7 @@ namespace PointAndControl.MainComponents
                 response.addReturnString(retStr);
 
                 return response.serialize();
-
-
             }
-            
         }
 
 
@@ -608,7 +609,7 @@ namespace PointAndControl.MainComponents
             List<leanDevRepresentation> d = new List<leanDevRepresentation>();
             if (devices != null)
             {
-                List<Device> deviceList = devices.ToList();
+                List<Device> deviceList = devices.Where(dev => RepositoryRepresentation.isRepo(dev) == false).ToList();
 
                 deviceList.ForEach(x => d.Add(new leanDevRepresentation(x)));
             }
@@ -716,12 +717,12 @@ namespace PointAndControl.MainComponents
         public String getControlPagePathHttp(String id)
         {
             String controlPath = "";
-
-            String t = Data.getDeviceByID(id).GetType().Name;
+            Device dev = Data.getDeviceByID(id);
+            String t = dev.GetType().Name;
 
             if (t.Equals("ExternalDevice"))
             {
-                controlPath = Data.getDeviceByID(id).Path;
+                controlPath = dev.Path;
             }
             else
             {
@@ -833,7 +834,6 @@ namespace PointAndControl.MainComponents
 
             return true;
         }
-
     }
 
 }

@@ -35,15 +35,13 @@ namespace PointAndControl.Devices
         /// </summary>
         public String Ip { get; set; }
 
-        
+
         /// <summary>
         ///     Sends the command in the implemented manner.
         ///     <param name="command">command which should be send</param>
         ///     <returns>Returnvalue of the device</returns>
         /// </summary>
-        public virtual String Send(String command)
-        {
-            throw new NotImplementedException();
-        }
+        public abstract String Send(String command);
+
     }
 }

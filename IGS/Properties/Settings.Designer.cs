@@ -25,7 +25,7 @@ namespace PointAndControl.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("cloud.teco.edu")]
+        [global::System.Configuration.DefaultSettingValueAttribute("129.13.170.9")]
         public string PWHost {
             get {
                 return ((string)(this["PWHost"]));

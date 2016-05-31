@@ -30,7 +30,8 @@ namespace PointAndControl.MainComponents
         internal static List<Device> Calculate(List<Device> devices, Point3D[] vectors)
         {
             List<Device> found = new List<Device>();
-
+          
+           
             if (vectors == null)
                 return found;
 

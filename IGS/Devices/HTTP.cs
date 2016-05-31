@@ -56,7 +56,6 @@ namespace PointAndControl.Devices
             {
                 Debug.WriteLine(e.ToString());
                 return Properties.Resources.HTTPConnFailure;
-
             }
 
             return responseString;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PointAndControl.Devices
 {
-    class Beamer : Device
+    class Beamer : NativeTransmittingDevice
     {
         
         private readonly String _commandString;
@@ -15,7 +15,7 @@ namespace PointAndControl.Devices
         ///     <param name="form">Shape of the device in the room</param>
         ///     <param name="path">The Path to communicate with the device</param>  
         /// </summary>
-        public Beamer(String name, String id, List<Ball> form, String path)
+        public Beamer(String name, String id, String path, List<Ball> form)
             : base(name, id, path, form)
         {
             String[] ipAndPort = splitPathToIPAndPort();

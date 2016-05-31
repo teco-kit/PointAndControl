@@ -11,7 +11,7 @@ namespace PointAndControl.Devices
     ///     Off
     ///     @author Florian Kinn
     /// </summary>
-    public class Plugwise : Device
+    public class Plugwise : NativeTransmittingDevice
     {
         private readonly String _commandString = "http://cumulus.teco.edu:5000/plugwise/";
 
@@ -24,7 +24,7 @@ namespace PointAndControl.Devices
         ///     <param name="path">The Path to communicate with the device</param>  
         /// </summary>
 
-        public Plugwise(String name, String id, List<Ball> form, String path)
+        public Plugwise(String name, String id, String path, List<Ball> form)
                 : base(name, id, path, form)
             {
             String[] ipAndPort = splitPathToIPAndPort();

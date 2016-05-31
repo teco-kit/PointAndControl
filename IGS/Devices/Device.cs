@@ -27,6 +27,8 @@ namespace PointAndControl.Devices
             Form = form;
             Path = path;
             skelPositions = new List<Point3D[]>();
+
+            parentID = null;
         }
 
         ///     Name of the device.
@@ -56,26 +58,13 @@ namespace PointAndControl.Devices
 
         public List<Ball> Form { get; set; }
 
-        /// <summary>
-        ///     The Transmit method is responsible for the correct invocation of a function of the device
-        ///     which is implicated by the "commandID"
-        ///     <param name="cmdId">
-        ///         With the commandID the Transmit-method recieves which command
-        ///         should be send to the device 
-        ///     </param>
-        ///     <param name="value">
-        ///         The value belonging to the command
-        ///     </param>
-        ///     <returns>
-        ///     If execution was successful
-        ///     </returns>
-        public abstract String Transmit(String cmdId, String value);
-
         public List<Point3D[]> skelPositions { get; set; }
+
+        public string parentID { get; set; }
 
         public Color color { get; set; }
 
-        public static IEnumerable<Type> deviceTypes = getAllDerivedDeviceTypes();
+        public static List<Type> deviceTypes = getAllDerivedDeviceTypes();
 
         public String[] splitPathToIPAndPort()
         {
@@ -104,15 +93,15 @@ namespace PointAndControl.Devices
         }
 
         //Base-Code from User "Yahoo Serious" on Stackoverflow: http://stackoverflow.com/questions/857705/get-all-derived-types-of-a-type 
-        //Date: 18.04.2016 - 09:16 am UTC+1
-        public static IEnumerable<Type> getAllDerivedDeviceTypes()
+        //AccessDate: 18.04.2016 - 09:16 am UTC+1
+        public static List<Type> getAllDerivedDeviceTypes()
         {
             var listOfBs = (from domainAssembly in AppDomain.CurrentDomain.GetAssemblies()
                             from assemblyType in domainAssembly.GetTypes()
                             where typeof(Device).IsAssignableFrom(assemblyType)
                             select assemblyType).ToArray();
 
-            return listOfBs;
+            return listOfBs.ToList();
         }
 
         public static List<String> getAllDerivedDeviceTypesAsStrings()
@@ -132,6 +121,14 @@ namespace PointAndControl.Devices
             return result;
         }
 
-        
+        public bool hasParent()
+        {
+            return parentID != null;
+        }
+
+        public void addParent(Device dev)
+        {
+            parentID = dev.Id;
+        }
     }
 }
