@@ -22,7 +22,7 @@ namespace PointAndControl.ThirdPartyRepos
             return dev.GetType().IsSubclassOf(typeof(RepositoryRepresentation));
         }
 
-        public void actualizeDevices()
+        public void updateDevices()
         {
             if (deviceHolder == null || deviceHolder.devices == null)
                 return;

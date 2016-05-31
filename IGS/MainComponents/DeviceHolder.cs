@@ -122,6 +122,31 @@ namespace PointAndControl.MainComponents
             return newDevice.Id;
         }
 
+        public static Device getDeviceByID(string id, List<Device> devices)
+        {
+            if (id == null || id == "")
+                return null;
+
+            Device returnDev = null;
+            foreach(Device dev in devices)
+            {
+                if (dev.Id == id)
+                    return dev;
+                
+                if (RepositoryRepresentation.isRepo(dev))
+                {
+                    RepositoryRepresentation repo = (RepositoryRepresentation)dev;
+
+                    returnDev = getDeviceByID(id, repo.getDevices());
+
+                    if (returnDev != null)
+                        return returnDev;
+                }
+            }
+
+            return null;
+        }
+
         public Device getDeviceByID(String id)
         {
             if (id == null || id == "")
@@ -235,6 +260,7 @@ namespace PointAndControl.MainComponents
 
             return;
         }
+
         public String addDeviceCoordinates(String devId, String radius, Point3D position)
         {
             Ball coord = new Ball(position, double.Parse(radius));
@@ -255,6 +281,7 @@ namespace PointAndControl.MainComponents
             return storageFileHandler.addDeviceCoord(devId, coord);
         }
 
+
         public String changeDeviceCoordinates(String devId, String radius, Point3D position)
         {
             Ball coord = new Ball(position, double.Parse(radius));
@@ -262,7 +289,6 @@ namespace PointAndControl.MainComponents
             dev.Form.Clear();
             dev.Form.Add(coord);
             return storageFileHandler.changeDeviceCoord(devId, coord);
-            //return storageFileHandler.addDeviceCoord(devId, coord);
         }
 
         public bool checkForSameDevID(String id)
@@ -370,7 +396,7 @@ namespace PointAndControl.MainComponents
 
         public void actualizeAllRepos()
         {
-            getAllRepos().ForEach(repo => repo.actualizeDevices());
+            getAllRepos().ForEach(repo => repo.updateDevices());
         }
     }
 }

@@ -13,10 +13,7 @@ namespace PointAndControl.MainComponents
 
         public Device produceDevice(string type, string id, string name, string path, List<Device> devices)
         {
-            //int count = 1;
-
             string idparam = "";
-
 
             if (id != "")
             {
@@ -24,7 +21,7 @@ namespace PointAndControl.MainComponents
             }
             else
             {
-                //Uses LINQ to findall devices with the object type == given type. Counts the result list and increases it by one
+                //Uses LINQ to find all devices with the object type == given type. Counts the result list and increases it by one
                 idparam = type + '_' + (devices.FindAll(q => q.GetType().Name == type).Count + 1);
             }
 
@@ -51,8 +48,6 @@ namespace PointAndControl.MainComponents
                     object instance = Activator.CreateInstance(typeObject, name, idparam, path, new List<Ball>());
                     return ((Device)instance);
                 }
-                
-                
             }
 
             return null;
