@@ -95,7 +95,7 @@ namespace PointAndControl.MainComponents
             checkAndWriteColorForNewDevice(newDevice);
             newDevice.addParent(repoDevice);
             ((RepositoryRepresentation)repoDevice).getDevices().Add(newDevice);
-            storageFileHandler.addDevice(newDevice);
+            storageFileHandler.updateDevice(repoDevice);
             return newDevice.Id;
 
         }
@@ -122,7 +122,7 @@ namespace PointAndControl.MainComponents
             return newDevice.Id;
         }
 
-        public static Device getDeviceByID(string id, List<Device> devices)
+        public Device getDeviceByID(string id, List<Device> devices)
         {
             if (id == null || id == "")
                 return null;
@@ -149,27 +149,28 @@ namespace PointAndControl.MainComponents
 
         public Device getDeviceByID(String id)
         {
+
+
             if (id == null || id == "")
                 return null;
 
+            Device returnDev = null;
             foreach (Device dev in devices)
             {
                 if (dev.Id == id)
-                {
                     return dev;
-                }
 
                 if (RepositoryRepresentation.isRepo(dev))
                 {
-                    foreach (Device childDev in ((RepositoryRepresentation)dev).getDevices())
-                    {
-                        if (childDev.Id == id)
-                        {
-                            return childDev;
-                        }
-                    }
+                    RepositoryRepresentation repo = (RepositoryRepresentation)dev;
+
+                    returnDev = repo.deviceHolder.getDeviceByID(id);
+
+                    if (returnDev != null)
+                        return returnDev;
                 }
             }
+
             return null;
         }
 
@@ -298,32 +299,27 @@ namespace PointAndControl.MainComponents
 
         public string deleteDevice(String id)
         {
-            Device tempDev;
-            String retStr = Properties.Resources.DevNotFoundDeletion;
+            
+            Device tempDev = getDeviceByID(id);
 
-            foreach (Device d in getCompleteDeviceList())
+            if(tempDev != null)
             {
-                if (d.Id == id)
+                if (tempDev.hasParent())
                 {
-                    if (d.hasParent())
-                    {
-                        tempDev = d;
-                        Device parent = getDeviceByID(tempDev.parentID);
-                        ((RepositoryRepresentation)parent).getDevices().Remove(d);
-                        storageFileHandler.updateDevice(parent);
-                        retStr = Properties.Resources.DevDeleted;
-                    }
-                    else
-                    {
-                        storageFileHandler.deleteDevice(d.Id);
-                        devices.Remove(d);
-                        retStr = Properties.Resources.DevDeleted;
-                    }
-                    break;
+                    Device parent = getDeviceByID(tempDev.parentID);
+                    ((RepositoryRepresentation)parent).getDevices().Remove(tempDev);
+                    storageFileHandler.updateDevice(parent);
+                    return Properties.Resources.DevDeleted;
+                }
+                else
+                {
+                    storageFileHandler.deleteDevice(tempDev.Id);
+                    devices.Remove(tempDev);
+                    return Properties.Resources.DevDeleted;
                 }
             }
 
-            return retStr;
+            return Properties.Resources.DevNotFoundDeletion;
         }
         public List<Device> getDevicesWithoutAssignedName()
         {
@@ -394,7 +390,7 @@ namespace PointAndControl.MainComponents
             return repos;
         }
 
-        public void actualizeAllRepos()
+        public void updateAllRepos()
         {
             getAllRepos().ForEach(repo => repo.updateDevices());
         }

@@ -52,7 +52,7 @@ namespace PointAndControl.MainComponents
         {
             deviceHolder = new DeviceHolder();
             deviceHolder.initializeDevices();
-            deviceHolder.actualizeAllRepos();
+            deviceHolder.updateAllRepos();
             deviceHolder.change_PlugWise_Adress(_environmentHandler.getPWAdress());
         }
 
@@ -250,7 +250,7 @@ namespace PointAndControl.MainComponents
 
         public void updateRepoDevices()
         {
-            deviceHolder.actualizeAllRepos();
+            deviceHolder.updateAllRepos();
         }
 
         public void assignName(string id, string name)
