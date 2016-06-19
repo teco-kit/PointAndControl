@@ -6,6 +6,8 @@
 ## Introduction
 The Point-and-Control application makes use of the Microsoft Kinect to enable Point&Click interaction for the control of appliances in smart environments. A backend server determines through collision detection which device the user is pointing at and sends the respective control interface to the user’s smartphone. Any commands the user issues are then sent back to the server which in turn controls the appliance.
 
+The application can also freely be used as building block within other product to support with special needs (e.g. for blind users for discovery, for cognitively disabled users as intuitive interaction). The research and development of the software was partially funded within the [Prosperity4All Project](http://prosperity4all.eu) under  European Union Framework Program 7 (grant # 610510)  in order to include the solution into accessible smart environments.
+
 ## Requirements for use
 - 64 bit (x64) processor
 - Physical dual-core 3.1-GHz (2 logical cores per physical) or faster processor
